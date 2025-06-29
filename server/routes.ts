@@ -4,7 +4,7 @@ import multer from "multer";
 import * as fs from "fs";
 import * as path from "path";
 import { storage } from "./storage";
-import { uploadRequestSchema, feedbackRequestSchema } from "@shared/schema";
+import { uploadRequestSchema, feedbackRequestSchema, followUpRequestSchema } from "@shared/schema";
 import { validateImage } from "./services/imageProcessor";
 import { classifyWound } from "./services/woundClassifier";
 import { generateCarePlan } from "./services/carePlanGenerator";
@@ -82,7 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const classification = await classifyWound(imageBase64, model);
       
       // Generate care plan
-      const carePlan = await generateCarePlan(classification, audience, model, contextData);
+      const carePlan = await generateCarePlan(audience, classification, contextData, model);
       
       // Store assessment with image data and context
       const assessment = await storage.createWoundAssessment({
@@ -230,11 +230,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const carePlan = await generateCarePlan(
         requestData.audience,
         classification,
-        contextForCarePlan
+        contextForCarePlan,
+        requestData.model
       );
 
       // Get user ID if authenticated
-      const userId = req.user?.claims?.sub || null;
+      let userId = null;
+      if (req.isAuthenticated && req.isAuthenticated() && req.user) {
+        userId = (req.user as any).claims?.sub;
+      }
 
       // Store the follow-up assessment
       const assessment = await storage.createFollowUpAssessment({

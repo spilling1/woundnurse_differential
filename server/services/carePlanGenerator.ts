@@ -3,10 +3,10 @@ import { callGemini } from "./gemini";
 import { getPromptTemplate } from "./promptTemplates";
 
 export async function generateCarePlan(
+  audience: string,
   classification: any, 
-  audience: string, 
-  model: string,
-  contextData?: any
+  contextData?: any,
+  model: string = 'gpt-4o'
 ): Promise<string> {
   try {
     const prompt = await getPromptTemplate(audience, classification, contextData);
