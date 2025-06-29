@@ -1,5 +1,5 @@
 import { useLocation, useSearch } from "wouter";
-import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Print } from "lucide-react";
+import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -125,7 +125,7 @@ export default function CarePlan() {
                 Download
               </Button>
               <Button variant="outline" size="sm">
-                <Print className="mr-2 h-4 w-4" />
+                <Printer className="mr-2 h-4 w-4" />
                 Print
               </Button>
             </div>

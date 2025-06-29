@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { WoundContextData } from "./WoundQuestionnaire";
 
 interface ConfigurationPanelProps {
   audience: 'family' | 'patient' | 'medical';
@@ -15,6 +16,7 @@ interface ConfigurationPanelProps {
   onModelChange: (model: 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro') => void;
   selectedFile: File | null;
   isProcessing: boolean;
+  contextData?: WoundContextData;
   onStartAssessment: () => void;
   onAssessmentComplete: (data: any) => void;
 }

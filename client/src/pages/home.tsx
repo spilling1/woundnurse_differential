@@ -5,6 +5,7 @@ import ConfigurationPanel from "@/components/ConfigurationPanel";
 import AssessmentResults from "@/components/AssessmentResults";
 import CarePlanSection from "@/components/CarePlanSection";
 import SystemStatus from "@/components/SystemStatus";
+import WoundQuestionnaire, { WoundContextData } from "@/components/WoundQuestionnaire";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -12,6 +13,16 @@ export default function Home() {
   const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'>('gpt-4o');
   const [assessmentData, setAssessmentData] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [contextData, setContextData] = useState<WoundContextData>({
+    woundOrigin: '',
+    medicalHistory: '',
+    woundChanges: '',
+    currentCare: '',
+    woundPain: '',
+    supportAtHome: '',
+    mobilityStatus: '',
+    nutritionStatus: ''
+  });
 
   return (
     <div className="font-inter bg-bg-light min-h-screen">
@@ -58,6 +69,7 @@ export default function Home() {
               onModelChange={setModel}
               selectedFile={selectedFile}
               isProcessing={isProcessing}
+              contextData={contextData}
               onStartAssessment={() => setIsProcessing(true)}
               onAssessmentComplete={(data) => {
                 setAssessmentData(data);
@@ -68,6 +80,11 @@ export default function Home() {
 
           {/* Right Column - Results and Analysis */}
           <div className="lg:col-span-2">
+            <WoundQuestionnaire 
+              onDataChange={setContextData}
+              initialData={contextData}
+            />
+            
             <AssessmentResults 
               assessmentData={assessmentData}
               isProcessing={isProcessing}
