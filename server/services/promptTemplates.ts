@@ -1,4 +1,4 @@
-export function getPromptTemplate(audience: string, classification: any): string {
+export function getPromptTemplate(audience: string, classification: any, contextData?: any): string {
   const baseInfo = `
 Wound Assessment:
 - Type: ${classification.woundType}
@@ -9,6 +9,16 @@ Wound Assessment:
 - Location: ${classification.location}
 - Infection Signs: ${classification.infectionSigns.join(', ') || 'None observed'}
 - Additional Observations: ${classification.additionalObservations}
+
+Patient Context:
+${contextData?.woundOrigin ? `- How/when wound occurred: ${contextData.woundOrigin}` : ''}
+${contextData?.medicalHistory ? `- Medical history: ${contextData.medicalHistory}` : ''}
+${contextData?.woundChanges ? `- Recent changes noted: ${contextData.woundChanges}` : ''}
+${contextData?.currentCare ? `- Current care being provided: ${contextData.currentCare}` : ''}
+${contextData?.woundPain ? `- Pain description: ${contextData.woundPain}` : ''}
+${contextData?.supportAtHome ? `- Support at home: ${contextData.supportAtHome}` : ''}
+${contextData?.mobilityStatus ? `- Mobility status: ${contextData.mobilityStatus}` : ''}
+${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionStatus}` : ''}
 `;
 
   switch (audience) {

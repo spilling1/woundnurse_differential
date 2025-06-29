@@ -40,6 +40,14 @@ export type Feedback = typeof feedbacks.$inferSelect;
 export const uploadRequestSchema = z.object({
   audience: z.enum(['family', 'patient', 'medical']),
   model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro']),
+  woundOrigin: z.string().optional(),
+  medicalHistory: z.string().optional(),
+  woundChanges: z.string().optional(),
+  currentCare: z.string().optional(),
+  woundPain: z.string().optional(),
+  supportAtHome: z.string().optional(),
+  mobilityStatus: z.string().optional(),
+  nutritionStatus: z.string().optional(),
 });
 
 export const feedbackRequestSchema = z.object({

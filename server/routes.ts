@@ -36,7 +36,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Validate request body
-      const { audience, model } = uploadRequestSchema.parse(req.body);
+      const { audience, model, ...contextData } = uploadRequestSchema.parse(req.body);
       
       // Validate image
       const imageBase64 = await validateImage(req.file);
@@ -48,7 +48,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const classification = await classifyWound(imageBase64, model);
       
       // Generate care plan
-      const carePlan = await generateCarePlan(classification, audience, model);
+      const carePlan = await generateCarePlan(classification, audience, model, contextData);
       
       // Store assessment
       const assessment = await storage.createWoundAssessment({

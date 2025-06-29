@@ -5,10 +5,11 @@ import { getPromptTemplate } from "./promptTemplates";
 export async function generateCarePlan(
   classification: any, 
   audience: string, 
-  model: string
+  model: string,
+  contextData?: any
 ): Promise<string> {
   try {
-    const prompt = getPromptTemplate(audience, classification);
+    const prompt = getPromptTemplate(audience, classification, contextData);
     
     let carePlan;
     
