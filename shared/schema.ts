@@ -82,6 +82,20 @@ export const agentInstructions = pgTable("agent_instructions", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const agentQuestions = pgTable("agent_questions", {
+  id: serial("id").primaryKey(),
+  sessionId: varchar("session_id").notNull(), // Unique session ID for Q&A
+  caseId: varchar("case_id"),
+  userId: varchar("user_id").notNull(),
+  question: text("question").notNull(),
+  answer: text("answer"),
+  questionType: varchar("question_type").notNull(), // 'clarification', 'medical_history', 'symptom_detail', etc.
+  isAnswered: boolean("is_answered").default(false),
+  context: text("context"), // Additional context for the question as JSON string
+  createdAt: timestamp("created_at").defaultNow(),
+  answeredAt: timestamp("answered_at"),
+});
+
 export const insertWoundAssessmentSchema = createInsertSchema(woundAssessments).omit({
   id: true,
   createdAt: true,
@@ -98,12 +112,20 @@ export const insertFeedbackSchema = createInsertSchema(feedbacks).omit({
   createdAt: true,
 });
 
+export const insertAgentQuestionSchema = createInsertSchema(agentQuestions).omit({
+  id: true,
+  createdAt: true,
+  answeredAt: true,
+});
+
 export type InsertWoundAssessment = z.infer<typeof insertWoundAssessmentSchema>;
 export type WoundAssessment = typeof woundAssessments.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
 export type Feedback = typeof feedbacks.$inferSelect;
 export type InsertAgentInstructions = z.infer<typeof insertAgentInstructionsSchema>;
 export type AgentInstructions = typeof agentInstructions.$inferSelect;
+export type InsertAgentQuestion = z.infer<typeof insertAgentQuestionSchema>;
+export type AgentQuestion = typeof agentQuestions.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
