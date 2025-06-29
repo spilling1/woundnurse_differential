@@ -8,12 +8,14 @@ import { Separator } from "@/components/ui/separator";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { useState, useRef } from "react";
 
 export default function CarePlan() {
   const [, setLocation] = useLocation();
   const searchParams = useSearch();
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
   const [feedbackText, setFeedbackText] = useState("");
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -149,11 +151,11 @@ export default function CarePlan() {
             <div className="flex items-center">
               <Button 
                 variant="ghost" 
-                onClick={() => setLocation('/')}
+                onClick={() => setLocation(isAuthenticated ? '/my-cases' : '/')}
                 className="mr-4"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Assessment
+                {isAuthenticated ? 'Back to Cases' : 'Back to Assessment'}
               </Button>
               <div className="flex items-center">
                 <ClipboardList className="text-medical-blue text-xl mr-3" />
