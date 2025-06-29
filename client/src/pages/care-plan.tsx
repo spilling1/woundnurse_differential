@@ -52,6 +52,27 @@ export default function CarePlan() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('DELETE', `/api/assessment/${caseId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Case Deleted",
+        description: "The wound assessment has been deleted successfully.",
+      });
+      // Redirect to My Cases page
+      setLocation(isAuthenticated ? '/my-cases' : '/');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Delete Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleFeedback = (feedbackType: 'helpful' | 'not-helpful') => {
     if (!caseId) return;
     
@@ -180,6 +201,22 @@ export default function CarePlan() {
                 <Printer className="mr-2 h-4 w-4" />
                 Print
               </Button>
+              {isAuthenticated && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to delete this assessment? This action cannot be undone.')) {
+                      deleteMutation.mutate();
+                    }
+                  }}
+                  disabled={deleteMutation.isPending}
+                  className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                </Button>
+              )}
             </div>
           </div>
         </div>
