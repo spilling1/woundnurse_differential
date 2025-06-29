@@ -191,7 +191,7 @@ export default function AgentsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Agents.md Content</span>
+              <span>Agent Instructions</span>
               <div className="flex items-center space-x-2">
                 {hasChanges ? (
                   <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
@@ -214,7 +214,7 @@ export default function AgentsPage() {
                   onChange={(e) => setContent(e.target.value)}
                   rows={25}
                   className="font-mono text-sm border-0 resize-none"
-                  placeholder="Enter Agents.md content here..."
+                  placeholder="Enter AI agent instructions here..."
                 />
               </div>
               

@@ -27,9 +27,9 @@ The application follows a modern full-stack architecture:
 ## Key Components
 
 ### Data Models
-- **Wound Assessments**: Stores case ID, audience type, AI model used, wound classification, and generated care plans
+- **Wound Assessments**: Stores case ID, audience type, AI model used, wound images, questionnaire responses, wound classification, and generated care plans
 - **Feedback**: Captures user feedback on care plan quality for continuous improvement
-- **Agents Log**: Markdown file tracking all assessments for AI learning
+- **Agent Instructions**: Database-stored AI behavior rules and guidelines (replaces Agents.md file)
 
 ### Core Services
 1. **Image Processor**: Validates uploaded images (PNG/JPG, max 10MB)
@@ -67,8 +67,9 @@ The application follows a modern full-stack architecture:
 - **Models**: GPT-4o, GPT-3.5 variants with vision capabilities
 
 ### Database
-- **PostgreSQL**: Primary data storage via Neon serverless
+- **PostgreSQL**: Primary data storage via Neon serverless for all case history, images, and instructions
 - **Drizzle ORM**: Type-safe database operations with schema validation
+- **Image Storage**: Base64 encoded images stored directly in database
 
 ### Infrastructure
 - **Replit**: Development and deployment platform
@@ -101,6 +102,11 @@ The application follows a modern full-stack architecture:
 Changelog:
 - June 29, 2025. Initial setup
 - June 29, 2025. Added Gemini 2.5 Flash and 2.5 Pro model support with Google AI integration
+- June 29, 2025. Migrated from file-based to PostgreSQL database storage
+- June 29, 2025. Added comprehensive questionnaire system with 8 context questions
+- June 29, 2025. Replaced Agents.md file with database-stored AI instructions
+- June 29, 2025. Added image storage in database with Base64 encoding
+- June 29, 2025. Created dedicated care plan page and enhanced UI workflow
 ```
 
 ## User Preferences
