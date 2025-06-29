@@ -3,8 +3,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, FileText, User, MapPin } from "lucide-react";
-import { Link } from "wouter";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -12,6 +12,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 export default function MyCases() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const [, setLocation] = useLocation();
 
   // Temporarily disable auth check to stop infinite loop
   // TODO: Re-enable after fixing useAuth hook
@@ -53,28 +54,49 @@ export default function MyCases() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-medical-blue to-medical-teal">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">My Wound Care Cases</h1>
-          <p className="text-medical-light text-lg">Manage and review your Care Plans</p>
+    <div className="min-h-screen bg-gradient-to-br from-bg-light to-gray-50">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <Link href="/">
+                <div className="flex items-center cursor-pointer">
+                  <Stethoscope className="text-medical-blue text-2xl mr-3" />
+                  <span className="text-xl font-bold text-gray-900">Wound Nurses</span>
+                </div>
+              </Link>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-gray-500">
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                  <Circle className="inline w-2 h-2 mr-1 fill-current" />
+                  System Online
+                </span>
+              </div>
+              <Button 
+                variant="outline"
+                onClick={() => setLocation("/assessment")}
+                className="border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white"
+              >
+                New Assessment
+              </Button>
+              <Button 
+                variant="ghost"
+                onClick={() => window.location.href = "/api/logout"}
+              >
+                Log Out
+              </Button>
+            </div>
+          </div>
         </div>
+      </header>
 
-        {/* Navigation */}
-        <div className="mb-8 flex justify-center gap-4">
-          <Link href="/assessment">
-            <Button className="bg-white text-medical-blue border-2 border-white hover:bg-medical-blue hover:text-white px-6 py-2 font-semibold shadow-lg">
-              Start New Case
-            </Button>
-          </Link>
-          <Button
-            variant="outline"
-            className="bg-white/20 border-2 border-white text-white hover:bg-white hover:text-medical-blue px-6 py-2 font-semibold shadow-lg"
-            onClick={() => window.location.href = "/api/logout"}
-          >
-            Log Out
-          </Button>
+      <div className="container mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">My Wound Care Cases</h1>
+          <p className="text-gray-600 text-lg">Manage and review your Care Plans</p>
         </div>
 
         {/* Cases Grid */}

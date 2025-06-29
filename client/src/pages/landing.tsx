@@ -51,11 +51,7 @@ export default function Landing() {
                     <LogIn className="mr-2 h-4 w-4" />
                     Log In
                   </Button>
-                  <Button 
-                    onClick={() => setLocation("/start-assessment")}
-                  >
-                    Start Free Assessment
-                  </Button>
+                  
                 </>
               )}
             </div>
