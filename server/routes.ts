@@ -362,7 +362,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (version) {
         // Get specific version of the assessment
         const assessmentHistory = await storage.getWoundAssessmentHistory(caseId);
+        console.log(`Requested version ${version} for case ${caseId}. Available versions:`, assessmentHistory.map(a => ({ id: a.id, version: a.versionNumber, isFollowUp: a.isFollowUp })));
         assessment = assessmentHistory.find(a => a.versionNumber === parseInt(version as string));
+        console.log(`Found assessment for version ${version}:`, assessment ? { id: assessment.id, version: assessment.versionNumber } : 'Not found');
       } else {
         // Get the latest version if no version specified
         assessment = await storage.getLatestWoundAssessment(caseId);
