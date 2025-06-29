@@ -180,12 +180,9 @@ export default function CarePlan() {
               </Button>
               <div className="flex items-center">
                 <ClipboardList className="text-medical-blue text-xl mr-3" />
-                <h1 className="text-xl font-semibold text-gray-900">Wound Care Plan</h1>
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Badge variant="secondary">{caseId}</Badge>
-              
               {/* Care Plan Actions */}
               <div className="flex items-center space-x-2 border-r border-gray-200 pr-3">
                 <Button 

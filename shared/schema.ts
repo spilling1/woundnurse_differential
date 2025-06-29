@@ -26,7 +26,7 @@ export const users = pgTable("users", {
 
 export const woundAssessments = pgTable("wound_assessments", {
   id: serial("id").primaryKey(),
-  caseId: text("case_id").notNull().unique(),
+  caseId: text("case_id").notNull(),
   userId: varchar("user_id"), // Optional - for logged-in users
   audience: text("audience").notNull(), // 'family' | 'patient' | 'medical'
   model: text("model").notNull(), // 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'
@@ -50,9 +50,19 @@ export const woundAssessments = pgTable("wound_assessments", {
   classification: json("classification"), // wound type, stage, size, etc.
   carePlan: text("care_plan").notNull(),
   
-  version: text("version").notNull().default("v1.0.0"),
+  // Follow-up and versioning
+  version: integer("version").notNull().default(1), // Version number for this case
+  isFollowUp: boolean("is_follow_up").notNull().default(false),
+  previousVersion: integer("previous_version"), // Reference to previous version
+  progressNotes: text("progress_notes"), // Patient-reported progress since last assessment
+  treatmentResponse: text("treatment_response"), // How wound responded to previous treatment
+  contextData: json("context_data"), // Store all questionnaire data as JSON
+  
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  // Composite index for querying latest version of each case
+  caseVersionIndex: index("case_version_idx").on(table.caseId, table.version),
+}));
 
 export const feedbacks = pgTable("feedbacks", {
   id: serial("id").primaryKey(),
@@ -116,5 +126,22 @@ export const feedbackRequestSchema = z.object({
   comments: z.string().optional(),
 });
 
+export const followUpRequestSchema = z.object({
+  caseId: z.string(),
+  audience: z.enum(['family', 'patient', 'medical']),
+  model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro']),
+  progressNotes: z.string(),
+  treatmentResponse: z.string(),
+  woundOrigin: z.string().optional(),
+  medicalHistory: z.string().optional(),
+  woundChanges: z.string().optional(),
+  currentCare: z.string().optional(),
+  woundPain: z.string().optional(),
+  supportAtHome: z.string().optional(),
+  mobilityStatus: z.string().optional(),
+  nutritionStatus: z.string().optional(),
+});
+
 export type UploadRequest = z.infer<typeof uploadRequestSchema>;
 export type FeedbackRequest = z.infer<typeof feedbackRequestSchema>;
+export type FollowUpRequest = z.infer<typeof followUpRequestSchema>;
