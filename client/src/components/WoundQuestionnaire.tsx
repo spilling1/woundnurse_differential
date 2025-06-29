@@ -176,7 +176,7 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
 
   return (
     <Card className="mb-6">
-      <CardContent className="p-6">
+      <CardContent className="p-6 bg-[#cecfd1] text-[#000000] font-normal">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <HelpCircle className="text-medical-blue text-lg mr-2" />
