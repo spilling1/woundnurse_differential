@@ -39,6 +39,7 @@ export default function FollowUpAssessment() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
   const [dragActive, setDragActive] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
@@ -102,12 +103,16 @@ export default function FollowUpAssessment() {
     },
   });
 
-  const handleFileSelect = (file: File) => {
-    if (file) {
+  const handleImageSelect = (files: FileList | File[]) => {
+    const fileArray = Array.from(files);
+    const validImages: File[] = [];
+    const validUrls: string[] = [];
+
+    fileArray.forEach(file => {
       if (file.size > 10 * 1024 * 1024) {
         toast({
           title: "File Too Large",
-          description: "Please select an image under 10MB.",
+          description: `${file.name} is over 10MB. Please select smaller files.`,
           variant: "destructive",
         });
         return;
@@ -115,19 +120,40 @@ export default function FollowUpAssessment() {
 
       if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
         toast({
-          title: "Invalid File Type",
-          description: "Please select a JPEG or PNG image.",
+          title: "Invalid Image Type",
+          description: `${file.name} is not a JPEG or PNG image.`,
           variant: "destructive",
         });
         return;
       }
 
-      setSelectedFiles([file]);
-      
-      // Create preview URL
+      validImages.push(file);
       const url = URL.createObjectURL(file);
-      setPreviewUrls([url]);
-    }
+      validUrls.push(url);
+    });
+
+    setSelectedFiles(prev => [...prev, ...validImages]);
+    setPreviewUrls(prev => [...prev, ...validUrls]);
+  };
+
+  const handleAdditionalFileSelect = (files: FileList | File[]) => {
+    const fileArray = Array.from(files);
+    const validFiles: File[] = [];
+
+    fileArray.forEach(file => {
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File Too Large",
+          description: `${file.name} is over 10MB. Please select smaller files.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      validFiles.push(file);
+    });
+
+    setAdditionalFiles(prev => [...prev, ...validFiles]);
   };
 
   const handleDrag = (e: React.DragEvent) => {
