@@ -60,9 +60,9 @@ export default function MyCases() {
 
         {/* Navigation */}
         <div className="mb-8 flex justify-center gap-4">
-          <Link href="/">
+          <Link href="/assessment">
             <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-              New Assessment
+              Start New Case
             </Button>
           </Link>
           <Button

@@ -18,7 +18,9 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/" component={Landing} />
+      <Route path="/">
+        {() => isLoading ? null : isAuthenticated ? <MyCases /> : <Landing />}
+      </Route>
       <Route path="/start-assessment" component={AuthPage} />
       <Route path="/assessment" component={Home} />
       <Route path="/care-plan/:caseId?" component={CarePlan} />

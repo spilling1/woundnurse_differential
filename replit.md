@@ -109,6 +109,9 @@ Changelog:
 - June 29, 2025. Created dedicated care plan page and enhanced UI workflow
 - June 29, 2025. Implemented Replit Auth login system with user case management
 - June 29, 2025. Updated authentication flow to redirect to My Cases page after login
+- June 29, 2025. Implemented authenticated user auto-redirect to My Cases from root path
+- June 29, 2025. Added delete functionality for wound assessments with security controls
+- June 29, 2025. Enhanced My Cases page with logout and "Start New Case" navigation
 ```
 
 ## User Preferences
