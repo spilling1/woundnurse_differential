@@ -11,6 +11,7 @@ export interface IStorage {
   // Wound assessment operations
   createWoundAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
   getWoundAssessment(caseId: string): Promise<WoundAssessment | undefined>;
+  deleteWoundAssessment(caseId: string): Promise<boolean>;
   createFeedback(feedback: InsertFeedback): Promise<Feedback>;
   getFeedbacksByCase(caseId: string): Promise<Feedback[]>;
   getActiveAgentInstructions(): Promise<AgentInstructions | undefined>;
@@ -63,6 +64,13 @@ export class DatabaseStorage implements IStorage {
       .from(woundAssessments)
       .where(eq(woundAssessments.caseId, caseId));
     return result || undefined;
+  }
+
+  async deleteWoundAssessment(caseId: string): Promise<boolean> {
+    const result = await db
+      .delete(woundAssessments)
+      .where(eq(woundAssessments.caseId, caseId));
+    return result.rowCount > 0;
   }
 
   async createFeedback(feedback: InsertFeedback): Promise<Feedback> {

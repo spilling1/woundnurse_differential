@@ -55,7 +55,7 @@ export default function MyCases() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">My Wound Care Cases</h1>
-          <p className="text-medical-light text-lg">Manage and review your wound assessments</p>
+          <p className="text-medical-light text-lg">Manage and review your Care Plans</p>
         </div>
 
         {/* Navigation */}
