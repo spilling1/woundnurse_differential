@@ -108,6 +108,7 @@ Changelog:
 - June 29, 2025. Added image storage in database with Base64 encoding
 - June 29, 2025. Created dedicated care plan page and enhanced UI workflow
 - June 29, 2025. Implemented Replit Auth login system with user case management
+- June 29, 2025. Updated authentication flow to redirect to My Cases page after login
 ```
 
 ## User Preferences
