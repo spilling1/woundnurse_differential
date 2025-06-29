@@ -1,5 +1,5 @@
 import { useLocation, useParams, useSearch } from "wouter";
-import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Trash2, Plus, LogOut, Settings } from "lucide-react";
+import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Plus, LogOut, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -77,27 +77,6 @@ export default function CarePlan() {
     onError: (error: any) => {
       toast({
         title: "Feedback Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async () => {
-      return apiRequest('DELETE', `/api/assessment/${caseId}`);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Case Deleted",
-        description: "The wound assessment has been deleted successfully.",
-      });
-      // Redirect to My Cases page
-      setLocation(isAuthenticated ? '/my-cases' : '/');
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Delete Failed",
         description: error.message,
         variant: "destructive",
       });

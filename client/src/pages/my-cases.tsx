@@ -3,7 +3,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -209,6 +215,22 @@ export default function MyCases() {
                               v{latestAssessment.versionNumber}
                             </Badge>
                           )}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleDeleteCase(caseId)}
+                                className="text-red-600 cursor-pointer"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete Case
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </CardTitle>
                     </CardHeader>
@@ -266,14 +288,6 @@ export default function MyCases() {
                             Add Follow-up Assessment
                           </Button>
                         </Link>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
-                          onClick={() => handleDeleteCase(caseId)}
-                        >
-                          Delete Entire Case
-                        </Button>
                       </div>
                     </CardContent>
                   </Card>
