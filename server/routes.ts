@@ -103,7 +103,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportAtHome: contextData.supportAtHome || null,
         mobilityStatus: contextData.mobilityStatus || null,
         nutritionStatus: contextData.nutritionStatus || null,
-        version: "v1.0.0"
+        version: "1",
+        versionNumber: 1,
+        contextData: contextData
       });
       
       // Case is now tracked in database - no additional logging needed
@@ -173,6 +175,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         code: "FEEDBACK_ERROR",
         message: error.message || "Failed to submit feedback"
+      });
+    }
+  });
+
+  // Follow-up assessment endpoint
+  app.post("/api/follow-up/:caseId", upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          code: "NO_IMAGE",
+          message: "No image file provided"
+        });
+      }
+
+      const { caseId } = req.params;
+      const requestData = followUpRequestSchema.parse({
+        caseId,
+        ...req.body
+      });
+
+      // Get the previous assessment history for this case
+      const assessmentHistory = await storage.getWoundAssessmentHistory(caseId);
+      if (!assessmentHistory.length) {
+        return res.status(404).json({
+          code: "CASE_NOT_FOUND",
+          message: "Original case not found"
+        });
+      }
+
+      // Get feedback history for context
+      const feedbackHistory = await storage.getFeedbacksByCase(caseId);
+
+      // Validate image
+      const imageBase64 = await validateImage(req.file);
+
+      // Classify wound using AI
+      const classification = await classifyWound(imageBase64, requestData.model);
+
+      // Build context for care plan generation including previous assessments and progress
+      const contextForCarePlan = {
+        currentAssessment: {
+          classification,
+          progressNotes: requestData.progressNotes,
+          treatmentResponse: requestData.treatmentResponse,
+          contextData: requestData
+        },
+        previousAssessments: assessmentHistory,
+        feedbackHistory: feedbackHistory,
+        isFollowUp: true
+      };
+
+      // Generate updated care plan
+      const carePlan = await generateCarePlan(
+        requestData.audience,
+        classification,
+        contextForCarePlan
+      );
+
+      // Get user ID if authenticated
+      const userId = req.user?.claims?.sub || null;
+
+      // Store the follow-up assessment
+      const assessment = await storage.createFollowUpAssessment({
+        caseId,
+        userId,
+        audience: requestData.audience,
+        model: requestData.model,
+        imageData: imageBase64,
+        imageMimeType: req.file.mimetype,
+        imageSize: req.file.size,
+        classification,
+        carePlan,
+        woundOrigin: requestData.woundOrigin || null,
+        medicalHistory: requestData.medicalHistory || null,
+        woundChanges: requestData.woundChanges || null,
+        currentCare: requestData.currentCare || null,
+        woundPain: requestData.woundPain || null,
+        supportAtHome: requestData.supportAtHome || null,
+        mobilityStatus: requestData.mobilityStatus || null,
+        nutritionStatus: requestData.nutritionStatus || null,
+        progressNotes: requestData.progressNotes,
+        treatmentResponse: requestData.treatmentResponse,
+        contextData: requestData,
+        version: `${assessmentHistory[0].versionNumber + 1}`
+      });
+
+      res.json({
+        caseId: assessment.caseId,
+        version: assessment.versionNumber,
+        classification,
+        plan: carePlan,
+        model: requestData.model,
+        previousVersions: assessmentHistory.length
+      });
+
+    } catch (error: any) {
+      console.error('Follow-up assessment error:', error);
+      res.status(500).json({
+        code: "FOLLOWUP_ERROR",
+        message: error.message || "Failed to process follow-up assessment"
       });
     }
   });

@@ -51,7 +51,8 @@ export const woundAssessments = pgTable("wound_assessments", {
   carePlan: text("care_plan").notNull(),
   
   // Follow-up and versioning
-  version: integer("version").notNull().default(1), // Version number for this case
+  version: text("version").notNull().default("1"), // Keep original version field
+  versionNumber: integer("version_number").notNull().default(1), // Version number for this case
   isFollowUp: boolean("is_follow_up").notNull().default(false),
   previousVersion: integer("previous_version"), // Reference to previous version
   progressNotes: text("progress_notes"), // Patient-reported progress since last assessment
@@ -61,7 +62,7 @@ export const woundAssessments = pgTable("wound_assessments", {
   createdAt: timestamp("created_at").defaultNow(),
 }, (table) => ({
   // Composite index for querying latest version of each case
-  caseVersionIndex: index("case_version_idx").on(table.caseId, table.version),
+  caseVersionIndex: index("case_version_idx").on(table.caseId, table.versionNumber),
 }));
 
 export const feedbacks = pgTable("feedbacks", {

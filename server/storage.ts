@@ -11,6 +11,9 @@ export interface IStorage {
   // Wound assessment operations
   createWoundAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
   getWoundAssessment(caseId: string): Promise<WoundAssessment | undefined>;
+  getLatestWoundAssessment(caseId: string): Promise<WoundAssessment | undefined>;
+  getWoundAssessmentHistory(caseId: string): Promise<WoundAssessment[]>;
+  createFollowUpAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
   deleteWoundAssessment(caseId: string): Promise<boolean>;
   createFeedback(feedback: InsertFeedback): Promise<Feedback>;
   getFeedbacksByCase(caseId: string): Promise<Feedback[]>;
@@ -64,6 +67,43 @@ export class DatabaseStorage implements IStorage {
       .from(woundAssessments)
       .where(eq(woundAssessments.caseId, caseId));
     return result || undefined;
+  }
+
+  async getLatestWoundAssessment(caseId: string): Promise<WoundAssessment | undefined> {
+    const [result] = await db
+      .select()
+      .from(woundAssessments)
+      .where(eq(woundAssessments.caseId, caseId))
+      .orderBy(desc(woundAssessments.versionNumber))
+      .limit(1);
+    return result || undefined;
+  }
+
+  async getWoundAssessmentHistory(caseId: string): Promise<WoundAssessment[]> {
+    return await db
+      .select()
+      .from(woundAssessments)
+      .where(eq(woundAssessments.caseId, caseId))
+      .orderBy(desc(woundAssessments.versionNumber));
+  }
+
+  async createFollowUpAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment> {
+    // Get the latest version number for this case
+    const latestAssessment = await this.getLatestWoundAssessment(assessment.caseId);
+    const nextVersionNumber = latestAssessment ? (latestAssessment.versionNumber + 1) : 1;
+    
+    const followUpAssessment = {
+      ...assessment,
+      versionNumber: nextVersionNumber,
+      isFollowUp: true,
+      previousVersion: latestAssessment?.versionNumber || null,
+    };
+
+    const [result] = await db
+      .insert(woundAssessments)
+      .values(followUpAssessment)
+      .returning();
+    return result;
   }
 
   async deleteWoundAssessment(caseId: string): Promise<boolean> {
