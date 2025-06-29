@@ -1,5 +1,5 @@
 import { useLocation, useSearch } from "wouter";
-import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer } from "lucide-react";
+import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -120,6 +120,14 @@ export default function CarePlan() {
             </div>
             <div className="flex items-center space-x-3">
               <Badge variant="secondary">Case: {caseId}</Badge>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setLocation(`/nurse-evaluation?caseId=${caseId}`)}
+              >
+                <UserCheck className="mr-2 h-4 w-4" />
+                Nurse Review
+              </Button>
               <Button variant="outline" size="sm">
                 <Download className="mr-2 h-4 w-4" />
                 Download
