@@ -226,9 +226,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isFollowUp: true
       };
 
-      // Generate updated care plan
+      // Get the original assessment for audience reference
+      const originalAssessment = assessmentHistory[0]; // First assessment in history
+      
+      // Generate updated care plan using original case's audience
       const carePlan = await generateCarePlan(
-        requestData.audience,
+        originalAssessment.audience,
         classification,
         contextForCarePlan,
         requestData.model
@@ -244,7 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const assessment = await storage.createFollowUpAssessment({
         caseId,
         userId,
-        audience: requestData.audience,
+        audience: originalAssessment.audience,
         model: requestData.model,
         imageData: imageBase64,
         imageMimeType: req.file.mimetype,

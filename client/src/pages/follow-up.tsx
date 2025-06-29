@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -389,36 +389,41 @@ export default function FollowUpAssessment() {
               </CardContent>
             </Card>
 
+            {/* Additional Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Additional Information</CardTitle>
+                <CardDescription>
+                  Please provide any additional relevant information that might help with the assessment
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name="additionalInfo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Notes (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Any additional information about the wound, treatment changes, patient concerns, etc."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
             {/* Assessment Configuration */}
             <Card>
               <CardHeader>
                 <CardTitle>Assessment Configuration</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                
-                {/* Audience Selection */}
-                <FormField
-                  control={form.control}
-                  name="audience"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Target Audience</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select audience" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="family">Family Caregivers</SelectItem>
-                          <SelectItem value="patient">Patients</SelectItem>
-                          <SelectItem value="medical">Medical Professionals</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
                 {/* AI Model Selection */}
                 <FormField
@@ -460,7 +465,7 @@ export default function FollowUpAssessment() {
               </Button>
               <Button
                 type="submit"
-                disabled={followUpMutation.isPending || !selectedFile}
+                disabled={followUpMutation.isPending || selectedFiles.length === 0}
                 className="bg-medical-blue hover:bg-medical-blue/90"
               >
                 {followUpMutation.isPending ? (
