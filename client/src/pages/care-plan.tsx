@@ -156,6 +156,9 @@ export default function CarePlan() {
   if (!assessmentData) {
     console.log('Assessment data is null/undefined for case:', caseId);
     console.log('Query error:', error);
+    console.log('IsLoading:', isLoading);
+    console.log('Type of assessmentData:', typeof assessmentData);
+    console.log('AssessmentData value:', assessmentData);
     return (
       <div className="min-h-screen bg-bg-light flex items-center justify-center">
         <div className="text-center">
