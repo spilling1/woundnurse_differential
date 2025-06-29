@@ -83,7 +83,8 @@ export default function NewAssessmentFlow() {
       formData.append('model', model);
       formData.append('analysisType', 'initial');
       
-      return apiRequest('POST', '/api/assessment/initial-analysis', formData);
+      const response = await apiRequest('POST', '/api/assessment/initial-analysis', formData);
+      return await response.json();
     },
     onSuccess: (data: any) => {
       setAiQuestions(data.questions || []);
@@ -107,7 +108,7 @@ export default function NewAssessmentFlow() {
         answer: q.answer
       }));
       
-      return apiRequest('POST', '/api/assessment/preliminary-plan', {
+      const response = await apiRequest('POST', '/api/assessment/preliminary-plan', {
         imageData: selectedImage,
         audience,
         model,
@@ -116,6 +117,7 @@ export default function NewAssessmentFlow() {
         selectedAlternative,
         userFeedback
       });
+      return await response.json();
     },
     onSuccess: (data: any) => {
       setPreliminaryPlan(data);
@@ -133,7 +135,7 @@ export default function NewAssessmentFlow() {
   // Step 3: Generate final care plan
   const finalPlanMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('POST', '/api/assessment/final-plan', {
+      const response = await apiRequest('POST', '/api/assessment/final-plan', {
         imageData: selectedImage,
         audience,
         model,
@@ -142,6 +144,7 @@ export default function NewAssessmentFlow() {
         preliminaryPlan,
         userFeedback
       });
+      return await response.json();
     },
     onSuccess: (data: any) => {
       setFinalCaseId(data.caseId);
