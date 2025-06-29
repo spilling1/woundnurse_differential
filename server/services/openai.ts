@@ -21,9 +21,12 @@ export async function callOpenAI(model: string, messages: any[], responseFormat:
       params.response_format = responseFormat;
     }
 
+    console.log('OpenAI API call params:', JSON.stringify(params, null, 2));
     const response = await openai.chat.completions.create(params);
+    console.log('OpenAI API response:', JSON.stringify(response, null, 2));
     
     if (!response.choices[0]?.message?.content) {
+      console.error('OpenAI response missing content:', response.choices[0]);
       throw new Error("No response from OpenAI");
     }
 

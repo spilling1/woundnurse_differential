@@ -62,7 +62,13 @@ GUIDELINES:
       response = await callOpenAI(model || 'gpt-4o', messages);
     }
 
-    const questions = JSON.parse(response);
+    // Clean the response to remove any markdown formatting
+    const cleanedResponse = response
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+      
+    const questions = JSON.parse(cleanedResponse);
     return Array.isArray(questions) ? questions : [];
     
   } catch (error) {

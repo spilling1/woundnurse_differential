@@ -105,7 +105,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const caseId = generateCaseId();
       
       // Classify wound using AI
-      const classification = await classifyWound(imageBase64, model);
+      const classification = await classifyWound(imageBase64, model, req.file.mimetype);
       
       // Analyze if agent needs to ask questions before generating care plan
       const sessionId = caseId; // Use case ID as session ID for question tracking
@@ -265,7 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Classify wound using AI (using primary image)
-      const classification = await classifyWound(imageBase64, requestData.model);
+      const classification = await classifyWound(imageBase64, requestData.model, primaryImage.mimetype);
 
       // Get the original assessment for audience reference and context
       const originalAssessment = assessmentHistory[0]; // First assessment in history
