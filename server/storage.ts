@@ -1,59 +1,82 @@
-import { woundAssessments, feedbacks, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   createWoundAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
   getWoundAssessment(caseId: string): Promise<WoundAssessment | undefined>;
   createFeedback(feedback: InsertFeedback): Promise<Feedback>;
   getFeedbacksByCase(caseId: string): Promise<Feedback[]>;
+  getActiveAgentInstructions(): Promise<AgentInstructions | undefined>;
+  createAgentInstructions(instructions: InsertAgentInstructions): Promise<AgentInstructions>;
+  updateAgentInstructions(id: number, content: string): Promise<AgentInstructions>;
 }
 
-export class MemStorage implements IStorage {
-  private assessments: Map<string, WoundAssessment>;
-  private feedbacks: Map<number, Feedback>;
-  private currentAssessmentId: number;
-  private currentFeedbackId: number;
-
-  constructor() {
-    this.assessments = new Map();
-    this.feedbacks = new Map();
-    this.currentAssessmentId = 1;
-    this.currentFeedbackId = 1;
-  }
-
-  async createWoundAssessment(insertAssessment: InsertWoundAssessment): Promise<WoundAssessment> {
-    const id = this.currentAssessmentId++;
-    const assessment: WoundAssessment = {
-      ...insertAssessment,
-      id,
-      version: insertAssessment.version || "v1.0.0",
-      classification: insertAssessment.classification || null,
-      createdAt: new Date(),
-    };
-    this.assessments.set(assessment.caseId, assessment);
-    return assessment;
+export class DatabaseStorage implements IStorage {
+  async createWoundAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment> {
+    const [result] = await db
+      .insert(woundAssessments)
+      .values(assessment)
+      .returning();
+    return result;
   }
 
   async getWoundAssessment(caseId: string): Promise<WoundAssessment | undefined> {
-    return this.assessments.get(caseId);
+    const [result] = await db
+      .select()
+      .from(woundAssessments)
+      .where(eq(woundAssessments.caseId, caseId));
+    return result || undefined;
   }
 
-  async createFeedback(insertFeedback: InsertFeedback): Promise<Feedback> {
-    const id = this.currentFeedbackId++;
-    const feedback: Feedback = {
-      ...insertFeedback,
-      id,
-      comments: insertFeedback.comments || null,
-      createdAt: new Date(),
-    };
-    this.feedbacks.set(id, feedback);
-    return feedback;
+  async createFeedback(feedback: InsertFeedback): Promise<Feedback> {
+    const [result] = await db
+      .insert(feedbacks)
+      .values(feedback)
+      .returning();
+    return result;
   }
 
   async getFeedbacksByCase(caseId: string): Promise<Feedback[]> {
-    return Array.from(this.feedbacks.values()).filter(
-      (feedback) => feedback.caseId === caseId
-    );
+    return await db
+      .select()
+      .from(feedbacks)
+      .where(eq(feedbacks.caseId, caseId));
+  }
+
+  async getActiveAgentInstructions(): Promise<AgentInstructions | undefined> {
+    const [result] = await db
+      .select()
+      .from(agentInstructions)
+      .where(eq(agentInstructions.isActive, true))
+      .orderBy(desc(agentInstructions.version))
+      .limit(1);
+    return result || undefined;
+  }
+
+  async createAgentInstructions(instructions: InsertAgentInstructions): Promise<AgentInstructions> {
+    // Deactivate all previous instructions
+    await db
+      .update(agentInstructions)
+      .set({ isActive: false })
+      .where(eq(agentInstructions.isActive, true));
+
+    // Create new active instructions
+    const [result] = await db
+      .insert(agentInstructions)
+      .values({ ...instructions, isActive: true })
+      .returning();
+    return result;
+  }
+
+  async updateAgentInstructions(id: number, content: string): Promise<AgentInstructions> {
+    const [result] = await db
+      .update(agentInstructions)
+      .set({ content, updatedAt: new Date() })
+      .where(eq(agentInstructions.id, id))
+      .returning();
+    return result;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

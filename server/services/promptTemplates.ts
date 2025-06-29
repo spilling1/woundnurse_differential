@@ -1,4 +1,9 @@
-export function getPromptTemplate(audience: string, classification: any, contextData?: any): string {
+import { storage } from "../storage";
+
+export async function getPromptTemplate(audience: string, classification: any, contextData?: any): Promise<string> {
+  // Get agent instructions from database
+  const agentInstructions = await storage.getActiveAgentInstructions();
+  const instructions = agentInstructions?.content || `Default wound care guidelines: Always prioritize patient safety and recommend consulting healthcare professionals.`;
   const baseInfo = `
 Wound Assessment:
 - Type: ${classification.woundType}

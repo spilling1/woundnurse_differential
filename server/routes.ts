@@ -52,13 +52,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate care plan
       const carePlan = await generateCarePlan(classification, audience, model, contextData);
       
-      // Store assessment
+      // Store assessment with image data and context
       const assessment = await storage.createWoundAssessment({
         caseId,
         audience,
         model,
+        imageData: imageBase64,
+        imageMimeType: req.file.mimetype,
+        imageSize: req.file.size,
         classification,
         carePlan,
+        woundOrigin: contextData.woundOrigin || null,
+        medicalHistory: contextData.medicalHistory || null,
+        woundChanges: contextData.woundChanges || null,
+        currentCare: contextData.currentCare || null,
+        woundPain: contextData.woundPain || null,
+        supportAtHome: contextData.supportAtHome || null,
+        mobilityStatus: contextData.mobilityStatus || null,
+        nutritionStatus: contextData.nutritionStatus || null,
         version: "v1.0.0"
       });
       
@@ -169,34 +180,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Get Agents.md content
+  // Get Agent Instructions
   app.get("/api/agents", async (req, res) => {
     try {
-      const agentsPath = path.resolve('./Agents.md');
+      const instructions = await storage.getActiveAgentInstructions();
       
-      if (!fs.existsSync(agentsPath)) {
-        // Create empty file if it doesn't exist
-        fs.writeFileSync(agentsPath, '# AI Agent Rules\n\nThis file contains the rules and case history for the AI wound care agent.\n\n');
+      if (!instructions) {
+        // Create default instructions if none exist
+        const defaultContent = `# AI Agent Instructions for Wound Care Assessment
+
+## Core Rules
+1. Always prioritize patient safety and recommend consulting healthcare professionals
+2. Provide audience-specific language (family, patient, medical)
+3. Base recommendations on wound classification and patient context
+4. Include clear medical disclaimers
+
+## Assessment Guidelines
+- Analyze wound type, stage, size, and location from images
+- Consider patient medical history and current care
+- Evaluate pain levels and support systems
+- Provide step-by-step care instructions
+
+## Care Plan Format
+- Start with medical disclaimer
+- Provide immediate care steps
+- Include monitoring instructions
+- Suggest when to seek professional help
+- Tailor language to selected audience`;
+
+        const newInstructions = await storage.createAgentInstructions({
+          content: defaultContent,
+          version: 1
+        });
+        
+        return res.json({
+          content: newInstructions.content,
+          lastModified: newInstructions.updatedAt,
+          size: newInstructions.content.length,
+          version: newInstructions.version
+        });
       }
       
-      const content = fs.readFileSync(agentsPath, 'utf8');
-      
       res.json({
-        content,
-        lastModified: fs.statSync(agentsPath).mtime,
-        size: content.length
+        content: instructions.content,
+        lastModified: instructions.updatedAt,
+        size: instructions.content.length,
+        version: instructions.version
       });
       
     } catch (error: any) {
-      console.error('Error reading Agents.md:', error);
+      console.error('Error reading agent instructions:', error);
       res.status(500).json({
         code: "AGENTS_READ_ERROR",
-        message: error.message || "Failed to read Agents.md"
+        message: error.message || "Failed to read agent instructions"
       });
     }
   });
 
-  // Update Agents.md content
+  // Update Agent Instructions
   app.post("/api/agents", async (req, res) => {
     try {
       const { content } = req.body;
@@ -208,29 +249,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      const agentsPath = path.resolve('./Agents.md');
+      const currentInstructions = await storage.getActiveAgentInstructions();
+      let result;
       
-      // Create backup before updating
-      if (fs.existsSync(agentsPath)) {
-        const backupPath = `${agentsPath}.backup.${Date.now()}`;
-        fs.copyFileSync(agentsPath, backupPath);
+      if (currentInstructions) {
+        // Update existing instructions
+        result = await storage.updateAgentInstructions(currentInstructions.id, content);
+      } else {
+        // Create new instructions
+        result = await storage.createAgentInstructions({
+          content,
+          version: 1
+        });
       }
-      
-      // Write new content
-      fs.writeFileSync(agentsPath, content, 'utf8');
       
       res.json({
         success: true,
-        message: "Agents.md updated successfully",
-        lastModified: fs.statSync(agentsPath).mtime,
-        size: content.length
+        message: "Agent instructions updated successfully",
+        lastModified: result.updatedAt,
+        size: content.length,
+        version: result.version
       });
       
     } catch (error: any) {
-      console.error('Error updating Agents.md:', error);
+      console.error('Error updating agent instructions:', error);
       res.status(500).json({
         code: "AGENTS_UPDATE_ERROR",
-        message: error.message || "Failed to update Agents.md"
+        message: error.message || "Failed to update agent instructions"
       });
     }
   });
