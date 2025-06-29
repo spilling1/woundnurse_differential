@@ -4,6 +4,40 @@ export async function getPromptTemplate(audience: string, classification: any, c
   // Get agent instructions from database
   const agentInstructions = await storage.getActiveAgentInstructions();
   const instructions = agentInstructions?.content || `Default wound care guidelines: Always prioritize patient safety and recommend consulting healthcare professionals.`;
+  
+  const productRecommendationGuidelines = `
+PRODUCT RECOMMENDATION REQUIREMENTS:
+1. Include specific wound care product recommendations with Amazon links
+2. Base recommendations on the wound type, size, exudate level, and location
+3. Provide 3-5 relevant products per care plan
+4. Include proper product names and Amazon search URLs
+5. Consider the audience level when explaining product benefits
+6. Format as a dedicated "Recommended Products" section
+
+Product Categories to Consider:
+- Wound dressings (hydrocolloid, foam, alginate, silicone)
+- Cleansing solutions (saline, wound wash)
+- Barrier products (skin protectants, zinc oxide)
+- Compression bandages/stockings
+- Medical tape and securing devices
+- Pain management aids
+- Nutritional supplements for wound healing
+
+Amazon Link Format: https://www.amazon.com/s?k=[PRODUCT+NAME+AND+KEYWORDS]&ref=nb_sb_noss
+
+Example Product Recommendations:
+**Recommended Products:**
+
+1. **Hydrocolloid Wound Dressings**
+   - DuoDERM CGF Sterile Hydrocolloid Dressing
+   - Benefits: Promotes moist healing, waterproof protection
+   - [Shop on Amazon](https://www.amazon.com/s?k=DuoDERM+hydrocolloid+wound+dressing&ref=nb_sb_noss)
+
+2. **Wound Cleansing Solution**
+   - Skintegrity Wound Cleanser, No-Rinse
+   - Benefits: Gentle, antimicrobial, pH balanced
+   - [Shop on Amazon](https://www.amazon.com/s?k=Skintegrity+wound+cleanser&ref=nb_sb_noss)
+`;
   let baseInfo = `
 Current Wound Assessment:
 - Type: ${classification.woundType}
@@ -88,12 +122,16 @@ Generate a comprehensive wound care plan for FAMILY CAREGIVERS with the followin
 3. Include practical tips for home care
 4. Specify when to seek professional help
 5. List warning signs to watch for
-6. Include frequency of care and monitoring${familyFollowUpInstructions}
+6. Include frequency of care and monitoring
+7. INCLUDE SPECIFIC PRODUCT RECOMMENDATIONS with Amazon links${familyFollowUpInstructions}
+
+${productRecommendationGuidelines}
 
 Structure the response with clear sections:${contextData?.isFollowUp ? '\n- Progress Summary (compare to previous assessments)' : ''}
 - Cleaning Instructions
-- Dressing Recommendations (use generic names, not brands)
+- Dressing Recommendations 
 - Frequency of Care
+- Recommended Products (with Amazon links)
 - Warning Signs
 - When to Contact Healthcare Provider
 - Additional Tips for Caregivers`;
@@ -118,12 +156,16 @@ Generate a comprehensive wound care plan for PATIENTS with the following require
 3. Provide educational information about healing process
 4. Include lifestyle recommendations
 5. Emphasize importance of following medical advice
-6. Address common concerns and fears${patientFollowUpInstructions}
+6. Address common concerns and fears
+7. INCLUDE SPECIFIC PRODUCT RECOMMENDATIONS with Amazon links${patientFollowUpInstructions}
+
+${productRecommendationGuidelines}
 
 Structure the response with clear sections:${contextData?.isFollowUp ? '\n- Your Progress (celebrating improvements and addressing concerns)' : ''}
 - Understanding Your Wound
 - Self-Care Instructions
 - Daily Care Routine
+- Recommended Products (with Amazon links)
 - Signs of Healing vs. Concern
 - Lifestyle Factors for Healing
 - When to Seek Help
@@ -150,6 +192,9 @@ Generate a comprehensive wound care plan for MEDICAL PROFESSIONALS with the foll
 4. Include documentation requirements${medicalFollowUpInstructions}
 5. Reference clinical guidelines where appropriate
 6. Address complications and management strategies
+7. INCLUDE SPECIFIC PRODUCT RECOMMENDATIONS with Amazon links
+
+${productRecommendationGuidelines}
 
 Structure the response with clear sections:${contextData?.isFollowUp ? '\n- Clinical Progress Assessment (objective comparison to previous assessments)' : ''}
 - Clinical Assessment Summary
