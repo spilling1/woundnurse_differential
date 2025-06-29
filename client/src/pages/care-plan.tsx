@@ -188,16 +188,7 @@ export default function CarePlan() {
               </Button>
               <div className="flex items-center">
                 <ClipboardList className="text-medical-blue text-xl mr-3" />
-                <div>
-                  <h1 className="text-xl font-semibold text-gray-900">
-                    Care Plan - Case {caseId}
-                  </h1>
-                  {requestedVersion && (
-                    <p className="text-sm text-gray-500">
-                      {assessmentData?.isFollowUp ? `Follow-up Version ${requestedVersion}` : 'Original Assessment'}
-                    </p>
-                  )}
-                </div>
+                <div></div>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -263,10 +254,7 @@ export default function CarePlan() {
               <FileText className="h-4 w-4 mr-1" />
               Case ID: {caseId}
             </div>
-            <div className="flex items-center">
-              <User className="h-4 w-4 mr-1" />
-              AI Model: {assessmentData.model}
-            </div>
+            
           </div>
         </div>
 
@@ -445,21 +433,9 @@ export default function CarePlan() {
                 </Button>
               </div>
               
-              <Textarea
-                value={feedbackText}
-                onChange={(e) => setFeedbackText(e.target.value)}
-                rows={4}
-                placeholder="Please share specific feedback about the care plan - what was helpful, what could be improved, or any additional context that might help us generate better recommendations..."
-                className="text-sm"
-              />
               
-              <Button 
-                onClick={() => handleFeedback(feedbackText ? 'helpful' : 'not-helpful')}
-                disabled={feedbackMutation.isPending}
-                className="w-full"
-              >
-                {feedbackMutation.isPending ? 'Submitting...' : 'Submit Detailed Feedback'}
-              </Button>
+              
+              
             </div>
           </CardContent>
         </Card>
