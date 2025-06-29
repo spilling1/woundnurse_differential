@@ -668,7 +668,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         finalClassification,
         audience,
         model,
-        contextData
+        JSON.stringify(contextData)
       );
 
       // Simulate confidence assessment
@@ -724,11 +724,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create wound assessment record
       const assessment = await storage.createWoundAssessment({
         caseId,
-        userId: req.user?.id || null,
+        userId: (req as any).user?.id || null,
         audience,
         model,
-        imageData: imageData ? Buffer.from(imageData.split(',')[1], 'base64') : null,
-        woundClassification: JSON.stringify(classification),
+        imageData: imageData ? imageData.toString() : null,
+        classification: JSON.stringify(classification),
         contextData: JSON.stringify(contextData),
         carePlan,
         versionNumber: 1,

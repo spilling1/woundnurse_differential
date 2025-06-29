@@ -3,120 +3,71 @@ import { callGemini } from './gemini';
 import { storage } from '../storage';
 import { InsertAgentQuestion } from '@shared/schema';
 
-interface QuestionAnalysisResult {
-  needsQuestions: boolean;
-  questions: string[];
-  questionTypes: string[];
-  reasoning: string;
-}
-
 export async function analyzeAssessmentForQuestions(
-  imageBase64: string,
-  contextData: any,
-  audience: string,
-  model: string,
-  userId: string,
-  sessionId: string
-): Promise<QuestionAnalysisResult> {
+  sessionId: string,
+  contextData: any
+): Promise<any[]> {
+  const { imageAnalysis, audience, model } = contextData;
+  
   const analysisPrompt = `
-You are an AI wound care specialist reviewing an assessment request. Your task is to determine if you need additional information to provide the most accurate care plan.
+You are an AI wound care specialist. Based on the image analysis, generate 3-5 essential questions with AI-generated answers that would help create an optimal care plan.
 
-ASSESSMENT CONTEXT:
-- Target Audience: ${audience}
-- Available Context Data: ${JSON.stringify(contextData, null, 2)}
+WOUND ANALYSIS RESULTS:
+${JSON.stringify(imageAnalysis, null, 2)}
 
-IMAGE ANALYSIS INSTRUCTIONS:
-Examine the wound image and current context data. Determine if you need additional clarifying questions to provide an optimal care plan.
+TARGET AUDIENCE: ${audience}
 
-Consider asking questions about:
-1. UNCLEAR VISUAL ASPECTS: If wound characteristics are ambiguous in the image
-2. MISSING CRITICAL CONTEXT: Essential medical history, medications, or care details not provided
-3. SAFETY CONCERNS: Potential complications that need immediate clarification
-4. TREATMENT HISTORY: Previous treatments, responses, or care attempts
-5. SYMPTOM DETAILS: Pain levels, changes, or associated symptoms needing clarification
+TASK: Generate questions with AI-generated answers based on what you can observe or infer from the wound image analysis. These should be the most critical questions needed for creating a personalized care plan.
 
 RESPONSE FORMAT:
-Return a JSON object with:
-{
-  "needsQuestions": boolean,
-  "questions": ["question1", "question2", ...],
-  "questionTypes": ["clarification", "medical_history", "symptom_detail", ...],
-  "reasoning": "Brief explanation of why these questions are needed"
-}
+Return a JSON array of objects with this structure:
+[
+  {
+    "id": "q1",
+    "question": "Essential question text",
+    "answer": "AI-generated answer based on image analysis and medical knowledge",
+    "category": "category_name",
+    "confidence": 0.8
+  }
+]
+
+QUESTION CATEGORIES:
+- "wound_history" - How did this wound occur?
+- "pain_level" - Current pain and discomfort levels
+- "medical_history" - Relevant medical conditions
+- "current_care" - Current treatment and care routine
+- "symptoms" - Associated symptoms and changes
+- "mobility" - Impact on daily activities
+- "support" - Available care support
 
 GUIDELINES:
-- Only ask questions that are truly essential for providing accurate care
-- Limit to maximum 3 questions to avoid overwhelming the user
-- Ask specific, actionable questions that will directly impact care recommendations
-- Consider the target audience when framing questions (family, patient, medical professional)
-- If sufficient information exists, return needsQuestions: false
-
-Analyze the image and context, then respond with your assessment.
+- Generate realistic, informed answers based on visual analysis
+- Focus on questions that significantly impact treatment decisions
+- Tailor language complexity to the target audience
+- Include confidence scores (0.6-0.9) based on how certain the AI analysis is
 `;
 
   try {
     let response: string;
     
-    if (model.startsWith('gemini')) {
-      response = await callGemini(model, analysisPrompt, imageBase64);
+    if (model && model.startsWith('gemini')) {
+      response = await callGemini(model, analysisPrompt);
     } else {
       const messages = [
         {
-          role: "system",
-          content: analysisPrompt
-        },
-        {
           role: "user",
-          content: [
-            {
-              type: "text",
-              text: "Please analyze this wound assessment and determine if additional questions are needed."
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${imageBase64}`
-              }
-            }
-          ],
-        },
+          content: analysisPrompt
+        }
       ];
-      response = await callOpenAI(model, messages, { type: "json_object" });
+      response = await callOpenAI(model || 'gpt-4o', messages);
     }
 
-    const analysis: QuestionAnalysisResult = JSON.parse(response);
-
-    // If questions are needed, store them in the database
-    if (analysis.needsQuestions && analysis.questions.length > 0) {
-      for (let i = 0; i < analysis.questions.length; i++) {
-        const questionData: InsertAgentQuestion = {
-          sessionId,
-          userId,
-          question: analysis.questions[i],
-          questionType: analysis.questionTypes[i] || 'clarification',
-          context: JSON.stringify({
-            audience,
-            model,
-            reasoning: analysis.reasoning,
-            imageProvided: true
-          })
-        };
-        
-        await storage.createAgentQuestion(questionData);
-      }
-    }
-
-    return analysis;
+    const questions = JSON.parse(response);
+    return Array.isArray(questions) ? questions : [];
     
   } catch (error) {
-    console.error('Error analyzing assessment for questions:', error);
-    // Return safe fallback - no questions needed
-    return {
-      needsQuestions: false,
-      questions: [],
-      questionTypes: [],
-      reasoning: "Unable to analyze - proceeding with available information"
-    };
+    console.error('Error generating AI questions:', error);
+    return [];
   }
 }
 
