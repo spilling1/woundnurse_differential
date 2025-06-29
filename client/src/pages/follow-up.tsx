@@ -18,10 +18,10 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 const followUpSchema = z.object({
-  audience: z.enum(['family', 'patient', 'medical']),
   model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro']),
   progressNotes: z.string().min(10, "Please provide at least 10 characters describing the progress"),
   treatmentResponse: z.string().min(10, "Please provide at least 10 characters describing treatment response"),
+  additionalInfo: z.string().optional(),
   woundOrigin: z.string().optional(),
   medicalHistory: z.string().optional(),
   woundChanges: z.string().optional(),
@@ -42,7 +42,7 @@ export default function FollowUpAssessment() {
   const [dragActive, setDragActive] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
-  const form = useForm<z.infer<typeof followUpSchema>>({
+  const form = useForm({
     resolver: zodResolver(followUpSchema),
     defaultValues: {
       model: 'gpt-4o',
@@ -150,7 +150,7 @@ export default function FollowUpAssessment() {
     }
   };
 
-  const onSubmit = async (values: z.infer<typeof followUpSchema>) => {
+  const onSubmit = async (values: any) => {
     if (!selectedFiles.length) {
       toast({
         title: "Image Required",
@@ -238,24 +238,24 @@ export default function FollowUpAssessment() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="text-sm text-gray-600">
-                  <strong>Date:</strong> {new Date(originalCase.createdAt).toLocaleDateString()}
+                  <strong>Date:</strong> {originalCase?.createdAt ? new Date(originalCase.createdAt).toLocaleDateString() : 'Not available'}
                 </div>
                 <div className="text-sm text-gray-600">
-                  <strong>Wound Type:</strong> {originalCase.classification?.woundType || 'Not specified'}
+                  <strong>Wound Type:</strong> {originalCase?.classification?.woundType || 'Not specified'}
                 </div>
                 <div className="text-sm text-gray-600">
-                  <strong>Audience:</strong> {originalCase.audience}
+                  <strong>Audience:</strong> {originalCase?.audience || 'Not specified'}
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-gray-600">
-                  <strong>AI Model:</strong> {originalCase.model}
+                  <strong>AI Model:</strong> {originalCase?.model || 'Not specified'}
                 </div>
                 <div className="text-sm text-gray-600">
-                  <strong>Stage:</strong> {originalCase.classification?.stage || 'Not applicable'}
+                  <strong>Stage:</strong> {originalCase?.classification?.stage || 'Not applicable'}
                 </div>
                 <div className="text-sm text-gray-600">
-                  <strong>Location:</strong> {originalCase.classification?.location || 'Not specified'}
+                  <strong>Location:</strong> {originalCase?.classification?.location || 'Not specified'}
                 </div>
               </div>
             </div>
