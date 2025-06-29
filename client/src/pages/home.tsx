@@ -1,13 +1,13 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Stethoscope, Circle, HelpCircle } from "lucide-react";
 import ImageUploadSection from "@/components/ImageUploadSection";
 import ConfigurationPanel from "@/components/ConfigurationPanel";
-import AssessmentResults from "@/components/AssessmentResults";
-import CarePlanSection from "@/components/CarePlanSection";
 import SystemStatus from "@/components/SystemStatus";
 import WoundQuestionnaire, { WoundContextData } from "@/components/WoundQuestionnaire";
 
 export default function Home() {
+  const [, setLocation] = useLocation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [audience, setAudience] = useState<'family' | 'patient' | 'medical'>('family');
   const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'>('gpt-4o');
@@ -80,26 +80,17 @@ export default function Home() {
               onAssessmentComplete={(data) => {
                 setAssessmentData(data);
                 setIsProcessing(false);
+                // Navigate to care plan page
+                setLocation(`/care-plan?caseId=${data.caseId}`);
               }}
             />
           </div>
 
-          {/* Right Column - Results and Analysis */}
+          {/* Right Column - Questionnaire */}
           <div className="lg:col-span-2">
             <WoundQuestionnaire 
               onDataChange={setContextData}
               initialData={contextData}
-            />
-            
-            <AssessmentResults 
-              assessmentData={assessmentData}
-              isProcessing={isProcessing}
-            />
-            
-            <CarePlanSection
-              assessmentData={assessmentData}
-              model={model}
-              isProcessing={isProcessing}
             />
           </div>
         </div>

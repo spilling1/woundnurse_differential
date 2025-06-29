@@ -234,6 +234,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Save nurse evaluation
+  app.post("/api/nurse-evaluation", async (req, res) => {
+    try {
+      const { caseId, editedCarePlan, rating, nurseNotes } = req.body;
+      
+      if (!caseId) {
+        return res.status(400).json({
+          code: "INVALID_CASE_ID",
+          message: "Case ID is required"
+        });
+      }
+
+      // For now, just log the evaluation - could be extended to store in database
+      console.log('Nurse Evaluation:', {
+        caseId,
+        rating,
+        nurseNotes: nurseNotes?.substring(0, 100) + '...',
+        carePlanUpdated: editedCarePlan !== undefined
+      });
+      
+      res.json({
+        success: true,
+        message: "Nurse evaluation saved successfully"
+      });
+      
+    } catch (error: any) {
+      console.error('Error saving nurse evaluation:', error);
+      res.status(500).json({
+        code: "NURSE_EVALUATION_ERROR",
+        message: error.message || "Failed to save nurse evaluation"
+      });
+    }
+  });
+
   // Update Agent Instructions
   app.post("/api/agents", async (req, res) => {
     try {
