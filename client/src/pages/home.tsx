@@ -3,7 +3,6 @@ import { useLocation } from "wouter";
 import { Stethoscope, Circle, HelpCircle } from "lucide-react";
 import ImageUploadSection from "@/components/ImageUploadSection";
 import ConfigurationPanel from "@/components/ConfigurationPanel";
-import SystemStatus from "@/components/SystemStatus";
 import WoundQuestionnaire, { WoundContextData } from "@/components/WoundQuestionnaire";
 
 export default function Home() {
@@ -104,8 +103,6 @@ export default function Home() {
             />
           </div>
         </div>
-
-        <SystemStatus />
       </div>
     </div>
   );
