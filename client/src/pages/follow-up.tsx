@@ -296,53 +296,7 @@ export default function FollowUpAssessment() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             
-            {/* Progress Assessment */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Progress Assessment</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                
-                {/* Progress Notes */}
-                <FormField
-                  control={form.control}
-                  name="progressNotes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Progress Since Last Assessment *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Describe how the wound has changed since the last assessment. Include observations about healing, pain levels, mobility improvements, etc."
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
-                {/* Treatment Response */}
-                <FormField
-                  control={form.control}
-                  name="treatmentResponse"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Treatment Response *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="How has the wound responded to the previous treatment plan? What treatments have been most/least effective?"
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-              </CardContent>
-            </Card>
 
             {/* Current Wound Image */}
             <Card>
