@@ -132,7 +132,7 @@ export default function NurseEvaluation() {
             <div className="flex items-center">
               <Button 
                 variant="ghost" 
-                onClick={() => setLocation(`/care-plan?caseId=${caseId}`)}
+                onClick={() => setLocation(`/care-plan/${caseId}`)}
                 className="mr-4"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />

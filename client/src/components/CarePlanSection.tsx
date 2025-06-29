@@ -107,7 +107,7 @@ export default function CarePlanSection({ assessmentData, model, isProcessing }:
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setLocation(`/care-plan?caseId=${assessmentData.caseId}`)}
+                  onClick={() => setLocation(`/care-plan/${assessmentData.caseId}`)}
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   View Full Care Plan
