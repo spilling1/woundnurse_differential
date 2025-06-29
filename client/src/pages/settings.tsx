@@ -142,22 +142,22 @@ export default function SettingsPage() {
 
                 <div className="flex justify-between items-center pt-4 border-t">
                   <div className="text-sm text-gray-500">
-                    {agentData?.updatedAt && (
-                      <span>Last updated: {new Date(agentData.updatedAt).toLocaleString()}</span>
+                    {agentData && typeof agentData === 'object' && 'updatedAt' in agentData && (
+                      <span>Last updated: {new Date((agentData as any).updatedAt).toLocaleString()}</span>
                     )}
                   </div>
                   <div className="flex space-x-3">
                     <Button
                       variant="outline"
                       onClick={handleReset}
-                      disabled={updateMutation.isPending || !agentData?.content}
+                      disabled={updateMutation.isPending || !(agentData && typeof agentData === 'object' && 'content' in agentData)}
                     >
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Reset
                     </Button>
                     <Button
                       onClick={handleSave}
-                      disabled={updateMutation.isPending || instructions === agentData?.content}
+                      disabled={updateMutation.isPending || instructions === (agentData && typeof agentData === 'object' && 'content' in agentData ? (agentData as any).content : '')}
                       className="bg-medical-blue hover:bg-blue-700"
                     >
                       {updateMutation.isPending ? (
