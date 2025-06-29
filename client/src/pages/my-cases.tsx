@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -37,6 +37,26 @@ export default function MyCases() {
     queryKey: ["/api/my-cases"],
     enabled: isAuthenticated,
   });
+
+  // Group assessments by case ID and sort by version
+  const groupedCases = React.useMemo(() => {
+    if (!cases || cases.length === 0) return {};
+    
+    const grouped = cases.reduce((acc: any, assessment: any) => {
+      if (!acc[assessment.caseId]) {
+        acc[assessment.caseId] = [];
+      }
+      acc[assessment.caseId].push(assessment);
+      return acc;
+    }, {});
+    
+    // Sort assessments within each case by version number (newest first)
+    Object.keys(grouped).forEach(caseId => {
+      grouped[caseId].sort((a: any, b: any) => b.versionNumber - a.versionNumber);
+    });
+    
+    return grouped;
+  }, [cases]);
 
   // Delete mutation
   const deleteAssessmentMutation = useMutation({
@@ -162,69 +182,92 @@ export default function MyCases() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cases.map((assessment: any) => (
-                <Card key={assessment.caseId} className="bg-white/95 backdrop-blur-sm hover:bg-white transition-all duration-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Case {assessment.caseId}</span>
-                      <Badge variant={assessment.audience === 'medical' ? 'default' : 'secondary'}>
-                        {assessment.audience}
-                      </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {/* Wound Image */}
-                    {assessment.imageData && (
-                      <div className="mb-4">
-                        <img
-                          src={`data:${assessment.imageMimeType};base64,${assessment.imageData}`}
-                          alt="Wound assessment"
-                          className="w-full h-32 object-cover rounded-lg border border-gray-200"
-                        />
-                      </div>
-                    )}
-
-                    {/* Assessment Details */}
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center text-gray-600">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        {new Date(assessment.createdAt).toLocaleDateString()}
-                      </div>
-                      
-                      {assessment.classification?.woundType && (
-                        <div className="flex items-center text-gray-600">
-                          <MapPin className="h-4 w-4 mr-2" />
-                          {assessment.classification.woundType}
+              {Object.entries(groupedCases).map(([caseId, assessments]: [string, any]) => {
+                const latestAssessment = assessments[0]; // Most recent version
+                const originalAssessment = assessments[assessments.length - 1]; // Original version
+                
+                return (
+                  <Card key={caseId} className="bg-white/95 backdrop-blur-sm hover:bg-white transition-all duration-200">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Case {caseId}</span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={originalAssessment.audience === 'medical' ? 'default' : 'secondary'}>
+                            {originalAssessment.audience}
+                          </Badge>
+                          {assessments.length > 1 && (
+                            <Badge variant="outline" className="text-xs">
+                              v{latestAssessment.versionNumber}
+                            </Badge>
+                          )}
+                        </div>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {/* Latest Wound Image */}
+                      {latestAssessment.imageData && (
+                        <div className="mb-4">
+                          <img
+                            src={`data:${latestAssessment.imageMimeType};base64,${latestAssessment.imageData}`}
+                            alt="Latest wound assessment"
+                            className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                          />
                         </div>
                       )}
-                    </div>
 
-                    {/* Action Buttons */}
-                    <div className="mt-4 space-y-2">
-                      <Link href={`/care-plan/${assessment.caseId}`}>
-                        <Button size="sm" className="w-full bg-medical-blue hover:bg-medical-blue/90">
-                          <FileText className="h-4 w-4 mr-2" />
-                          View Care Plan
+                      {/* Assessment History */}
+                      <div className="space-y-3 mb-4">
+                        {assessments.map((assessment: any, index: number) => (
+                          <div key={assessment.id} className={`text-xs p-2 rounded ${index === 0 ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'}`}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-medium">
+                                {assessment.isFollowUp ? `Follow-up v${assessment.versionNumber}` : 'Original Assessment'}
+                              </span>
+                              <span className="text-gray-500">
+                                {new Date(assessment.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            {assessment.classification?.woundType && (
+                              <div className="text-gray-600">
+                                {assessment.classification.woundType}
+                              </div>
+                            )}
+                            {assessment.progressNotes && (
+                              <div className="text-gray-600 mt-1 italic">
+                                "{assessment.progressNotes.substring(0, 50)}..."
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="space-y-2">
+                        <Link href={`/care-plan/${caseId}`}>
+                          <Button size="sm" className="w-full bg-medical-blue hover:bg-medical-blue/90">
+                            <FileText className="h-4 w-4 mr-2" />
+                            View Latest Care Plan
+                          </Button>
+                        </Link>
+                        <Link href={`/follow-up/${caseId}`}>
+                          <Button size="sm" variant="outline" className="w-full border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Follow-up Assessment
+                          </Button>
+                        </Link>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                          onClick={() => handleDeleteCase(caseId)}
+                        >
+                          Delete Entire Case
                         </Button>
-                      </Link>
-                      <Link href={`/follow-up/${assessment.caseId}`}>
-                        <Button size="sm" variant="outline" className="w-full border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Follow-up Assessment
-                        </Button>
-                      </Link>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
-                        onClick={() => handleDeleteCase(assessment.caseId)}
-                      >
-                        Delete Case
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
