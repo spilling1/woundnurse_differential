@@ -206,7 +206,7 @@ export default function CarePlan() {
         </div>
 
         {/* Wound Images Section */}
-        {assessmentData.woundImages && assessmentData.woundImages.length > 0 && (
+        {assessmentData.imageData && (
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -216,16 +216,17 @@ export default function CarePlan() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {assessmentData.woundImages.map((image: string, index: number) => (
-                  <div key={index} className="text-center">
-                    <img 
-                      src={`data:image/jpeg;base64,${image}`} 
-                      alt={`Wound image ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm"
-                    />
-                    <p className="text-sm text-gray-600 mt-2">Image {index + 1}</p>
-                  </div>
-                ))}
+                <div className="text-center">
+                  <img 
+                    src={`data:${assessmentData.imageMimeType};base64,${assessmentData.imageData}`} 
+                    alt="Wound assessment image"
+                    className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm"
+                  />
+                  <p className="text-sm text-gray-600 mt-2">Assessment Image</p>
+                  <p className="text-xs text-gray-500">
+                    {(assessmentData.imageSize / 1024).toFixed(1)} KB • {assessmentData.imageMimeType}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
