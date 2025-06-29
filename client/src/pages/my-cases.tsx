@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Link, useLocation } from "wouter";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export default function MyCases() {
   const { toast } = useToast();
@@ -36,6 +37,44 @@ export default function MyCases() {
     queryKey: ["/api/my-cases"],
     enabled: isAuthenticated,
   });
+
+  // Delete mutation
+  const deleteAssessmentMutation = useMutation({
+    mutationFn: async (caseId: string) => {
+      return await apiRequest("DELETE", `/api/assessment/${caseId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/my-cases"] });
+      toast({
+        title: "Case Deleted",
+        description: "The wound assessment case has been deleted successfully.",
+      });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error as Error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to delete the case. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeleteCase = (caseId: string) => {
+    if (window.confirm("Are you sure you want to delete this case? This action cannot be undone.")) {
+      deleteAssessmentMutation.mutate(caseId);
+    }
+  };
 
   if (authLoading) {
     return (
@@ -151,10 +190,7 @@ export default function MyCases() {
                         <Calendar className="h-4 w-4 mr-2" />
                         {new Date(assessment.createdAt).toLocaleDateString()}
                       </div>
-                      <div className="flex items-center text-gray-600">
-                        <User className="h-4 w-4 mr-2" />
-                        {assessment.model}
-                      </div>
+                      
                       {assessment.classification?.woundType && (
                         <div className="flex items-center text-gray-600">
                           <MapPin className="h-4 w-4 mr-2" />
@@ -163,14 +199,22 @@ export default function MyCases() {
                       )}
                     </div>
 
-                    {/* View Care Plan Button */}
-                    <div className="mt-4">
+                    {/* Action Buttons */}
+                    <div className="mt-4 space-y-2">
                       <Link href={`/care-plan/${assessment.caseId}`}>
                         <Button size="sm" className="w-full bg-medical-blue hover:bg-medical-blue/90">
                           <FileText className="h-4 w-4 mr-2" />
                           View Care Plan
                         </Button>
                       </Link>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                        onClick={() => handleDeleteCase(assessment.caseId)}
+                      >
+                        Delete Case
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
