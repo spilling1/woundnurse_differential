@@ -6,16 +6,21 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import CarePlan from "@/pages/care-plan";
+import MyCases from "@/pages/my-cases";
 import NurseEvaluation from "@/pages/nurse-evaluation";
 import AgentsPage from "@/pages/agents";
 import NotFound from "@/pages/not-found";
+import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/assessment" component={Home} />
-      <Route path="/care-plan" component={CarePlan} />
+      <Route path="/care-plan/:caseId?" component={CarePlan} />
+      <Route path="/my-cases" component={MyCases} />
       <Route path="/nurse-evaluation" component={NurseEvaluation} />
       <Route path="/agents" component={AgentsPage} />
       <Route component={NotFound} />

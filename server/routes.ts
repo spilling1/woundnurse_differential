@@ -63,6 +63,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Get user ID if authenticated (optional)
+      let userId = null;
+      if (req.isAuthenticated && req.isAuthenticated() && req.user) {
+        userId = (req.user as any).claims?.sub;
+      }
+
       // Validate request body
       const { audience, model, ...contextData } = uploadRequestSchema.parse(req.body);
       
@@ -81,6 +87,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store assessment with image data and context
       const assessment = await storage.createWoundAssessment({
         caseId,
+        userId,
         audience,
         model,
         imageData: imageBase64,
