@@ -220,7 +220,8 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
                 onChange={(e) => handleChange(question.key, e.target.value)}
                 placeholder={question.placeholder}
                 rows={question.rows || 2}
-                className="text-sm"
+                className="text-sm min-h-0"
+                style={{ height: 'auto' }}
               />
             </div>
           ))}
@@ -250,7 +251,8 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
                   onChange={(e) => handleChange(question.key, e.target.value)}
                   placeholder={question.placeholder}
                   rows={question.rows || 2}
-                  className="text-sm"
+                  className="text-sm min-h-0"
+                  style={{ height: 'auto' }}
                 />
               </div>
             ))}
