@@ -211,7 +211,7 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
           <h3 className="font-medium text-gray-900 text-sm">Essential Information</h3>
           {requiredQuestions.map((question) => (
             <div key={question.key} className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700 flex items-center">
+              <Label className="text-sm font-medium text-[#000000] flex items-center">
                 {question.label}
                 <span className="text-red-500 ml-1">*</span>
               </Label>
@@ -243,7 +243,7 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
           <CollapsibleContent className="space-y-4 mt-4">
             {optionalQuestions.map((question) => (
               <div key={question.key} className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700">
+                <Label className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm font-medium text-[#000000]">
                   {question.label}
                 </Label>
                 <Textarea
