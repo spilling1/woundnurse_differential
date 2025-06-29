@@ -193,7 +193,7 @@ export default function CarePlan() {
           <CardContent className="p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Personalized Care Plan</h2>
             <div className="prose max-w-none">
-              {formatCarePlan(assessmentData.plan)}
+              {formatCarePlan(assessmentData.carePlan)}
             </div>
           </CardContent>
         </Card>
