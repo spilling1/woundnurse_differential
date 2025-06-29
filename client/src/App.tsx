@@ -14,13 +14,10 @@ import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
+  // Temporarily disable auth to fix infinite loop - will re-enable with proper flow
   return (
     <Switch>
-      <Route path="/">
-        {() => isLoading ? null : isAuthenticated ? <MyCases /> : <Landing />}
-      </Route>
+      <Route path="/" component={Landing} />
       <Route path="/start-assessment" component={AuthPage} />
       <Route path="/assessment" component={Home} />
       <Route path="/care-plan/:caseId?" component={CarePlan} />

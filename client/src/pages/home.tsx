@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Stethoscope, Circle, HelpCircle } from "lucide-react";
+import { Stethoscope, Circle, HelpCircle, Plus, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 import ImageUploadSection from "@/components/ImageUploadSection";
 import ConfigurationPanel from "@/components/ConfigurationPanel";
 import WoundQuestionnaire, { WoundContextData } from "@/components/WoundQuestionnaire";
 
 export default function Home() {
   const [, setLocation] = useLocation();
+  const { isAuthenticated } = useAuth();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [audience, setAudience] = useState<'family' | 'patient' | 'medical'>('family');
   const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'>('gpt-4o');
@@ -58,6 +61,38 @@ export default function Home() {
               >
                 AI Configuration
               </button>
+              
+              {/* Authentication-aware navigation */}
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setLocation('/my-cases')}
+                    className="border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white"
+                  >
+                    My Cases
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => window.location.href = "/api/logout"}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log Out
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setLocation('/start-assessment')}
+                  className="border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white"
+                >
+                  Sign In
+                </Button>
+              )}
+              
               <button className="text-gray-400 hover:text-gray-500">
                 <HelpCircle className="w-5 h-5" />
               </button>
