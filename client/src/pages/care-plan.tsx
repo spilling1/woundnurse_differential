@@ -23,7 +23,7 @@ export default function CarePlan() {
   const caseId = params.caseId;
 
   const { data: assessmentData, isLoading, error } = useQuery({
-    queryKey: ['/api/assessment', caseId],
+    queryKey: [`/api/assessment/${caseId}`],
     enabled: !!caseId,
   });
 
