@@ -112,6 +112,9 @@ Changelog:
 - June 29, 2025. Implemented authenticated user auto-redirect to My Cases from root path
 - June 29, 2025. Added delete functionality for wound assessments with security controls
 - June 29, 2025. Enhanced My Cases page with logout and "Start New Case" navigation
+- June 29, 2025. Implemented follow-up assessment system with version tracking and progress monitoring
+- June 29, 2025. Added database support for multiple assessment versions per case with historical context
+- June 29, 2025. Created follow-up assessment page with progress tracking and treatment response evaluation
 ```
 
 ## User Preferences

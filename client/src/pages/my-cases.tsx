@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle } from "lucide-react";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -205,6 +205,12 @@ export default function MyCases() {
                         <Button size="sm" className="w-full bg-medical-blue hover:bg-medical-blue/90">
                           <FileText className="h-4 w-4 mr-2" />
                           View Care Plan
+                        </Button>
+                      </Link>
+                      <Link href={`/follow-up/${assessment.caseId}`}>
+                        <Button size="sm" variant="outline" className="w-full border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Follow-up Assessment
                         </Button>
                       </Link>
                       <Button 

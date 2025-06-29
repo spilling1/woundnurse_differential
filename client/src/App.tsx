@@ -8,6 +8,7 @@ import AuthPage from "@/pages/auth";
 import Home from "@/pages/home";
 import CarePlan from "@/pages/care-plan";
 import MyCases from "@/pages/my-cases";
+import FollowUp from "@/pages/follow-up";
 import NurseEvaluation from "@/pages/nurse-evaluation";
 import AgentsPage from "@/pages/agents";
 import NotFound from "@/pages/not-found";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/assessment" component={Home} />
       <Route path="/care-plan/:caseId?" component={CarePlan} />
       <Route path="/my-cases" component={MyCases} />
+      <Route path="/follow-up/:caseId" component={FollowUp} />
       <Route path="/nurse-evaluation" component={NurseEvaluation} />
       <Route path="/agents" component={AgentsPage} />
       <Route component={NotFound} />
