@@ -21,7 +21,17 @@ export default function Home() {
     woundPain: '',
     supportAtHome: '',
     mobilityStatus: '',
-    nutritionStatus: ''
+    nutritionStatus: '',
+    stressLevel: '',
+    comorbidities: '',
+    age: '',
+    obesity: '',
+    medications: '',
+    alcoholUse: '',
+    smokingStatus: '',
+    frictionShearing: '',
+    knowledgeDeficits: '',
+    woundSite: ''
   });
 
   return (

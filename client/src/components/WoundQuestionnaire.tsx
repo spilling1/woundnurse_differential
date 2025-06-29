@@ -20,6 +20,16 @@ export interface WoundContextData {
   supportAtHome: string;
   mobilityStatus: string;
   nutritionStatus: string;
+  stressLevel: string;
+  comorbidities: string;
+  age: string;
+  obesity: string;
+  medications: string;
+  alcoholUse: string;
+  smokingStatus: string;
+  frictionShearing: string;
+  knowledgeDeficits: string;
+  woundSite: string;
 }
 
 export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQuestionnaireProps) {
@@ -32,7 +42,17 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
     woundPain: '',
     supportAtHome: '',
     mobilityStatus: '',
-    nutritionStatus: ''
+    nutritionStatus: '',
+    stressLevel: '',
+    comorbidities: '',
+    age: '',
+    obesity: '',
+    medications: '',
+    alcoholUse: '',
+    smokingStatus: '',
+    frictionShearing: '',
+    knowledgeDeficits: '',
+    woundSite: ''
   });
 
   const handleChange = (field: keyof WoundContextData, value: string) => {
@@ -43,20 +63,73 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
 
   const questions = [
     {
+      key: 'woundSite' as keyof WoundContextData,
+      label: 'Site of Wound',
+      placeholder: 'e.g., "Right heel", "Lower back", "Abdomen", "Left leg"',
+      required: true
+    },
+    {
       key: 'woundOrigin' as keyof WoundContextData,
       label: 'How and when did this wound occur?',
       placeholder: 'e.g., "Pressure ulcer from prolonged sitting, noticed 3 days ago" or "Cut from kitchen knife yesterday"',
       required: true
     },
     {
-      key: 'medicalHistory' as keyof WoundContextData,
-      label: 'Relevant medical history and current medications',
-      placeholder: 'e.g., "Type 2 diabetes, taking blood thinners, history of slow healing" or "Generally healthy, no medications"',
+      key: 'age' as keyof WoundContextData,
+      label: 'Age',
+      placeholder: 'e.g., "65 years old" or "Adult" or "Elderly"',
       required: true
     },
     {
+      key: 'comorbidities' as keyof WoundContextData,
+      label: 'Comorbidities and Medical Conditions',
+      placeholder: 'e.g., "Type 2 diabetes, hypertension, heart disease" or "None known"',
+      required: true
+    },
+    {
+      key: 'medications' as keyof WoundContextData,
+      label: 'Current Medications',
+      placeholder: 'e.g., "Metformin, blood thinners, steroids" or "No medications"',
+      required: true
+    },
+    {
+      key: 'nutritionStatus' as keyof WoundContextData,
+      label: 'Nutritional Status',
+      placeholder: 'e.g., "Poor appetite, recent weight loss, low protein intake" or "Good nutrition, eating well"'
+    },
+    {
+      key: 'obesity' as keyof WoundContextData,
+      label: 'Weight Status/Obesity',
+      placeholder: 'e.g., "Obese (BMI 35)", "Normal weight", "Underweight" or "Unknown"'
+    },
+    {
+      key: 'mobilityStatus' as keyof WoundContextData,
+      label: 'Mobility Status',
+      placeholder: 'e.g., "Wheelchair user, limited mobility", "Bedridden", "Active, walking daily"'
+    },
+    {
+      key: 'frictionShearing' as keyof WoundContextData,
+      label: 'Friction/Shearing Risk',
+      placeholder: 'e.g., "High risk due to sliding in bed", "Uses transfer board", "No friction issues"'
+    },
+    {
+      key: 'smokingStatus' as keyof WoundContextData,
+      label: 'Smoking Status',
+      placeholder: 'e.g., "Current smoker - 1 pack/day", "Former smoker", "Never smoked"'
+    },
+    {
+      key: 'alcoholUse' as keyof WoundContextData,
+      label: 'Alcohol Use',
+      placeholder: 'e.g., "Heavy drinker", "Occasional social drinking", "No alcohol use"'
+    },
+    {
+      key: 'stressLevel' as keyof WoundContextData,
+      label: 'Stress Level',
+      placeholder: 'e.g., "High stress due to illness", "Moderate life stress", "Low stress level"'
+    },
+    {
       key: 'woundChanges' as keyof WoundContextData,
-      label: 'Any recent changes in the wound?',
+      label: 'Recent changes in the wound',
       placeholder: 'e.g., "Increased redness and warmth, foul odor, more drainage today" or "Healing well, less pain"'
     },
     {
@@ -70,19 +143,14 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
       placeholder: 'e.g., "Constant throbbing pain, 7/10" or "Mild discomfort when touched, 3/10"'
     },
     {
+      key: 'knowledgeDeficits' as keyof WoundContextData,
+      label: 'Knowledge Deficits',
+      placeholder: 'e.g., "Patient unsure about proper wound care", "Good understanding of care", "Needs education on nutrition"'
+    },
+    {
       key: 'supportAtHome' as keyof WoundContextData,
       label: 'Support available at home',
       placeholder: 'e.g., "Spouse helps with dressing changes" or "Living alone, managing independently"'
-    },
-    {
-      key: 'mobilityStatus' as keyof WoundContextData,
-      label: 'Mobility and activity level',
-      placeholder: 'e.g., "Wheelchair user, limited mobility" or "Active, walking daily"'
-    },
-    {
-      key: 'nutritionStatus' as keyof WoundContextData,
-      label: 'Nutrition and appetite',
-      placeholder: 'e.g., "Poor appetite, recent weight loss" or "Eating well, maintaining weight"'
     }
   ];
 
@@ -145,7 +213,7 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
         <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-              <h3 className="font-medium text-gray-900 text-sm">Additional Context (Optional)</h3>
+              <h3 className="font-medium text-gray-900 text-sm">Additional Context (Optional but will improve your results)</h3>
               {isExpanded ? (
                 <ChevronUp className="h-4 w-4" />
               ) : (
