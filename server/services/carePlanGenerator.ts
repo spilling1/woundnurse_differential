@@ -1,4 +1,5 @@
 import { callOpenAI } from "./openai";
+import { callGemini } from "./gemini";
 import { getPromptTemplate } from "./promptTemplates";
 
 export async function generateCarePlan(
@@ -9,18 +10,25 @@ export async function generateCarePlan(
   try {
     const prompt = getPromptTemplate(audience, classification);
     
-    const messages = [
-      {
-        role: "system",
-        content: "You are a medical AI assistant specializing in wound care. Generate comprehensive, evidence-based care plans tailored to the specified audience."
-      },
-      {
-        role: "user",
-        content: prompt
-      }
-    ];
-
-    const carePlan = await callOpenAI(model, messages);
+    let carePlan;
+    
+    if (model.startsWith('gemini-')) {
+      const systemPrompt = "You are a medical AI assistant specializing in wound care. Generate comprehensive, evidence-based care plans tailored to the specified audience.";
+      const fullPrompt = `${systemPrompt}\n\n${prompt}`;
+      carePlan = await callGemini(model, fullPrompt);
+    } else {
+      const messages = [
+        {
+          role: "system",
+          content: "You are a medical AI assistant specializing in wound care. Generate comprehensive, evidence-based care plans tailored to the specified audience."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ];
+      carePlan = await callOpenAI(model, messages);
+    }
     
     // Add safety disclaimer
     const disclaimer = "**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.";

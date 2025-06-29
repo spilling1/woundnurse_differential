@@ -138,7 +138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       status: "operational",
       version: "v1.0.0",
-      models: ["gpt-4o", "gpt-3.5", "gpt-3.5-pro"],
+      models: ["gpt-4o", "gpt-3.5", "gpt-3.5-pro", "gemini-2.5-flash", "gemini-2.5-pro"],
       processingQueue: 0
     });
   });

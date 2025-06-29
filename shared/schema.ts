@@ -39,7 +39,7 @@ export type Feedback = typeof feedbacks.$inferSelect;
 // Validation schemas for API endpoints
 export const uploadRequestSchema = z.object({
   audience: z.enum(['family', 'patient', 'medical']),
-  model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro']),
+  model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro']),
 });
 
 export const feedbackRequestSchema = z.object({

@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 export async function callOpenAI(model: string, messages: any[], responseFormat: any = null): Promise<string> {
   if (!["gpt-4o", "gpt-3.5", "gpt-3.5-pro"].includes(model)) {
-    throw new Error("Invalid model selection");
+    throw new Error("Invalid OpenAI model selection");
   }
 
   try {

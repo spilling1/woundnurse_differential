@@ -1,8 +1,15 @@
 import { analyzeWoundImage } from "./openai";
+import { analyzeWoundImageWithGemini } from "./gemini";
 
 export async function classifyWound(imageBase64: string, model: string): Promise<any> {
   try {
-    const classification = await analyzeWoundImage(imageBase64, model);
+    let classification;
+    
+    if (model.startsWith('gemini-')) {
+      classification = await analyzeWoundImageWithGemini(imageBase64, model);
+    } else {
+      classification = await analyzeWoundImage(imageBase64, model);
+    }
     
     // Validate and normalize the classification
     const normalizedClassification = {
