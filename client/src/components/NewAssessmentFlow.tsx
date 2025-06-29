@@ -320,11 +320,11 @@ export default function NewAssessmentFlow() {
                     </div>
                   </div>
                   
-                  {woundClassification.alternativeTypes.length > 0 && (
+                  {woundClassification?.alternativeTypes?.length > 0 && (
                     <div className="mt-4">
                       <Label>Alternative Classifications:</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                        {woundClassification.alternativeTypes.map((alt, index) => (
+                        {woundClassification?.alternativeTypes?.map((alt, index) => (
                           <div
                             key={index}
                             className={`p-3 border rounded cursor-pointer transition-all ${
