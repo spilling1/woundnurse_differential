@@ -153,7 +153,7 @@ export default function MyCases() {
                 <p className="text-gray-600 mb-6">
                   You haven't created any wound assessments yet. Start by uploading your first wound image.
                 </p>
-                <Link href="/">
+                <Link href="/assessment">
                   <Button className="bg-medical-blue hover:bg-medical-blue/90">
                     Create First Assessment
                   </Button>
