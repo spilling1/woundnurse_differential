@@ -22,10 +22,9 @@ export default function CarePlan() {
   // Extract case ID from URL params
   const caseId = params.caseId;
 
-  const { data: assessmentData, isLoading } = useQuery({
+  const { data: assessmentData, isLoading, error } = useQuery({
     queryKey: ['/api/assessment', caseId],
     enabled: !!caseId,
-    queryFn: () => fetch(`/api/assessment/${caseId}`).then(res => res.json()),
   });
 
   const feedbackMutation = useMutation({
@@ -150,13 +149,17 @@ export default function CarePlan() {
   }
 
   if (!assessmentData) {
+    console.log('Assessment data is null/undefined for case:', caseId);
+    console.log('Query error:', error);
     return (
       <div className="min-h-screen bg-bg-light flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600 mb-4">Care plan not found</p>
-          <Button onClick={() => setLocation('/')}>
+          <p className="text-gray-500 text-sm mb-4">Case ID: {caseId}</p>
+          {error && <p className="text-red-500 text-sm mb-4">Error: {error.message}</p>}
+          <Button onClick={() => setLocation('/my-cases')}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Assessment
+            Back to My Cases
           </Button>
         </div>
       </div>
