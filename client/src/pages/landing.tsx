@@ -52,9 +52,9 @@ export default function Landing() {
                     Log In
                   </Button>
                   <Button 
-                    onClick={() => setLocation("/assessment")}
+                    onClick={() => setLocation("/start-assessment")}
                   >
-                    Start Assessment
+                    Start Free Assessment
                   </Button>
                 </>
               )}
@@ -105,10 +105,10 @@ export default function Landing() {
           <div className="flex justify-center mt-12">
             <Button 
               size="lg"
-              onClick={() => setLocation("/assessment")}
+              onClick={() => setLocation("/start-assessment")}
               className="bg-medical-blue hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
             >
-              Start Your Assessment for Free
+              Start Your Free Assessment
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
