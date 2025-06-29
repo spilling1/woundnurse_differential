@@ -25,6 +25,8 @@ export class MemStorage implements IStorage {
     const assessment: WoundAssessment = {
       ...insertAssessment,
       id,
+      version: insertAssessment.version || "v1.0.0",
+      classification: insertAssessment.classification || null,
       createdAt: new Date(),
     };
     this.assessments.set(assessment.caseId, assessment);
@@ -40,6 +42,7 @@ export class MemStorage implements IStorage {
     const feedback: Feedback = {
       ...insertFeedback,
       id,
+      comments: insertFeedback.comments || null,
       createdAt: new Date(),
     };
     this.feedbacks.set(id, feedback);

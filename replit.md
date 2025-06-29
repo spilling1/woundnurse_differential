@@ -1,8 +1,8 @@
-# Wound Care AI Assessment Tool
+# Wound Nurses - AI Wound Care Evaluation Tool
 
 ## Overview
 
-This is a full-stack TypeScript application that provides AI-powered wound care assessment and treatment plan generation. The system allows users to upload wound images, select different AI models for analysis, and receive customized care plans tailored to different audiences (family caregivers, patients, or medical professionals).
+This is a full-stack TypeScript application called "Wound Nurses" that provides AI-powered wound care assessment and treatment plan generation. The system allows users to upload wound images, select different AI models for analysis, and receive customized care plans tailored to different audiences (family caregivers, patients, or medical professionals). The application is built following the PRD specifications for comprehensive wound analysis with model selection and continuous learning capabilities.
 
 ## System Architecture
 

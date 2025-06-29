@@ -147,10 +147,4 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-// Utility function to generate case IDs
-function generateCaseId(): string {
-  const date = new Date();
-  const dateStr = date.toISOString().split('T')[0];
-  const counter = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-  return `${dateStr}-${counter}`;
-}
+
