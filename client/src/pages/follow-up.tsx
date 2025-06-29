@@ -38,17 +38,17 @@ export default function FollowUpAssessment() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [dragActive, setDragActive] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof followUpSchema>>({
     resolver: zodResolver(followUpSchema),
     defaultValues: {
-      audience: 'patient',
       model: 'gpt-4o',
       progressNotes: '',
       treatmentResponse: '',
+      additionalInfo: '',
       woundOrigin: '',
       medicalHistory: '',
       woundChanges: '',
@@ -122,11 +122,11 @@ export default function FollowUpAssessment() {
         return;
       }
 
-      setSelectedFile(file);
+      setSelectedFiles([file]);
       
       // Create preview URL
       const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      setPreviewUrls([url]);
     }
   };
 
