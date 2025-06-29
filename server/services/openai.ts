@@ -34,7 +34,7 @@ export async function callOpenAI(model: string, messages: any[], responseFormat:
   }
 }
 
-export async function analyzeWoundImage(imageBase64: string, model: string): Promise<any> {
+export async function analyzeWoundImage(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
   const messages = [
     {
       role: "system",
@@ -60,7 +60,7 @@ export async function analyzeWoundImage(imageBase64: string, model: string): Pro
         {
           type: "image_url",
           image_url: {
-            url: `data:image/jpeg;base64,${imageBase64}`
+            url: `data:${mimeType};base64,${imageBase64}`
           }
         }
       ]

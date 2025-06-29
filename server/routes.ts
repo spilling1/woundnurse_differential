@@ -621,7 +621,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const imageBase64 = req.file.buffer.toString('base64');
       
       // Classify wound
-      const classification = await classifyWound(imageBase64, model);
+      const classification = await classifyWound(imageBase64, model, req.file.mimetype);
       
       // Generate AI questions based on image analysis
       const questions = await analyzeAssessmentForQuestions(
