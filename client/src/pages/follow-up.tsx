@@ -296,7 +296,73 @@ export default function FollowUpAssessment() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             
+            {/* Progress Assessment */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Progress Assessment</CardTitle>
+                <CardDescription>
+                  Please provide details about the wound's progress and treatment response
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Progress Notes */}
+                <FormField
+                  control={form.control}
+                  name="progressNotes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Progress Notes *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe any changes you've observed in the wound since the last assessment. What improvements or concerns have you noticed?"
+                          rows={4}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
+                {/* Treatment Response */}
+                <FormField
+                  control={form.control}
+                  name="treatmentResponse"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Treatment Response *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="How has the wound responded to the previous treatment plan? What treatments have been most/least effective?"
+                          rows={4}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Additional Notes */}
+                <FormField
+                  control={form.control}
+                  name="additionalInfo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Notes (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Any additional information about the wound, treatment changes, patient concerns, etc."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
 
             {/* Current Wound Image */}
             <Card>
@@ -461,74 +527,6 @@ export default function FollowUpAssessment() {
                     Accepts any file type up to 10MB each. Files are used for assessment context only and are not permanently saved.
                   </p>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Progress Assessment */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Progress Assessment</CardTitle>
-                <CardDescription>
-                  Please provide details about the wound's progress and treatment response
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Progress Notes */}
-                <FormField
-                  control={form.control}
-                  name="progressNotes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Progress Notes *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Describe any changes you've observed in the wound since the last assessment. What improvements or concerns have you noticed?"
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Treatment Response */}
-                <FormField
-                  control={form.control}
-                  name="treatmentResponse"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Treatment Response *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="How has the wound responded to the previous treatment plan? What treatments have been most/least effective?"
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Additional Notes */}
-                <FormField
-                  control={form.control}
-                  name="additionalInfo"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Additional Notes (Optional)</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Any additional information about the wound, treatment changes, patient concerns, etc."
-                          className="min-h-[100px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </CardContent>
             </Card>
 
