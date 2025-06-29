@@ -9,7 +9,7 @@ export async function generateCarePlan(
   contextData?: any
 ): Promise<string> {
   try {
-    const prompt = getPromptTemplate(audience, classification, contextData);
+    const prompt = await getPromptTemplate(audience, classification, contextData);
     
     let carePlan;
     

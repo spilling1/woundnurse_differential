@@ -8,7 +8,6 @@ import { uploadRequestSchema, feedbackRequestSchema } from "@shared/schema";
 import { validateImage } from "./services/imageProcessor";
 import { classifyWound } from "./services/woundClassifier";
 import { generateCarePlan } from "./services/carePlanGenerator";
-import { logToAgents } from "./services/agentsLogger";
 import { generateCaseId } from "./services/utils";
 
 const upload = multer({
@@ -73,8 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         version: "v1.0.0"
       });
       
-      // Log to Agents.md
-      await logToAgents(assessment, classification, carePlan);
+      // Case is now tracked in database - no additional logging needed
       
       res.json({
         caseId: assessment.caseId,
@@ -129,8 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         comments
       });
       
-      // Update Agents.md with feedback
-      await logToAgents(assessment, assessment.classification, assessment.carePlan, feedback);
+      // Feedback is now tracked in database - no additional logging needed
       
       res.json({
         success: true,

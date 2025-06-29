@@ -140,14 +140,14 @@ export default function AgentsPage() {
         {/* Important Notice */}
         <Card className="mb-6">
           <CardContent className="p-6">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-start">
-                <AlertTriangle className="text-red-600 mr-3 mt-1 h-5 w-5" />
+                <AlertTriangle className="text-blue-600 mr-3 mt-1 h-5 w-5" />
                 <div>
-                  <p className="text-sm text-red-800 font-medium">Critical System File</p>
-                  <p className="text-sm text-red-700 mt-1">
-                    This file contains the AI agent's core rules and behavior patterns. Changes affect how the AI analyzes wounds 
-                    and generates care plans. Make sure all case data and rules are accurate before saving.
+                  <p className="text-sm text-blue-800 font-medium">AI Agent Instructions</p>
+                  <p className="text-sm text-blue-700 mt-1">
+                    These instructions guide the AI agent's behavior when analyzing wounds and generating care plans. 
+                    Changes affect all future assessments. All case history is now stored securely in the database.
                   </p>
                 </div>
               </div>
@@ -179,9 +179,9 @@ export default function AgentsPage() {
             <CardContent className="p-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-medical-blue">
-                  {(content.match(/## Case:/g) || []).length}
+                  {content.split('\n').filter(line => line.trim().startsWith('#')).length}
                 </p>
-                <p className="text-sm text-gray-600">Cases Logged</p>
+                <p className="text-sm text-gray-600">Instruction Sections</p>
               </div>
             </CardContent>
           </Card>

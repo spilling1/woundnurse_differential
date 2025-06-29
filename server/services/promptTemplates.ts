@@ -26,9 +26,15 @@ ${contextData?.mobilityStatus ? `- Mobility status: ${contextData.mobilityStatus
 ${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionStatus}` : ''}
 `;
 
+  const systemPrompt = `You are an AI wound care specialist. Follow these instructions:
+
+${instructions}
+
+${baseInfo}`;
+
   switch (audience) {
     case 'family':
-      return `${baseInfo}
+      return `${systemPrompt}
 
 Generate a comprehensive wound care plan for FAMILY CAREGIVERS with the following requirements:
 
@@ -48,7 +54,7 @@ Structure the response with clear sections:
 - Additional Tips for Caregivers`;
 
     case 'patient':
-      return `${baseInfo}
+      return `${systemPrompt}
 
 Generate a comprehensive wound care plan for PATIENTS with the following requirements:
 
@@ -69,7 +75,7 @@ Structure the response with clear sections:
 - Encouragement and Expectations`;
 
     case 'medical':
-      return `${baseInfo}
+      return `${systemPrompt}
 
 Generate a comprehensive wound care plan for MEDICAL PROFESSIONALS with the following requirements:
 
