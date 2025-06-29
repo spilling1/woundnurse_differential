@@ -254,11 +254,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Build context for care plan generation including previous assessments and progress
       const contextForCarePlan = {
+        // Include current assessment data
+        progressNotes: requestData.progressNotes,
+        treatmentResponse: requestData.treatmentResponse,
+        
+        // Include questionnaire context from original assessment
+        woundOrigin: originalAssessment.woundOrigin,
+        medicalHistory: originalAssessment.medicalHistory,
+        woundChanges: requestData.woundChanges || originalAssessment.woundChanges,
+        currentCare: requestData.currentCare || originalAssessment.currentCare,
+        woundPain: requestData.woundPain || originalAssessment.woundPain,
+        supportAtHome: originalAssessment.supportAtHome,
+        mobilityStatus: originalAssessment.mobilityStatus,
+        nutritionStatus: originalAssessment.nutritionStatus,
+        stressLevel: originalAssessment.stressLevel,
+        comorbidities: originalAssessment.comorbidities,
+        age: originalAssessment.age,
+        obesity: originalAssessment.obesity,
+        medications: originalAssessment.medications,
+        alcoholUse: originalAssessment.alcoholUse,
+        smokingStatus: originalAssessment.smokingStatus,
+        frictionShearing: originalAssessment.frictionShearing,
+        knowledgeDeficits: originalAssessment.knowledgeDeficits,
+        woundSite: originalAssessment.woundSite,
+        
+        // Follow-up specific context
         currentAssessment: {
           classification,
           progressNotes: requestData.progressNotes,
           treatmentResponse: requestData.treatmentResponse,
-          contextData: requestData
         },
         previousAssessments: assessmentHistory,
         feedbackHistory: feedbackHistory,
