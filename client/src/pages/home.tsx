@@ -7,7 +7,7 @@ import WoundQuestionnaire, { WoundContextData } from "@/components/WoundQuestion
 
 export default function Home() {
   const [, setLocation] = useLocation();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [audience, setAudience] = useState<'family' | 'patient' | 'medical'>('family');
   const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'>('gpt-4o');
   const [assessmentData, setAssessmentData] = useState<any>(null);
@@ -73,8 +73,8 @@ export default function Home() {
           {/* Left Column - Upload and Configuration */}
           <div className="lg:col-span-1">
             <ImageUploadSection 
-              selectedFile={selectedFile}
-              onFileSelect={setSelectedFile}
+              selectedFiles={selectedFiles}
+              onFilesSelect={setSelectedFiles}
             />
             
             <ConfigurationPanel
@@ -82,7 +82,7 @@ export default function Home() {
               model={model}
               onAudienceChange={setAudience}
               onModelChange={setModel}
-              selectedFile={selectedFile}
+              selectedFile={selectedFiles[0] || null}
               isProcessing={isProcessing}
               contextData={contextData}
               onStartAssessment={() => setIsProcessing(true)}
