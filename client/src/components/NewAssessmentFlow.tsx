@@ -1,0 +1,564 @@
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { useMutation } from "@tanstack/react-query";
+import { Camera, Upload, CheckCircle, AlertCircle, RefreshCw, ArrowRight, Edit, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+interface AIGeneratedQuestion {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+  confidence: number;
+}
+
+interface WoundClassification {
+  woundType: string;
+  confidence: number;
+  alternativeTypes: Array<{
+    type: string;
+    confidence: number;
+    reasoning: string;
+  }>;
+}
+
+interface PreliminaryCareplan {
+  assessment: string;
+  recommendations: string[];
+  confidence: number;
+  needsMoreInfo: boolean;
+  additionalQuestions?: string[];
+}
+
+type FlowStep = 'audience' | 'upload' | 'ai-questions' | 'preliminary-plan' | 'final-plan';
+
+export default function NewAssessmentFlow() {
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  
+  // Flow state
+  const [currentStep, setCurrentStep] = useState<FlowStep>('audience');
+  const [audience, setAudience] = useState<'family' | 'patient' | 'medical'>('family');
+  const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'>('gpt-4o');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  
+  // AI-generated data
+  const [aiQuestions, setAiQuestions] = useState<AIGeneratedQuestion[]>([]);
+  const [woundClassification, setWoundClassification] = useState<WoundClassification | null>(null);
+  const [preliminaryPlan, setPreliminaryPlan] = useState<PreliminaryCareplan | null>(null);
+  const [finalCaseId, setFinalCaseId] = useState<string | null>(null);
+  
+  // User input
+  const [userFeedback, setUserFeedback] = useState<string>('');
+  const [selectedAlternative, setSelectedAlternative] = useState<string | null>(null);
+
+  // File upload handler
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Step 1: Initial image analysis mutation
+  const initialAnalysisMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedImage) throw new Error('No image selected');
+      
+      const formData = new FormData();
+      formData.append('image', selectedImage);
+      formData.append('audience', audience);
+      formData.append('model', model);
+      formData.append('analysisType', 'initial');
+      
+      return apiRequest('POST', '/api/assessment/initial-analysis', formData);
+    },
+    onSuccess: (data: any) => {
+      setAiQuestions(data.questions || []);
+      setWoundClassification(data.classification);
+      setCurrentStep('ai-questions');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Analysis Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Step 2: Generate preliminary care plan
+  const preliminaryPlanMutation = useMutation({
+    mutationFn: async () => {
+      const updatedQuestions = aiQuestions.map(q => ({
+        ...q,
+        answer: q.answer
+      }));
+      
+      return apiRequest('POST', '/api/assessment/preliminary-plan', {
+        imageData: selectedImage,
+        audience,
+        model,
+        questions: updatedQuestions,
+        classification: woundClassification,
+        selectedAlternative,
+        userFeedback
+      });
+    },
+    onSuccess: (data: any) => {
+      setPreliminaryPlan(data);
+      setCurrentStep('preliminary-plan');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Plan Generation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Step 3: Generate final care plan
+  const finalPlanMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('POST', '/api/assessment/final-plan', {
+        imageData: selectedImage,
+        audience,
+        model,
+        questions: aiQuestions,
+        classification: woundClassification,
+        preliminaryPlan,
+        userFeedback
+      });
+    },
+    onSuccess: (data: any) => {
+      setFinalCaseId(data.caseId);
+      setCurrentStep('final-plan');
+      // Navigate to the final care plan
+      setLocation(`/care-plan/${data.caseId}`);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Final Plan Generation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update AI answer
+  const updateAnswer = (questionId: string, newAnswer: string) => {
+    setAiQuestions(prev => 
+      prev.map(q => 
+        q.id === questionId ? { ...q, answer: newAnswer } : q
+      )
+    );
+  };
+
+  // Render step content
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 'audience':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Step 1: Select Your Audience</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-gray-600">Who will be using this care plan?</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { value: 'family', label: 'Family Caregiver', desc: 'Simple, step-by-step guidance' },
+                  { value: 'patient', label: 'Patient', desc: 'Self-care focused instructions' },
+                  { value: 'medical', label: 'Medical Professional', desc: 'Clinical terminology and protocols' }
+                ].map(option => (
+                  <div
+                    key={option.value}
+                    className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                      audience === option.value 
+                        ? 'border-medical-blue bg-blue-50' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => setAudience(option.value as any)}
+                  >
+                    <div className="font-medium">{option.label}</div>
+                    <div className="text-sm text-gray-600">{option.desc}</div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6">
+                <Label>AI Model</Label>
+                <select 
+                  value={model} 
+                  onChange={(e) => setModel(e.target.value as any)}
+                  className="w-full mt-1 p-2 border rounded-md"
+                >
+                  <option value="gpt-4o">GPT-4o (Recommended)</option>
+                  <option value="gpt-3.5">GPT-3.5</option>
+                  <option value="gpt-3.5-pro">GPT-3.5 Pro</option>
+                  <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                  <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                </select>
+              </div>
+              
+              <Button 
+                onClick={() => setCurrentStep('upload')}
+                className="w-full bg-medical-blue hover:bg-medical-blue/90"
+              >
+                Continue to Image Upload
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        );
+
+      case 'upload':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Step 2: Upload Wound Image</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                {imagePreview ? (
+                  <div className="space-y-4">
+                    <img 
+                      src={imagePreview} 
+                      alt="Wound preview" 
+                      className="max-w-full h-64 object-contain mx-auto rounded-lg"
+                    />
+                    <p className="text-sm text-gray-600">Click below to change image</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Camera className="h-12 w-12 text-gray-400 mx-auto" />
+                    <p className="text-gray-600">Click to upload a wound image</p>
+                  </div>
+                )}
+                
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label htmlFor="image-upload">
+                  <Button variant="outline" className="mt-4" asChild>
+                    <span>
+                      <Upload className="mr-2 h-4 w-4" />
+                      {imagePreview ? 'Change Image' : 'Upload Image'}
+                    </span>
+                  </Button>
+                </label>
+              </div>
+              
+              {selectedImage && (
+                <Button 
+                  onClick={() => initialAnalysisMutation.mutate()}
+                  disabled={initialAnalysisMutation.isPending}
+                  className="w-full bg-medical-blue hover:bg-medical-blue/90"
+                >
+                  {initialAnalysisMutation.isPending ? (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                      Analyzing Image...
+                    </>
+                  ) : (
+                    <>
+                      Start AI Analysis
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        );
+
+      case 'ai-questions':
+        return (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Step 3: AI-Generated Assessment Questions</CardTitle>
+                <p className="text-gray-600">
+                  Our AI has analyzed your image and generated these questions. 
+                  Please review and modify the answers as needed.
+                </p>
+              </CardHeader>
+            </Card>
+
+            {woundClassification && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Initial Classification</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <div className="font-medium">{woundClassification.woundType}</div>
+                      <Badge variant={woundClassification.confidence > 0.75 ? 'default' : 'secondary'}>
+                        {Math.round(woundClassification.confidence * 100)}% confidence
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  {woundClassification.alternativeTypes.length > 0 && (
+                    <div className="mt-4">
+                      <Label>Alternative Classifications:</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                        {woundClassification.alternativeTypes.map((alt, index) => (
+                          <div
+                            key={index}
+                            className={`p-3 border rounded cursor-pointer transition-all ${
+                              selectedAlternative === alt.type 
+                                ? 'border-medical-blue bg-blue-50' 
+                                : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                            onClick={() => setSelectedAlternative(alt.type)}
+                          >
+                            <div className="font-medium">{alt.type}</div>
+                            <div className="text-sm text-gray-600">{Math.round(alt.confidence * 100)}% confidence</div>
+                            <div className="text-xs text-gray-500 mt-1">{alt.reasoning}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {aiQuestions.map((question) => (
+              <Card key={question.id}>
+                <CardHeader>
+                  <CardTitle className="text-base">{question.question}</CardTitle>
+                  <Badge variant="outline">{question.category}</Badge>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    value={question.answer}
+                    onChange={(e) => updateAnswer(question.id, e.target.value)}
+                    placeholder="AI generated answer - edit if needed"
+                    rows={3}
+                  />
+                  <div className="flex items-center mt-2 text-sm text-gray-600">
+                    <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
+                    AI Confidence: {Math.round(question.confidence * 100)}%
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            <Card>
+              <CardContent className="pt-6">
+                <Label>Additional Context (Optional)</Label>
+                <Textarea
+                  value={userFeedback}
+                  onChange={(e) => setUserFeedback(e.target.value)}
+                  placeholder="Provide any additional information about the wound or patient that might help..."
+                  rows={3}
+                  className="mt-2"
+                />
+                
+                <Button 
+                  onClick={() => preliminaryPlanMutation.mutate()}
+                  disabled={preliminaryPlanMutation.isPending}
+                  className="w-full mt-4 bg-medical-blue hover:bg-medical-blue/90"
+                >
+                  {preliminaryPlanMutation.isPending ? (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                      Generating Preliminary Plan...
+                    </>
+                  ) : (
+                    <>
+                      Generate Preliminary Care Plan
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 'preliminary-plan':
+        return (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Step 4: Preliminary Care Plan</CardTitle>
+                <p className="text-gray-600">
+                  Review this preliminary assessment. If confidence is below 75%, we'll ask more questions.
+                </p>
+              </CardHeader>
+            </Card>
+
+            {preliminaryPlan && (
+              <>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      Assessment Confidence
+                      <Badge variant={preliminaryPlan.confidence > 0.75 ? 'default' : 'destructive'}>
+                        {Math.round(preliminaryPlan.confidence * 100)}%
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose max-w-none">
+                      <div dangerouslySetInnerHTML={{ __html: preliminaryPlan.assessment }} />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Preliminary Recommendations</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {preliminaryPlan.recommendations.map((rec, index) => (
+                        <li key={index} className="flex items-start">
+                          <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                          <span>{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                {preliminaryPlan.needsMoreInfo && preliminaryPlan.additionalQuestions && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
+                        Additional Questions Needed
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600 mb-4">
+                        The AI needs more information to provide a confident assessment. Please answer these additional questions:
+                      </p>
+                      <div className="space-y-4">
+                        {preliminaryPlan.additionalQuestions.map((question, index) => (
+                          <div key={index}>
+                            <Label>{question}</Label>
+                            <Textarea 
+                              placeholder="Your answer..."
+                              rows={2}
+                              className="mt-1"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                <Card>
+                  <CardContent className="pt-6">
+                    <Label>Feedback on Preliminary Plan</Label>
+                    <Textarea
+                      value={userFeedback}
+                      onChange={(e) => setUserFeedback(e.target.value)}
+                      placeholder="Any corrections or additional information for the care plan..."
+                      rows={3}
+                      className="mt-2"
+                    />
+                    
+                    <div className="flex gap-4 mt-4">
+                      <Button 
+                        onClick={() => preliminaryPlanMutation.mutate()}
+                        disabled={preliminaryPlanMutation.isPending}
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        Regenerate Plan
+                      </Button>
+                      
+                      {preliminaryPlan.confidence > 0.75 && (
+                        <Button 
+                          onClick={() => finalPlanMutation.mutate()}
+                          disabled={finalPlanMutation.isPending}
+                          className="flex-1 bg-medical-blue hover:bg-medical-blue/90"
+                        >
+                          {finalPlanMutation.isPending ? (
+                            <>
+                              <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                              Creating Final Plan...
+                            </>
+                          ) : (
+                            <>
+                              Generate Complete Care Plan
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                            </>
+                          )}
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Progress indicator */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          {['audience', 'upload', 'ai-questions', 'preliminary-plan', 'final-plan'].map((step, index) => {
+            const stepLabels = ['Audience', 'Upload', 'AI Analysis', 'Preliminary Plan', 'Final Plan'];
+            const isActive = currentStep === step;
+            const isCompleted = ['audience', 'upload', 'ai-questions', 'preliminary-plan', 'final-plan'].indexOf(currentStep) > index;
+            
+            return (
+              <div key={step} className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  isCompleted ? 'bg-green-500 text-white' :
+                  isActive ? 'bg-medical-blue text-white' : 
+                  'bg-gray-200 text-gray-600'
+                }`}>
+                  {isCompleted ? <CheckCircle className="h-4 w-4" /> : index + 1}
+                </div>
+                <div className="ml-2 text-sm font-medium text-gray-600">
+                  {stepLabels[index]}
+                </div>
+                {index < 4 && (
+                  <div className={`w-16 h-1 mx-4 ${
+                    isCompleted ? 'bg-green-500' : 'bg-gray-200'
+                  }`} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {renderStepContent()}
+    </div>
+  );
+}

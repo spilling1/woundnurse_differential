@@ -593,6 +593,162 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // New Assessment Flow Routes
+
+  // Step 1: Initial image analysis with AI-generated questions
+  app.post("/api/assessment/initial-analysis", upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          code: "NO_IMAGE",
+          message: "Image is required"
+        });
+      }
+
+      const { audience, model } = req.body;
+      
+      if (!audience || !model) {
+        return res.status(400).json({
+          code: "MISSING_PARAMS",
+          message: "Audience and model are required"
+        });
+      }
+
+      // Validate image
+      await validateImage(req.file);
+      
+      // Convert image to base64
+      const imageBase64 = req.file.buffer.toString('base64');
+      
+      // Classify wound
+      const classification = await classifyWound(imageBase64, model);
+      
+      // Generate AI questions based on image analysis
+      const questions = await analyzeAssessmentForQuestions(
+        'temp-session-' + Date.now(),
+        {
+          imageAnalysis: classification,
+          audience,
+          model
+        }
+      );
+
+      res.json({
+        classification,
+        questions: questions || []
+      });
+
+    } catch (error: any) {
+      console.error('Initial analysis error:', error);
+      res.status(500).json({
+        code: "ANALYSIS_ERROR",
+        message: error.message || "Failed to analyze image"
+      });
+    }
+  });
+
+  // Step 2: Generate preliminary care plan
+  app.post("/api/assessment/preliminary-plan", async (req, res) => {
+    try {
+      const { imageData, audience, model, questions, classification, selectedAlternative, userFeedback } = req.body;
+      
+      // Use selected alternative if provided, otherwise use main classification
+      const finalClassification = selectedAlternative ? 
+        { ...classification, woundType: selectedAlternative } : 
+        classification;
+
+      // Generate preliminary care plan
+      const contextData = {
+        aiQuestions: questions,
+        userFeedback,
+        classification: finalClassification
+      };
+
+      const carePlan = await generateCarePlan(
+        finalClassification,
+        audience,
+        model,
+        contextData
+      );
+
+      // Simulate confidence assessment
+      const confidence = finalClassification.confidence || 0.8;
+      const needsMoreInfo = confidence < 0.75;
+
+      const preliminaryPlan = {
+        assessment: carePlan.split('\n\n')[0], // First paragraph as assessment
+        recommendations: carePlan.split('\n\n').slice(1).filter(p => p.trim()),
+        confidence,
+        needsMoreInfo,
+        additionalQuestions: needsMoreInfo ? [
+          "Can you describe any changes in the wound size over the past week?",
+          "What is the patient's pain level on a scale of 1-10?",
+          "Are there any signs of infection (redness, warmth, pus)?"
+        ] : undefined
+      };
+
+      res.json(preliminaryPlan);
+
+    } catch (error: any) {
+      console.error('Preliminary plan error:', error);
+      res.status(500).json({
+        code: "PLAN_ERROR",
+        message: error.message || "Failed to generate preliminary plan"
+      });
+    }
+  });
+
+  // Step 3: Generate final care plan with case creation
+  app.post("/api/assessment/final-plan", async (req, res) => {
+    try {
+      const { imageData, audience, model, questions, classification, preliminaryPlan, userFeedback } = req.body;
+      
+      // Generate case ID
+      const caseId = generateCaseId();
+      
+      // Convert questions to context data format
+      const contextData = questions.reduce((acc: any, q: any) => {
+        const key = q.category.toLowerCase().replace(/\s+/g, '');
+        acc[key] = q.answer;
+        return acc;
+      }, {});
+
+      // Generate final care plan
+      const carePlan = await generateCarePlan(
+        classification,
+        audience,
+        model,
+        { ...contextData, userFeedback, preliminaryPlan }
+      );
+
+      // Create wound assessment record
+      const assessment = await storage.createWoundAssessment({
+        caseId,
+        userId: req.user?.id || null,
+        audience,
+        model,
+        imageData: imageData ? Buffer.from(imageData.split(',')[1], 'base64') : null,
+        woundClassification: JSON.stringify(classification),
+        contextData: JSON.stringify(contextData),
+        carePlan,
+        versionNumber: 1,
+        isFollowUp: false
+      });
+
+      res.json({
+        caseId: assessment.caseId,
+        success: true
+      });
+
+    } catch (error: any) {
+      console.error('Final plan error:', error);
+      res.status(500).json({
+        code: "FINAL_PLAN_ERROR",
+        message: error.message || "Failed to generate final care plan"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

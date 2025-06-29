@@ -1,40 +1,12 @@
-import { useState } from "react";
 import { useLocation } from "wouter";
-import { Stethoscope, Circle, HelpCircle, Plus, LogOut, Settings } from "lucide-react";
+import { Stethoscope, Circle, HelpCircle, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import ImageUploadSection from "@/components/ImageUploadSection";
-import ConfigurationPanel from "@/components/ConfigurationPanel";
-import WoundQuestionnaire, { WoundContextData } from "@/components/WoundQuestionnaire";
+import NewAssessmentFlow from "@/components/NewAssessmentFlow";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { isAuthenticated } = useAuth();
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [audience, setAudience] = useState<'family' | 'patient' | 'medical'>('family');
-  const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'>('gpt-4o');
-  const [assessmentData, setAssessmentData] = useState<any>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [contextData, setContextData] = useState<WoundContextData>({
-    woundOrigin: '',
-    medicalHistory: '',
-    woundChanges: '',
-    currentCare: '',
-    woundPain: '',
-    supportAtHome: '',
-    mobilityStatus: '',
-    nutritionStatus: '',
-    stressLevel: '',
-    comorbidities: '',
-    age: '',
-    obesity: '',
-    medications: '',
-    alcoholUse: '',
-    smokingStatus: '',
-    frictionShearing: '',
-    knowledgeDeficits: '',
-    woundSite: ''
-  });
 
   return (
     <div className="font-inter bg-bg-light min-h-screen">
@@ -105,44 +77,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Main Content Container */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Left Column - Upload and Configuration */}
-          <div className="lg:col-span-1">
-            <ImageUploadSection 
-              selectedFiles={selectedFiles}
-              onFilesSelect={setSelectedFiles}
-            />
-            
-            <ConfigurationPanel
-              audience={audience}
-              model={model}
-              onAudienceChange={setAudience}
-              onModelChange={setModel}
-              selectedFile={selectedFiles[0] || null}
-              isProcessing={isProcessing}
-              contextData={contextData}
-              onStartAssessment={() => setIsProcessing(true)}
-              onAssessmentComplete={(data) => {
-                setAssessmentData(data);
-                setIsProcessing(false);
-                // Navigate to care plan page
-                setLocation(`/care-plan/${data.caseId}`);
-              }}
-            />
-          </div>
-
-          {/* Right Column - Questionnaire */}
-          <div className="lg:col-span-2">
-            <WoundQuestionnaire 
-              onDataChange={setContextData}
-              initialData={contextData}
-            />
-          </div>
-        </div>
-      </div>
+      <NewAssessmentFlow />
     </div>
   );
 }
