@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "wouter";
+import { useLocation, useParams, useSearch } from "wouter";
 import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Trash2, Plus, LogOut } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { useState, useRef } from "react";
 export default function CarePlan() {
   const [, setLocation] = useLocation();
   const params = useParams();
+  const search = useSearch();
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const [feedbackText, setFeedbackText] = useState("");
@@ -21,9 +22,13 @@ export default function CarePlan() {
 
   // Extract case ID from URL params
   const caseId = params.caseId;
+  
+  // Extract version from query parameters
+  const urlParams = new URLSearchParams(search);
+  const requestedVersion = urlParams.get('version');
 
   const { data: assessmentData, isLoading, error } = useQuery({
-    queryKey: [`/api/assessment/${caseId}`],
+    queryKey: requestedVersion ? [`/api/assessment/${caseId}?version=${requestedVersion}`] : [`/api/assessment/${caseId}`],
     enabled: !!caseId,
   });
 
@@ -183,6 +188,16 @@ export default function CarePlan() {
               </Button>
               <div className="flex items-center">
                 <ClipboardList className="text-medical-blue text-xl mr-3" />
+                <div>
+                  <h1 className="text-xl font-semibold text-gray-900">
+                    Care Plan - Case {caseId}
+                  </h1>
+                  {requestedVersion && (
+                    <p className="text-sm text-gray-500">
+                      {assessmentData?.isFollowUp ? `Follow-up Version ${requestedVersion}` : 'Original Assessment'}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center space-x-3">

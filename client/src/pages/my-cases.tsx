@@ -218,26 +218,28 @@ export default function MyCases() {
                       {/* Assessment History */}
                       <div className="space-y-3 mb-4">
                         {assessments.map((assessment: any, index: number) => (
-                          <div key={assessment.id} className={`text-xs p-2 rounded ${index === 0 ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'}`}>
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-medium">
-                                {assessment.isFollowUp ? `Follow-up v${assessment.versionNumber}` : 'Original Assessment'}
-                              </span>
-                              <span className="text-gray-500">
-                                {new Date(assessment.createdAt).toLocaleDateString()}
-                              </span>
+                          <Link key={assessment.id} href={`/care-plan/${caseId}?version=${assessment.versionNumber}`}>
+                            <div className={`text-xs p-2 rounded cursor-pointer transition-colors hover:bg-opacity-80 ${index === 0 ? 'bg-blue-50 border border-blue-200 hover:bg-blue-100' : 'bg-gray-50 hover:bg-gray-100'}`}>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-medium">
+                                  {assessment.isFollowUp ? `Follow-up / ${new Date(assessment.createdAt).toLocaleDateString()}` : 'Original Assessment'}
+                                </span>
+                                <span className="text-gray-500 text-xs">
+                                  v{assessment.versionNumber}
+                                </span>
+                              </div>
+                              {assessment.classification?.woundType && (
+                                <div className="text-gray-600">
+                                  {assessment.classification.woundType}
+                                </div>
+                              )}
+                              {assessment.progressNotes && (
+                                <div className="text-gray-600 mt-1 italic">
+                                  "{assessment.progressNotes.substring(0, 50)}..."
+                                </div>
+                              )}
                             </div>
-                            {assessment.classification?.woundType && (
-                              <div className="text-gray-600">
-                                {assessment.classification.woundType}
-                              </div>
-                            )}
-                            {assessment.progressNotes && (
-                              <div className="text-gray-600 mt-1 italic">
-                                "{assessment.progressNotes.substring(0, 50)}..."
-                              </div>
-                            )}
-                          </div>
+                          </Link>
                         ))}
                       </div>
 

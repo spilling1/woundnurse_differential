@@ -355,13 +355,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/assessment/:caseId", async (req, res) => {
     try {
       const { caseId } = req.params;
-      // Use getLatestWoundAssessment to get the most recent version of the case
-      const assessment = await storage.getLatestWoundAssessment(caseId);
+      const { version } = req.query;
+      
+      let assessment;
+      
+      if (version) {
+        // Get specific version of the assessment
+        const assessmentHistory = await storage.getWoundAssessmentHistory(caseId);
+        assessment = assessmentHistory.find(a => a.versionNumber === parseInt(version as string));
+      } else {
+        // Get the latest version if no version specified
+        assessment = await storage.getLatestWoundAssessment(caseId);
+      }
       
       if (!assessment) {
         return res.status(404).json({
           code: "ASSESSMENT_NOT_FOUND",
-          message: "Assessment not found"
+          message: version ? `Assessment version ${version} not found` : "Assessment not found"
         });
       }
       
