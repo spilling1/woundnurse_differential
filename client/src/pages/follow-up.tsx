@@ -510,15 +510,54 @@ export default function FollowUpAssessment() {
               </CardContent>
             </Card>
 
-            {/* Additional Information */}
+            {/* Progress Assessment */}
             <Card>
               <CardHeader>
-                <CardTitle>Additional Information</CardTitle>
+                <CardTitle>Progress Assessment</CardTitle>
                 <CardDescription>
-                  Please provide any additional relevant information that might help with the assessment
+                  Please provide details about the wound's progress and treatment response
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
+                {/* Progress Notes */}
+                <FormField
+                  control={form.control}
+                  name="progressNotes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Progress Notes *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe any changes you've observed in the wound since the last assessment. What improvements or concerns have you noticed?"
+                          rows={4}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Treatment Response */}
+                <FormField
+                  control={form.control}
+                  name="treatmentResponse"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Treatment Response *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="How has the wound responded to the previous treatment plan? What treatments have been most/least effective?"
+                          rows={4}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Additional Notes */}
                 <FormField
                   control={form.control}
                   name="additionalInfo"
