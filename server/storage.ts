@@ -70,7 +70,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(woundAssessments)
       .where(eq(woundAssessments.caseId, caseId));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async createFeedback(feedback: InsertFeedback): Promise<Feedback> {

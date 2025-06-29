@@ -201,6 +201,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete assessment by case ID
+  app.delete("/api/assessment/:caseId", isAuthenticated, async (req: any, res) => {
+    try {
+      const { caseId } = req.params;
+      const userId = req.user.claims.sub;
+      
+      // First check if the assessment exists and belongs to the user
+      const assessment = await storage.getWoundAssessment(caseId);
+      if (!assessment) {
+        return res.status(404).json({
+          code: "ASSESSMENT_NOT_FOUND",
+          message: "Assessment not found"
+        });
+      }
+      
+      // Verify ownership (only allow users to delete their own assessments)
+      if (assessment.userId !== userId) {
+        return res.status(403).json({
+          code: "ACCESS_DENIED",
+          message: "You can only delete your own assessments"
+        });
+      }
+      
+      const deleted = await storage.deleteWoundAssessment(caseId);
+      
+      if (!deleted) {
+        return res.status(404).json({
+          code: "ASSESSMENT_NOT_FOUND",
+          message: "Assessment not found"
+        });
+      }
+      
+      res.json({
+        success: true,
+        message: "Assessment deleted successfully"
+      });
+      
+    } catch (error: any) {
+      console.error('Error deleting assessment:', error);
+      res.status(500).json({
+        code: "DELETE_ERROR",
+        message: error.message || "Failed to delete assessment"
+      });
+    }
+  });
+
   // Get system status
   app.get("/api/status", async (req, res) => {
     res.json({
