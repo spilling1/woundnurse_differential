@@ -287,7 +287,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/assessment/:caseId", async (req, res) => {
     try {
       const { caseId } = req.params;
-      const assessment = await storage.getWoundAssessment(caseId);
+      // Use getLatestWoundAssessment to get the most recent version of the case
+      const assessment = await storage.getLatestWoundAssessment(caseId);
       
       if (!assessment) {
         return res.status(404).json({

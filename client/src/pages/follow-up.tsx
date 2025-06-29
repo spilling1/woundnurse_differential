@@ -62,7 +62,7 @@ export default function FollowUpAssessment() {
 
   // Get original case data
   const { data: originalCase, isLoading: isLoadingCase } = useQuery({
-    queryKey: ['/api/assessment', caseId],
+    queryKey: [`/api/assessment/${caseId}`],
     enabled: !!caseId,
   });
 
