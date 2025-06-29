@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useRef } from "react";
+import type { WoundAssessment } from "@shared/schema";
 
 export default function CarePlan() {
   const [, setLocation] = useLocation();
@@ -53,7 +54,7 @@ export default function CarePlan() {
   const urlParams = new URLSearchParams(search);
   const requestedVersion = urlParams.get('version');
 
-  const { data: assessmentData, isLoading, error } = useQuery({
+  const { data: assessmentData, isLoading, error } = useQuery<WoundAssessment>({
     queryKey: requestedVersion ? [`/api/assessment/${caseId}?version=${requestedVersion}`] : [`/api/assessment/${caseId}`],
     enabled: !!caseId,
   });
@@ -120,21 +121,318 @@ export default function CarePlan() {
           <html>
             <head>
               <title>Wound Care Assessment - Case ${caseId}</title>
+              <meta charset="UTF-8">
               <style>
-                body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
-                .header { text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; }
-                .section { margin-bottom: 30px; page-break-inside: avoid; }
-                .section-title { color: #2563eb; font-size: 18px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px; }
-                .wound-images { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
-                .wound-image { text-align: center; }
-                .wound-image img { max-width: 200px; max-height: 200px; border: 1px solid #d1d5db; border-radius: 8px; }
-                .assessment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-                .assessment-item { padding: 10px; background: #f9fafb; border-radius: 6px; }
-                .assessment-label { font-weight: bold; color: #374151; }
-                .care-plan { background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; }
-                .disclaimer { background: #fef3c7; padding: 15px; border-radius: 6px; border: 1px solid #f59e0b; margin: 20px 0; }
-                .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; }
-                @media print { .no-print { display: none; } }
+                /* Reset and Base Styles */
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { 
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                  font-size: 11pt;
+                  line-height: 1.4;
+                  color: #1f2937;
+                  background: white;
+                  margin: 0;
+                  -webkit-print-color-adjust: exact;
+                  print-color-adjust: exact;
+                }
+                
+                /* Page Setup */
+                @page {
+                  size: A4;
+                  margin: 1in;
+                  @top-center {
+                    content: "Wound Care Assessment Report";
+                    font-size: 9pt;
+                    color: #6b7280;
+                  }
+                  @bottom-center {
+                    content: "Page " counter(page) " of " counter(pages);
+                    font-size: 9pt;
+                    color: #6b7280;
+                  }
+                }
+                
+                /* Typography */
+                h1 { font-size: 24pt; font-weight: 700; color: #1f2937; margin-bottom: 8pt; }
+                h2 { font-size: 16pt; font-weight: 600; color: #2563eb; margin: 20pt 0 12pt 0; }
+                h3 { font-size: 14pt; font-weight: 600; color: #374151; margin: 16pt 0 8pt 0; }
+                h4 { font-size: 12pt; font-weight: 600; color: #4b5563; margin: 12pt 0 6pt 0; }
+                p { margin-bottom: 8pt; }
+                
+                /* Header Styles */
+                .header {
+                  text-align: center;
+                  border-bottom: 3pt solid #2563eb;
+                  padding-bottom: 20pt;
+                  margin-bottom: 30pt;
+                  page-break-after: avoid;
+                }
+                
+                .header h1 {
+                  margin-bottom: 12pt;
+                  color: #1f2937;
+                }
+                
+                .header-info {
+                  display: flex;
+                  justify-content: center;
+                  gap: 30pt;
+                  font-size: 10pt;
+                  color: #6b7280;
+                  margin-top: 10pt;
+                }
+                
+                .header-info-item {
+                  display: flex;
+                  align-items: center;
+                  gap: 4pt;
+                }
+                
+                /* Card Styles */
+                .card {
+                  border: 1pt solid #e5e7eb;
+                  border-radius: 8pt;
+                  margin-bottom: 20pt;
+                  page-break-inside: avoid;
+                  background: white;
+                  box-shadow: 0 1pt 3pt rgba(0,0,0,0.1);
+                }
+                
+                .card-header {
+                  background: #f8fafc;
+                  border-bottom: 1pt solid #e5e7eb;
+                  padding: 16pt;
+                  border-radius: 8pt 8pt 0 0;
+                }
+                
+                .card-title {
+                  font-size: 14pt;
+                  font-weight: 600;
+                  color: #1f2937;
+                  display: flex;
+                  align-items: center;
+                  gap: 8pt;
+                }
+                
+                .card-content {
+                  padding: 16pt;
+                }
+                
+                /* Grid Layouts */
+                .assessment-grid {
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 12pt;
+                  margin: 16pt 0;
+                }
+                
+                .assessment-item {
+                  background: #f9fafb;
+                  border: 1pt solid #e5e7eb;
+                  border-radius: 6pt;
+                  padding: 12pt;
+                }
+                
+                .assessment-label {
+                  font-weight: 600;
+                  color: #374151;
+                  font-size: 10pt;
+                  margin-bottom: 4pt;
+                  text-transform: uppercase;
+                  letter-spacing: 0.025em;
+                }
+                
+                .assessment-value {
+                  color: #1f2937;
+                  font-size: 11pt;
+                  line-height: 1.3;
+                }
+                
+                /* Context Grid */
+                .context-grid {
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 12pt;
+                  margin: 16pt 0;
+                }
+                
+                .context-item {
+                  background: #f9fafb;
+                  border-left: 3pt solid #2563eb;
+                  padding: 10pt;
+                  border-radius: 0 4pt 4pt 0;
+                }
+                
+                .context-label {
+                  font-weight: 600;
+                  color: #374151;
+                  font-size: 10pt;
+                  margin-bottom: 4pt;
+                }
+                
+                .context-value {
+                  color: #4b5563;
+                  font-size: 10pt;
+                  line-height: 1.3;
+                }
+                
+                /* Image Styles */
+                .wound-images {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(200pt, 1fr));
+                  gap: 16pt;
+                  margin: 16pt 0;
+                }
+                
+                .wound-image {
+                  text-align: center;
+                  border: 1pt solid #d1d5db;
+                  border-radius: 8pt;
+                  padding: 12pt;
+                  background: white;
+                }
+                
+                .wound-image img {
+                  max-width: 100%;
+                  max-height: 200pt;
+                  border-radius: 4pt;
+                  box-shadow: 0 2pt 4pt rgba(0,0,0,0.1);
+                }
+                
+                .image-caption {
+                  font-size: 9pt;
+                  color: #6b7280;
+                  margin-top: 8pt;
+                  font-style: italic;
+                }
+                
+                /* Care Plan Styles */
+                .care-plan {
+                  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                  border: 1pt solid #0ea5e9;
+                  border-left: 4pt solid #2563eb;
+                  border-radius: 8pt;
+                  padding: 20pt;
+                  margin: 16pt 0;
+                }
+                
+                .care-plan h3 {
+                  color: #1e40af;
+                  margin-bottom: 12pt;
+                }
+                
+                .care-plan p {
+                  margin-bottom: 10pt;
+                  line-height: 1.5;
+                }
+                
+                .care-plan ul {
+                  margin: 10pt 0 10pt 20pt;
+                }
+                
+                .care-plan li {
+                  margin-bottom: 6pt;
+                  line-height: 1.4;
+                }
+                
+                /* Disclaimer Styles */
+                .disclaimer {
+                  background: #fef3c7;
+                  border: 2pt solid #f59e0b;
+                  border-radius: 8pt;
+                  padding: 16pt;
+                  margin: 20pt 0;
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 12pt;
+                }
+                
+                .disclaimer-icon {
+                  color: #d97706;
+                  font-weight: bold;
+                  font-size: 16pt;
+                }
+                
+                .disclaimer-content {
+                  flex: 1;
+                }
+                
+                .disclaimer-title {
+                  font-weight: 600;
+                  color: #92400e;
+                  font-size: 11pt;
+                  margin-bottom: 8pt;
+                }
+                
+                .disclaimer-text {
+                  color: #a16207;
+                  font-size: 10pt;
+                  line-height: 1.4;
+                }
+                
+                /* Footer Styles */
+                .footer {
+                  text-align: center;
+                  margin-top: 40pt;
+                  padding-top: 20pt;
+                  border-top: 1pt solid #e5e7eb;
+                  font-size: 9pt;
+                  color: #6b7280;
+                  page-break-inside: avoid;
+                }
+                
+                .footer-title {
+                  font-weight: 600;
+                  color: #374151;
+                  margin-bottom: 4pt;
+                }
+                
+                .footer-details {
+                  margin-bottom: 8pt;
+                }
+                
+                .footer-confidential {
+                  font-size: 8pt;
+                  color: #9ca3af;
+                  font-style: italic;
+                }
+                
+                /* Print Optimizations */
+                @media print {
+                  .no-print { display: none !important; }
+                  
+                  .card {
+                    box-shadow: none;
+                    border: 1pt solid #d1d5db;
+                  }
+                  
+                  .page-break {
+                    page-break-before: always;
+                  }
+                  
+                  .avoid-break {
+                    page-break-inside: avoid;
+                  }
+                  
+                  /* Ensure colors print */
+                  * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                  }
+                }
+                
+                /* Utility Classes */
+                .text-center { text-align: center; }
+                .text-left { text-align: left; }
+                .text-right { text-align: right; }
+                .font-bold { font-weight: 600; }
+                .font-semibold { font-weight: 500; }
+                .text-sm { font-size: 10pt; }
+                .text-xs { font-size: 9pt; }
+                .mb-2 { margin-bottom: 8pt; }
+                .mb-4 { margin-bottom: 16pt; }
+                .mt-2 { margin-top: 8pt; }
+                .mt-4 { margin-top: 16pt; }
               </style>
             </head>
             <body>
@@ -332,25 +630,25 @@ export default function CarePlan() {
         </div>
 
         {/* Wound Images Section */}
-        {assessmentData.imageData && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+        {assessmentData?.imageData && (
+          <Card className="mb-6 card">
+            <CardHeader className="card-header">
+              <CardTitle className="card-title">
                 <MapPin className="h-5 w-5 mr-2 text-medical-blue" />
                 Wound Documentation
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="text-center">
+            <CardContent className="card-content">
+              <div className="wound-images">
+                <div className="wound-image">
                   <img 
                     src={`data:${assessmentData.imageMimeType};base64,${assessmentData.imageData}`} 
                     alt="Wound assessment image"
                     className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm"
                   />
-                  <p className="text-sm text-gray-600 mt-2">Assessment Image</p>
-                  <p className="text-xs text-gray-500">
-                    {(assessmentData.imageSize / 1024).toFixed(1)} KB • {assessmentData.imageMimeType}
+                  <p className="image-caption">Assessment Image</p>
+                  <p className="image-caption">
+                    {((assessmentData.imageSize || 0) / 1024).toFixed(1)} KB • {assessmentData.imageMimeType}
                   </p>
                 </div>
               </div>
@@ -367,47 +665,47 @@ export default function CarePlan() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="font-semibold text-gray-700 mb-1">Wound Type</div>
-                <div className="text-gray-900">{assessmentData.classification?.woundType || 'Not specified'}</div>
+            <div className="assessment-grid">
+              <div className="assessment-item">
+                <div className="assessment-label">Wound Type</div>
+                <div className="assessment-value">{(assessmentData?.classification as any)?.woundType || 'Not specified'}</div>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="font-semibold text-gray-700 mb-1">Wound Stage</div>
-                <div className="text-gray-900">{assessmentData.classification?.stage || 'Not applicable'}</div>
+              <div className="assessment-item">
+                <div className="assessment-label">Wound Stage</div>
+                <div className="assessment-value">{(assessmentData?.classification as any)?.stage || 'Not applicable'}</div>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="font-semibold text-gray-700 mb-1">Size Assessment</div>
-                <div className="text-gray-900 capitalize">{assessmentData.classification?.size || 'Not specified'}</div>
+              <div className="assessment-item">
+                <div className="assessment-label">Size Assessment</div>
+                <div className="assessment-value">{(assessmentData?.classification as any)?.size || 'Not specified'}</div>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="font-semibold text-gray-700 mb-1">Anatomical Location</div>
-                <div className="text-gray-900">{assessmentData.classification?.location || 'Not specified'}</div>
+              <div className="assessment-item">
+                <div className="assessment-label">Anatomical Location</div>
+                <div className="assessment-value">{(assessmentData?.classification as any)?.location || 'Not specified'}</div>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="font-semibold text-gray-700 mb-1">Exudate Level</div>
-                <div className="text-gray-900">{assessmentData.classification?.exudate || 'Not assessed'}</div>
+              <div className="assessment-item">
+                <div className="assessment-label">Exudate Level</div>
+                <div className="assessment-value">{(assessmentData?.classification as any)?.exudate || 'Not assessed'}</div>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="font-semibold text-gray-700 mb-1">Tissue Type</div>
-                <div className="text-gray-900">{assessmentData.classification?.tissueType || 'Not specified'}</div>
+              <div className="assessment-item">
+                <div className="assessment-label">Tissue Type</div>
+                <div className="assessment-value">{(assessmentData?.classification as any)?.tissueType || 'Not specified'}</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Patient Context */}
-        {assessmentData.contextData && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+        {assessmentData?.contextData && (
+          <Card className="mb-6 card">
+            <CardHeader className="card-header">
+              <CardTitle className="card-title">
                 <User className="h-5 w-5 mr-2 text-medical-blue" />
                 Patient Context & History
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                {Object.entries(assessmentData.contextData).map(([key, value]) => {
+            <CardContent className="card-content">
+              <div className="context-grid">
+                {Object.entries(assessmentData.contextData as Record<string, any>).map(([key, value]) => {
                   if (!value) return null;
                   const labels: Record<string, string> = {
                     age: 'Age',
@@ -422,9 +720,9 @@ export default function CarePlan() {
                     stressLevel: 'Stress Level'
                   };
                   return (
-                    <div key={key} className="bg-gray-50 p-3 rounded">
-                      <div className="font-medium text-gray-700 mb-1">{labels[key] || key}</div>
-                      <div className="text-gray-600">{value}</div>
+                    <div key={key} className="context-item">
+                      <div className="context-label">{labels[key] || key}</div>
+                      <div className="context-value">{value}</div>
                     </div>
                   );
                 })}
