@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Stethoscope, Circle, HelpCircle, Plus, LogOut } from "lucide-react";
+import { Stethoscope, Circle, HelpCircle, Plus, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import ImageUploadSection from "@/components/ImageUploadSection";
@@ -55,12 +55,7 @@ export default function Home() {
                   System Online
                 </span>
               </div>
-              <button 
-                onClick={() => window.location.href = '/agents'}
-                className="text-gray-600 hover:text-gray-800 text-sm font-medium"
-              >
-                AI Configuration
-              </button>
+              
               
               {/* Authentication-aware navigation */}
               {isAuthenticated ? (
@@ -72,6 +67,15 @@ export default function Home() {
                     className="border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white"
                   >
                     My Cases
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLocation("/settings")}
+                    className="p-2"
+                    title="Settings"
+                  >
+                    <Settings className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="outline" 

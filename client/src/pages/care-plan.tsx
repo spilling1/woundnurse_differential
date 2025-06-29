@@ -1,5 +1,5 @@
 import { useLocation, useParams, useSearch } from "wouter";
-import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Trash2, Plus, LogOut } from "lucide-react";
+import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Trash2, Plus, LogOut, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -223,6 +223,15 @@ export default function CarePlan() {
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Start New Case
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLocation("/settings")}
+                    className="p-2"
+                    title="Settings"
+                  >
+                    <Settings className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="outline" 
