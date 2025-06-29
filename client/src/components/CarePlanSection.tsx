@@ -62,9 +62,49 @@ export default function CarePlanSection({ assessmentData, model, isProcessing }:
       if (section.includes('MEDICAL DISCLAIMER')) {
         return null; // We'll handle this separately
       }
+      
+      // Convert markdown links to clickable links
+      const formatWithLinks = (text: string) => {
+        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        const parts = [];
+        let lastIndex = 0;
+        let match;
+        
+        while ((match = linkRegex.exec(text)) !== null) {
+          // Add text before the link
+          if (match.index > lastIndex) {
+            parts.push(text.slice(lastIndex, match.index));
+          }
+          
+          // Add the clickable link
+          parts.push(
+            <a 
+              key={match.index}
+              href={match[2]} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline font-medium"
+            >
+              {match[1]}
+            </a>
+          );
+          
+          lastIndex = match.index + match[0].length;
+        }
+        
+        // Add remaining text after the last link
+        if (lastIndex < text.length) {
+          parts.push(text.slice(lastIndex));
+        }
+        
+        return parts.length > 0 ? parts : text;
+      };
+      
       return (
         <div key={index} className="mb-4">
-          <p className="text-gray-700 text-sm whitespace-pre-wrap">{section}</p>
+          <p className="text-gray-700 text-sm whitespace-pre-wrap">
+            {formatWithLinks(section)}
+          </p>
         </div>
       );
     });
@@ -107,10 +147,7 @@ export default function CarePlanSection({ assessmentData, model, isProcessing }:
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    console.log('Navigating to care plan with case ID:', assessmentData.caseId);
-                    setLocation(`/care-plan/${assessmentData.caseId}`);
-                  }}
+                  onClick={() => setLocation(`/care-plan/${assessmentData.caseId}`)}
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   View Full Care Plan

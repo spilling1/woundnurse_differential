@@ -134,9 +134,49 @@ export default function CarePlan() {
       if (section.includes('MEDICAL DISCLAIMER')) {
         return null;
       }
+      
+      // Convert markdown links to clickable links
+      const formatWithLinks = (text: string) => {
+        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        const parts = [];
+        let lastIndex = 0;
+        let match;
+        
+        while ((match = linkRegex.exec(text)) !== null) {
+          // Add text before the link
+          if (match.index > lastIndex) {
+            parts.push(text.slice(lastIndex, match.index));
+          }
+          
+          // Add the clickable link
+          parts.push(
+            <a 
+              key={match.index}
+              href={match[2]} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline font-medium"
+            >
+              {match[1]}
+            </a>
+          );
+          
+          lastIndex = match.index + match[0].length;
+        }
+        
+        // Add remaining text after the last link
+        if (lastIndex < text.length) {
+          parts.push(text.slice(lastIndex));
+        }
+        
+        return parts.length > 0 ? parts : text;
+      };
+      
       return (
         <div key={index} className="mb-4">
-          <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{section}</p>
+          <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+            {formatWithLinks(section)}
+          </p>
         </div>
       );
     });
@@ -154,11 +194,6 @@ export default function CarePlan() {
   }
 
   if (!assessmentData) {
-    console.log('Assessment data is null/undefined for case:', caseId);
-    console.log('Query error:', error);
-    console.log('IsLoading:', isLoading);
-    console.log('Type of assessmentData:', typeof assessmentData);
-    console.log('AssessmentData value:', assessmentData);
     return (
       <div className="min-h-screen bg-bg-light flex items-center justify-center">
         <div className="text-center">
