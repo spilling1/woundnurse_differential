@@ -23,22 +23,21 @@ export default function CarePlan() {
   // Extract case ID from URL params with multiple fallback methods
   let caseId = params.caseId;
   
-  // Debug logging
-  console.log('CarePlan Debug Info:');
-  console.log('- params:', params);
-  console.log('- params.caseId:', params.caseId);
-  console.log('- window.location.pathname:', window.location.pathname);
-  console.log('- window.location.href:', window.location.href);
-  
   if (!caseId || caseId === 'care-plan') {
     // Fallback: extract from window.location.pathname
     const pathParts = window.location.pathname.split('/');
-    console.log('- pathParts:', pathParts);
     const caseIdIndex = pathParts.indexOf('care-plan') + 1;
-    console.log('- caseIdIndex:', caseIdIndex);
     if (caseIdIndex > 0 && caseIdIndex < pathParts.length) {
       caseId = pathParts[caseIdIndex];
-      console.log('- extracted caseId from path:', caseId);
+    }
+  }
+  
+  if (!caseId || caseId === 'care-plan') {
+    // Fallback: extract from query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryCaseId = urlParams.get('caseId');
+    if (queryCaseId) {
+      caseId = queryCaseId;
     }
   }
   
@@ -47,11 +46,8 @@ export default function CarePlan() {
     const hash = window.location.hash.replace('#', '');
     if (hash && hash !== 'care-plan') {
       caseId = hash;
-      console.log('- extracted caseId from hash:', caseId);
     }
   }
-  
-  console.log('- final caseId:', caseId);
   
   // Extract version from query parameters
   const urlParams = new URLSearchParams(search);

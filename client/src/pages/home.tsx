@@ -129,7 +129,7 @@ export default function Home() {
                 setAssessmentData(data);
                 setIsProcessing(false);
                 // Navigate to care plan page
-                setLocation(`/care-plan?caseId=${data.caseId}`);
+                setLocation(`/care-plan/${data.caseId}`);
               }}
             />
           </div>
