@@ -28,6 +28,7 @@ export default function ConfigurationPanel({
   onModelChange,
   selectedFile,
   isProcessing,
+  contextData,
   onStartAssessment,
   onAssessmentComplete
 }: ConfigurationPanelProps) {
@@ -43,6 +44,15 @@ export default function ConfigurationPanel({
       formData.append('image', selectedFile);
       formData.append('audience', audience);
       formData.append('model', model);
+      
+      // Add context data if available
+      if (contextData) {
+        Object.entries(contextData).forEach(([key, value]) => {
+          if (value && value.trim()) {
+            formData.append(key, value);
+          }
+        });
+      }
 
       const response = await fetch('/api/upload', {
         method: 'POST',

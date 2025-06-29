@@ -43,6 +43,12 @@ export default function Home() {
                   System Online
                 </span>
               </div>
+              <button 
+                onClick={() => window.location.href = '/agents'}
+                className="text-gray-600 hover:text-gray-800 text-sm font-medium"
+              >
+                AI Configuration
+              </button>
               <button className="text-gray-400 hover:text-gray-500">
                 <HelpCircle className="w-5 h-5" />
               </button>

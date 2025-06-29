@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
+import * as fs from "fs";
+import * as path from "path";
 import { storage } from "./storage";
 import { uploadRequestSchema, feedbackRequestSchema } from "@shared/schema";
 import { validateImage } from "./services/imageProcessor";
@@ -141,6 +143,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
       models: ["gpt-4o", "gpt-3.5", "gpt-3.5-pro", "gemini-2.5-flash", "gemini-2.5-pro"],
       processingQueue: 0
     });
+  });
+
+  // Get Agents.md content
+  app.get("/api/agents", async (req, res) => {
+    try {
+      const agentsPath = path.resolve('./Agents.md');
+      
+      if (!fs.existsSync(agentsPath)) {
+        // Create empty file if it doesn't exist
+        fs.writeFileSync(agentsPath, '# AI Agent Rules\n\nThis file contains the rules and case history for the AI wound care agent.\n\n');
+      }
+      
+      const content = fs.readFileSync(agentsPath, 'utf8');
+      
+      res.json({
+        content,
+        lastModified: fs.statSync(agentsPath).mtime,
+        size: content.length
+      });
+      
+    } catch (error: any) {
+      console.error('Error reading Agents.md:', error);
+      res.status(500).json({
+        code: "AGENTS_READ_ERROR",
+        message: error.message || "Failed to read Agents.md"
+      });
+    }
+  });
+
+  // Update Agents.md content
+  app.post("/api/agents", async (req, res) => {
+    try {
+      const { content } = req.body;
+      
+      if (!content || typeof content !== 'string') {
+        return res.status(400).json({
+          code: "INVALID_CONTENT",
+          message: "Content is required and must be a string"
+        });
+      }
+      
+      const agentsPath = path.resolve('./Agents.md');
+      
+      // Create backup before updating
+      if (fs.existsSync(agentsPath)) {
+        const backupPath = `${agentsPath}.backup.${Date.now()}`;
+        fs.copyFileSync(agentsPath, backupPath);
+      }
+      
+      // Write new content
+      fs.writeFileSync(agentsPath, content, 'utf8');
+      
+      res.json({
+        success: true,
+        message: "Agents.md updated successfully",
+        lastModified: fs.statSync(agentsPath).mtime,
+        size: content.length
+      });
+      
+    } catch (error: any) {
+      console.error('Error updating Agents.md:', error);
+      res.status(500).json({
+        code: "AGENTS_UPDATE_ERROR",
+        message: error.message || "Failed to update Agents.md"
+      });
+    }
   });
 
   const httpServer = createServer(app);
