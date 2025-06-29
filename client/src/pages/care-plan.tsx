@@ -180,11 +180,11 @@ export default function CarePlan() {
               </Button>
               <div className="flex items-center">
                 <ClipboardList className="text-medical-blue text-xl mr-3" />
-                <h1 className="text-xl font-semibold text-gray-900">Care Plan</h1>
+                <h1 className="text-xl font-semibold text-gray-900">Wound Care Plan</h1>
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Badge variant="secondary">Case: {caseId}</Badge>
+              <Badge variant="secondary">{caseId}</Badge>
               
               {/* Care Plan Actions */}
               <div className="flex items-center space-x-2 border-r border-gray-200 pr-3">
@@ -204,22 +204,6 @@ export default function CarePlan() {
                   <Printer className="mr-2 h-4 w-4" />
                   Print
                 </Button>
-                {isAuthenticated && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => {
-                      if (window.confirm('Are you sure you want to delete this assessment? This action cannot be undone.')) {
-                        deleteMutation.mutate();
-                      }
-                    }}
-                    disabled={deleteMutation.isPending}
-                    className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-                  </Button>
-                )}
               </div>
 
               {/* User Actions */}
