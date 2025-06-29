@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Stethoscope, Upload, Settings, ClipboardList } from "lucide-react";
+import { Stethoscope, Circle, HelpCircle } from "lucide-react";
 import ImageUploadSection from "@/components/ImageUploadSection";
 import ConfigurationPanel from "@/components/ConfigurationPanel";
+import SystemStatus from "@/components/SystemStatus";
 import WoundQuestionnaire, { WoundContextData } from "@/components/WoundQuestionnaire";
-import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -34,110 +34,78 @@ export default function Home() {
     woundSite: ''
   });
 
-  const handleStartAssessment = () => setIsProcessing(true);
-  
-  const handleAssessmentComplete = (data: any) => {
-    setAssessmentData(data);
-    setIsProcessing(false);
-    setLocation(`/care-plan?caseId=${data.caseId}`);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
-                <Stethoscope className="text-white text-2xl" />
+    <div className="font-inter bg-bg-light min-h-screen">
+      {/* Navigation Header */}
+      <nav className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 flex items-center">
+                <Stethoscope className="text-medical-blue text-2xl mr-3" />
+                <h1 className="text-xl font-semibold text-gray-900">Wound Nurses</h1>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900">Wound Nurses</h1>
             </div>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Wound care assessment and treatment planning
-            </p>
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-500">
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                  <Circle className="inline w-2 h-2 mr-1 fill-current" />
+                  System Online
+                </span>
+              </div>
+              <button 
+                onClick={() => window.location.href = '/agents'}
+                className="text-gray-600 hover:text-gray-800 text-sm font-medium"
+              >
+                AI Configuration
+              </button>
+              <button className="text-gray-400 hover:text-gray-500">
+                <HelpCircle className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Main Content Container */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Step 1 - Upload Image */}
-          <Card className="shadow-lg">
-            <div className="bg-blue-600 text-white p-6 rounded-t-lg">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-lg font-bold">1</span>
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-xl font-semibold">Upload Image</h2>
-                  <p className="text-blue-100 text-sm">Take or upload a clear photo</p>
-                </div>
-                <Upload className="text-2xl opacity-75" />
-              </div>
-            </div>
-            <CardContent className="p-6">
-              <ImageUploadSection 
-                selectedFile={selectedFile}
-                onFileSelect={setSelectedFile}
-              />
-            </CardContent>
-          </Card>
+          {/* Left Column - Upload and Configuration */}
+          <div className="lg:col-span-1">
+            <ImageUploadSection 
+              selectedFile={selectedFile}
+              onFileSelect={setSelectedFile}
+            />
+            
+            <ConfigurationPanel
+              audience={audience}
+              model={model}
+              onAudienceChange={setAudience}
+              onModelChange={setModel}
+              selectedFile={selectedFile}
+              isProcessing={isProcessing}
+              contextData={contextData}
+              onStartAssessment={() => setIsProcessing(true)}
+              onAssessmentComplete={(data) => {
+                setAssessmentData(data);
+                setIsProcessing(false);
+                // Navigate to care plan page
+                setLocation(`/care-plan?caseId=${data.caseId}`);
+              }}
+            />
+          </div>
 
-          {/* Step 2 - Configure */}
-          <Card className="shadow-lg">
-            <div className="bg-green-600 text-white p-6 rounded-t-lg">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-lg font-bold">2</span>
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-xl font-semibold">Configure Assessment</h2>
-                  <p className="text-green-100 text-sm">Choose your preferences</p>
-                </div>
-                <Settings className="text-2xl opacity-75" />
-              </div>
-            </div>
-            <CardContent className="p-6">
-              <ConfigurationPanel
-                audience={audience}
-                model={model}
-                onAudienceChange={setAudience}
-                onModelChange={setModel}
-                selectedFile={selectedFile}
-                isProcessing={isProcessing}
-                contextData={contextData}
-                onStartAssessment={handleStartAssessment}
-                onAssessmentComplete={handleAssessmentComplete}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Step 3 - Questionnaire */}
-          <Card className="shadow-lg">
-            <div className="bg-purple-600 text-white p-6 rounded-t-lg">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-lg font-bold">3</span>
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-xl font-semibold">Provide Context</h2>
-                  <p className="text-purple-100 text-sm">Answer assessment questions</p>
-                </div>
-                <ClipboardList className="text-2xl opacity-75" />
-              </div>
-            </div>
-            <CardContent className="p-6">
-              <WoundQuestionnaire 
-                onDataChange={setContextData}
-                initialData={contextData}
-              />
-            </CardContent>
-          </Card>
+          {/* Right Column - Questionnaire */}
+          <div className="lg:col-span-2">
+            <WoundQuestionnaire 
+              onDataChange={setContextData}
+              initialData={contextData}
+            />
+          </div>
         </div>
+
+        <SystemStatus />
       </div>
     </div>
   );
