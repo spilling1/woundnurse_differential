@@ -32,27 +32,13 @@ export default function Landing() {
           <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
             Wound Nurses
           </h1>
-          <p className="text-xl sm:text-2xl text-medical-blue font-semibold mb-4">
-            Powered by AI
-          </p>
-          <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
             Advanced AI-powered wound assessment and care plan generation. 
             Get professional-grade wound analysis and personalized treatment recommendations in minutes.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Button 
-              size="lg"
-              onClick={() => setLocation("/assessment")}
-              className="bg-medical-blue hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
-            >
-              Start Your Assessment for Free
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
-
           {/* Trust Indicators */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12">
             <div className="flex flex-col items-center">
               <div className="bg-success-green/10 p-4 rounded-full mb-4">
                 <Target className="h-8 w-8 text-success-green" />
@@ -77,55 +63,17 @@ export default function Landing() {
               <p className="text-gray-600">Recommendations based on latest clinical guidelines</p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Get professional wound assessment and personalized care plans in three simple steps
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card>
-              <CardContent className="p-6 text-center">
-                <div className="bg-medical-blue/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-medical-blue">1</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Upload & Answer</h3>
-                <p className="text-gray-600">
-                  Upload wound images and answer comprehensive health questions for accurate assessment
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6 text-center">
-                <div className="bg-medical-blue/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-medical-blue">2</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">AI Analysis</h3>
-                <p className="text-gray-600">
-                  Advanced AI analyzes wound characteristics, considers your health context, and generates insights
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6 text-center">
-                <div className="bg-medical-blue/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-medical-blue">3</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Get Care Plan</h3>
-                <p className="text-gray-600">
-                  Receive personalized treatment recommendations tailored to your specific needs and situation
-                </p>
-              </CardContent>
-            </Card>
+          
+          {/* CTA Button */}
+          <div className="flex justify-center mt-12">
+            <Button 
+              size="lg"
+              onClick={() => setLocation("/assessment")}
+              className="bg-medical-blue hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
+            >
+              Start Your Assessment for Free
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </div>
       </section>
