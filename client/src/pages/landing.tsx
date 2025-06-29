@@ -103,14 +103,27 @@ export default function Landing() {
           
           {/* CTA Button */}
           <div className="flex justify-center mt-12">
-            <Button 
-              size="lg"
-              onClick={() => setLocation("/start-assessment")}
-              className="bg-medical-blue hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
-            >
-              Start Your Free Assessment
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            {isLoading ? (
+              <div className="w-12 h-12 animate-spin rounded-full border-b-2 border-medical-blue"></div>
+            ) : isAuthenticated ? (
+              <Button 
+                size="lg"
+                onClick={() => setLocation("/my-cases")}
+                className="bg-medical-blue hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
+              >
+                View My Cases
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            ) : (
+              <Button 
+                size="lg"
+                onClick={() => setLocation("/start-assessment")}
+                className="bg-medical-blue hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
+              >
+                Start New Case
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
       </section>

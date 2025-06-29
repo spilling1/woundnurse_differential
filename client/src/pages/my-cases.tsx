@@ -13,7 +13,9 @@ export default function MyCases() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
-  // Redirect to home if not authenticated
+  // Temporarily disable auth check to stop infinite loop
+  // TODO: Re-enable after fixing useAuth hook
+  /*
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       toast({
@@ -27,6 +29,7 @@ export default function MyCases() {
       return;
     }
   }, [isAuthenticated, authLoading, toast]);
+  */
 
   const { data: cases, isLoading, error } = useQuery({
     queryKey: ["/api/my-cases"],

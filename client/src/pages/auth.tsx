@@ -11,7 +11,7 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      setLocation("/assessment");
+      setLocation("/my-cases");
     }
   }, [isAuthenticated, setLocation]);
 
