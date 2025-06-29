@@ -61,13 +61,13 @@ export default function MyCases() {
         {/* Navigation */}
         <div className="mb-8 flex justify-center gap-4">
           <Link href="/assessment">
-            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+            <Button className="bg-white text-medical-blue border-2 border-white hover:bg-medical-blue hover:text-white px-6 py-2 font-semibold shadow-lg">
               Start New Case
             </Button>
           </Link>
           <Button
             variant="outline"
-            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            className="bg-white/20 border-2 border-white text-white hover:bg-white hover:text-medical-blue px-6 py-2 font-semibold shadow-lg"
             onClick={() => window.location.href = "/api/logout"}
           >
             Log Out
