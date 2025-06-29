@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, users, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type User, type UpsertUser } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -20,9 +20,17 @@ export interface IStorage {
   getActiveAgentInstructions(): Promise<AgentInstructions | undefined>;
   createAgentInstructions(instructions: InsertAgentInstructions): Promise<AgentInstructions>;
   updateAgentInstructions(id: number, content: string): Promise<AgentInstructions>;
+  
+  // Agent question operations
+  createAgentQuestion(question: InsertAgentQuestion): Promise<AgentQuestion>;
+  getQuestionsBySession(sessionId: string): Promise<AgentQuestion[]>;
+  answerQuestion(questionId: number, answer: string): Promise<AgentQuestion>;
+  getUnansweredQuestions(sessionId: string): Promise<AgentQuestion[]>;
 }
 
 export class DatabaseStorage implements IStorage {
+  // Temporary in-memory storage for agent questions until database schema is updated
+  private agentQuestionsStorage: Map<string, AgentQuestion[]> = new Map();
   // User operations - required for Replit Auth
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
@@ -160,6 +168,49 @@ export class DatabaseStorage implements IStorage {
       .where(eq(agentInstructions.id, id))
       .returning();
     return result;
+  }
+
+  // Agent question operations (using temporary in-memory storage)
+  async createAgentQuestion(question: InsertAgentQuestion): Promise<AgentQuestion> {
+    const sessionQuestions = this.agentQuestionsStorage.get(question.sessionId) || [];
+    const newQuestion: AgentQuestion = {
+      id: sessionQuestions.length + 1,
+      userId: question.userId,
+      sessionId: question.sessionId,
+      caseId: question.caseId || null,
+      question: question.question,
+      answer: null,
+      questionType: question.questionType,
+      isAnswered: false,
+      context: question.context || null,
+      createdAt: new Date(),
+      answeredAt: null,
+    };
+    sessionQuestions.push(newQuestion);
+    this.agentQuestionsStorage.set(question.sessionId, sessionQuestions);
+    return newQuestion;
+  }
+
+  async getQuestionsBySession(sessionId: string): Promise<AgentQuestion[]> {
+    return this.agentQuestionsStorage.get(sessionId) || [];
+  }
+
+  async answerQuestion(questionId: number, answer: string): Promise<AgentQuestion> {
+    for (const [sessionId, questions] of Array.from(this.agentQuestionsStorage.entries())) {
+      const question = questions.find((q: AgentQuestion) => q.id === questionId);
+      if (question) {
+        question.answer = answer;
+        question.isAnswered = true;
+        question.answeredAt = new Date();
+        return question;
+      }
+    }
+    throw new Error(`Question with ID ${questionId} not found`);
+  }
+
+  async getUnansweredQuestions(sessionId: string): Promise<AgentQuestion[]> {
+    const questions = this.agentQuestionsStorage.get(sessionId) || [];
+    return questions.filter(q => !q.isAnswered);
   }
 }
 
