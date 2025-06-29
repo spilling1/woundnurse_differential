@@ -38,6 +38,7 @@ export default function FollowUpAssessment() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const additionalFileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
   const [dragActive, setDragActive] = useState(false);
@@ -171,8 +172,8 @@ export default function FollowUpAssessment() {
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileSelect(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleImageSelect(e.dataTransfer.files);
     }
   };
 
@@ -189,6 +190,10 @@ export default function FollowUpAssessment() {
     const formData = new FormData();
     selectedFiles.forEach(file => {
       formData.append('images', file);
+    });
+    
+    additionalFiles.forEach(file => {
+      formData.append('additionalFiles', file);
     });
     
     Object.entries(values).forEach(([key, value]) => {
@@ -356,23 +361,42 @@ export default function FollowUpAssessment() {
                 >
                   {previewUrls.length > 0 ? (
                     <div className="space-y-4">
-                      <img
-                        src={previewUrls[0]}
-                        alt="Wound preview"
-                        className="max-w-xs max-h-64 mx-auto rounded-lg border border-gray-200"
-                      />
-                      <div className="text-sm text-gray-600">
-                        {selectedFiles[0]?.name} ({(selectedFiles[0]?.size || 0 / 1024).toFixed(1)} KB)
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {previewUrls.map((url, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={url}
+                              alt={`Wound preview ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                            />
+                            <div className="text-xs text-gray-600 mt-1">
+                              {selectedFiles[index]?.name}
+                            </div>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="absolute top-1 right-1 p-1 h-6 w-6"
+                              onClick={() => {
+                                const newFiles = selectedFiles.filter((_, i) => i !== index);
+                                const newUrls = previewUrls.filter((_, i) => i !== index);
+                                setSelectedFiles(newFiles);
+                                setPreviewUrls(newUrls);
+                                URL.revokeObjectURL(url);
+                              }}
+                            >
+                              ×
+                            </Button>
+                          </div>
+                        ))}
                       </div>
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => {
-                          setSelectedFiles([]);
-                          setPreviewUrls([]);
-                        }}
+                        onClick={() => fileInputRef.current?.click()}
                       >
-                        Remove Image
+                        <Camera className="mr-2 h-4 w-4" />
+                        Add More Images
                       </Button>
                     </div>
                   ) : (
@@ -405,13 +429,84 @@ export default function FollowUpAssessment() {
                   ref={fileInputRef}
                   type="file"
                   accept="image/jpeg,image/jpg,image/png"
+                  multiple
                   className="hidden"
                   onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      handleFileSelect(e.target.files[0]);
+                    if (e.target.files && e.target.files.length > 0) {
+                      handleImageSelect(e.target.files);
                     }
                   }}
                 />
+              </CardContent>
+            </Card>
+
+            {/* Additional Files Upload */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="h-5 w-5" />
+                  Additional Files
+                </CardTitle>
+                <CardDescription>
+                  Upload any additional files that might help with the assessment (doctor notes, medical history, etc.)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {additionalFiles.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium">Uploaded Files:</h4>
+                      <div className="space-y-2">
+                        {additionalFiles.map((file, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded border">
+                            <div className="flex items-center gap-2">
+                              <div className="text-sm text-gray-600">
+                                📄 {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newFiles = additionalFiles.filter((_, i) => i !== index);
+                                setAdditionalFiles(newFiles);
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => additionalFileInputRef.current?.click()}
+                    className="w-full"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {additionalFiles.length > 0 ? 'Add More Files' : 'Choose Files'}
+                  </Button>
+                  
+                  <input
+                    ref={additionalFileInputRef}
+                    type="file"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleAdditionalFileSelect(e.target.files);
+                      }
+                    }}
+                  />
+                  
+                  <p className="text-sm text-gray-500">
+                    Accepts any file type up to 10MB each. Files are used for assessment context only and are not permanently saved.
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
