@@ -21,7 +21,7 @@ export default function CarePlan() {
   const printRef = useRef<HTMLDivElement>(null);
 
   // Extract case ID from URL params
-  const caseId = params.caseId;
+  const caseId = params.caseId || window.location.pathname.split('/').pop();
   
   // Extract version from query parameters
   const urlParams = new URLSearchParams(search);
