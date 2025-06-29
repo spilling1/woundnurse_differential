@@ -1,5 +1,5 @@
 import { useLocation, useSearch } from "wouter";
-import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Trash2 } from "lucide-react";
+import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Trash2, Plus, LogOut } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -185,37 +185,64 @@ export default function CarePlan() {
             </div>
             <div className="flex items-center space-x-3">
               <Badge variant="secondary">Case: {caseId}</Badge>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setLocation(`/nurse-evaluation?caseId=${caseId}`)}
-              >
-                <UserCheck className="mr-2 h-4 w-4" />
-                Nurse Review
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
-                <Download className="mr-2 h-4 w-4" />
-                Download PDF
-              </Button>
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                <Printer className="mr-2 h-4 w-4" />
-                Print
-              </Button>
-              {isAuthenticated && (
+              
+              {/* Care Plan Actions */}
+              <div className="flex items-center space-x-2 border-r border-gray-200 pr-3">
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => {
-                    if (window.confirm('Are you sure you want to delete this assessment? This action cannot be undone.')) {
-                      deleteMutation.mutate();
-                    }
-                  }}
-                  disabled={deleteMutation.isPending}
-                  className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                  onClick={() => setLocation(`/nurse-evaluation?caseId=${caseId}`)}
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  Nurse Review
                 </Button>
+                <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Download PDF
+                </Button>
+                <Button variant="outline" size="sm" onClick={handlePrint}>
+                  <Printer className="mr-2 h-4 w-4" />
+                  Print
+                </Button>
+                {isAuthenticated && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      if (window.confirm('Are you sure you want to delete this assessment? This action cannot be undone.')) {
+                        deleteMutation.mutate();
+                      }
+                    }}
+                    disabled={deleteMutation.isPending}
+                    className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                  </Button>
+                )}
+              </div>
+
+              {/* User Actions */}
+              {isAuthenticated && (
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setLocation('/assessment')}
+                    className="border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Start New Case
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => window.location.href = "/api/logout"}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log Out
+                  </Button>
+                </div>
               )}
             </div>
           </div>
