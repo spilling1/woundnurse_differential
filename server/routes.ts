@@ -25,6 +25,31 @@ const upload = multer({
   },
 });
 
+// Separate upload configuration for follow-up that accepts multiple file types
+const followUpUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images for wound photos
+    if (file.fieldname === 'images') {
+      if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+      } else {
+        cb(new Error('Invalid image file type. Only JPG and PNG are allowed.'));
+      }
+    }
+    // Accept any file type for additional files (they're temporary)
+    else if (file.fieldname === 'additionalFiles') {
+      cb(null, true);
+    }
+    else {
+      cb(new Error('Unexpected field name.'));
+    }
+  },
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
@@ -180,12 +205,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Follow-up assessment endpoint
-  app.post("/api/follow-up/:caseId", upload.single('image'), async (req, res) => {
+  app.post("/api/follow-up/:caseId", followUpUpload.fields([
+    { name: 'images', maxCount: 10 },
+    { name: 'additionalFiles', maxCount: 10 }
+  ]), async (req, res) => {
     try {
-      if (!req.file) {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      
+      if (!files.images || files.images.length === 0) {
         return res.status(400).json({
           code: "NO_IMAGE",
-          message: "No image file provided"
+          message: "At least one wound image is required"
         });
       }
 
@@ -207,10 +237,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get feedback history for context
       const feedbackHistory = await storage.getFeedbacksByCase(caseId);
 
-      // Validate image
-      const imageBase64 = await validateImage(req.file);
+      // Validate and process primary image (first image for AI analysis)
+      const primaryImage = files.images[0];
+      const imageBase64 = await validateImage(primaryImage);
 
-      // Classify wound using AI
+      // Process additional files (extract text content if possible)
+      let additionalContext = '';
+      if (files.additionalFiles && files.additionalFiles.length > 0) {
+        // For now, just note that additional files were provided
+        const fileNames = files.additionalFiles.map(f => f.originalname).join(', ');
+        additionalContext = `Additional files provided: ${fileNames}`;
+      }
+
+      // Classify wound using AI (using primary image)
       const classification = await classifyWound(imageBase64, requestData.model);
 
       // Build context for care plan generation including previous assessments and progress
@@ -250,8 +289,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         audience: originalAssessment.audience,
         model: requestData.model,
         imageData: imageBase64,
-        imageMimeType: req.file.mimetype,
-        imageSize: req.file.size,
+        imageMimeType: primaryImage.mimetype,
+        imageSize: primaryImage.size,
         classification,
         carePlan,
         woundOrigin: requestData.woundOrigin || null,
