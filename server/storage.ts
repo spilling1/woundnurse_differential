@@ -1,8 +1,14 @@
-import { woundAssessments, feedbacks, agentInstructions, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, users, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type User, type UpsertUser } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
+  // User operations - required for Replit Auth
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  getUserWoundAssessments(userId: string): Promise<WoundAssessment[]>;
+  
+  // Wound assessment operations
   createWoundAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
   getWoundAssessment(caseId: string): Promise<WoundAssessment | undefined>;
   createFeedback(feedback: InsertFeedback): Promise<Feedback>;
@@ -13,6 +19,36 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  // User operations - required for Replit Auth
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
+  async getUserWoundAssessments(userId: string): Promise<WoundAssessment[]> {
+    return await db
+      .select()
+      .from(woundAssessments)
+      .where(eq(woundAssessments.userId, userId))
+      .orderBy(desc(woundAssessments.createdAt));
+  }
+
+  // Wound assessment operations
   async createWoundAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment> {
     const [result] = await db
       .insert(woundAssessments)
