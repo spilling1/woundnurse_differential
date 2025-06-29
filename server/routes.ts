@@ -665,10 +665,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const carePlan = await generateCarePlan(
-        finalClassification,
         audience,
-        model,
-        JSON.stringify(contextData)
+        finalClassification,
+        JSON.stringify(contextData),
+        model
       );
 
       // Simulate confidence assessment

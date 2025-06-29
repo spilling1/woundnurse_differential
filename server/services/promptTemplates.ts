@@ -1,6 +1,7 @@
 import { storage } from "../storage";
 
 export async function getPromptTemplate(audience: string, classification: any, contextData?: any): Promise<string> {
+  console.log('getPromptTemplate called with:', { audience, audienceType: typeof audience, classification: typeof classification });
   // Get agent instructions from database
   const agentInstructions = await storage.getActiveAgentInstructions();
   const instructions = agentInstructions?.content || `Default wound care guidelines: Always prioritize patient safety and recommend consulting healthcare professionals.`;
@@ -46,7 +47,7 @@ Current Wound Assessment:
 - Wound Bed: ${classification.woundBed}
 - Exudate: ${classification.exudate}
 - Location: ${classification.location}
-- Infection Signs: ${classification.infectionSigns.join(', ') || 'None observed'}
+- Infection Signs: ${classification.infectionSigns?.join(', ') || 'None observed'}
 - Additional Observations: ${classification.additionalObservations}
 
 Patient Context:
