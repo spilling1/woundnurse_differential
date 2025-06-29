@@ -129,10 +129,10 @@ export const feedbackRequestSchema = z.object({
 
 export const followUpRequestSchema = z.object({
   caseId: z.string(),
-  audience: z.enum(['family', 'patient', 'medical']),
   model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro']),
   progressNotes: z.string(),
   treatmentResponse: z.string(),
+  additionalInfo: z.string().optional(),
   woundOrigin: z.string().optional(),
   medicalHistory: z.string().optional(),
   woundChanges: z.string().optional(),

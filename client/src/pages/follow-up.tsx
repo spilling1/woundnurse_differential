@@ -151,7 +151,7 @@ export default function FollowUpAssessment() {
   };
 
   const onSubmit = async (values: z.infer<typeof followUpSchema>) => {
-    if (!selectedFile) {
+    if (!selectedFiles.length) {
       toast({
         title: "Image Required",
         description: "Please upload a current wound image for comparison.",
@@ -161,7 +161,9 @@ export default function FollowUpAssessment() {
     }
 
     const formData = new FormData();
-    formData.append('image', selectedFile);
+    selectedFiles.forEach(file => {
+      formData.append('images', file);
+    });
     
     Object.entries(values).forEach(([key, value]) => {
       if (value !== undefined && value !== '') {
@@ -326,22 +328,22 @@ export default function FollowUpAssessment() {
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
                 >
-                  {previewUrl ? (
+                  {previewUrls.length > 0 ? (
                     <div className="space-y-4">
                       <img
-                        src={previewUrl}
+                        src={previewUrls[0]}
                         alt="Wound preview"
                         className="max-w-xs max-h-64 mx-auto rounded-lg border border-gray-200"
                       />
                       <div className="text-sm text-gray-600">
-                        {selectedFile?.name} ({(selectedFile?.size || 0 / 1024).toFixed(1)} KB)
+                        {selectedFiles[0]?.name} ({(selectedFiles[0]?.size || 0 / 1024).toFixed(1)} KB)
                       </div>
                       <Button
                         type="button"
                         variant="outline"
                         onClick={() => {
-                          setSelectedFile(null);
-                          setPreviewUrl(null);
+                          setSelectedFiles([]);
+                          setPreviewUrls([]);
                         }}
                       >
                         Remove Image
