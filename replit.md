@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack TypeScript application called "Wound Nurses" that provides AI-powered wound care assessment and treatment plan generation. The system allows users to upload wound images, select different AI models for analysis, and receive customized care plans tailored to different audiences (family caregivers, patients, or medical professionals). The application is built following the PRD specifications for comprehensive wound analysis with model selection and continuous learning capabilities.
+This is a full-stack TypeScript application called "Wound Nurses" that provides AI-powered wound care assessment and treatment plan generation. The system allows users to upload wound images, select different AI models for analysis, and receive customized care plans tailored to different audiences (family caregivers, patients, or medical professionals). Users can optionally log in via Replit Auth to manage their case history and access saved assessments. The application is built following the PRD specifications for comprehensive wound analysis with model selection and continuous learning capabilities.
 
 ## System Architecture
 
@@ -107,6 +107,7 @@ Changelog:
 - June 29, 2025. Replaced Agents.md file with database-stored AI instructions
 - June 29, 2025. Added image storage in database with Base64 encoding
 - June 29, 2025. Created dedicated care plan page and enhanced UI workflow
+- June 29, 2025. Implemented Replit Auth login system with user case management
 ```
 
 ## User Preferences

@@ -1,10 +1,12 @@
 import { useLocation } from "wouter";
-import { Stethoscope, CheckCircle, Users, Target, ArrowRight, Star } from "lucide-react";
+import { Stethoscope, CheckCircle, Users, Target, ArrowRight, Star, LogIn, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-bg-light to-gray-50">
@@ -16,12 +18,47 @@ export default function Landing() {
               <Stethoscope className="text-medical-blue text-2xl mr-3" />
               <span className="text-xl font-bold text-gray-900">Wound Nurses</span>
             </div>
-            <Button 
-              variant="outline"
-              onClick={() => setLocation("/assessment")}
-            >
-              Start Assessment
-            </Button>
+            <div className="flex items-center gap-3">
+              {isLoading ? (
+                <div className="w-8 h-8 animate-spin rounded-full border-b-2 border-medical-blue"></div>
+              ) : isAuthenticated ? (
+                <>
+                  <Button 
+                    variant="outline"
+                    onClick={() => setLocation("/my-cases")}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    My Cases
+                  </Button>
+                  <Button 
+                    onClick={() => setLocation("/assessment")}
+                  >
+                    New Assessment
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    onClick={() => window.location.href = "/api/logout"}
+                  >
+                    Log Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button 
+                    variant="outline"
+                    onClick={() => window.location.href = "/api/login"}
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Log In
+                  </Button>
+                  <Button 
+                    onClick={() => setLocation("/assessment")}
+                  >
+                    Start Assessment
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>
