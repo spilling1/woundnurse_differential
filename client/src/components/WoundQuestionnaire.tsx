@@ -74,7 +74,7 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
       label: 'How and when did this wound occur?',
       placeholder: 'e.g., "Pressure ulcer from prolonged sitting, noticed 3 days ago"',
       required: true,
-      rows: 2
+      rows: 3
     },
     {
       key: 'age' as keyof WoundContextData,
@@ -88,14 +88,14 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
       label: 'Comorbidities and Medical Conditions',
       placeholder: 'e.g., "Type 2 diabetes, hypertension, heart disease" or "None"',
       required: true,
-      rows: 2
+      rows: 3
     },
     {
       key: 'medications' as keyof WoundContextData,
       label: 'Current Medications',
       placeholder: 'e.g., "Metformin, blood thinners, steroids" or "None"',
       required: true,
-      rows: 2
+      rows: 3
     },
     {
       key: 'nutritionStatus' as keyof WoundContextData,
