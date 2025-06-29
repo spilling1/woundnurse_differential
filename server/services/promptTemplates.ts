@@ -1,7 +1,6 @@
 import { storage } from "../storage";
 
 export async function getPromptTemplate(audience: string, classification: any, contextData?: any): Promise<string> {
-  console.log('getPromptTemplate called with:', { audience, audienceType: typeof audience, classification: typeof classification });
   // Get agent instructions from database
   const agentInstructions = await storage.getActiveAgentInstructions();
   const instructions = agentInstructions?.content || `Default wound care guidelines: Always prioritize patient safety and recommend consulting healthcare professionals.`;
@@ -134,9 +133,9 @@ Structure the response with clear sections:${contextData?.isFollowUp ? '\n- Prog
 - Frequency of Care
 - Recommended Products (with Amazon links)
 - Warning Signs
-- When to Contact Healthcare Provider
+- When to Contact Healthcare Provider  
 - Additional Tips for Caregivers`;
-
+    
     case 'patient':
       const patientFollowUpInstructions = contextData?.isFollowUp ? `
 
