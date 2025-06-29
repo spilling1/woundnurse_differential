@@ -7,9 +7,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2 } from "lucide-react";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -46,9 +47,9 @@ export default function MyCases() {
 
   // Group assessments by case ID and sort by version
   const groupedCases = React.useMemo(() => {
-    if (!cases || cases.length === 0) return {};
+    if (!cases || (cases as any[]).length === 0) return {};
     
-    const grouped = cases.reduce((acc: any, assessment: any) => {
+    const grouped = (cases as any[]).reduce((acc: any, assessment: any) => {
       if (!acc[assessment.caseId]) {
         acc[assessment.caseId] = [];
       }
@@ -180,7 +181,7 @@ export default function MyCases() {
               <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
               Loading your cases...
             </div>
-          ) : !cases || cases.length === 0 ? (
+          ) : !cases || (cases as any[]).length === 0 ? (
             <Card className="bg-white/95 backdrop-blur-sm">
               <CardContent className="text-center py-12">
                 <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
@@ -222,6 +223,19 @@ export default function MyCases() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                              <DropdownMenuItem asChild>
+                                <Link href={`/care-plan/${caseId}`} className="flex items-center cursor-pointer">
+                                  <ExternalLink className="h-4 w-4 mr-2" />
+                                  View Care Plan
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/follow-up/${caseId}`} className="flex items-center cursor-pointer">
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Add Follow-up
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 onClick={() => handleDeleteCase(caseId)}
                                 className="text-red-600 cursor-pointer"
