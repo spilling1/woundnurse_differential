@@ -1,4 +1,4 @@
-import { ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown } from "lucide-react";
+import { ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useLocation } from "wouter";
 
 interface CarePlanSectionProps {
   assessmentData: any;
@@ -15,6 +16,7 @@ interface CarePlanSectionProps {
 }
 
 export default function CarePlanSection({ assessmentData, model, isProcessing }: CarePlanSectionProps) {
+  const [, setLocation] = useLocation();
   const [feedbackText, setFeedbackText] = useState("");
   const { toast } = useToast();
 
@@ -98,6 +100,19 @@ export default function CarePlanSection({ assessmentData, model, isProcessing }:
           {/* Care Instructions */}
           {assessmentData && (
             <div className="space-y-4">
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-sm text-gray-600">
+                  Preview of your personalized care plan
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLocation(`/care-plan?caseId=${assessmentData.caseId}`)}
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  View Full Care Plan
+                </Button>
+              </div>
               {formatCarePlan(assessmentData.plan)}
 
               {/* Feedback Section */}

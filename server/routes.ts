@@ -135,6 +135,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get assessment by case ID
+  app.get("/api/assessment/:caseId", async (req, res) => {
+    try {
+      const { caseId } = req.params;
+      const assessment = await storage.getWoundAssessment(caseId);
+      
+      if (!assessment) {
+        return res.status(404).json({
+          code: "ASSESSMENT_NOT_FOUND",
+          message: "Assessment not found"
+        });
+      }
+      
+      res.json(assessment);
+      
+    } catch (error: any) {
+      console.error('Error retrieving assessment:', error);
+      res.status(500).json({
+        code: "ASSESSMENT_ERROR",
+        message: error.message || "Failed to retrieve assessment"
+      });
+    }
+  });
+
   // Get system status
   app.get("/api/status", async (req, res) => {
     res.json({
