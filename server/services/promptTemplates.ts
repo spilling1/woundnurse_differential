@@ -200,6 +200,7 @@ Structure the response with clear sections:${contextData?.isFollowUp ? '\n- Clin
 - Clinical Assessment Summary
 - Evidence-Based Treatment Protocol
 - Dressing Selection Rationale
+- Recommended Products (with Amazon links)
 - Monitoring Parameters
 - Expected Outcomes Timeline
 - Complication Management
