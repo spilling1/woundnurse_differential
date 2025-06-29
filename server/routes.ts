@@ -252,31 +252,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Classify wound using AI (using primary image)
       const classification = await classifyWound(imageBase64, requestData.model);
 
+      // Get the original assessment for audience reference and context
+      const originalAssessment = assessmentHistory[0]; // First assessment in history
+
       // Build context for care plan generation including previous assessments and progress
+      const originalContext = originalAssessment.contextData as any || {};
+      
       const contextForCarePlan = {
         // Include current assessment data
         progressNotes: requestData.progressNotes,
         treatmentResponse: requestData.treatmentResponse,
         
-        // Include questionnaire context from original assessment
-        woundOrigin: originalAssessment.woundOrigin,
-        medicalHistory: originalAssessment.medicalHistory,
-        woundChanges: requestData.woundChanges || originalAssessment.woundChanges,
-        currentCare: requestData.currentCare || originalAssessment.currentCare,
-        woundPain: requestData.woundPain || originalAssessment.woundPain,
-        supportAtHome: originalAssessment.supportAtHome,
-        mobilityStatus: originalAssessment.mobilityStatus,
-        nutritionStatus: originalAssessment.nutritionStatus,
-        stressLevel: originalAssessment.stressLevel,
-        comorbidities: originalAssessment.comorbidities,
-        age: originalAssessment.age,
-        obesity: originalAssessment.obesity,
-        medications: originalAssessment.medications,
-        alcoholUse: originalAssessment.alcoholUse,
-        smokingStatus: originalAssessment.smokingStatus,
-        frictionShearing: originalAssessment.frictionShearing,
-        knowledgeDeficits: originalAssessment.knowledgeDeficits,
-        woundSite: originalAssessment.woundSite,
+        // Include questionnaire context from original assessment (from contextData JSON)
+        woundOrigin: originalContext.woundOrigin,
+        medicalHistory: originalContext.medicalHistory,
+        woundChanges: requestData.woundChanges || originalContext.woundChanges,
+        currentCare: requestData.currentCare || originalContext.currentCare,
+        woundPain: requestData.woundPain || originalContext.woundPain,
+        supportAtHome: originalContext.supportAtHome,
+        mobilityStatus: originalContext.mobilityStatus,
+        nutritionStatus: originalContext.nutritionStatus,
+        stressLevel: originalContext.stressLevel,
+        comorbidities: originalContext.comorbidities,
+        age: originalContext.age,
+        obesity: originalContext.obesity,
+        medications: originalContext.medications,
+        alcoholUse: originalContext.alcoholUse,
+        smokingStatus: originalContext.smokingStatus,
+        frictionShearing: originalContext.frictionShearing,
+        knowledgeDeficits: originalContext.knowledgeDeficits,
+        woundSite: originalContext.woundSite,
         
         // Follow-up specific context
         currentAssessment: {
@@ -288,9 +293,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         feedbackHistory: feedbackHistory,
         isFollowUp: true
       };
-
-      // Get the original assessment for audience reference
-      const originalAssessment = assessmentHistory[0]; // First assessment in history
       
       // Generate updated care plan using original case's audience
       const carePlan = await generateCarePlan(

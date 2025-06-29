@@ -115,6 +115,8 @@ Changelog:
 - June 29, 2025. Implemented follow-up assessment system with version tracking and progress monitoring
 - June 29, 2025. Added database support for multiple assessment versions per case with historical context
 - June 29, 2025. Created follow-up assessment page with progress tracking and treatment response evaluation
+- June 29, 2025. Enhanced AI prompt templates for follow-up assessments to reference previous care plans and highlight progression changes
+- June 29, 2025. Fixed multiple file upload support for follow-up assessments with proper multer configuration
 ```
 
 ## User Preferences
