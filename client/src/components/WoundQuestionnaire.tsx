@@ -65,92 +65,109 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
     {
       key: 'woundSite' as keyof WoundContextData,
       label: 'Site of Wound',
-      placeholder: 'e.g., "Right heel", "Lower back", "Abdomen", "Left leg"',
-      required: true
+      placeholder: 'e.g., "Right heel", "Lower back", "Abdomen"',
+      required: true,
+      rows: 1
     },
     {
       key: 'woundOrigin' as keyof WoundContextData,
       label: 'How and when did this wound occur?',
-      placeholder: 'e.g., "Pressure ulcer from prolonged sitting, noticed 3 days ago" or "Cut from kitchen knife yesterday"',
-      required: true
+      placeholder: 'e.g., "Pressure ulcer from prolonged sitting, noticed 3 days ago"',
+      required: true,
+      rows: 2
     },
     {
       key: 'age' as keyof WoundContextData,
       label: 'Age',
-      placeholder: 'e.g., "65 years old" or "Adult" or "Elderly"',
-      required: true
+      placeholder: 'e.g., "65", "Adult", "Elderly"',
+      required: true,
+      rows: 1
     },
     {
       key: 'comorbidities' as keyof WoundContextData,
       label: 'Comorbidities and Medical Conditions',
-      placeholder: 'e.g., "Type 2 diabetes, hypertension, heart disease" or "None known"',
-      required: true
+      placeholder: 'e.g., "Type 2 diabetes, hypertension, heart disease" or "None"',
+      required: true,
+      rows: 2
     },
     {
       key: 'medications' as keyof WoundContextData,
       label: 'Current Medications',
-      placeholder: 'e.g., "Metformin, blood thinners, steroids" or "No medications"',
-      required: true
+      placeholder: 'e.g., "Metformin, blood thinners, steroids" or "None"',
+      required: true,
+      rows: 2
     },
     {
       key: 'nutritionStatus' as keyof WoundContextData,
       label: 'Nutritional Status',
-      placeholder: 'e.g., "Poor appetite, recent weight loss, low protein intake" or "Good nutrition, eating well"'
+      placeholder: 'e.g., "Poor appetite, weight loss" or "Good nutrition"',
+      rows: 1
     },
     {
       key: 'obesity' as keyof WoundContextData,
       label: 'Weight Status/Obesity',
-      placeholder: 'e.g., "Obese (BMI 35)", "Normal weight", "Underweight" or "Unknown"'
+      placeholder: 'e.g., "Obese (BMI 35)", "Normal weight", "Unknown"',
+      rows: 1
     },
     {
       key: 'mobilityStatus' as keyof WoundContextData,
       label: 'Mobility Status',
-      placeholder: 'e.g., "Wheelchair user, limited mobility", "Bedridden", "Active, walking daily"'
+      placeholder: 'e.g., "Wheelchair user", "Bedridden", "Active"',
+      rows: 1
     },
     {
       key: 'frictionShearing' as keyof WoundContextData,
       label: 'Friction/Shearing Risk',
-      placeholder: 'e.g., "High risk due to sliding in bed", "Uses transfer board", "No friction issues"'
+      placeholder: 'e.g., "High risk - sliding in bed", "Low risk"',
+      rows: 1
     },
     {
       key: 'smokingStatus' as keyof WoundContextData,
       label: 'Smoking Status',
-      placeholder: 'e.g., "Current smoker - 1 pack/day", "Former smoker", "Never smoked"'
+      placeholder: 'e.g., "Current smoker - 1 pack/day", "Never smoked"',
+      rows: 1
     },
     {
       key: 'alcoholUse' as keyof WoundContextData,
       label: 'Alcohol Use',
-      placeholder: 'e.g., "Heavy drinker", "Occasional social drinking", "No alcohol use"'
+      placeholder: 'e.g., "Heavy drinker", "Occasional", "No alcohol"',
+      rows: 1
     },
     {
       key: 'stressLevel' as keyof WoundContextData,
       label: 'Stress Level',
-      placeholder: 'e.g., "High stress due to illness", "Moderate life stress", "Low stress level"'
+      placeholder: 'e.g., "High stress", "Moderate", "Low stress"',
+      rows: 1
     },
     {
       key: 'woundChanges' as keyof WoundContextData,
       label: 'Recent changes in the wound',
-      placeholder: 'e.g., "Increased redness and warmth, foul odor, more drainage today" or "Healing well, less pain"'
+      placeholder: 'e.g., "Increased redness and drainage" or "Healing well"',
+      rows: 2
     },
     {
       key: 'currentCare' as keyof WoundContextData,
       label: 'Current wound care routine',
-      placeholder: 'e.g., "Changing bandage daily with antibiotic ointment" or "Just keeping it clean and dry"'
+      placeholder: 'e.g., "Daily bandage change with antibiotic ointment"',
+      rows: 2
     },
     {
       key: 'woundPain' as keyof WoundContextData,
       label: 'Pain level and description',
-      placeholder: 'e.g., "Constant throbbing pain, 7/10" or "Mild discomfort when touched, 3/10"'
+      placeholder: 'e.g., "Constant throbbing pain, 7/10"',
+      rows: 1
     },
     {
       key: 'knowledgeDeficits' as keyof WoundContextData,
       label: 'Knowledge Deficits',
-      placeholder: 'e.g., "Patient unsure about proper wound care", "Good understanding of care", "Needs education on nutrition"'
+      placeholder: 'e.g., "Unsure about proper care", "Good understanding"',
+      rows: 1
     },
     {
       key: 'supportAtHome' as keyof WoundContextData,
       label: 'Support available at home',
-      placeholder: 'e.g., "Spouse helps with dressing changes" or "Living alone, managing independently"'
+      placeholder: 'e.g., "Spouse helps with dressing changes"',
+      rows: 1
     }
   ];
 
@@ -202,7 +219,7 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
                 value={data[question.key]}
                 onChange={(e) => handleChange(question.key, e.target.value)}
                 placeholder={question.placeholder}
-                rows={2}
+                rows={question.rows || 2}
                 className="text-sm"
               />
             </div>
@@ -232,7 +249,7 @@ export default function WoundQuestionnaire({ onDataChange, initialData }: WoundQ
                   value={data[question.key]}
                   onChange={(e) => handleChange(question.key, e.target.value)}
                   placeholder={question.placeholder}
-                  rows={2}
+                  rows={question.rows || 2}
                   className="text-sm"
                 />
               </div>
