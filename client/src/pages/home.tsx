@@ -9,7 +9,7 @@ import SystemStatus from "@/components/SystemStatus";
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [audience, setAudience] = useState<'family' | 'patient' | 'medical'>('family');
-  const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro'>('gpt-4o');
+  const [model, setModel] = useState<'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'>('gpt-4o');
   const [assessmentData, setAssessmentData] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 

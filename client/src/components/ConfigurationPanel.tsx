@@ -10,9 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 
 interface ConfigurationPanelProps {
   audience: 'family' | 'patient' | 'medical';
-  model: 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro';
+  model: 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro';
   onAudienceChange: (audience: 'family' | 'patient' | 'medical') => void;
-  onModelChange: (model: 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro') => void;
+  onModelChange: (model: 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro') => void;
   selectedFile: File | null;
   isProcessing: boolean;
   onStartAssessment: () => void;
@@ -122,6 +122,8 @@ export default function ConfigurationPanel({
               <SelectItem value="gpt-4o">GPT-4o (Recommended)</SelectItem>
               <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
               <SelectItem value="gpt-3.5-pro">GPT-3.5 Pro</SelectItem>
+              <SelectItem value="gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+              <SelectItem value="gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
             </SelectContent>
           </Select>
           <p className="text-xs text-gray-500 mt-1">Higher models provide more detailed analysis</p>

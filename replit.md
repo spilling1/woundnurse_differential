@@ -41,7 +41,9 @@ The application follows a modern full-stack architecture:
 - GPT-4o (primary model)
 - GPT-3.5
 - GPT-3.5-pro
-- Dynamic model selection per assessment
+- Gemini 2.5 Flash
+- Gemini 2.5 Pro
+- Dynamic model selection per assessment with both OpenAI and Google AI support
 
 ### Audience Targeting
 - **Family Caregivers**: Simple language, step-by-step instructions
@@ -98,6 +100,7 @@ The application follows a modern full-stack architecture:
 ```
 Changelog:
 - June 29, 2025. Initial setup
+- June 29, 2025. Added Gemini 2.5 Flash and 2.5 Pro model support with Google AI integration
 ```
 
 ## User Preferences
