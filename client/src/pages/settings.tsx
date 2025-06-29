@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,23 +22,26 @@ export default function SettingsPage() {
   });
 
   // Initialize instructions when data loads
-  useState(() => {
-    if (agentData?.content) {
-      setInstructions(agentData.content);
+  useEffect(() => {
+    if (agentData && typeof agentData === 'object' && 'content' in agentData) {
+      setInstructions((agentData as any).content || "");
     }
   }, [agentData]);
 
   // Mutation to update AI instructions
   const updateMutation = useMutation({
     mutationFn: async (newInstructions: string) => {
-      const response = await apiRequest('/api/agents', {
+      const response = await fetch('/api/agents', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ content: newInstructions }),
       });
-      return response;
+      if (!response.ok) {
+        throw new Error('Failed to update instructions');
+      }
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -60,8 +64,8 @@ export default function SettingsPage() {
   };
 
   const handleReset = () => {
-    if (agentData?.content) {
-      setInstructions(agentData.content);
+    if (agentData && typeof agentData === 'object' && 'content' in agentData) {
+      setInstructions((agentData as any).content || "");
       toast({
         title: "Reset Complete",
         description: "Settings have been reset to saved values.",

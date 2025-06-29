@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus } from "lucide-react";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -139,6 +139,15 @@ export default function MyCases() {
                 className="border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white"
               >
                 New Assessment
+              </Button>
+              <Button 
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation("/settings")}
+                className="p-2"
+                title="Settings"
+              >
+                <Settings className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost"
