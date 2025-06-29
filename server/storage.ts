@@ -196,8 +196,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async answerQuestion(questionId: number, answer: string): Promise<AgentQuestion> {
-    for (const [sessionId, questions] of Array.from(this.agentQuestionsStorage.entries())) {
-      const question = questions.find((q: AgentQuestion) => q.id === questionId);
+    const sessionIds = Array.from(this.agentQuestionsStorage.keys());
+    for (const sessionId of sessionIds) {
+      const questions = this.agentQuestionsStorage.get(sessionId) || [];
+      const question = questions.find(q => q.id === questionId);
       if (question) {
         question.answer = answer;
         question.isAnswered = true;

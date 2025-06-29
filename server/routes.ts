@@ -10,6 +10,7 @@ import { classifyWound } from "./services/woundClassifier";
 import { generateCarePlan } from "./services/carePlanGenerator";
 import { generateCaseId } from "./services/utils";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { analyzeAssessmentForQuestions, getSessionQuestions, answerSessionQuestion, checkSessionComplete } from "./services/agentQuestionService";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -106,6 +107,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Classify wound using AI
       const classification = await classifyWound(imageBase64, model);
       
+      // Analyze if agent needs to ask questions before generating care plan
+      const sessionId = caseId; // Use case ID as session ID for question tracking
+      const questionAnalysis = await analyzeAssessmentForQuestions(
+        imageBase64,
+        contextData,
+        audience,
+        model,
+        userId || 'anonymous',
+        sessionId
+      );
+      
       // Generate care plan
       const carePlan = await generateCarePlan(audience, classification, contextData, model);
       
@@ -140,7 +152,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         classification,
         plan: carePlan,
         model,
-        version: assessment.version
+        version: assessment.version,
+        questionsNeeded: questionAnalysis.needsQuestions,
+        questions: questionAnalysis.questions,
+        questionReasoning: questionAnalysis.reasoning
       });
       
     } catch (error: any) {
