@@ -1,0 +1,244 @@
+Here’s your **final polished PRD** — clear, professional, and implementation-ready for your AI wound care agent with model selection. This version integrates **security**, **traceability**, **prompt templating**, and **robust error handling**, so a developer or AI agent can follow it precisely.
+
+---
+
+# 📝 **PRD: AI Wound Care Evaluation + Treatment Plan Generator (with Model Selection)**
+
+## 1️⃣ **Overview**
+
+We are building an AI-powered tool to:
+
+* **Analyze uploaded wound photos**
+* **Generate customized care plans** for:
+
+  * Family caregivers (lay language, step-by-step)
+  * Patients (empowering, clear)
+  * Medical professionals (clinical language, protocol-based)
+* **Allow model selection**:
+
+  * `gpt-4o`
+  * `gpt-3.5`
+  * `gpt-3.5-pro`
+* **Learn from feedback** via `Agents.md` case log
+
+➡ **Platform**: Replit (Node.js + TypeScript + optional React)
+➡ **Constraint**: No code file > 300 lines unless unavoidable
+
+---
+
+## 2️⃣ **Key Features**
+
+### 🚀 Image Upload & Classification
+
+* User uploads photo (JPG/PNG ≤10MB) + selects:
+
+  * Audience type: `family` | `patient` | `medical`
+  * AI model: `gpt-4o` | `gpt-3.5` | `gpt-3.5-pro`
+* Classify wound:
+
+  * Type (e.g. pressure ulcer, diabetic foot ulcer)
+  * Stage (if applicable)
+  * Size: small | medium | large
+  * Bed: necrotic | granulating | sloughy | epithelializing
+  * Exudate: none | low | moderate | heavy
+  * Infection signs: e.g., erythema, odor
+
+---
+
+### 💡 Model Selection
+
+* API dynamically routes to the chosen model
+* All completions clearly tagged with model in logs
+* Default model: `gpt-4o` if none specified
+
+---
+
+### 🏥 Audience-Specific Care Plan
+
+* Tailored plan per audience type:
+
+  * Clear, step-by-step for family
+  * Empowerment + warning signs for patient
+  * Protocol-based guidance for professionals
+* Includes:
+
+  * Cleaning method
+  * Dressing type (generic, no brand names unless configured)
+  * Frequency of dressing changes
+  * Escalation criteria
+
+---
+
+### 📝 Feedback + Continuous Learning
+
+* `/feedback` endpoint appends to `Agents.md`
+* Logs:
+
+  * Case ID
+  * Model
+  * Plan
+  * User feedback
+  * Version + prompt snapshot
+
+---
+
+### 🔐 Security & Privacy
+
+* Images processed in-memory; no image storage unless explicit consent
+* API protects against oversized files and unsupported formats
+* CORS + basic rate limiting applied
+
+---
+
+## 3️⃣ **File Structure**
+
+```
+/wound-care-ai
+├── /server
+│   ├── index.ts                # Express server entry point
+│   ├── imageProcessor.ts        # Validates and processes images
+│   ├── woundClassifier.ts       # Wound type/stage extractor
+│   ├── carePlanGenerator.ts     # Generates care plan via AI
+│   ├── modelRouter.ts           # Routes to correct AI model
+│   ├── /prompts
+│       └── templates.ts         # Reusable prompt templates
+│
+├── /client (optional)
+│   └── App.tsx
+│
+├── Agents.md                    # Case + feedback log
+├── package.json
+└── README.md
+```
+
+✅ Each file ≤300 lines where possible
+
+---
+
+## 4️⃣ **API Design**
+
+### `POST /upload`
+
+```json
+{
+  "audience": "family",
+  "model": "gpt-4o",
+  "image": "<binary>"
+}
+```
+
+➡ Returns:
+
+```json
+{
+  "caseId": "2025-06-29-001",
+  "plan": "...",
+  "model": "gpt-4o",
+  "version": "v1.0.0"
+}
+```
+
+---
+
+### `POST /feedback`
+
+```json
+{
+  "caseId": "2025-06-29-001",
+  "feedback": "Family found instructions clear but dressing type unavailable locally."
+}
+```
+
+➡ Appends to `Agents.md`.
+
+---
+
+## 5️⃣ **Agents.md Format**
+
+```md
+## Case: 2025-06-29-001
+Model: gpt-4o  
+Version: v1.0.0  
+Prompt: [prompt text sent to model]  
+Wound: Pressure ulcer stage 2, medium, granulating, moderate exudate  
+Plan: [care plan text here]  
+Feedback: Family found instructions clear but dressing type unavailable locally.
+```
+
+---
+
+## 6️⃣ **Non-Functional Requirements**
+
+✅ All AI completions include safety disclaimer:
+
+> *“This is an AI-generated plan. Please consult a healthcare professional before following recommendations.”*
+
+✅ Error handling: return clear JSON:
+
+```json
+{
+  "code": "INVALID_IMAGE",
+  "message": "Image must be PNG or JPG and under 10MB."
+}
+```
+
+✅ Traceability:
+
+* All plans include version + model info
+* Prompt snapshot saved
+  ✅ Lightweight analytics: log model + audience usage count
+
+---
+
+## 7️⃣ **Stretch Goals**
+
+🌟 **Localization**
+
+* Language + region options (future version)
+
+🌟 **UI features**
+
+* Drag-drop upload
+* Model + audience selectors
+
+🌟 **Configurable regional dressing types**
+
+* Allow operator to pre-set available supplies
+
+---
+
+## 8️⃣ **Deliverables**
+
+✅ Working REST API (upload + feedback)
+✅ Model selection + routing
+✅ `Agents.md` updated for each case
+✅ Code ≤300 lines per file
+✅ Deployment instructions (README.md)
+
+---
+
+## ✅ Final Notes for Developers
+
+➡ ModelRouter should cleanly abstract API calls:
+
+```ts
+export async function generatePlanWithModel(model: string, prompt: string) {
+  if (!["gpt-4o", "gpt-3.5", "gpt-3.5-pro"].includes(model)) {
+    throw new Error("Invalid model selection");
+  }
+  // Call OpenAI API with specified model
+}
+```
+
+➡ Prompt templates in `/prompts/templates.ts`
+➡ Plan always logs model + version
+
+---
+
+### Would you like:
+
+* Starter code for any of these modules?
+* Draft of the README or API docs?
+* Example prompt templates for each audience?
+
+Let me know — I can help generate those next! 🚀
