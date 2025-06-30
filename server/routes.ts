@@ -647,6 +647,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Step 1.5: Generate follow-up questions based on previous answers
+  app.post("/api/assessment/follow-up-questions", upload.single('image'), async (req, res) => {
+    try {
+      const { audience, model, previousQuestions, classification, round } = req.body;
+      
+      const parsedQuestions = JSON.parse(previousQuestions || '[]');
+      const parsedClassification = JSON.parse(classification || '{}');
+      
+      // Get agent instructions to determine if more questions are needed
+      const agentInstructions = await storage.getActiveAgentInstructions();
+      const instructions = agentInstructions?.content || '';
+      
+      const contextData = {
+        previousQuestions: parsedQuestions,
+        classification: parsedClassification,
+        round: parseInt(round),
+        audience,
+        model
+      };
+      
+      // Use the agent question service to determine if more questions are needed
+      const sessionId = `follow-up-${Date.now()}`;
+      const newQuestions = await analyzeAssessmentForQuestions(sessionId, {
+        imageAnalysis: parsedClassification,
+        audience,
+        model,
+        previousQuestions: parsedQuestions,
+        round: parseInt(round),
+        instructions
+      });
+      
+      res.json({
+        questions: newQuestions,
+        needsMoreQuestions: newQuestions.length > 0,
+        round: parseInt(round)
+      });
+      
+    } catch (error: any) {
+      console.error('Follow-up questions error:', error);
+      res.status(500).json({
+        code: "FOLLOWUP_ERROR",
+        message: error.message || "Failed to generate follow-up questions"
+      });
+    }
+  });
+
   // Step 2: Generate preliminary care plan
   app.post("/api/assessment/preliminary-plan", async (req, res) => {
     try {

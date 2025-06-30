@@ -7,11 +7,11 @@ export async function analyzeAssessmentForQuestions(
   sessionId: string,
   contextData: any
 ): Promise<any[]> {
-  const { imageAnalysis, audience, model } = contextData;
+  const { imageAnalysis, audience, model, previousQuestions, round, instructions: providedInstructions } = contextData;
   
   // Get agent instructions to check for custom questions that should always be asked
   const agentInstructions = await storage.getActiveAgentInstructions();
-  const instructions = agentInstructions?.content || '';
+  const instructions = providedInstructions || agentInstructions?.content || '';
   
   // Check if agent instructions contain "always ask" requirements
   const hasAlwaysAskRequirements = instructions.includes('always ask') || instructions.includes('Always ask');
@@ -28,24 +28,47 @@ export async function analyzeAssessmentForQuestions(
     console.log(`Low confidence (${confidence}) - generating questions`);
   }
   
+  // Handle follow-up questions differently than initial questions
+  const isFollowUp = previousQuestions && previousQuestions.length > 0;
+  const currentRound = round || 1;
+
   const analysisPrompt = `
-You are an AI wound care specialist following specific agent instructions. Based on the image analysis and agent guidelines, generate appropriate questions.
+You are an AI wound care specialist following specific agent instructions. ${isFollowUp ? 'This is a follow-up round of questions.' : 'This is the initial question generation.'}
 
 AGENT INSTRUCTIONS:
-${instructions}
+${instructions || agentInstructions?.content || ''}
 
 WOUND ANALYSIS RESULTS:
 ${JSON.stringify(imageAnalysis, null, 2)}
 
+${isFollowUp ? `PREVIOUS QUESTIONS AND ANSWERS (Round ${currentRound - 1}):
+${JSON.stringify(previousQuestions, null, 2)}
+
+FOLLOW-UP ASSESSMENT:
+- Review the previous answers to see if they provide sufficient information
+- Check if Agent Instructions require additional specific questions
+- Only generate NEW questions if there are gaps that need clarification
+- Maximum 3 rounds total, this is round ${currentRound}
+` : ''}
+
 TARGET AUDIENCE: ${audience}
 
 QUESTION GENERATION RULES:
+${isFollowUp ? `
+1. Review previous answers to determine if Agent Instructions are satisfied
+2. Only ask follow-up questions if Agent Instructions require more specific information
+3. Do NOT repeat questions that have already been answered
+4. Check if diagnostic confidence can be improved with additional clarification
+5. Generate 0-2 targeted follow-up questions, or empty array if no more questions needed
+` : `
 1. Carefully read the AGENT INSTRUCTIONS above
-2. Look for any "always ask" or "Always ask" requirements in the instructions
+2. Look for any "always ask" or "Always ask" requirements in the instructions  
 3. Generate questions based ONLY on what the Agent Instructions specify
 4. If Agent Instructions require questions regardless of confidence, generate them
-5. Generate questions WITHOUT pre-filled answers (leave answer field empty)
-6. Only generate questions that the Agent Instructions explicitly require
+5. Generate 2-4 initial questions based on Agent Instructions requirements
+`}
+6. Generate questions WITHOUT pre-filled answers (leave answer field empty)
+7. Only generate questions that the Agent Instructions explicitly require
 
 RESPONSE FORMAT:
 Return a JSON array of objects with this structure:

@@ -172,6 +172,47 @@ export default function NewAssessmentFlow() {
     );
   };
 
+  const handleFollowUpQuestions = async () => {
+    try {
+      // Store current questions as answered
+      setAnsweredQuestions(prev => [...prev, ...aiQuestions]);
+      
+      // Increment round
+      setQuestionRound(prev => prev + 1);
+      
+      // Generate new questions based on previous answers
+      const formData = new FormData();
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
+      formData.append('audience', audience);
+      formData.append('model', model);
+      formData.append('previousQuestions', JSON.stringify(aiQuestions));
+      formData.append('classification', JSON.stringify(woundClassification));
+      formData.append('round', (questionRound + 1).toString());
+
+      const response = await fetch('/api/assessment/follow-up-questions', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate follow-up questions');
+      }
+
+      const data = await response.json();
+      setAiQuestions(data.questions || []);
+      
+    } catch (error) {
+      console.error('Follow-up questions error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate follow-up questions. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Render step content
   const renderStepContent = () => {
     switch (currentStep) {
@@ -386,10 +427,7 @@ export default function NewAssessmentFlow() {
                 {aiQuestions.length > 0 && questionRound < 3 ? (
                   <div className="space-y-2">
                     <Button 
-                      onClick={() => {
-                        // TODO: Implement follow-up question logic
-                        console.log('Submitting answers for follow-up questions');
-                      }}
+                      onClick={handleFollowUpQuestions}
                       className="w-full bg-yellow-600 hover:bg-yellow-700"
                     >
                       Submit Answers & Ask Follow-up Questions (Round {questionRound + 1})
