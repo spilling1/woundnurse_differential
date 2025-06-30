@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Camera, Upload, CheckCircle, AlertCircle, RefreshCw, ArrowRight, Edit, ThumbsUp, ThumbsDown } from "lucide-react";
@@ -225,6 +225,12 @@ export default function NewAssessmentFlow() {
         // No more questions needed, proceed to care plan
         setAiQuestions([]);
         setCurrentStep('preliminary-plan');
+        
+        // Auto-trigger preliminary plan generation
+        setTimeout(() => {
+          preliminaryPlanMutation.mutate();
+        }, 500);
+        
         toast({
           title: "Questions Complete",
           description: "Agent Instructions satisfied. Proceeding to care plan generation."

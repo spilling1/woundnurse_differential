@@ -126,6 +126,9 @@ Changelog:
 - June 30, 2025. Fixed critical diagnostic issue where AI question answers weren't being integrated into care plan generation
 - June 30, 2025. Updated Agent Instructions to mandate diabetes question for ALL foot/heel wounds regardless of visual classification
 - June 30, 2025. Implemented diagnostic override system where patient answers can reclassify wound type when contradicting visual assessment
+- June 30, 2025. Fixed image display issues in My Cases and Care Plan pages by correcting base64 encoding in final plan route
+- June 30, 2025. Completely redesigned Care Plan page layout with professional styling, improved typography, and better content organization
+- June 30, 2025. Fixed overly aggressive follow-up question generation - now only asks additional questions when confidence is low (≤75%) or when truly needed
 ```
 
 ## User Preferences
