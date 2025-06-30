@@ -646,7 +646,7 @@ export default function NewAssessmentFlow() {
                 </Card>
 
                 {preliminaryPlan.needsMoreInfo && preliminaryPlan.additionalQuestions && (
-                  <Card>
+                  <Card className="border-amber-200 bg-amber-50/30">
                     <CardHeader>
                       <CardTitle className="flex items-center">
                         <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
@@ -655,19 +655,34 @@ export default function NewAssessmentFlow() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-gray-600 mb-4">
-                        The AI needs more information to provide a confident assessment. Please answer these additional questions:
+                        {userFeedback ? 
+                          "Based on your feedback, the AI needs clarification on these points:" :
+                          "The AI needs more information to provide a confident assessment. Please answer these additional questions:"
+                        }
                       </p>
                       <div className="space-y-4">
                         {preliminaryPlan.additionalQuestions.map((question, index) => (
                           <div key={index}>
-                            <Label>{question}</Label>
+                            <Label className="font-medium text-gray-900">{question}</Label>
                             <Textarea 
                               placeholder="Your answer..."
                               rows={2}
-                              className="mt-1"
+                              className="mt-1 border-amber-200 focus:border-amber-400"
                             />
                           </div>
                         ))}
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-amber-200">
+                        <Button 
+                          onClick={() => {
+                            // Collect answers and regenerate plan
+                            preliminaryPlanMutation.mutate();
+                          }}
+                          className="w-full bg-amber-600 hover:bg-amber-700"
+                        >
+                          <CheckCircle className="mr-2 h-4 w-4" />
+                          Submit Answers & Update Plan
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -703,17 +718,7 @@ export default function NewAssessmentFlow() {
                         Regenerate Plan
                       </Button>
                       
-                      {userFeedback.trim() && (
-                        <Button 
-                          onClick={handleFeedbackQuestions}
-                          disabled={preliminaryPlanMutation.isPending}
-                          variant="secondary"
-                          className="flex-1"
-                        >
-                          <AlertCircle className="mr-2 h-4 w-4" />
-                          Generate Questions from Feedback
-                        </Button>
-                      )}
+
                       
                       {preliminaryPlan.confidence > 0.75 && (
                         <Button 

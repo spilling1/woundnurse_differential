@@ -11,6 +11,8 @@ import { generateCarePlan } from "./services/carePlanGenerator";
 import { generateCaseId } from "./services/utils";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { analyzeAssessmentForQuestions, getSessionQuestions, answerSessionQuestion, checkSessionComplete } from "./services/agentQuestionService";
+import { callOpenAI } from "./services/openai";
+import { callGemini } from "./services/gemini";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -717,20 +719,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
         model
       );
 
+      // Check if user feedback requires clarifying questions
+      let needsAdditionalQuestions = false;
+      let feedbackQuestions: string[] = [];
+      
+      if (userFeedback && userFeedback.trim() !== '') {
+        try {
+          // Analyze feedback to determine if questions are needed
+          const feedbackAnalysisPrompt = `
+Analyze this user feedback on a wound assessment and determine if clarifying questions are needed:
+
+ORIGINAL CLASSIFICATION:
+- Type: ${finalClassification.woundType}
+- Location: ${finalClassification.location}
+- Stage: ${finalClassification.stage}
+
+USER FEEDBACK:
+"${userFeedback}"
+
+Does this feedback indicate:
+1. Contradiction with the visual assessment (e.g., wrong body part, wrong wound type)?
+2. Important missing information that affects treatment?
+3. Specific concerns that need clarification?
+
+If yes to any, generate 2-3 specific questions to clarify the feedback.
+If no clarification needed, respond with "NO_QUESTIONS_NEEDED".
+
+Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
+`;
+
+          let feedbackAnalysis;
+          if (model.startsWith('gemini-')) {
+            feedbackAnalysis = await callGemini(model, feedbackAnalysisPrompt);
+          } else {
+            const messages = [
+              { role: "system", content: "You are a medical AI assistant analyzing user feedback." },
+              { role: "user", content: feedbackAnalysisPrompt }
+            ];
+            feedbackAnalysis = await callOpenAI(model, messages);
+          }
+          
+          if (feedbackAnalysis && !feedbackAnalysis.includes('NO_QUESTIONS_NEEDED')) {
+            feedbackQuestions = feedbackAnalysis.split('\n')
+              .map(q => q.trim())
+              .filter(q => q.length > 0 && q.includes('?'))
+              .slice(0, 3);
+            needsAdditionalQuestions = feedbackQuestions.length > 0;
+          }
+        } catch (error) {
+          console.error('Error analyzing feedback for questions:', error);
+        }
+      }
+
       // Simulate confidence assessment
       const confidence = finalClassification.confidence || 0.8;
-      const needsMoreInfo = confidence < 0.75;
+      const needsMoreInfo = confidence < 0.75 || needsAdditionalQuestions;
 
       const preliminaryPlan = {
         assessment: carePlan.split('\n\n')[0], // First paragraph as assessment
         recommendations: carePlan.split('\n\n').slice(1).filter(p => p.trim()),
         confidence,
         needsMoreInfo,
-        additionalQuestions: needsMoreInfo ? [
-          "Can you describe any changes in the wound size over the past week?",
-          "What is the patient's pain level on a scale of 1-10?",
-          "Are there any signs of infection (redness, warmth, pus)?"
-        ] : undefined
+        additionalQuestions: needsMoreInfo ? (
+          needsAdditionalQuestions ? feedbackQuestions : [
+            "Can you describe any changes in the wound size over the past week?",
+            "What is the patient's pain level on a scale of 1-10?",
+            "Are there any signs of infection (redness, warmth, pus)?"
+          ]
+        ) : undefined
       };
 
       res.json(preliminaryPlan);
