@@ -3,10 +3,85 @@ import { callGemini } from './gemini';
 import { storage } from '../storage';
 import { InsertAgentQuestion } from '@shared/schema';
 
+async function generateFeedbackBasedQuestions(
+  classification: any,
+  userFeedback: string,
+  audience: string,
+  model: string
+): Promise<string[]> {
+  try {
+    const prompt = `
+Based on the wound assessment and user feedback, generate specific clarifying questions.
+
+WOUND CLASSIFICATION:
+- Type: ${classification.woundType}
+- Location: ${classification.location}
+- Stage: ${classification.stage}
+- Size: ${classification.size}
+
+USER FEEDBACK:
+"${userFeedback}"
+
+INSTRUCTIONS:
+1. Analyze the user feedback for contradictions or corrections to the visual assessment
+2. Generate 2-4 specific questions to clarify the feedback
+3. Focus on resolving discrepancies between visual assessment and user input
+4. If user mentions wrong body part/location, ask for correct location
+5. If user mentions different wound type, ask for clarification
+6. Keep questions simple and targeted to the audience: ${audience}
+
+Return only the questions, one per line, without numbering.
+`;
+
+    let questions: string;
+    if (model.startsWith('gemini-')) {
+      questions = await callGemini(model, prompt);
+    } else {
+      const messages = [
+        { role: "system", content: "You are a medical AI assistant. Generate clarifying questions based on user feedback." },
+        { role: "user", content: prompt }
+      ];
+      questions = await callOpenAI(model, messages);
+    }
+    
+    return questions.split('\n')
+      .map(q => q.trim())
+      .filter(q => q.length > 0 && !q.match(/^\d+\./) && q.includes('?'))
+      .slice(0, 4);
+      
+  } catch (error) {
+    console.error('Error generating feedback-based questions:', error);
+    return [];
+  }
+}
+
 export async function analyzeAssessmentForQuestions(
-  sessionId: string,
-  contextData: any
+  sessionIdOrClassification: string | any,
+  contextDataOrPreviousQuestions?: any,
+  userFeedback?: string,
+  audienceParam?: string,
+  modelParam?: string
 ): Promise<any[]> {
+  // Support both original function signature and new feedback-based signature
+  let sessionId: string;
+  let contextData: any;
+  
+  if (typeof sessionIdOrClassification === 'string') {
+    // Original function call
+    sessionId = sessionIdOrClassification;
+    contextData = contextDataOrPreviousQuestions;
+  } else {
+    // New feedback-based call
+    const classification = sessionIdOrClassification;
+    const previousQuestions = contextDataOrPreviousQuestions;
+    
+    // Handle feedback-based question generation
+    if (userFeedback && userFeedback.trim() !== '') {
+      return await generateFeedbackBasedQuestions(classification, userFeedback, audienceParam || 'patient', modelParam || 'gpt-4o');
+    }
+    
+    return [];
+  }
   const { imageAnalysis, audience, model, previousQuestions, round, instructions: providedInstructions } = contextData;
   
   // Get agent instructions to check for custom questions that should always be asked
@@ -30,6 +105,58 @@ export async function analyzeAssessmentForQuestions(
   // Handle follow-up questions differently than initial questions
   const isFollowUp = previousQuestions && previousQuestions.length > 0;
   const currentRound = round || 1;
+
+async function generateFeedbackBasedQuestions(
+  classification: any,
+  userFeedback: string,
+  audience: string,
+  model: string
+): Promise<string[]> {
+  try {
+    const prompt = `
+Based on the wound assessment and user feedback, generate specific clarifying questions.
+
+WOUND CLASSIFICATION:
+- Type: ${classification.woundType}
+- Location: ${classification.location}
+- Stage: ${classification.stage}
+- Size: ${classification.size}
+
+USER FEEDBACK:
+"${userFeedback}"
+
+INSTRUCTIONS:
+1. Analyze the user feedback for contradictions or corrections to the visual assessment
+2. Generate 2-4 specific questions to clarify the feedback
+3. Focus on resolving discrepancies between visual assessment and user input
+4. If user mentions wrong body part/location, ask for correct location
+5. If user mentions different wound type, ask for clarification
+6. Keep questions simple and targeted to the audience: ${audience}
+
+Return only the questions, one per line, without numbering.
+`;
+
+    let questions: string;
+    if (model.startsWith('gemini-')) {
+      questions = await callGemini(model, prompt);
+    } else {
+      const messages = [
+        { role: "system", content: "You are a medical AI assistant. Generate clarifying questions based on user feedback." },
+        { role: "user", content: prompt }
+      ];
+      questions = await callOpenAI(model, messages);
+    }
+    
+    return questions.split('\n')
+      .map(q => q.trim())
+      .filter(q => q.length > 0 && !q.match(/^\d+\./) && q.includes('?'))
+      .slice(0, 4);
+      
+  } catch (error) {
+    console.error('Error generating feedback-based questions:', error);
+    return [];
+  }
+}
   
   if (isFollowUp && currentRound > 1) {
     // For follow-up questions, be much more selective

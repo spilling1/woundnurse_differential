@@ -193,6 +193,40 @@ export default function NewAssessmentFlow() {
     );
   };
 
+  const handleFeedbackQuestions = async () => {
+    try {
+      const response = await apiRequest('POST', '/api/assessment/feedback-questions', {
+        classification: woundClassification,
+        userFeedback,
+        audience,
+        model
+      });
+      
+      const data = await response.json();
+      
+      if (data.questions && data.questions.length > 0) {
+        setAiQuestions(data.questions);
+        setCurrentStep('ai-questions');
+        toast({
+          title: "Follow-up Questions Generated",
+          description: "Additional questions based on your feedback."
+        });
+      } else {
+        toast({
+          title: "No Additional Questions",
+          description: "Your feedback is clear. Proceeding with current assessment."
+        });
+      }
+    } catch (error) {
+      console.error('Feedback questions error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate questions from feedback. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleFollowUpQuestions = async () => {
     try {
       // Store current questions as answered
@@ -668,6 +702,18 @@ export default function NewAssessmentFlow() {
                         <RefreshCw className="mr-2 h-4 w-4" />
                         Regenerate Plan
                       </Button>
+                      
+                      {userFeedback.trim() && (
+                        <Button 
+                          onClick={handleFeedbackQuestions}
+                          disabled={preliminaryPlanMutation.isPending}
+                          variant="secondary"
+                          className="flex-1"
+                        >
+                          <AlertCircle className="mr-2 h-4 w-4" />
+                          Generate Questions from Feedback
+                        </Button>
+                      )}
                       
                       {preliminaryPlan.confidence > 0.75 && (
                         <Button 

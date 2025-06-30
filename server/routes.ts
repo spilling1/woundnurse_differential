@@ -703,7 +703,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { ...classification, woundType: selectedAlternative } : 
         classification;
 
-      // Generate preliminary care plan
+      // Generate preliminary care plan with proper context
       const contextData = {
         aiQuestions: questions,
         userFeedback,
@@ -713,7 +713,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const carePlan = await generateCarePlan(
         audience,
         finalClassification,
-        JSON.stringify(contextData),
+        contextData,
         model
       );
 
@@ -740,6 +740,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         code: "PLAN_ERROR",
         message: error.message || "Failed to generate preliminary plan"
+      });
+    }
+  });
+
+  // Generate questions based on user feedback
+  app.post("/api/assessment/feedback-questions", async (req, res) => {
+    try {
+      const { classification, userFeedback, audience, model } = req.body;
+      
+      // Use the agent question service to generate questions based on feedback
+      const questions = await analyzeAssessmentForQuestions(
+        classification,
+        null, // No previous questions for feedback-based questions
+        userFeedback,
+        audience,
+        model
+      );
+      
+      res.json({
+        questions: questions.map((q, index) => ({
+          id: `feedback-${index}`,
+          question: q,
+          answer: '',
+          category: 'feedback-clarification',
+          confidence: 0.5
+        }))
+      });
+      
+    } catch (error: any) {
+      console.error('Feedback questions error:', error);
+      res.status(500).json({
+        code: "FEEDBACK_QUESTIONS_ERROR",
+        message: error.message || "Failed to generate feedback questions"
       });
     }
   });
