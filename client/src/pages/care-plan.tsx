@@ -765,46 +765,65 @@ export default function CarePlan() {
         </Card>
 
         {/* Patient Context */}
-        {assessmentData?.contextData && (
-          <Card className="mb-8 shadow-md">
-            <CardHeader className="bg-slate-50 border-b">
-              <CardTitle className="flex items-center text-lg">
-                <User className="h-5 w-5 mr-3 text-medical-blue" />
-                Patient Context & History
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(assessmentData.contextData as Record<string, any>).map(([key, value]) => {
-                  if (!value || value === 'Not provided') return null;
-                  const labels: Record<string, string> = {
-                    age: 'Age',
-                    woundSite: 'Wound Site',
-                    woundOrigin: 'Wound Origin',
-                    comorbidities: 'Comorbidities',
-                    medications: 'Current Medications',
-                    nutritionStatus: 'Nutritional Status',
-                    mobilityStatus: 'Mobility Status',
-                    smokingStatus: 'Smoking Status',
-                    alcoholUse: 'Alcohol Use',
-                    stressLevel: 'Stress Level',
-                    medicalHistory: 'Medical History',
-                    woundChanges: 'Wound Changes',
-                    currentCare: 'Current Care',
-                    woundPain: 'Pain Level',
-                    supportAtHome: 'Support at Home'
-                  };
-                  return (
-                    <div key={key} className="bg-gray-50 border border-gray-200 rounded-lg p-4 border-l-4 border-l-medical-blue">
-                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{labels[key] || key}</div>
-                      <div className="text-gray-900 text-sm leading-relaxed">{value}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {assessmentData?.contextData && (() => {
+          // Parse contextData if it's a string
+          let contextData;
+          try {
+            contextData = typeof assessmentData.contextData === 'string' 
+              ? JSON.parse(assessmentData.contextData)
+              : assessmentData.contextData;
+          } catch (e) {
+            contextData = assessmentData.contextData;
+          }
+          
+          // Check if contextData has meaningful content
+          const hasContent = contextData && Object.values(contextData).some(value => 
+            value && value !== '' && value !== 'Not provided' && value !== 'not provided'
+          );
+          
+          if (!hasContent) return null;
+          
+          return (
+            <Card className="mb-8 shadow-md">
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="flex items-center text-lg">
+                  <User className="h-5 w-5 mr-3 text-medical-blue" />
+                  Patient Context & History
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Object.entries(contextData as Record<string, any>).map(([key, value]) => {
+                    if (!value || value === 'Not provided' || value === 'not provided' || value === '') return null;
+                    const labels: Record<string, string> = {
+                      age: 'Age',
+                      woundSite: 'Wound Site',
+                      woundOrigin: 'Wound Origin',
+                      comorbidities: 'Comorbidities',
+                      medications: 'Current Medications',
+                      nutritionStatus: 'Nutritional Status',
+                      mobilityStatus: 'Mobility Status',
+                      smokingStatus: 'Smoking Status',
+                      alcoholUse: 'Alcohol Use',
+                      stressLevel: 'Stress Level',
+                      medicalHistory: 'Medical History',
+                      woundChanges: 'Wound Changes',
+                      currentCare: 'Current Care',
+                      woundPain: 'Pain Level',
+                      supportAtHome: 'Support at Home'
+                    };
+                    return (
+                      <div key={key} className="bg-gray-50 border border-gray-200 rounded-lg p-4 border-l-4 border-l-medical-blue">
+                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{labels[key] || key}</div>
+                        <div className="text-gray-900 text-sm leading-relaxed">{value}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })()}
 
         {/* Evidence-Based Care Plan */}
         <Card className="mb-8 shadow-lg border-0 bg-white">

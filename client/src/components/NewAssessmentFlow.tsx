@@ -507,7 +507,7 @@ export default function NewAssessmentFlow() {
                         onClick={handleFollowUpQuestions}
                         className="w-full bg-yellow-600 hover:bg-yellow-700"
                       >
-                        Check for Follow-up Questions (Round {questionRound + 1})
+                        Submit Answers to improve assessment
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     )}
