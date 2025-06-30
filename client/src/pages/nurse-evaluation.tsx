@@ -449,6 +449,31 @@ export default function NurseEvaluation() {
                     </div>
                   </div>
 
+                  {/* Medical Alert Checkbox */}
+                  <div className="flex items-center space-x-3 mb-4">
+                    <input
+                      type="checkbox"
+                      id="medical-help-needed"
+                      checked={medicalHelpNeeded}
+                      onChange={(e) => {
+                        setMedicalHelpNeeded(e.target.checked);
+                        setHasChanges(true);
+                      }}
+                      className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                    />
+                    <Label htmlFor="medical-help-needed" className="text-sm font-medium text-red-600">
+                      Medical Help Needed - This case requires immediate medical attention
+                    </Label>
+                  </div>
+                  {medicalHelpNeeded && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-sm text-red-800">
+                        <strong>Alert:</strong> This case has been flagged for urgent medical review. 
+                        The patient should seek immediate medical attention from a qualified healthcare provider.
+                      </p>
+                    </div>
+                  )}
+
                   {/* Additional Agent Instructions */}
                   <div className="border rounded-lg p-4 bg-blue-50">
                     <Label className="font-medium mb-3 block">Additional Agent Instructions</Label>
@@ -623,40 +648,7 @@ export default function NurseEvaluation() {
               </CardContent>
             </Card>
 
-            {/* Medical Help Needed */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <AlertTriangle className="mr-2 h-5 w-5 text-red-500" />
-                  Medical Alert
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="medical-help-needed"
-                    checked={medicalHelpNeeded}
-                    onChange={(e) => {
-                      setMedicalHelpNeeded(e.target.checked);
-                      setHasChanges(true);
-                    }}
-                    className="rounded border-gray-300 text-red-600 focus:ring-red-500"
-                  />
-                  <Label htmlFor="medical-help-needed" className="text-sm font-medium">
-                    Medical Help Needed - This case requires immediate medical attention
-                  </Label>
-                </div>
-                {medicalHelpNeeded && (
-                  <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-sm text-red-800">
-                      <strong>Alert:</strong> This case has been flagged for urgent medical review. 
-                      The patient should seek immediate medical attention from a qualified healthcare provider.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+
           </div>
 
 
