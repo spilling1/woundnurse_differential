@@ -702,12 +702,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/assessment/final-plan", async (req, res) => {
     try {
       const { imageData, audience, model, questions, classification, preliminaryPlan, userFeedback } = req.body;
-      console.log('Final plan route - received data:', { 
-        audience: typeof audience, 
-        audienceValue: audience,
-        model, 
-        classificationType: typeof classification 
-      });
       
       // Generate case ID
       const caseId = generateCaseId();
