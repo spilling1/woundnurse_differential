@@ -747,7 +747,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Step 3: Generate final care plan with case creation
   app.post("/api/assessment/final-plan", isAuthenticated, upload.single('image'), async (req, res) => {
     try {
-      const { audience, model, questions, classification, preliminaryPlan, userFeedback } = req.body;
+      const { audience, model, userFeedback } = req.body;
+      const questions = JSON.parse(req.body.questions || '[]');
+      const classification = JSON.parse(req.body.classification || '{}');
+      const preliminaryPlan = JSON.parse(req.body.preliminaryPlan || '{}');
       
       // Generate case ID
       const caseId = generateCaseId();
