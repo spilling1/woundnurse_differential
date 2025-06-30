@@ -82,6 +82,31 @@ Always explain your reasoning when patient answers contradict initial visual ass
 `;
   }
 
+  // Add user feedback from preliminary plan if provided
+  if (contextData?.userFeedback && contextData.userFeedback.trim() !== '') {
+    baseInfo += `
+
+USER FEEDBACK ON PRELIMINARY PLAN:
+The user provided the following feedback/corrections on the preliminary assessment:
+"${contextData.userFeedback}"
+
+IMPORTANT: Please incorporate this feedback into the final care plan. Address any corrections, concerns, or additional context provided by the user. This feedback should take priority over preliminary assessments when there are contradictions.
+`;
+  }
+
+  // Add preliminary plan context if provided
+  if (contextData?.preliminaryPlan) {
+    baseInfo += `
+
+PRELIMINARY PLAN CONTEXT:
+This is a final care plan generation. The preliminary assessment showed:
+- Confidence Level: ${Math.round((contextData.preliminaryPlan.confidence || 0.8) * 100)}%
+- Assessment: ${contextData.preliminaryPlan.assessment || 'Not provided'}
+
+Build upon this preliminary assessment while incorporating any user feedback provided above.
+`;
+  }
+
   // Add follow-up specific context if this is a follow-up assessment
   if (contextData?.isFollowUp && contextData?.previousAssessments) {
     baseInfo += `

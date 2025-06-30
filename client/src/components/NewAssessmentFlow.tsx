@@ -522,30 +522,76 @@ export default function NewAssessmentFlow() {
       case 'preliminary-plan':
         return (
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Step 4: Preliminary Care Plan</CardTitle>
-                <p className="text-gray-600">
-                  Review this preliminary assessment. If confidence is below 75%, we'll ask more questions.
-                </p>
-              </CardHeader>
-            </Card>
-
-            {preliminaryPlan && (
+            {preliminaryPlanMutation.isPending ? (
+              <Card className="border-2 border-medical-blue/20">
+                <CardContent className="p-8 text-center">
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-medical-blue border-t-transparent"></div>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold text-gray-900">Generating Preliminary Care Plan</h3>
+                      <p className="text-gray-600">AI is analyzing your wound assessment and creating personalized recommendations...</p>
+                      <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+                        <div className="w-2 h-2 bg-medical-blue rounded-full animate-pulse"></div>
+                        <span>This may take a few moments</span>
+                        <div className="w-2 h-2 bg-medical-blue rounded-full animate-pulse"></div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : !preliminaryPlan ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Step 4: Preliminary Care Plan</CardTitle>
+                  <p className="text-gray-600">
+                    Preparing your preliminary assessment...
+                  </p>
+                </CardHeader>
+              </Card>
+            ) : (
               <>
-                <Card>
-                  <CardHeader>
+                <Card className="border-l-4 border-l-medical-blue shadow-md">
+                  <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
                     <CardTitle className="flex items-center justify-between">
-                      Assessment Confidence
-                      <Badge variant={preliminaryPlan.confidence > 0.75 ? 'default' : 'destructive'}>
-                        {Math.round(preliminaryPlan.confidence * 100)}%
+                      <div className="flex items-center">
+                        <CheckCircle className="h-6 w-6 text-medical-blue mr-3" />
+                        Preliminary Assessment Complete
+                      </div>
+                      <Badge variant={preliminaryPlan.confidence > 0.75 ? "default" : "secondary"} className="bg-medical-blue">
+                        {Math.round(preliminaryPlan.confidence * 100)}% Confidence
                       </Badge>
                     </CardTitle>
+                    <p className="text-sm text-gray-600 mt-2">Review this preliminary assessment. Your feedback will improve the final care plan.</p>
                   </CardHeader>
-                  <CardContent>
-                    <div className="prose max-w-none">
-                      <div dangerouslySetInnerHTML={{ __html: preliminaryPlan.assessment }} />
+                  <CardContent className="p-6">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                        <AlertCircle className="h-5 w-5 text-blue-600 mr-2" />
+                        Assessment Summary
+                      </h4>
+                      <div className="prose prose-sm max-w-none">
+                        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">{preliminaryPlan.assessment}</div>
+                      </div>
                     </div>
+                    
+                    {preliminaryPlan.recommendations && preliminaryPlan.recommendations.length > 0 && (
+                      <div className="bg-green-50 rounded-lg p-4 border border-green-200 mt-4">
+                        <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                          <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+                          Key Recommendations
+                        </h4>
+                        <ul className="space-y-3">
+                          {preliminaryPlan.recommendations.map((rec, index) => (
+                            <li key={index} className="flex items-start">
+                              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <span className="text-green-600 font-bold text-xs">{index + 1}</span>
+                              </div>
+                              <span className="text-gray-700 leading-relaxed">{rec}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -593,15 +639,23 @@ export default function NewAssessmentFlow() {
                   </Card>
                 )}
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <Label>Feedback on Preliminary Plan</Label>
+                <Card className="border-amber-200 bg-amber-50/50">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center text-lg">
+                      <Edit className="h-5 w-5 text-amber-600 mr-2" />
+                      Provide Feedback (Optional)
+                    </CardTitle>
+                    <p className="text-sm text-amber-700">
+                      Your feedback will be integrated into the final care plan to ensure accuracy and personalization.
+                    </p>
+                  </CardHeader>
+                  <CardContent>
                     <Textarea
                       value={userFeedback}
                       onChange={(e) => setUserFeedback(e.target.value)}
-                      placeholder="Any corrections or additional information for the care plan..."
-                      rows={3}
-                      className="mt-2"
+                      placeholder="Add corrections, additional context, or specific concerns about the preliminary assessment..."
+                      rows={4}
+                      className="border-amber-200 focus:border-amber-400 bg-white"
                     />
                     
                     <div className="flex gap-4 mt-4">
