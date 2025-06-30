@@ -745,9 +745,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Step 3: Generate final care plan with case creation
-  app.post("/api/assessment/final-plan", isAuthenticated, async (req, res) => {
+  app.post("/api/assessment/final-plan", isAuthenticated, upload.single('image'), async (req, res) => {
     try {
-      const { imageData, audience, model, questions, classification, preliminaryPlan, userFeedback } = req.body;
+      const { audience, model, questions, classification, preliminaryPlan, userFeedback } = req.body;
       
       // Generate case ID
       const caseId = generateCaseId();
@@ -767,15 +767,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         model
       );
 
+      // Process image data
+      let imageBase64 = '';
+      let imageMimeType = 'image/jpeg';
+      let imageSize = 0;
+      
+      if (req.file) {
+        await validateImage(req.file);
+        imageBase64 = req.file.buffer.toString('base64');
+        imageMimeType = req.file.mimetype;
+        imageSize = req.file.size;
+      }
+      
       // Create wound assessment record
       const assessment = await storage.createWoundAssessment({
         caseId,
         userId: (req as any).user?.id || null,
         audience,
         model,
-        imageData: imageData ? imageData.toString() : '',
-        imageMimeType: 'image/jpeg',
-        imageSize: 0,
+        imageData: imageBase64,
+        imageMimeType,
+        imageSize,
         classification: JSON.stringify(classification),
         contextData: JSON.stringify(contextData),
         carePlan,

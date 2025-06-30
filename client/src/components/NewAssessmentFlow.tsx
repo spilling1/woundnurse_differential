@@ -137,15 +137,28 @@ export default function NewAssessmentFlow() {
   // Step 3: Generate final care plan
   const finalPlanMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('POST', '/api/assessment/final-plan', {
-        imageData: selectedImage,
-        audience,
-        model,
-        questions: aiQuestions,
-        classification: woundClassification,
-        preliminaryPlan,
-        userFeedback
+      const formData = new FormData();
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
+      formData.append('audience', audience);
+      formData.append('model', model);
+      formData.append('questions', JSON.stringify(aiQuestions));
+      formData.append('classification', JSON.stringify(woundClassification));
+      formData.append('preliminaryPlan', JSON.stringify(preliminaryPlan));
+      formData.append('userFeedback', userFeedback);
+
+      const response = await fetch('/api/assessment/final-plan', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
       return await response.json();
     },
     onSuccess: (data: any) => {
