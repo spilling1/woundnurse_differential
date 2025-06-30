@@ -220,7 +220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Follow-up assessment endpoint
-  app.post("/api/follow-up/:caseId", followUpUpload.fields([
+  app.post("/api/follow-up/:caseId", isAuthenticated, followUpUpload.fields([
     { name: 'images', maxCount: 10 },
     { name: 'additionalFiles', maxCount: 10 }
   ]), async (req, res) => {
@@ -745,7 +745,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Step 3: Generate final care plan with case creation
-  app.post("/api/assessment/final-plan", async (req, res) => {
+  app.post("/api/assessment/final-plan", isAuthenticated, async (req, res) => {
     try {
       const { imageData, audience, model, questions, classification, preliminaryPlan, userFeedback } = req.body;
       
