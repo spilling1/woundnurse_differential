@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation, useParams } from "wouter";
 import { ArrowLeft, Save, Star, FileText, AlertCircle, CheckCircle, RefreshCw, Image } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function NurseEvaluation() {
   const [, setLocation] = useLocation();
-  const searchParams = useSearch();
+  const params = useParams();
   const { toast } = useToast();
   
   const [editedCarePlan, setEditedCarePlan] = useState("");
@@ -30,7 +30,7 @@ export default function NurseEvaluation() {
   const [isRerunning, setIsRerunning] = useState(false);
 
   // Extract case ID from URL params
-  const caseId = new URLSearchParams(searchParams).get('caseId');
+  const caseId = params.caseId;
 
   const { data: assessmentData, isLoading } = useQuery({
     queryKey: ['/api/assessment', caseId],
