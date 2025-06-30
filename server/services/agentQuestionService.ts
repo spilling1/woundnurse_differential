@@ -9,26 +9,45 @@ export async function analyzeAssessmentForQuestions(
 ): Promise<any[]> {
   const { imageAnalysis, audience, model } = contextData;
   
-  // Check confidence level - if high confidence (>0.75), don't ask questions
+  // Get agent instructions to check for custom questions that should always be asked
+  const agentInstructions = await storage.getActiveAgentInstructions();
+  const instructions = agentInstructions?.content || '';
+  
+  // Check if agent instructions contain "always ask" requirements
+  const hasAlwaysAskRequirements = instructions.includes('always ask') || instructions.includes('Always ask');
+  
   const confidence = imageAnalysis.confidence || 0.5;
-  if (confidence > 0.75) {
+  
+  // If agent has "always ask" instructions, generate questions regardless of confidence
+  if (hasAlwaysAskRequirements) {
+    console.log(`Agent instructions require questions - generating questions (confidence: ${confidence})`);
+  } else if (confidence > 0.75) {
     console.log(`High confidence (${confidence}) - skipping questions`);
     return [];
+  } else {
+    console.log(`Low confidence (${confidence}) - generating questions`);
   }
   
-  console.log(`Low confidence (${confidence}) - generating questions`);
-  
   const analysisPrompt = `
-You are an AI wound care specialist. Based on the image analysis, determine if you need to ask the user questions to improve diagnostic confidence.
+You are an AI wound care specialist following specific agent instructions. Based on the image analysis and agent guidelines, generate appropriate questions.
+
+AGENT INSTRUCTIONS:
+${instructions}
 
 WOUND ANALYSIS RESULTS:
 ${JSON.stringify(imageAnalysis, null, 2)}
 
 TARGET AUDIENCE: ${audience}
 
-DIAGNOSTIC CONFIDENCE ASSESSMENT:
-1. If the wound type confidence is HIGH (>75%) and key characteristics are clear: Return empty array []
-2. If the wound type confidence is MEDIUM-LOW (≤75%) or diagnosis is uncertain: Generate 2-3 targeted questions WITHOUT answers
+QUESTION GENERATION RULES:
+1. First, check the AGENT INSTRUCTIONS for any "always ask" requirements:
+   - Always ask about body location if not clear
+   - Always ask about patient age unless irrelevant
+   - Always ask about pain, swelling, and concerning symptoms
+   - Always ask about pre-existing conditions
+2. Generate questions for any "always ask" requirements that apply to this case
+3. If confidence is low (<75%), also generate additional diagnostic clarification questions
+4. Generate 2-4 targeted questions WITHOUT pre-filled answers
 
 RESPONSE FORMAT:
 Return a JSON array of objects with this structure:
