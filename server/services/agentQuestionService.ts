@@ -36,7 +36,7 @@ export async function analyzeAssessmentForQuestions(
 You are an AI wound care specialist following specific agent instructions. ${isFollowUp ? 'This is a follow-up round of questions.' : 'This is the initial question generation.'}
 
 AGENT INSTRUCTIONS:
-${instructions || agentInstructions?.content || ''}
+${instructions}
 
 WOUND ANALYSIS RESULTS:
 ${JSON.stringify(imageAnalysis, null, 2)}

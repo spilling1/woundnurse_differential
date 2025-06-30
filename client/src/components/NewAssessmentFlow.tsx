@@ -201,7 +201,22 @@ export default function NewAssessmentFlow() {
       }
 
       const data = await response.json();
-      setAiQuestions(data.questions || []);
+      
+      if (data.needsMoreQuestions && data.questions && data.questions.length > 0) {
+        setAiQuestions(data.questions);
+        toast({
+          title: "Follow-up Questions Generated",
+          description: `Round ${data.round} questions based on your Agent Instructions.`
+        });
+      } else {
+        // No more questions needed, proceed to care plan
+        setAiQuestions([]);
+        setCurrentStep('preliminary-plan');
+        toast({
+          title: "Questions Complete",
+          description: "Agent Instructions satisfied. Proceeding to care plan generation."
+        });
+      }
       
     } catch (error) {
       console.error('Follow-up questions error:', error);
@@ -424,22 +439,33 @@ export default function NewAssessmentFlow() {
                   className="mt-2"
                 />
                 
-                {aiQuestions.length > 0 && questionRound < 3 ? (
+                {aiQuestions.length > 0 ? (
                   <div className="space-y-2">
-                    <Button 
-                      onClick={handleFollowUpQuestions}
-                      className="w-full bg-yellow-600 hover:bg-yellow-700"
-                    >
-                      Submit Answers & Ask Follow-up Questions (Round {questionRound + 1})
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+                    {questionRound < 3 && (
+                      <Button 
+                        onClick={handleFollowUpQuestions}
+                        className="w-full bg-yellow-600 hover:bg-yellow-700"
+                      >
+                        Check for Follow-up Questions (Round {questionRound + 1})
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    )}
                     <Button 
                       onClick={() => preliminaryPlanMutation.mutate()}
                       disabled={preliminaryPlanMutation.isPending}
-                      variant="outline"
-                      className="w-full"
+                      className="w-full bg-medical-blue hover:bg-medical-blue/90"
                     >
-                      Skip Follow-up & Generate Care Plan
+                      {preliminaryPlanMutation.isPending ? (
+                        <>
+                          <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                          Generating Care Plan...
+                        </>
+                      ) : (
+                        <>
+                          Generate Care Plan
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </Button>
                   </div>
                 ) : (
