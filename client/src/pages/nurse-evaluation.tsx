@@ -118,8 +118,8 @@ export default function NurseEvaluation() {
       setEditedCarePlan(result.carePlan);
       setIsRerunning(false);
       toast({
-        title: "Evaluation Re-run Complete",
-        description: "The assessment has been regenerated with the selected wound type.",
+        title: "Care Plan Refreshed",
+        description: "The care plan has been updated with your modifications.",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/assessment', caseId] });
     },
@@ -271,7 +271,7 @@ export default function NurseEvaluation() {
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Image and Re-run Controls */}
+          {/* Left Column */}
           <div className="space-y-6">
             {/* Wound Image */}
             <Card>
@@ -297,7 +297,7 @@ export default function NurseEvaluation() {
               </CardContent>
             </Card>
 
-            {/* Re-run Evaluation */}
+            {/* Re-run Evaluation - All in One Panel */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -307,179 +307,174 @@ export default function NurseEvaluation() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="override-wound-type"
-                      checked={overrideWoundType}
-                      onChange={(e) => setOverrideWoundType(e.target.checked)}
-                      className="rounded border-gray-300"
-                    />
-                    <Label htmlFor="override-wound-type">Override AI wound type classification</Label>
+                  {/* Wound Type Override */}
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="override-wound-type"
+                        checked={overrideWoundType}
+                        onChange={(e) => setOverrideWoundType(e.target.checked)}
+                        className="rounded border-gray-300"
+                      />
+                      <Label htmlFor="override-wound-type">Override AI wound type classification</Label>
+                    </div>
+                    
+                    {overrideWoundType && (
+                      <div>
+                        <Label htmlFor="wound-type">Wound Type Override</Label>
+                        <Select value={selectedWoundType} onValueChange={setSelectedWoundType}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select wound type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pressure-ulcer">Pressure Ulcer</SelectItem>
+                            <SelectItem value="diabetic-ulcer">Diabetic Ulcer</SelectItem>
+                            <SelectItem value="venous-ulcer">Venous Ulcer</SelectItem>
+                            <SelectItem value="arterial-ulcer">Arterial Ulcer</SelectItem>
+                            <SelectItem value="surgical-wound">Surgical Wound</SelectItem>
+                            <SelectItem value="traumatic-wound">Traumatic Wound</SelectItem>
+                            <SelectItem value="laceration">Laceration</SelectItem>
+                            <SelectItem value="abrasion">Abrasion</SelectItem>
+                            <SelectItem value="burn">Burn</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Clinical Assessment Summary */}
+                  <div className="border rounded-lg p-4 bg-gray-50">
+                    <Label className="font-medium mb-3 block">Clinical Assessment Summary</Label>
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="location">Location</Label>
+                          <Input
+                            id="location"
+                            value={clinicalSummary.location || ''}
+                            onChange={(e) => {
+                              setClinicalSummary({...clinicalSummary, location: e.target.value});
+                              setHasChanges(true);
+                            }}
+                            placeholder="arm"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="size">Size</Label>
+                          <Input
+                            id="size"
+                            value={clinicalSummary.size || ''}
+                            onChange={(e) => {
+                              setClinicalSummary({...clinicalSummary, size: e.target.value});
+                              setHasChanges(true);
+                            }}
+                            placeholder="medium"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="stage">Stage</Label>
+                          <Input
+                            id="stage"
+                            value={clinicalSummary.stage || ''}
+                            onChange={(e) => {
+                              setClinicalSummary({...clinicalSummary, stage: e.target.value});
+                              setHasChanges(true);
+                            }}
+                            placeholder="N/A"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="wound-bed">Wound Bed</Label>
+                          <Input
+                            id="wound-bed"
+                            value={clinicalSummary.woundBed || ''}
+                            onChange={(e) => {
+                              setClinicalSummary({...clinicalSummary, woundBed: e.target.value});
+                              setHasChanges(true);
+                            }}
+                            placeholder="granulating"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="exudate-level">Exudate Level</Label>
+                          <Input
+                            id="exudate-level"
+                            value={clinicalSummary.exudateLevel || ''}
+                            onChange={(e) => {
+                              setClinicalSummary({...clinicalSummary, exudateLevel: e.target.value});
+                              setHasChanges(true);
+                            }}
+                            placeholder="low"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="signs-infection">Signs of Infection</Label>
+                        <Textarea
+                          id="signs-infection"
+                          value={clinicalSummary.signsOfInfection || ''}
+                          onChange={(e) => {
+                            setClinicalSummary({...clinicalSummary, signsOfInfection: e.target.value});
+                            setHasChanges(true);
+                          }}
+                          rows={2}
+                          placeholder="Redness, warmth, odor, etc."
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="additional-observations">Additional Observations</Label>
+                        <Textarea
+                          id="additional-observations"
+                          value={clinicalSummary.additionalObservations || ''}
+                          onChange={(e) => {
+                            setClinicalSummary({...clinicalSummary, additionalObservations: e.target.value});
+                            setHasChanges(true);
+                          }}
+                          rows={3}
+                          placeholder="Additional clinical observations, periwound skin condition, etc."
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Agent Instructions */}
+                  <div className="border rounded-lg p-4 bg-blue-50">
+                    <Label className="font-medium mb-3 block">Additional Agent Instructions</Label>
+                    <div className="space-y-3">
+                      <div className="bg-blue-100 border border-blue-200 rounded-lg p-3">
+                        <p className="text-sm text-blue-800">
+                          Add specific instructions based on this case to improve future AI assessments.
+                        </p>
+                      </div>
+                      <Textarea
+                        value={additionalInstructions}
+                        onChange={(e) => setAdditionalInstructions(e.target.value)}
+                        rows={3}
+                        placeholder="Example: When assessing foot wounds, always ask about diabetes status regardless of visual appearance..."
+                      />
+                      <Button 
+                        onClick={handleAddInstructions}
+                        disabled={!additionalInstructions.trim() || updateAgentInstructionsMutation.isPending}
+                        className="w-full"
+                        variant="secondary"
+                        size="sm"
+                      >
+                        <Save className="mr-2 h-4 w-4" />
+                        {updateAgentInstructionsMutation.isPending ? 'Adding...' : 'Add to Agent Instructions'}
+                      </Button>
+                    </div>
                   </div>
                   
-                  {overrideWoundType && (
-                    <div>
-                      <Label htmlFor="wound-type">Wound Type Override</Label>
-                      <Select value={selectedWoundType} onValueChange={setSelectedWoundType}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select wound type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pressure-ulcer">Pressure Ulcer</SelectItem>
-                          <SelectItem value="diabetic-ulcer">Diabetic Ulcer</SelectItem>
-                          <SelectItem value="venous-ulcer">Venous Ulcer</SelectItem>
-                          <SelectItem value="arterial-ulcer">Arterial Ulcer</SelectItem>
-                          <SelectItem value="surgical-wound">Surgical Wound</SelectItem>
-                          <SelectItem value="traumatic-wound">Traumatic Wound</SelectItem>
-                          <SelectItem value="laceration">Laceration</SelectItem>
-                          <SelectItem value="abrasion">Abrasion</SelectItem>
-                          <SelectItem value="burn">Burn</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                  
+                  {/* Re-run Button at Bottom */}
                   <Button 
                     onClick={handleRerunEvaluation}
                     disabled={isRerunning || rerunEvaluationMutation.isPending || (overrideWoundType && !selectedWoundType)}
-                    className="w-full"
-                    variant="outline"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <RefreshCw className={`mr-2 h-4 w-4 ${(isRerunning || rerunEvaluationMutation.isPending) ? 'animate-spin' : ''}`} />
-                    {isRerunning || rerunEvaluationMutation.isPending ? 'Re-running...' : 
-                     overrideWoundType ? 'Re-run with Override Type' : 'Re-run with Updated Context'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Clinical Assessment Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Clinical Assessment Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <Label htmlFor="location">Location</Label>
-                      <Input
-                        id="location"
-                        value={clinicalSummary.location || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, location: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        placeholder="arm"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="size">Size</Label>
-                      <Input
-                        id="size"
-                        value={clinicalSummary.size || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, size: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        placeholder="medium"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="stage">Stage</Label>
-                      <Input
-                        id="stage"
-                        value={clinicalSummary.stage || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, stage: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        placeholder="N/A"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="wound-bed">Wound Bed</Label>
-                      <Input
-                        id="wound-bed"
-                        value={clinicalSummary.woundBed || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, woundBed: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        placeholder="granulating"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="exudate-level">Exudate Level</Label>
-                      <Input
-                        id="exudate-level"
-                        value={clinicalSummary.exudateLevel || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, exudateLevel: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        placeholder="low"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="signs-infection">Signs of Infection</Label>
-                    <Textarea
-                      id="signs-infection"
-                      value={clinicalSummary.signsOfInfection || ''}
-                      onChange={(e) => {
-                        setClinicalSummary({...clinicalSummary, signsOfInfection: e.target.value});
-                        setHasChanges(true);
-                      }}
-                      rows={2}
-                      placeholder="Redness, warmth, odor, etc."
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="additional-observations">Additional Observations</Label>
-                    <Textarea
-                      id="additional-observations"
-                      value={clinicalSummary.additionalObservations || ''}
-                      onChange={(e) => {
-                        setClinicalSummary({...clinicalSummary, additionalObservations: e.target.value});
-                        setHasChanges(true);
-                      }}
-                      rows={3}
-                      placeholder="Additional clinical observations, periwound skin condition, etc."
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Additional Agent Instructions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Additional Agent Instructions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <p className="text-sm text-blue-800">
-                      Add specific instructions based on this case to improve future AI assessments.
-                    </p>
-                  </div>
-                  <Textarea
-                    value={additionalInstructions}
-                    onChange={(e) => setAdditionalInstructions(e.target.value)}
-                    rows={4}
-                    placeholder="Example: When assessing foot wounds, always ask about diabetes status regardless of visual appearance..."
-                  />
-                  <Button 
-                    onClick={handleAddInstructions}
-                    disabled={!additionalInstructions.trim() || updateAgentInstructionsMutation.isPending}
-                    className="w-full"
-                    variant="secondary"
-                  >
-                    <Save className="mr-2 h-4 w-4" />
-                    {updateAgentInstructionsMutation.isPending ? 'Adding...' : 'Add to Agent Instructions'}
+                    {isRerunning || rerunEvaluationMutation.isPending ? 'Refreshing...' : 'Refresh Care Plan'}
                   </Button>
                 </div>
               </CardContent>
@@ -515,45 +510,54 @@ export default function NurseEvaluation() {
                 <CardTitle>Patient Context Review</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="grid grid-cols-1 gap-3">
                     <div>
-                      <Label htmlFor="wound-origin">Wound Origin</Label>
-                      <Textarea
+                      <Label htmlFor="wound-origin" className="text-sm">Wound Origin</Label>
+                      <Input
                         id="wound-origin"
                         value={editableContext.woundOrigin || ''}
                         onChange={(e) => {
                           setEditableContext({...editableContext, woundOrigin: e.target.value});
                           setHasChanges(true);
                         }}
-                        rows={2}
                         placeholder="How did the wound occur?"
+                        className="min-w-0 w-full"
+                        style={{ 
+                          width: `${Math.max(200, (editableContext.woundOrigin || '').length * 8 + 50)}px` 
+                        }}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="medical-history">Medical History</Label>
-                      <Textarea
+                      <Label htmlFor="medical-history" className="text-sm">Medical History</Label>
+                      <Input
                         id="medical-history"
                         value={editableContext.medicalHistory || ''}
                         onChange={(e) => {
                           setEditableContext({...editableContext, medicalHistory: e.target.value});
                           setHasChanges(true);
                         }}
-                        rows={2}
                         placeholder="Relevant medical conditions"
+                        className="min-w-0 w-full"
+                        style={{ 
+                          width: `${Math.max(200, (editableContext.medicalHistory || '').length * 8 + 50)}px` 
+                        }}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="current-care">Current Care</Label>
-                      <Textarea
+                      <Label htmlFor="current-care" className="text-sm">Current Care</Label>
+                      <Input
                         id="current-care"
                         value={editableContext.currentCare || ''}
                         onChange={(e) => {
                           setEditableContext({...editableContext, currentCare: e.target.value});
                           setHasChanges(true);
                         }}
-                        rows={2}
                         placeholder="Current treatment regimen"
+                        className="min-w-0 w-full"
+                        style={{ 
+                          width: `${Math.max(200, (editableContext.currentCare || '').length * 8 + 50)}px` 
+                        }}
                       />
                     </div>
                   </div>
