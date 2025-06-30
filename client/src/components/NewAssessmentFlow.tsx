@@ -134,6 +134,14 @@ export default function NewAssessmentFlow() {
     },
   });
 
+  // Auto-trigger preliminary plan when reaching that step with no pending questions
+  useEffect(() => {
+    if (currentStep === 'preliminary-plan' && !preliminaryPlan && aiQuestions.length === 0 && !preliminaryPlanMutation.isPending) {
+      console.log('Auto-triggering preliminary plan generation');
+      preliminaryPlanMutation.mutate();
+    }
+  }, [currentStep, preliminaryPlan, aiQuestions.length, preliminaryPlanMutation]);
+
   // Step 3: Generate final care plan
   const finalPlanMutation = useMutation({
     mutationFn: async () => {
