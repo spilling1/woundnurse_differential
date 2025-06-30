@@ -60,6 +60,28 @@ ${contextData?.mobilityStatus ? `- Mobility status: ${contextData.mobilityStatus
 ${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionStatus}` : ''}
 `;
 
+  // Process AI Questions and Answers
+  if (contextData?.aiQuestions && Array.isArray(contextData.aiQuestions)) {
+    baseInfo += `
+
+CRITICAL: AI Follow-up Questions and Patient Answers (MUST OVERRIDE VISUAL CLASSIFICATION IF ANSWERS CONTRADICT):
+`;
+    contextData.aiQuestions.forEach((qa: any) => {
+      if (qa.answer && qa.answer.trim() !== '') {
+        baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+      }
+    });
+    
+    baseInfo += `
+
+**IMPORTANT DIAGNOSTIC INSTRUCTION:** 
+The patient answers above MUST take precedence over visual image analysis when there's a contradiction. 
+For example, if image suggests "diabetic ulcer" but patient clearly states "I do not have diabetes", 
+then reclassify as a different wound type (pressure ulcer, venous ulcer, etc.) based on location and features.
+Always explain your reasoning when patient answers contradict initial visual assessment.
+`;
+  }
+
   // Add follow-up specific context if this is a follow-up assessment
   if (contextData?.isFollowUp && contextData?.previousAssessments) {
     baseInfo += `
