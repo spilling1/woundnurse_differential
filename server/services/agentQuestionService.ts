@@ -13,13 +13,20 @@ export async function analyzeAssessmentForQuestions(
   const agentInstructions = await storage.getActiveAgentInstructions();
   const instructions = providedInstructions || agentInstructions?.content || '';
   
-  // Check if agent instructions contain "always ask" requirements
-  const hasAlwaysAskRequirements = instructions.includes('always ask') || instructions.includes('Always ask');
+  // Check if agent instructions contain question requirements
+  const hasQuestionRequirements = 
+    instructions.includes('always ask') || 
+    instructions.includes('Always ask') ||
+    instructions.includes('follow-up questions') ||
+    instructions.includes('Follow-up questions') ||
+    instructions.includes('Ask at least') ||
+    instructions.includes('ask at least') ||
+    instructions.toLowerCase().includes('ask') && instructions.toLowerCase().includes('question');
   
   const confidence = imageAnalysis.confidence || 0.5;
   
-  // If agent has "always ask" instructions, generate questions regardless of confidence
-  if (hasAlwaysAskRequirements) {
+  // If agent has question requirements, generate questions regardless of confidence
+  if (hasQuestionRequirements) {
     console.log(`Agent instructions require questions - generating questions (confidence: ${confidence})`);
   } else if (confidence > 0.75) {
     console.log(`High confidence (${confidence}) - skipping questions`);
