@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, Save, Star, FileText, AlertCircle, CheckCircle, RefreshCw, Image } from "lucide-react";
+import { ArrowLeft, Save, Star, FileText, AlertCircle, CheckCircle, RefreshCw, Image, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,7 @@ export default function NurseEvaluation() {
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [selectedWoundType, setSelectedWoundType] = useState("");
   const [overrideWoundType, setOverrideWoundType] = useState(false);
+  const [medicalHelpNeeded, setMedicalHelpNeeded] = useState(false);
   const [editableContext, setEditableContext] = useState<any>({});
   const [clinicalSummary, setClinicalSummary] = useState<any>({});
   const [hasChanges, setHasChanges] = useState(false);
@@ -170,7 +171,8 @@ export default function NurseEvaluation() {
         caseId,
         editedCarePlan,
         rating,
-        nurseNotes
+        nurseNotes,
+        medicalHelpNeeded
       });
     } catch (error) {
       console.error('Save error:', error);
@@ -618,6 +620,41 @@ export default function NurseEvaluation() {
                   rows={6}
                   placeholder="Add your professional observations, recommendations for AI improvement, or specific case notes..."
                 />
+              </CardContent>
+            </Card>
+
+            {/* Medical Help Needed */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <AlertTriangle className="mr-2 h-5 w-5 text-red-500" />
+                  Medical Alert
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="medical-help-needed"
+                    checked={medicalHelpNeeded}
+                    onChange={(e) => {
+                      setMedicalHelpNeeded(e.target.checked);
+                      setHasChanges(true);
+                    }}
+                    className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                  />
+                  <Label htmlFor="medical-help-needed" className="text-sm font-medium">
+                    Medical Help Needed - This case requires immediate medical attention
+                  </Label>
+                </div>
+                {medicalHelpNeeded && (
+                  <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">
+                      <strong>Alert:</strong> This case has been flagged for urgent medical review. 
+                      The patient should seek immediate medical attention from a qualified healthcare provider.
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

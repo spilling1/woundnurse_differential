@@ -521,7 +521,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Save nurse evaluation
   app.post("/api/nurse-evaluation", async (req, res) => {
     try {
-      const { caseId, editedCarePlan, rating, nurseNotes } = req.body;
+      const { caseId, editedCarePlan, rating, nurseNotes, medicalHelpNeeded } = req.body;
       
       if (!caseId) {
         return res.status(400).json({
@@ -535,7 +535,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caseId,
         rating,
         nurseNotes: nurseNotes?.substring(0, 100) + '...',
-        carePlanUpdated: editedCarePlan !== undefined
+        carePlanUpdated: editedCarePlan !== undefined,
+        medicalHelpNeeded: medicalHelpNeeded || false
       });
       
       res.json({
