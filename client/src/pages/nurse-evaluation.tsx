@@ -24,6 +24,7 @@ export default function NurseEvaluation() {
   const [selectedWoundType, setSelectedWoundType] = useState("");
   const [overrideWoundType, setOverrideWoundType] = useState(false);
   const [editableContext, setEditableContext] = useState<any>({});
+  const [clinicalSummary, setClinicalSummary] = useState<any>({});
   const [hasChanges, setHasChanges] = useState(false);
   const [isRerunning, setIsRerunning] = useState(false);
 
@@ -70,6 +71,22 @@ export default function NurseEvaluation() {
       nutritionStatus: assessmentData.nutritionStatus || contextData.nutritionStatus || '',
     };
     setEditableContext(initialContext);
+
+    // Initialize clinical summary from classification data
+    const classification = typeof assessmentData.classification === 'string' 
+      ? JSON.parse(assessmentData.classification)
+      : assessmentData.classification || {};
+    
+    const initialClinicalSummary = {
+      location: classification.location || '',
+      size: classification.size || '',
+      stage: classification.stage || '',
+      woundBed: classification.woundBed || '',
+      exudateLevel: classification.exudateLevel || classification.exudate || '',
+      signsOfInfection: classification.signsOfInfection || classification.infection || '',
+      additionalObservations: classification.additionalObservations || classification.observations || ''
+    };
+    setClinicalSummary(initialClinicalSummary);
   }, [assessmentData]);
 
   const saveEvaluationMutation = useMutation({
@@ -158,7 +175,8 @@ export default function NurseEvaluation() {
     rerunEvaluationMutation.mutate({
       caseId,
       woundType: overrideWoundType ? selectedWoundType : null,
-      contextData: editableContext
+      contextData: editableContext,
+      clinicalSummary: clinicalSummary
     });
   };
 
@@ -278,53 +296,105 @@ export default function NurseEvaluation() {
               </CardContent>
             </Card>
 
-            {/* Patient Context Data */}
+            {/* Clinical Assessment Summary */}
             <Card>
               <CardHeader>
-                <CardTitle>Patient Context Review</CardTitle>
+                <CardTitle>Clinical Assessment Summary</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <Label htmlFor="wound-origin">Wound Origin</Label>
+                      <Label htmlFor="location">Location</Label>
                       <Textarea
-                        id="wound-origin"
-                        value={editableContext.woundOrigin || ''}
+                        id="location"
+                        value={clinicalSummary.location || ''}
                         onChange={(e) => {
-                          setEditableContext({...editableContext, woundOrigin: e.target.value});
+                          setClinicalSummary({...clinicalSummary, location: e.target.value});
                           setHasChanges(true);
                         }}
-                        rows={2}
-                        placeholder="How did the wound occur?"
+                        rows={1}
+                        placeholder="Wound location (e.g., right heel, left ankle)"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="medical-history">Medical History</Label>
+                      <Label htmlFor="size">Size</Label>
                       <Textarea
-                        id="medical-history"
-                        value={editableContext.medicalHistory || ''}
+                        id="size"
+                        value={clinicalSummary.size || ''}
                         onChange={(e) => {
-                          setEditableContext({...editableContext, medicalHistory: e.target.value});
+                          setClinicalSummary({...clinicalSummary, size: e.target.value});
                           setHasChanges(true);
                         }}
-                        rows={2}
-                        placeholder="Relevant medical conditions"
+                        rows={1}
+                        placeholder="Dimensions (e.g., 3cm x 2cm)"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="current-care">Current Care</Label>
+                      <Label htmlFor="stage">Stage</Label>
                       <Textarea
-                        id="current-care"
-                        value={editableContext.currentCare || ''}
+                        id="stage"
+                        value={clinicalSummary.stage || ''}
                         onChange={(e) => {
-                          setEditableContext({...editableContext, currentCare: e.target.value});
+                          setClinicalSummary({...clinicalSummary, stage: e.target.value});
                           setHasChanges(true);
                         }}
-                        rows={2}
-                        placeholder="Current treatment regimen"
+                        rows={1}
+                        placeholder="Stage/grade classification"
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="wound-bed">Wound Bed</Label>
+                      <Textarea
+                        id="wound-bed"
+                        value={clinicalSummary.woundBed || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, woundBed: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={1}
+                        placeholder="Tissue type, color, granulation"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="exudate-level">Exudate Level</Label>
+                      <Textarea
+                        id="exudate-level"
+                        value={clinicalSummary.exudateLevel || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, exudateLevel: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={1}
+                        placeholder="Amount and consistency"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="signs-infection">Signs of Infection</Label>
+                      <Textarea
+                        id="signs-infection"
+                        value={clinicalSummary.signsOfInfection || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, signsOfInfection: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={1}
+                        placeholder="Redness, warmth, odor, etc."
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="additional-observations">Additional Observations</Label>
+                    <Textarea
+                      id="additional-observations"
+                      value={clinicalSummary.additionalObservations || ''}
+                      onChange={(e) => {
+                        setClinicalSummary({...clinicalSummary, additionalObservations: e.target.value});
+                        setHasChanges(true);
+                      }}
+                      rows={3}
+                      placeholder="Additional clinical observations, periwound skin condition, etc."
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -439,6 +509,58 @@ export default function NurseEvaluation() {
                     className="font-mono text-sm"
                     placeholder="Review and edit the AI-generated care plan..."
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Patient Context Review */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Patient Context Review</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <Label htmlFor="wound-origin">Wound Origin</Label>
+                      <Textarea
+                        id="wound-origin"
+                        value={editableContext.woundOrigin || ''}
+                        onChange={(e) => {
+                          setEditableContext({...editableContext, woundOrigin: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={2}
+                        placeholder="How did the wound occur?"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="medical-history">Medical History</Label>
+                      <Textarea
+                        id="medical-history"
+                        value={editableContext.medicalHistory || ''}
+                        onChange={(e) => {
+                          setEditableContext({...editableContext, medicalHistory: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={2}
+                        placeholder="Relevant medical conditions"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="current-care">Current Care</Label>
+                      <Textarea
+                        id="current-care"
+                        value={editableContext.currentCare || ''}
+                        onChange={(e) => {
+                          setEditableContext({...editableContext, currentCare: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={2}
+                        placeholder="Current treatment regimen"
+                      />
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

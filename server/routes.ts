@@ -904,7 +904,7 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
   // Nurse re-run evaluation with different wound type
   app.post("/api/nurse-rerun-evaluation", isAuthenticated, async (req, res) => {
     try {
-      const { caseId, woundType, contextData } = req.body;
+      const { caseId, woundType, contextData, clinicalSummary } = req.body;
       
       if (!caseId) {
         return res.status(400).json({
@@ -956,6 +956,7 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
       const mergedContext = {
         ...existingContext,
         ...contextData,
+        ...clinicalSummary,
         nurseReview: true,
         woundTypeOverride: woundType ? true : false,
         agentInstructions: agentInstructionsText
@@ -972,8 +973,8 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
       res.json({ 
         success: true, 
         carePlan,
-        woundType,
-        classification: modifiedClassification 
+        woundType: woundType || classificationToUse.woundType,
+        classification: classificationToUse 
       });
 
     } catch (error: any) {
