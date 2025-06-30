@@ -92,7 +92,8 @@ export default function NurseEvaluation() {
 
   const saveEvaluationMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest('POST', '/api/nurse-evaluation', data);
+      const response = await apiRequest('POST', '/api/nurse-evaluation', data);
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -112,7 +113,8 @@ export default function NurseEvaluation() {
 
   const rerunEvaluationMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest('POST', '/api/nurse-rerun-evaluation', data);
+      const response = await apiRequest('POST', '/api/nurse-rerun-evaluation', data);
+      return response.json();
     },
     onSuccess: (result: any) => {
       console.log('Re-run result:', result);
@@ -140,7 +142,8 @@ export default function NurseEvaluation() {
 
   const updateAgentInstructionsMutation = useMutation({
     mutationFn: async (instructions: string) => {
-      return apiRequest('POST', '/api/agents/add-instructions', { instructions });
+      const response = await apiRequest('POST', '/api/agents/add-instructions', { instructions });
+      return response.json();
     },
     onSuccess: () => {
       toast({
