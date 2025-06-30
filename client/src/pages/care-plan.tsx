@@ -624,7 +624,7 @@ export default function CarePlan() {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => setLocation(`/nurse-evaluation?caseId=${caseId}`)}
+                  onClick={() => setLocation(`/nurse-evaluation/${caseId}`)}
                 >
                   <UserCheck className="mr-2 h-4 w-4" />
                   Nurse Review
