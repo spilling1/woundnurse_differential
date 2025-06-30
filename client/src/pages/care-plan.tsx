@@ -432,20 +432,26 @@ export default function CarePlan() {
   const formatCarePlan = (plan: string) => {
     if (!plan) return null;
     
-    const sections = plan.split('\n\n');
+    // Remove MEDICAL DISCLAIMER since we handle it separately
+    const cleanPlan = plan.replace(/\*\*MEDICAL DISCLAIMER:\*\*.*?\n\n/s, '');
+    
+    const sections = cleanPlan.split('\n\n');
     return sections.map((section, index) => {
-      if (section.includes('MEDICAL DISCLAIMER')) {
+      // Skip empty sections and lines with just dashes
+      if (!section.trim() || section.trim() === '---' || section.includes('MEDICAL DISCLAIMER')) {
         return null;
       }
       
       // Enhanced formatting logic
       const formatSection = (text: string) => {
-        // Check if this is a heading (starts with ##, #, or contains keywords)
-        const isHeading = text.match(/^(##|#|\*\*.*\*\*|Understanding|Daily Care|Self Care|Instructions|Recommendations|Assessment|Plan|Treatment|Wound|Care)/i);
-        
         // Handle bullet points and numbered lists
         const lines = text.split('\n');
         const formattedLines = lines.map((line, lineIndex) => {
+          // Skip empty lines and dash separators
+          if (!line.trim() || line.trim() === '---') {
+            return null;
+          }
+          
           // Convert markdown links to clickable links
           const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
           const formatWithLinks = (lineText: string) => {
@@ -481,7 +487,7 @@ export default function CarePlan() {
           // Format bullet points
           if (line.match(/^\s*[-*•]\s/)) {
             return (
-              <li key={lineIndex} className="ml-4 mb-2 text-gray-700 leading-relaxed">
+              <li key={lineIndex} className="mb-2 text-gray-700 leading-relaxed">
                 {formatWithLinks(line.replace(/^\s*[-*•]\s/, ''))}
               </li>
             );
@@ -490,7 +496,7 @@ export default function CarePlan() {
           // Format numbered lists
           if (line.match(/^\s*\d+\.\s/)) {
             return (
-              <li key={lineIndex} className="ml-4 mb-2 text-gray-700 leading-relaxed list-decimal">
+              <li key={lineIndex} className="mb-2 text-gray-700 leading-relaxed">
                 {formatWithLinks(line.replace(/^\s*\d+\.\s/, ''))}
               </li>
             );
@@ -510,12 +516,12 @@ export default function CarePlan() {
         
         // If this section contains lists, wrap them properly
         const hasListItems = formattedLines.some(line => 
-          line?.props?.className?.includes('ml-4')
+          line?.props?.className?.includes('mb-2') && line?.type === 'li'
         );
         
         if (hasListItems) {
           return (
-            <ul className="space-y-1 mb-4">
+            <ul className="list-disc ml-6 space-y-1">
               {formattedLines}
             </ul>
           );
@@ -531,18 +537,38 @@ export default function CarePlan() {
         return (
           <div key={index} className="mb-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-              {section.replace(/^(##\s|#\s|\*\*|\*\*)/g, '').replace(/\*\*$/g, '')}
+              {section.replace(/^(##\s|#\s|\*\*)/g, '').replace(/\*\*$/g, '')}
             </h3>
           </div>
         );
       }
       
+      // Check if this section starts with a keyword that should be a subheading
+      const isSubHeading = section.match(/^(Understanding|Daily Care|Self Care|Instructions|Recommendations|Assessment|Plan|Treatment|Wound Care|Care Routine)/i);
+      
+      if (isSubHeading) {
+        const lines = section.split('\n');
+        const heading = lines[0];
+        const content = lines.slice(1).join('\n');
+        
+        return (
+          <div key={index} className="mb-6">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 text-medical-blue">
+              {heading.replace(/^#+\s*/, '')}
+            </h4>
+            <div className="pl-4 border-l-2 border-gray-200">
+              {formatSection(content)}
+            </div>
+          </div>
+        );
+      }
+      
       return (
-        <div key={index} className="mb-6 p-4 bg-gray-50 rounded-lg border-l-4 border-medical-blue">
+        <div key={index} className="mb-4">
           {formatSection(section)}
         </div>
       );
-    });
+    }).filter(Boolean);
   };
 
   if (isLoading) {
