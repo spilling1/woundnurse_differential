@@ -511,23 +511,7 @@ export default function NewAssessmentFlow() {
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     )}
-                    <Button 
-                      onClick={() => preliminaryPlanMutation.mutate()}
-                      disabled={preliminaryPlanMutation.isPending}
-                      className="w-full bg-medical-blue hover:bg-medical-blue/90"
-                    >
-                      {preliminaryPlanMutation.isPending ? (
-                        <>
-                          <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                          Generating Care Plan...
-                        </>
-                      ) : (
-                        <>
-                          Generate Care Plan
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
+                    
                   </div>
                 ) : (
                   <Button 

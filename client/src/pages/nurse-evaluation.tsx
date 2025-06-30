@@ -451,11 +451,6 @@ export default function NurseEvaluation() {
                   <div className="border rounded-lg p-4 bg-blue-50">
                     <Label className="font-medium mb-3 block">Additional Agent Instructions</Label>
                     <div className="space-y-3">
-                      <div className="bg-blue-100 border border-blue-200 rounded-lg p-3">
-                        <p className="text-sm text-blue-800">
-                          Add specific instructions based on this case to improve future AI assessments.
-                        </p>
-                      </div>
                       <Textarea
                         value={additionalInstructions}
                         onChange={(e) => setAdditionalInstructions(e.target.value)}

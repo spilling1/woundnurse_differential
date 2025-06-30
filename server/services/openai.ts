@@ -76,7 +76,8 @@ export async function analyzeWoundImage(imageBase64: string, model: string, mime
         {
           type: "image_url",
           image_url: {
-            url: `data:${mimeType};base64,${imageBase64}`
+            url: `data:${mimeType};base64,${imageBase64}`,
+            detail: "high"
           }
         }
       ]
