@@ -58,6 +58,8 @@ export default function NewAssessmentFlow() {
   // User input
   const [userFeedback, setUserFeedback] = useState<string>('');
   const [selectedAlternative, setSelectedAlternative] = useState<string | null>(null);
+  const [questionRound, setQuestionRound] = useState<number>(1);
+  const [answeredQuestions, setAnsweredQuestions] = useState<AIGeneratedQuestion[]>([]);
 
   // File upload handler
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -297,10 +299,13 @@ export default function NewAssessmentFlow() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Step 3: AI-Generated Assessment Questions</CardTitle>
+                <CardTitle>Step 3: Diagnostic Questions</CardTitle>
                 <p className="text-gray-600">
-                  Our AI has analyzed your image and generated these questions. 
-                  Please review and modify the answers as needed.
+                  {aiQuestions.length > 0 ? (
+                    "The AI needs more information to improve its diagnosis. Please answer these questions:"
+                  ) : (
+                    "The AI is confident in its initial assessment. Proceeding to care plan generation."
+                  )}
                 </p>
               </CardHeader>
             </Card>
@@ -356,7 +361,7 @@ export default function NewAssessmentFlow() {
                   <Textarea
                     value={question.answer}
                     onChange={(e) => updateAnswer(question.id, e.target.value)}
-                    placeholder="AI generated answer - edit if needed"
+                    placeholder={question.answer ? "Edit the AI's answer if needed" : "Please provide your answer..."}
                     rows={3}
                   />
                   <div className="flex items-center mt-2 text-sm text-gray-600">
@@ -378,23 +383,46 @@ export default function NewAssessmentFlow() {
                   className="mt-2"
                 />
                 
-                <Button 
-                  onClick={() => preliminaryPlanMutation.mutate()}
-                  disabled={preliminaryPlanMutation.isPending}
-                  className="w-full mt-4 bg-medical-blue hover:bg-medical-blue/90"
-                >
-                  {preliminaryPlanMutation.isPending ? (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      Generating Preliminary Plan...
-                    </>
-                  ) : (
-                    <>
-                      Generate Preliminary Care Plan
+                {aiQuestions.length > 0 && questionRound < 3 ? (
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => {
+                        // TODO: Implement follow-up question logic
+                        console.log('Submitting answers for follow-up questions');
+                      }}
+                      className="w-full bg-yellow-600 hover:bg-yellow-700"
+                    >
+                      Submit Answers & Ask Follow-up Questions (Round {questionRound + 1})
                       <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
+                    </Button>
+                    <Button 
+                      onClick={() => preliminaryPlanMutation.mutate()}
+                      disabled={preliminaryPlanMutation.isPending}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Skip Follow-up & Generate Care Plan
+                    </Button>
+                  </div>
+                ) : (
+                  <Button 
+                    onClick={() => preliminaryPlanMutation.mutate()}
+                    disabled={preliminaryPlanMutation.isPending}
+                    className="w-full bg-medical-blue hover:bg-medical-blue/90"
+                  >
+                    {preliminaryPlanMutation.isPending ? (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                        Generating Preliminary Plan...
+                      </>
+                    ) : (
+                      <>
+                        Generate Preliminary Care Plan
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </div>

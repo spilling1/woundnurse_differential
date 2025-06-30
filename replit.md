@@ -119,6 +119,10 @@ Changelog:
 - June 29, 2025. Fixed multiple file upload support for follow-up assessments with proper multer configuration
 - June 29, 2025. Added Settings page with AI Configuration management accessible via gear icon in navigation headers
 - June 29, 2025. Implemented settings gear icon in My Cases, Care Plan, and Home/Assessment pages for easy access to AI configuration
+- June 29, 2025. Overhauled question generation system to ask diagnostic questions only when AI confidence is low (≤75%)
+- June 29, 2025. Implemented confidence-based questioning where AI asks questions WITHOUT pre-filled answers for user to complete
+- June 29, 2025. Added support for multiple rounds of questions (up to 3 rounds) to improve diagnostic accuracy
+- June 29, 2025. Fixed all OpenAI API integration issues including MIME type handling and error responses
 ```
 
 ## User Preferences
