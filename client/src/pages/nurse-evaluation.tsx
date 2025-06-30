@@ -115,13 +115,18 @@ export default function NurseEvaluation() {
       return apiRequest('POST', '/api/nurse-rerun-evaluation', data);
     },
     onSuccess: (result: any) => {
-      setEditedCarePlan(result.carePlan);
+      console.log('Re-run result:', result);
+      if (result.carePlan) {
+        setEditedCarePlan(result.carePlan);
+      }
       setIsRerunning(false);
       toast({
         title: "Care Plan Refreshed",
         description: "The care plan has been updated with your modifications.",
       });
+      // Invalidate and refetch the assessment data
       queryClient.invalidateQueries({ queryKey: ['/api/assessment', caseId] });
+      queryClient.refetchQueries({ queryKey: ['/api/assessment', caseId] });
     },
     onError: (error: any) => {
       setIsRerunning(false);
