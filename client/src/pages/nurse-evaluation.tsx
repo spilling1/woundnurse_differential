@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
-import { ArrowLeft, Save, Star, FileText, AlertCircle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Save, Star, FileText, AlertCircle, CheckCircle, RefreshCw, Image } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -19,8 +20,10 @@ export default function NurseEvaluation() {
   const [editedCarePlan, setEditedCarePlan] = useState("");
   const [rating, setRating] = useState("");
   const [nurseNotes, setNurseNotes] = useState("");
-  const [agentInstructions, setAgentInstructions] = useState("");
+  const [additionalInstructions, setAdditionalInstructions] = useState("");
+  const [selectedWoundType, setSelectedWoundType] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
+  const [isRerunning, setIsRerunning] = useState(false);
 
   // Extract case ID from URL params
   const caseId = new URLSearchParams(searchParams).get('caseId');
@@ -31,22 +34,14 @@ export default function NurseEvaluation() {
     queryFn: () => fetch(`/api/assessment/${caseId}`).then(res => res.json()),
   });
 
-  const { data: agentData } = useQuery({
-    queryKey: ['/api/agents'],
-    queryFn: () => fetch('/api/agents').then(res => res.json()),
-  });
-
   useEffect(() => {
     if (assessmentData?.carePlan) {
       setEditedCarePlan(assessmentData.carePlan);
     }
-  }, [assessmentData]);
-
-  useEffect(() => {
-    if (agentData?.content) {
-      setAgentInstructions(agentData.content);
+    if (assessmentData?.classification?.woundType) {
+      setSelectedWoundType(assessmentData.classification.woundType);
     }
-  }, [agentData]);
+  }, [assessmentData]);
 
   const saveEvaluationMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -68,12 +63,46 @@ export default function NurseEvaluation() {
     },
   });
 
-  const saveAgentInstructionsMutation = useMutation({
-    mutationFn: async (content: string) => {
-      return apiRequest('POST', '/api/agents', { content });
+  const rerunEvaluationMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return apiRequest('POST', '/api/nurse-rerun-evaluation', data);
+    },
+    onSuccess: (result: any) => {
+      setEditedCarePlan(result.carePlan);
+      setIsRerunning(false);
+      toast({
+        title: "Evaluation Re-run Complete",
+        description: "The assessment has been regenerated with the selected wound type.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/assessment', caseId] });
+    },
+    onError: (error: any) => {
+      setIsRerunning(false);
+      toast({
+        title: "Re-run Failed",
+        description: error.message || "Failed to re-run evaluation.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateAgentInstructionsMutation = useMutation({
+    mutationFn: async (instructions: string) => {
+      return apiRequest('POST', '/api/agents/add-instructions', { instructions });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      toast({
+        title: "Instructions Added",
+        description: "Additional instructions have been added to the agent guidelines.",
+      });
+      setAdditionalInstructions("");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update Failed", 
+        description: error.message || "Failed to update agent instructions.",
+        variant: "destructive",
+      });
     }
   });
 
@@ -88,14 +117,27 @@ export default function NurseEvaluation() {
         rating,
         nurseNotes
       });
-
-      // Save agent instructions if changed
-      if (agentInstructions !== agentData?.content) {
-        await saveAgentInstructionsMutation.mutateAsync(agentInstructions);
-      }
     } catch (error) {
       console.error('Save error:', error);
     }
+  };
+
+  const handleRerunEvaluation = () => {
+    if (!selectedWoundType || !assessmentData?.imageData) return;
+    
+    setIsRerunning(true);
+    rerunEvaluationMutation.mutate({
+      caseId,
+      woundType: selectedWoundType,
+      imageData: assessmentData.imageData,
+      model: assessmentData.model,
+      audience: assessmentData.audience
+    });
+  };
+
+  const handleAddInstructions = () => {
+    if (!additionalInstructions.trim()) return;
+    updateAgentInstructionsMutation.mutate(additionalInstructions);
   };
 
   if (isLoading) {
@@ -183,7 +225,108 @@ export default function NurseEvaluation() {
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Care Plan Editing */}
+          {/* Left Column - Image and Re-run Controls */}
+          <div className="space-y-6">
+            {/* Wound Image */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Image className="mr-2 h-5 w-5" />
+                  Wound Image
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {assessmentData?.imageData ? (
+                  <div className="text-center">
+                    <img
+                      src={`data:${assessmentData.imageMimeType || 'image/jpeg'};base64,${assessmentData.imageData}`}
+                      alt="Wound assessment"
+                      className="max-w-full h-auto rounded-lg border border-gray-200 shadow-sm"
+                      style={{ maxHeight: '400px' }}
+                    />
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-8">No image available</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Re-run Evaluation */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <RefreshCw className="mr-2 h-5 w-5" />
+                  Re-run Evaluation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="wound-type">Wound Type Override</Label>
+                    <Select value={selectedWoundType} onValueChange={setSelectedWoundType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select wound type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pressure-ulcer">Pressure Ulcer</SelectItem>
+                        <SelectItem value="diabetic-ulcer">Diabetic Ulcer</SelectItem>
+                        <SelectItem value="venous-ulcer">Venous Ulcer</SelectItem>
+                        <SelectItem value="arterial-ulcer">Arterial Ulcer</SelectItem>
+                        <SelectItem value="surgical-wound">Surgical Wound</SelectItem>
+                        <SelectItem value="traumatic-wound">Traumatic Wound</SelectItem>
+                        <SelectItem value="laceration">Laceration</SelectItem>
+                        <SelectItem value="abrasion">Abrasion</SelectItem>
+                        <SelectItem value="burn">Burn</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button 
+                    onClick={handleRerunEvaluation}
+                    disabled={!selectedWoundType || isRerunning || rerunEvaluationMutation.isPending}
+                    className="w-full"
+                    variant="outline"
+                  >
+                    <RefreshCw className={`mr-2 h-4 w-4 ${(isRerunning || rerunEvaluationMutation.isPending) ? 'animate-spin' : ''}`} />
+                    {isRerunning || rerunEvaluationMutation.isPending ? 'Re-running...' : 'Re-run with Selected Type'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Additional Agent Instructions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Additional Agent Instructions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-sm text-blue-800">
+                      Add specific instructions based on this case to improve future AI assessments.
+                    </p>
+                  </div>
+                  <Textarea
+                    value={additionalInstructions}
+                    onChange={(e) => setAdditionalInstructions(e.target.value)}
+                    rows={4}
+                    placeholder="Example: When assessing foot wounds, always ask about diabetes status regardless of visual appearance..."
+                  />
+                  <Button 
+                    onClick={handleAddInstructions}
+                    disabled={!additionalInstructions.trim() || updateAgentInstructionsMutation.isPending}
+                    className="w-full"
+                    variant="secondary"
+                  >
+                    <Save className="mr-2 h-4 w-4" />
+                    {updateAgentInstructionsMutation.isPending ? 'Adding...' : 'Add to Agent Instructions'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Care Plan Editing */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -198,7 +341,7 @@ export default function NurseEvaluation() {
                       setEditedCarePlan(e.target.value);
                       setHasChanges(true);
                     }}
-                    rows={20}
+                    rows={25}
                     className="font-mono text-sm"
                     placeholder="Review and edit the AI-generated care plan..."
                   />
@@ -260,38 +403,7 @@ export default function NurseEvaluation() {
             </Card>
           </div>
 
-          {/* Right Column - Agent Instructions */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Agent Instructions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-800">
-                      <strong>Update AI Behavior:</strong> Modify these instructions to improve future assessments based on this case.
-                    </p>
-                  </div>
-                  
-                  <Textarea
-                    value={agentInstructions}
-                    onChange={(e) => {
-                      setAgentInstructions(e.target.value);
-                      setHasChanges(true);
-                    }}
-                    rows={25}
-                    className="font-mono text-sm"
-                    placeholder="Enter AI agent instructions here..."
-                  />
-                  
-                  <div className="text-sm text-gray-500">
-                    <p>These instructions guide the AI's behavior for all future wound assessments.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+
         </div>
 
         {hasChanges && (

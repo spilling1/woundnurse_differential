@@ -901,6 +901,101 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
     }
   });
 
+  // Nurse re-run evaluation with different wound type
+  app.post("/api/nurse-rerun-evaluation", isAuthenticated, async (req, res) => {
+    try {
+      const { caseId, woundType, imageData, model, audience } = req.body;
+      
+      if (!caseId || !woundType || !imageData) {
+        return res.status(400).json({
+          code: "MISSING_REQUIRED_DATA", 
+          message: "Case ID, wound type, and image data are required"
+        });
+      }
+
+      // Create modified classification with nurse-specified wound type
+      const modifiedClassification = {
+        woundType: woundType,
+        confidence: 0.95, // High confidence since nurse specified
+        source: 'nurse-override',
+        originalClassification: woundType
+      };
+
+      // Get current agent instructions to include in generation
+      const agentInstructions = await storage.getActiveAgentInstructions();
+      const agentInstructionsText = agentInstructions?.content || '';
+
+      // Generate new care plan with the specified wound type
+      const carePlan = await generateCarePlan(
+        audience,
+        modifiedClassification,
+        { nurseOverride: true, specifiedWoundType: woundType },
+        model,
+        agentInstructionsText
+      );
+
+      res.json({ 
+        success: true, 
+        carePlan,
+        woundType,
+        classification: modifiedClassification 
+      });
+
+    } catch (error: any) {
+      console.error('Nurse re-run evaluation error:', error);
+      res.status(500).json({
+        code: "RERUN_EVALUATION_ERROR",
+        message: error.message || "Failed to re-run evaluation"
+      });
+    }
+  });
+
+  // Add additional instructions to agent guidelines
+  app.post("/api/agents/add-instructions", isAuthenticated, async (req, res) => {
+    try {
+      const { instructions } = req.body;
+      
+      if (!instructions || !instructions.trim()) {
+        return res.status(400).json({
+          code: "EMPTY_INSTRUCTIONS",
+          message: "Instructions cannot be empty"
+        });
+      }
+
+      // Get current agent instructions
+      const currentInstructions = await storage.getActiveAgentInstructions();
+      
+      // Append new instructions with timestamp and separator
+      const timestamp = new Date().toISOString().split('T')[0];
+      const additionalText = `\n\n## Nurse Instructions Added ${timestamp}\n\n${instructions.trim()}`;
+      
+      let updatedContent;
+      if (currentInstructions) {
+        updatedContent = currentInstructions.content + additionalText;
+        await storage.updateAgentInstructions(currentInstructions.id, updatedContent);
+      } else {
+        updatedContent = `# AI Agent Instructions\n\n## Initial Instructions\n\nProvide comprehensive wound care assessments.${additionalText}`;
+        await storage.createAgentInstructions({
+          content: updatedContent,
+          isActive: true
+        });
+      }
+
+      res.json({ 
+        success: true, 
+        message: "Instructions added successfully",
+        updatedContent 
+      });
+
+    } catch (error: any) {
+      console.error('Add agent instructions error:', error);
+      res.status(500).json({
+        code: "ADD_INSTRUCTIONS_ERROR",
+        message: error.message || "Failed to add instructions"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
