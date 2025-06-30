@@ -962,12 +962,14 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
         agentInstructions: agentInstructionsText
       };
 
-      // Generate new care plan
+      // Generate new care plan with image data
       const carePlan = await generateCarePlan(
         existingAssessment.audience,
         classificationToUse,
         mergedContext,
-        existingAssessment.model
+        existingAssessment.model,
+        existingAssessment.imageData,
+        existingAssessment.imageMimeType
       );
 
       res.json({ 
