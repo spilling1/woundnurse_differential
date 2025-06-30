@@ -27,19 +27,29 @@ export async function analyzeAssessmentForQuestions(
   
   const confidence = imageAnalysis.confidence || 0.5;
   
-  // If agent has question requirements, generate questions regardless of confidence
-  if (hasQuestionRequirements) {
-    console.log(`Agent instructions require questions - generating questions (confidence: ${confidence})`);
-  } else if (confidence > 0.75) {
-    console.log(`High confidence (${confidence}) and no question requirements - skipping questions`);
-    return [];
-  } else {
-    console.log(`Low confidence (${confidence}) - generating questions`);
-  }
-  
   // Handle follow-up questions differently than initial questions
   const isFollowUp = previousQuestions && previousQuestions.length > 0;
   const currentRound = round || 1;
+  
+  if (isFollowUp && currentRound > 1) {
+    // For follow-up questions, be much more selective
+    if (confidence > 0.75) {
+      console.log(`Follow-up round ${currentRound}: High confidence (${confidence}) - skipping additional questions`);
+      return [];
+    } else {
+      console.log(`Follow-up round ${currentRound}: Low confidence (${confidence}) - checking if more questions needed`);
+    }
+  } else {
+    // Initial questions - check Agent Instructions requirements
+    if (hasQuestionRequirements) {
+      console.log(`Agent instructions require questions - generating questions (confidence: ${confidence})`);
+    } else if (confidence > 0.75) {
+      console.log(`High confidence (${confidence}) and no question requirements - skipping questions`);
+      return [];
+    } else {
+      console.log(`Low confidence (${confidence}) - generating questions`);
+    }
+  }
 
   const analysisPrompt = `
 You are an AI wound care specialist following specific agent instructions. ${isFollowUp ? 'This is a follow-up round of questions.' : 'This is the initial question generation.'}

@@ -433,7 +433,7 @@ export default function CarePlan() {
     if (!plan) return null;
     
     // Remove MEDICAL DISCLAIMER since we handle it separately
-    const cleanPlan = plan.replace(/\*\*MEDICAL DISCLAIMER:\*\*.*?\n\n/s, '');
+    const cleanPlan = plan.replace(/\*\*MEDICAL DISCLAIMER:\*\*[\s\S]*?\n\n/, '');
     
     const sections = cleanPlan.split('\n\n');
     return sections.map((section, index) => {
