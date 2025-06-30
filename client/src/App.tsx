@@ -25,7 +25,7 @@ function Router() {
       <Route path="/care-plan/:caseId?" component={CarePlan} />
       <Route path="/my-cases" component={MyCases} />
       <Route path="/follow-up/:caseId" component={FollowUp} />
-      <Route path="/nurse-evaluation" component={NurseEvaluation} />
+      <Route path="/nurse-evaluation/:caseId" component={NurseEvaluation} />
       <Route path="/agents" component={AgentsPage} />
       <Route path="/settings" component={SettingsPage} />
       <Route component={NotFound} />
