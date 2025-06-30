@@ -929,9 +929,12 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
       const carePlan = await generateCarePlan(
         audience,
         modifiedClassification,
-        { nurseOverride: true, specifiedWoundType: woundType },
-        model,
-        agentInstructionsText
+        { 
+          nurseOverride: true, 
+          specifiedWoundType: woundType,
+          agentInstructions: agentInstructionsText
+        },
+        model
       );
 
       res.json({ 
