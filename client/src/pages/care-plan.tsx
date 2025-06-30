@@ -438,48 +438,108 @@ export default function CarePlan() {
         return null;
       }
       
-      // Convert markdown links to clickable links
-      const formatWithLinks = (text: string) => {
-        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-        const parts = [];
-        let lastIndex = 0;
-        let match;
+      // Enhanced formatting logic
+      const formatSection = (text: string) => {
+        // Check if this is a heading (starts with ##, #, or contains keywords)
+        const isHeading = text.match(/^(##|#|\*\*.*\*\*|Understanding|Daily Care|Self Care|Instructions|Recommendations|Assessment|Plan|Treatment|Wound|Care)/i);
         
-        while ((match = linkRegex.exec(text)) !== null) {
-          // Add text before the link
-          if (match.index > lastIndex) {
-            parts.push(text.slice(lastIndex, match.index));
+        // Handle bullet points and numbered lists
+        const lines = text.split('\n');
+        const formattedLines = lines.map((line, lineIndex) => {
+          // Convert markdown links to clickable links
+          const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+          const formatWithLinks = (lineText: string) => {
+            const parts = [];
+            let lastIndex = 0;
+            let match;
+            
+            while ((match = linkRegex.exec(lineText)) !== null) {
+              if (match.index > lastIndex) {
+                parts.push(lineText.slice(lastIndex, match.index));
+              }
+              parts.push(
+                <a 
+                  key={`${index}-${lineIndex}-${match.index}`}
+                  href={match[2]} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-medical-blue hover:text-blue-700 underline font-medium"
+                >
+                  {match[1]}
+                </a>
+              );
+              lastIndex = match.index + match[0].length;
+            }
+            
+            if (lastIndex < lineText.length) {
+              parts.push(lineText.slice(lastIndex));
+            }
+            
+            return parts.length > 0 ? parts : lineText;
+          };
+          
+          // Format bullet points
+          if (line.match(/^\s*[-*•]\s/)) {
+            return (
+              <li key={lineIndex} className="ml-4 mb-2 text-gray-700 leading-relaxed">
+                {formatWithLinks(line.replace(/^\s*[-*•]\s/, ''))}
+              </li>
+            );
           }
           
-          // Add the clickable link
-          parts.push(
-            <a 
-              key={match.index}
-              href={match[2]} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 underline font-medium"
-            >
-              {match[1]}
-            </a>
-          );
+          // Format numbered lists
+          if (line.match(/^\s*\d+\.\s/)) {
+            return (
+              <li key={lineIndex} className="ml-4 mb-2 text-gray-700 leading-relaxed list-decimal">
+                {formatWithLinks(line.replace(/^\s*\d+\.\s/, ''))}
+              </li>
+            );
+          }
           
-          lastIndex = match.index + match[0].length;
+          // Regular paragraph
+          if (line.trim()) {
+            return (
+              <p key={lineIndex} className="mb-3 text-gray-700 leading-relaxed">
+                {formatWithLinks(line)}
+              </p>
+            );
+          }
+          
+          return null;
+        }).filter(Boolean);
+        
+        // If this section contains lists, wrap them properly
+        const hasListItems = formattedLines.some(line => 
+          line?.props?.className?.includes('ml-4')
+        );
+        
+        if (hasListItems) {
+          return (
+            <ul className="space-y-1 mb-4">
+              {formattedLines}
+            </ul>
+          );
         }
         
-        // Add remaining text after the last link
-        if (lastIndex < text.length) {
-          parts.push(text.slice(lastIndex));
-        }
-        
-        return parts.length > 0 ? parts : text;
+        return formattedLines;
       };
       
+      // Check if this section is a heading
+      const isMainHeading = section.match(/^(##\s|#\s|\*\*.*\*\*)/);
+      
+      if (isMainHeading) {
+        return (
+          <div key={index} className="mb-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
+              {section.replace(/^(##\s|#\s|\*\*|\*\*)/g, '').replace(/\*\*$/g, '')}
+            </h3>
+          </div>
+        );
+      }
+      
       return (
-        <div key={index} className="mb-4">
-          <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-            {formatWithLinks(section)}
-          </p>
+        <div key={index} className="mb-6 p-4 bg-gray-50 rounded-lg border-l-4 border-medical-blue">
+          {formatSection(section)}
         </div>
       );
     });
@@ -610,25 +670,30 @@ export default function CarePlan() {
 
         {/* Wound Images Section */}
         {(assessmentData as any)?.imageData && (
-          <Card className="mb-6 card">
-            <CardHeader className="card-header">
-              <CardTitle className="card-title">
-                <MapPin className="h-5 w-5 mr-2 text-medical-blue" />
+          <Card className="mb-8 shadow-md">
+            <CardHeader className="bg-slate-50 border-b">
+              <CardTitle className="flex items-center text-lg">
+                <MapPin className="h-5 w-5 mr-3 text-medical-blue" />
                 Wound Documentation
               </CardTitle>
             </CardHeader>
-            <CardContent className="card-content">
-              <div className="wound-images">
-                <div className="wound-image">
+            <CardContent className="p-6">
+              <div className="flex justify-center">
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-4 shadow-sm max-w-md">
                   <img 
                     src={`data:${(assessmentData as any).imageMimeType};base64,${(assessmentData as any).imageData}`} 
                     alt="Wound assessment image"
-                    className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm"
+                    className="w-full h-64 object-contain rounded-lg border border-gray-100"
                   />
-                  <p className="image-caption">Assessment Image</p>
-                  <p className="image-caption">
-                    {(((assessmentData as any).imageSize || 0) / 1024).toFixed(1)} KB • {(assessmentData as any).imageMimeType}
-                  </p>
+                  <div className="mt-4 text-center">
+                    <p className="text-sm font-medium text-gray-700 mb-1">Assessment Image</p>
+                    <p className="text-xs text-gray-500">
+                      {(((assessmentData as any).imageSize || 0) / 1024).toFixed(1)} KB • {(assessmentData as any).imageMimeType}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Captured: {new Date(assessmentData?.createdAt || '').toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -636,38 +701,38 @@ export default function CarePlan() {
         )}
 
         {/* Clinical Assessment */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <ClipboardList className="h-5 w-5 mr-2 text-medical-blue" />
+        <Card className="mb-8 shadow-md">
+          <CardHeader className="bg-slate-50 border-b">
+            <CardTitle className="flex items-center text-lg">
+              <ClipboardList className="h-5 w-5 mr-3 text-medical-blue" />
               Clinical Assessment
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="assessment-grid">
-              <div className="assessment-item">
-                <div className="assessment-label">Wound Type</div>
-                <div className="assessment-value">{(assessmentData?.classification as any)?.woundType || 'Not specified'}</div>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                <div className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2">Wound Type</div>
+                <div className="text-gray-900 font-medium">{(assessmentData?.classification as any)?.woundType || 'Not specified'}</div>
               </div>
-              <div className="assessment-item">
-                <div className="assessment-label">Wound Stage</div>
-                <div className="assessment-value">{(assessmentData?.classification as any)?.stage || 'Not applicable'}</div>
+              <div className="bg-green-50 border border-green-100 rounded-lg p-4">
+                <div className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2">Wound Stage</div>
+                <div className="text-gray-900 font-medium">{(assessmentData?.classification as any)?.stage || 'Not applicable'}</div>
               </div>
-              <div className="assessment-item">
-                <div className="assessment-label">Size Assessment</div>
-                <div className="assessment-value">{(assessmentData?.classification as any)?.size || 'Not specified'}</div>
+              <div className="bg-purple-50 border border-purple-100 rounded-lg p-4">
+                <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-2">Size Assessment</div>
+                <div className="text-gray-900 font-medium">{(assessmentData?.classification as any)?.size || 'Not specified'}</div>
               </div>
-              <div className="assessment-item">
-                <div className="assessment-label">Anatomical Location</div>
-                <div className="assessment-value">{(assessmentData?.classification as any)?.location || 'Not specified'}</div>
+              <div className="bg-orange-50 border border-orange-100 rounded-lg p-4">
+                <div className="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-2">Anatomical Location</div>
+                <div className="text-gray-900 font-medium">{(assessmentData?.classification as any)?.location || 'Not specified'}</div>
               </div>
-              <div className="assessment-item">
-                <div className="assessment-label">Exudate Level</div>
-                <div className="assessment-value">{(assessmentData?.classification as any)?.exudate || 'Not assessed'}</div>
+              <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4">
+                <div className="text-xs font-semibold text-yellow-600 uppercase tracking-wide mb-2">Exudate Level</div>
+                <div className="text-gray-900 font-medium">{(assessmentData?.classification as any)?.exudate || 'Not assessed'}</div>
               </div>
-              <div className="assessment-item">
-                <div className="assessment-label">Tissue Type</div>
-                <div className="assessment-value">{(assessmentData?.classification as any)?.tissueType || 'Not specified'}</div>
+              <div className="bg-pink-50 border border-pink-100 rounded-lg p-4">
+                <div className="text-xs font-semibold text-pink-600 uppercase tracking-wide mb-2">Tissue Type</div>
+                <div className="text-gray-900 font-medium">{(assessmentData?.classification as any)?.tissueType || 'Not specified'}</div>
               </div>
             </div>
           </CardContent>
@@ -675,17 +740,17 @@ export default function CarePlan() {
 
         {/* Patient Context */}
         {assessmentData?.contextData && (
-          <Card className="mb-6 card">
-            <CardHeader className="card-header">
-              <CardTitle className="card-title">
-                <User className="h-5 w-5 mr-2 text-medical-blue" />
+          <Card className="mb-8 shadow-md">
+            <CardHeader className="bg-slate-50 border-b">
+              <CardTitle className="flex items-center text-lg">
+                <User className="h-5 w-5 mr-3 text-medical-blue" />
                 Patient Context & History
               </CardTitle>
             </CardHeader>
-            <CardContent className="card-content">
-              <div className="context-grid">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.entries(assessmentData.contextData as Record<string, any>).map(([key, value]) => {
-                  if (!value) return null;
+                  if (!value || value === 'Not provided') return null;
                   const labels: Record<string, string> = {
                     age: 'Age',
                     woundSite: 'Wound Site',
@@ -696,12 +761,17 @@ export default function CarePlan() {
                     mobilityStatus: 'Mobility Status',
                     smokingStatus: 'Smoking Status',
                     alcoholUse: 'Alcohol Use',
-                    stressLevel: 'Stress Level'
+                    stressLevel: 'Stress Level',
+                    medicalHistory: 'Medical History',
+                    woundChanges: 'Wound Changes',
+                    currentCare: 'Current Care',
+                    woundPain: 'Pain Level',
+                    supportAtHome: 'Support at Home'
                   };
                   return (
-                    <div key={key} className="context-item">
-                      <div className="context-label">{labels[key] || key}</div>
-                      <div className="context-value">{value}</div>
+                    <div key={key} className="bg-gray-50 border border-gray-200 rounded-lg p-4 border-l-4 border-l-medical-blue">
+                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{labels[key] || key}</div>
+                      <div className="text-gray-900 text-sm leading-relaxed">{value}</div>
                     </div>
                   );
                 })}
@@ -711,32 +781,40 @@ export default function CarePlan() {
         )}
 
         {/* Evidence-Based Care Plan */}
-        <Card className="mb-6 card">
-          <CardHeader className="card-header">
-            <CardTitle className="card-title">
-              <FileText className="h-5 w-5 mr-2 text-medical-blue" />
+        <Card className="mb-8 shadow-lg border-0 bg-white">
+          <CardHeader className="bg-gradient-to-r from-medical-blue to-blue-600 text-white rounded-t-lg">
+            <CardTitle className="text-xl font-semibold flex items-center">
+              <FileText className="h-6 w-6 mr-3" />
               Evidence-Based Care Plan
+              <Badge variant="secondary" className="ml-auto bg-white bg-opacity-20 text-white border-0">
+                {assessmentData?.model?.toUpperCase() || 'AI Generated'}
+              </Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className="card-content">
-            <div className="care-plan">
-              <div className="prose max-w-none">
-                {formatCarePlan(assessmentData?.carePlan || '')}
-              </div>
+          <CardContent className="p-8">
+            <div className="space-y-6">
+              {formatCarePlan(assessmentData?.carePlan || '')}
             </div>
           </CardContent>
         </Card>
 
         {/* Medical Disclaimer */}
-        <Card className="mb-6 card">
-          <CardContent className="card-content">
-            <div className="disclaimer">
-              <div className="disclaimer-icon">⚠</div>
-              <div className="disclaimer-content">
-                <p className="disclaimer-title">Important Medical Disclaimer</p>
-                <p className="disclaimer-text">
+        <Card className="mb-8 shadow-md border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50">
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                <AlertTriangle className="h-8 w-8 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-amber-800 mb-3">Important Medical Disclaimer</h3>
+                <p className="text-amber-700 leading-relaxed text-sm">
                   This is an AI-generated care plan based on image analysis and provided context. This assessment is for educational and informational purposes only and should not replace professional medical advice, diagnosis, or treatment. Always consult with a qualified healthcare professional before implementing any wound care recommendations.
                 </p>
+                <div className="mt-4 p-3 bg-amber-100 rounded-lg border border-amber-200">
+                  <p className="text-xs text-amber-700 font-medium">
+                    ⚠️ Seek immediate medical attention if you notice signs of infection, worsening condition, or any concerning changes in the wound.
+                  </p>
+                </div>
               </div>
             </div>
           </CardContent>
