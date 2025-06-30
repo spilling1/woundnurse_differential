@@ -93,8 +93,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get user ID if authenticated (optional)
       let userId = null;
-      if (req.isAuthenticated && req.isAuthenticated() && req.user) {
-        userId = (req.user as any).claims?.sub;
+      if (req.user && req.user.claims && req.user.claims.sub) {
+        userId = req.user.claims.sub;
       }
 
       // Validate request body
@@ -874,7 +874,7 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
       // Create wound assessment record
       const assessment = await storage.createWoundAssessment({
         caseId,
-        userId: (req as any).user?.id || null,
+        userId: (req as any).user?.claims?.sub || null,
         audience,
         model,
         imageData: imageBase64,
