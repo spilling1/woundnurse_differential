@@ -42,7 +42,8 @@ export default function MyCases() {
 
   const { data: cases, isLoading, error } = useQuery({
     queryKey: ["/api/my-cases"],
-    enabled: isAuthenticated,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   // Group assessments by case ID and sort by version
@@ -103,7 +104,7 @@ export default function MyCases() {
     }
   };
 
-  if (authLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-medical-blue to-medical-teal flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
@@ -111,12 +112,18 @@ export default function MyCases() {
     );
   }
 
-  if (!isAuthenticated) {
-    return null; // Redirect happening
-  }
-
   if (error && isUnauthorizedError(error as Error)) {
-    return null; // Redirect happening
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-medical-blue to-medical-teal flex items-center justify-center">
+        <div className="text-center text-white">
+          <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
+          <p className="mb-4">Please log in to view your cases.</p>
+          <Button onClick={() => window.location.href = "/api/login"} className="bg-white text-medical-blue hover:bg-gray-100">
+            Log In
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
