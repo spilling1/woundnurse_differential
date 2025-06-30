@@ -22,7 +22,8 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         ? classification.infectionSigns 
         : [],
       location: classification.location || "Not specified",
-      additionalObservations: classification.additionalObservations || ""
+      additionalObservations: classification.additionalObservations || "",
+      confidence: classification.confidence || 0.5
     };
 
     return normalizedClassification;
