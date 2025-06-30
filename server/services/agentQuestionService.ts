@@ -14,6 +14,7 @@ export async function analyzeAssessmentForQuestions(
   const instructions = providedInstructions || agentInstructions?.content || '';
   
   // Check if agent instructions contain question requirements
+  const instructionsLower = instructions.toLowerCase();
   const hasQuestionRequirements = 
     instructions.includes('always ask') || 
     instructions.includes('Always ask') ||
@@ -21,7 +22,8 @@ export async function analyzeAssessmentForQuestions(
     instructions.includes('Follow-up questions') ||
     instructions.includes('Ask at least') ||
     instructions.includes('ask at least') ||
-    instructions.toLowerCase().includes('ask') && instructions.toLowerCase().includes('question');
+    instructionsLower.includes('follow-up') ||
+    (instructionsLower.includes('ask') && instructionsLower.includes('question'));
   
   const confidence = imageAnalysis.confidence || 0.5;
   
@@ -29,7 +31,7 @@ export async function analyzeAssessmentForQuestions(
   if (hasQuestionRequirements) {
     console.log(`Agent instructions require questions - generating questions (confidence: ${confidence})`);
   } else if (confidence > 0.75) {
-    console.log(`High confidence (${confidence}) - skipping questions`);
+    console.log(`High confidence (${confidence}) and no question requirements - skipping questions`);
     return [];
   } else {
     console.log(`Low confidence (${confidence}) - generating questions`);
