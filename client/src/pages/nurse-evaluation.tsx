@@ -297,110 +297,6 @@ export default function NurseEvaluation() {
               </CardContent>
             </Card>
 
-            {/* Clinical Assessment Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Clinical Assessment Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <Label htmlFor="location">Location</Label>
-                      <Textarea
-                        id="location"
-                        value={clinicalSummary.location || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, location: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        rows={1}
-                        placeholder="Wound location (e.g., right heel, left ankle)"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="size">Size</Label>
-                      <Textarea
-                        id="size"
-                        value={clinicalSummary.size || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, size: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        rows={1}
-                        placeholder="Dimensions (e.g., 3cm x 2cm)"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="stage">Stage</Label>
-                      <Textarea
-                        id="stage"
-                        value={clinicalSummary.stage || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, stage: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        rows={1}
-                        placeholder="Stage/grade classification"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="wound-bed">Wound Bed</Label>
-                      <Textarea
-                        id="wound-bed"
-                        value={clinicalSummary.woundBed || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, woundBed: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        rows={1}
-                        placeholder="Tissue type, color, granulation"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="exudate-level">Exudate Level</Label>
-                      <Textarea
-                        id="exudate-level"
-                        value={clinicalSummary.exudateLevel || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, exudateLevel: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        rows={1}
-                        placeholder="Amount and consistency"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="signs-infection">Signs of Infection</Label>
-                      <Textarea
-                        id="signs-infection"
-                        value={clinicalSummary.signsOfInfection || ''}
-                        onChange={(e) => {
-                          setClinicalSummary({...clinicalSummary, signsOfInfection: e.target.value});
-                          setHasChanges(true);
-                        }}
-                        rows={1}
-                        placeholder="Redness, warmth, odor, etc."
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="additional-observations">Additional Observations</Label>
-                    <Textarea
-                      id="additional-observations"
-                      value={clinicalSummary.additionalObservations || ''}
-                      onChange={(e) => {
-                        setClinicalSummary({...clinicalSummary, additionalObservations: e.target.value});
-                        setHasChanges(true);
-                      }}
-                      rows={3}
-                      placeholder="Additional clinical observations, periwound skin condition, etc."
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Re-run Evaluation */}
             <Card>
               <CardHeader>
@@ -455,6 +351,105 @@ export default function NurseEvaluation() {
                     {isRerunning || rerunEvaluationMutation.isPending ? 'Re-running...' : 
                      overrideWoundType ? 'Re-run with Override Type' : 'Re-run with Updated Context'}
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Clinical Assessment Summary */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Clinical Assessment Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="location">Location</Label>
+                      <Input
+                        id="location"
+                        value={clinicalSummary.location || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, location: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        placeholder="arm"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="size">Size</Label>
+                      <Input
+                        id="size"
+                        value={clinicalSummary.size || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, size: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        placeholder="medium"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="stage">Stage</Label>
+                      <Input
+                        id="stage"
+                        value={clinicalSummary.stage || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, stage: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        placeholder="N/A"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="wound-bed">Wound Bed</Label>
+                      <Input
+                        id="wound-bed"
+                        value={clinicalSummary.woundBed || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, woundBed: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        placeholder="granulating"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="exudate-level">Exudate Level</Label>
+                      <Input
+                        id="exudate-level"
+                        value={clinicalSummary.exudateLevel || ''}
+                        onChange={(e) => {
+                          setClinicalSummary({...clinicalSummary, exudateLevel: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        placeholder="low"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="signs-infection">Signs of Infection</Label>
+                    <Textarea
+                      id="signs-infection"
+                      value={clinicalSummary.signsOfInfection || ''}
+                      onChange={(e) => {
+                        setClinicalSummary({...clinicalSummary, signsOfInfection: e.target.value});
+                        setHasChanges(true);
+                      }}
+                      rows={2}
+                      placeholder="Redness, warmth, odor, etc."
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="additional-observations">Additional Observations</Label>
+                    <Textarea
+                      id="additional-observations"
+                      value={clinicalSummary.additionalObservations || ''}
+                      onChange={(e) => {
+                        setClinicalSummary({...clinicalSummary, additionalObservations: e.target.value});
+                        setHasChanges(true);
+                      }}
+                      rows={3}
+                      placeholder="Additional clinical observations, periwound skin condition, etc."
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
