@@ -904,12 +904,12 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
   // Nurse re-run evaluation with different wound type
   app.post("/api/nurse-rerun-evaluation", isAuthenticated, async (req, res) => {
     try {
-      const { caseId, woundType } = req.body;
+      const { caseId, woundType, contextData } = req.body;
       
-      if (!caseId || !woundType) {
+      if (!caseId) {
         return res.status(400).json({
           code: "MISSING_REQUIRED_DATA", 
-          message: "Case ID and wound type are required"
+          message: "Case ID is required"
         });
       }
 
@@ -922,27 +922,50 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
         });
       }
 
-      // Create modified classification with nurse-specified wound type
-      const modifiedClassification = {
-        woundType: woundType,
-        confidence: 0.95, // High confidence since nurse specified
-        source: 'nurse-override',
-        originalClassification: woundType
-      };
+      // Determine classification to use
+      let classificationToUse;
+      if (woundType) {
+        // Nurse is overriding the wound type
+        classificationToUse = {
+          woundType: woundType,
+          confidence: 0.95, // High confidence since nurse specified
+          source: 'nurse-override',
+          originalClassification: existingAssessment.classification
+        };
+      } else {
+        // Use original AI classification but with updated context
+        classificationToUse = typeof existingAssessment.classification === 'string' 
+          ? JSON.parse(existingAssessment.classification)
+          : existingAssessment.classification;
+      }
 
       // Get current agent instructions to include in generation
       const agentInstructions = await storage.getActiveAgentInstructions();
       const agentInstructionsText = agentInstructions?.content || '';
 
-      // Generate new care plan with the specified wound type
+      // Merge existing context with nurse updates
+      let existingContext = {};
+      try {
+        existingContext = typeof existingAssessment.contextData === 'string'
+          ? JSON.parse(existingAssessment.contextData)
+          : existingAssessment.contextData || {};
+      } catch (e) {
+        existingContext = {};
+      }
+
+      const mergedContext = {
+        ...existingContext,
+        ...contextData,
+        nurseReview: true,
+        woundTypeOverride: woundType ? true : false,
+        agentInstructions: agentInstructionsText
+      };
+
+      // Generate new care plan
       const carePlan = await generateCarePlan(
         existingAssessment.audience,
-        modifiedClassification,
-        { 
-          nurseOverride: true, 
-          specifiedWoundType: woundType,
-          agentInstructions: agentInstructionsText
-        },
+        classificationToUse,
+        mergedContext,
         existingAssessment.model
       );
 

@@ -22,6 +22,8 @@ export default function NurseEvaluation() {
   const [nurseNotes, setNurseNotes] = useState("");
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [selectedWoundType, setSelectedWoundType] = useState("");
+  const [overrideWoundType, setOverrideWoundType] = useState(false);
+  const [editableContext, setEditableContext] = useState<any>({});
   const [hasChanges, setHasChanges] = useState(false);
   const [isRerunning, setIsRerunning] = useState(false);
 
@@ -35,12 +37,39 @@ export default function NurseEvaluation() {
   });
 
   useEffect(() => {
-    if (assessmentData?.carePlan) {
+    if (!assessmentData) return;
+    
+    if (assessmentData.carePlan) {
       setEditedCarePlan(assessmentData.carePlan);
     }
-    if (assessmentData?.classification?.woundType) {
+    if (assessmentData.classification?.woundType) {
       setSelectedWoundType(assessmentData.classification.woundType);
     }
+    
+    // Initialize editable context data from the assessment
+    let contextData: any = {};
+    try {
+      if (assessmentData.contextData) {
+        contextData = typeof assessmentData.contextData === 'string' 
+          ? JSON.parse(assessmentData.contextData)
+          : assessmentData.contextData;
+      }
+    } catch (e) {
+      console.warn('Failed to parse contextData:', e);
+      contextData = {};
+    }
+    
+    const initialContext = {
+      woundOrigin: assessmentData.woundOrigin || contextData.woundOrigin || '',
+      medicalHistory: assessmentData.medicalHistory || contextData.medicalHistory || '',
+      woundChanges: assessmentData.woundChanges || contextData.woundChanges || '',
+      currentCare: assessmentData.currentCare || contextData.currentCare || '',
+      woundPain: assessmentData.woundPain || contextData.woundPain || '',
+      supportAtHome: assessmentData.supportAtHome || contextData.supportAtHome || '',
+      mobilityStatus: assessmentData.mobilityStatus || contextData.mobilityStatus || '',
+      nutritionStatus: assessmentData.nutritionStatus || contextData.nutritionStatus || '',
+    };
+    setEditableContext(initialContext);
   }, [assessmentData]);
 
   const saveEvaluationMutation = useMutation({
@@ -123,12 +152,13 @@ export default function NurseEvaluation() {
   };
 
   const handleRerunEvaluation = () => {
-    if (!selectedWoundType || !caseId) return;
+    if (!caseId) return;
     
     setIsRerunning(true);
     rerunEvaluationMutation.mutate({
       caseId,
-      woundType: selectedWoundType
+      woundType: overrideWoundType ? selectedWoundType : null,
+      contextData: editableContext
     });
   };
 
@@ -248,6 +278,58 @@ export default function NurseEvaluation() {
               </CardContent>
             </Card>
 
+            {/* Patient Context Data */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Patient Context Review</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <Label htmlFor="wound-origin">Wound Origin</Label>
+                      <Textarea
+                        id="wound-origin"
+                        value={editableContext.woundOrigin || ''}
+                        onChange={(e) => {
+                          setEditableContext({...editableContext, woundOrigin: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={2}
+                        placeholder="How did the wound occur?"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="medical-history">Medical History</Label>
+                      <Textarea
+                        id="medical-history"
+                        value={editableContext.medicalHistory || ''}
+                        onChange={(e) => {
+                          setEditableContext({...editableContext, medicalHistory: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={2}
+                        placeholder="Relevant medical conditions"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="current-care">Current Care</Label>
+                      <Textarea
+                        id="current-care"
+                        value={editableContext.currentCare || ''}
+                        onChange={(e) => {
+                          setEditableContext({...editableContext, currentCare: e.target.value});
+                          setHasChanges(true);
+                        }}
+                        rows={2}
+                        placeholder="Current treatment regimen"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Re-run Evaluation */}
             <Card>
               <CardHeader>
@@ -258,34 +340,49 @@ export default function NurseEvaluation() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="wound-type">Wound Type Override</Label>
-                    <Select value={selectedWoundType} onValueChange={setSelectedWoundType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select wound type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pressure-ulcer">Pressure Ulcer</SelectItem>
-                        <SelectItem value="diabetic-ulcer">Diabetic Ulcer</SelectItem>
-                        <SelectItem value="venous-ulcer">Venous Ulcer</SelectItem>
-                        <SelectItem value="arterial-ulcer">Arterial Ulcer</SelectItem>
-                        <SelectItem value="surgical-wound">Surgical Wound</SelectItem>
-                        <SelectItem value="traumatic-wound">Traumatic Wound</SelectItem>
-                        <SelectItem value="laceration">Laceration</SelectItem>
-                        <SelectItem value="abrasion">Abrasion</SelectItem>
-                        <SelectItem value="burn">Burn</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="override-wound-type"
+                      checked={overrideWoundType}
+                      onChange={(e) => setOverrideWoundType(e.target.checked)}
+                      className="rounded border-gray-300"
+                    />
+                    <Label htmlFor="override-wound-type">Override AI wound type classification</Label>
                   </div>
+                  
+                  {overrideWoundType && (
+                    <div>
+                      <Label htmlFor="wound-type">Wound Type Override</Label>
+                      <Select value={selectedWoundType} onValueChange={setSelectedWoundType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select wound type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pressure-ulcer">Pressure Ulcer</SelectItem>
+                          <SelectItem value="diabetic-ulcer">Diabetic Ulcer</SelectItem>
+                          <SelectItem value="venous-ulcer">Venous Ulcer</SelectItem>
+                          <SelectItem value="arterial-ulcer">Arterial Ulcer</SelectItem>
+                          <SelectItem value="surgical-wound">Surgical Wound</SelectItem>
+                          <SelectItem value="traumatic-wound">Traumatic Wound</SelectItem>
+                          <SelectItem value="laceration">Laceration</SelectItem>
+                          <SelectItem value="abrasion">Abrasion</SelectItem>
+                          <SelectItem value="burn">Burn</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  
                   <Button 
                     onClick={handleRerunEvaluation}
-                    disabled={!selectedWoundType || isRerunning || rerunEvaluationMutation.isPending}
+                    disabled={isRerunning || rerunEvaluationMutation.isPending || (overrideWoundType && !selectedWoundType)}
                     className="w-full"
                     variant="outline"
                   >
                     <RefreshCw className={`mr-2 h-4 w-4 ${(isRerunning || rerunEvaluationMutation.isPending) ? 'animate-spin' : ''}`} />
-                    {isRerunning || rerunEvaluationMutation.isPending ? 'Re-running...' : 'Re-run with Selected Type'}
+                    {isRerunning || rerunEvaluationMutation.isPending ? 'Re-running...' : 
+                     overrideWoundType ? 'Re-run with Override Type' : 'Re-run with Updated Context'}
                   </Button>
                 </div>
               </CardContent>
