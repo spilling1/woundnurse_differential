@@ -1,14 +1,19 @@
 import { analyzeWoundImage } from "./openai";
 import { analyzeWoundImageWithGemini } from "./gemini";
+import { storage } from "../storage";
 
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
   try {
+    // Get agent instructions from database to include in analysis
+    const agentInstructions = await storage.getActiveAgentInstructions();
+    const instructions = agentInstructions?.content || '';
+    
     let classification;
     
     if (model.startsWith('gemini-')) {
-      classification = await analyzeWoundImageWithGemini(imageBase64, model);
+      classification = await analyzeWoundImageWithGemini(imageBase64, model, instructions);
     } else {
-      classification = await analyzeWoundImage(imageBase64, model, mimeType);
+      classification = await analyzeWoundImage(imageBase64, model, mimeType, instructions);
     }
     
     // Validate and normalize the classification

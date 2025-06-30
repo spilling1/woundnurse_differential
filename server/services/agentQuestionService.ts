@@ -40,14 +40,12 @@ ${JSON.stringify(imageAnalysis, null, 2)}
 TARGET AUDIENCE: ${audience}
 
 QUESTION GENERATION RULES:
-1. First, check the AGENT INSTRUCTIONS for any "always ask" requirements:
-   - Always ask about body location if not clear
-   - Always ask about patient age unless irrelevant
-   - Always ask about pain, swelling, and concerning symptoms
-   - Always ask about pre-existing conditions
-2. Generate questions for any "always ask" requirements that apply to this case
-3. If confidence is low (<75%), also generate additional diagnostic clarification questions
-4. Generate 2-4 targeted questions WITHOUT pre-filled answers
+1. Carefully read the AGENT INSTRUCTIONS above
+2. Look for any "always ask" or "Always ask" requirements in the instructions
+3. Generate questions based ONLY on what the Agent Instructions specify
+4. If Agent Instructions require questions regardless of confidence, generate them
+5. Generate questions WITHOUT pre-filled answers (leave answer field empty)
+6. Only generate questions that the Agent Instructions explicitly require
 
 RESPONSE FORMAT:
 Return a JSON array of objects with this structure:
@@ -61,14 +59,13 @@ Return a JSON array of objects with this structure:
   }
 ]
 
-QUESTION CATEGORIES:
-- "wound_history" - How did this wound occur? When did it start?
-- "pain_level" - Current pain and discomfort levels
-- "medical_history" - Relevant medical conditions affecting healing
-- "current_care" - Current treatment and care routine
-- "symptoms" - Associated symptoms and recent changes
-- "mobility" - Impact on daily activities and positioning
-- "support" - Available care support at home
+QUESTION CATEGORIES (use appropriate category based on question content):
+- "location" - Body location and wound site questions
+- "patient_info" - Age, demographics, and patient details
+- "symptoms" - Pain, swelling, and symptom-related questions
+- "medical_history" - Pre-existing conditions and medical background
+- "wound_assessment" - Wound characteristics and changes
+- "other" - Any other questions specified by Agent Instructions
 
 GUIDELINES FOR UNCERTAIN DIAGNOSES:
 - Ask specific questions that help differentiate between possible wound types

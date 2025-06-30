@@ -38,8 +38,12 @@ export async function callGemini(model: string, prompt: string, imageBase64?: st
   }
 }
 
-export async function analyzeWoundImageWithGemini(imageBase64: string, model: string): Promise<any> {
-  const prompt = `You are a medical AI assistant specializing in wound assessment. Analyze this wound image and provide a detailed assessment in JSON format with the following structure:
+export async function analyzeWoundImageWithGemini(imageBase64: string, model: string, agentInstructions: string = ''): Promise<any> {
+  const basePrompt = agentInstructions ? 
+    `${agentInstructions}\n\nAnalyze this wound image and provide a detailed assessment in JSON format with the following structure:` :
+    `You are a medical AI assistant specializing in wound assessment. Analyze this wound image and provide a detailed assessment in JSON format with the following structure:`;
+    
+  const prompt = `${basePrompt}
   {
     "woundType": "type of wound (e.g., pressure ulcer, diabetic foot ulcer, surgical wound, etc.)",
     "stage": "stage if applicable (e.g., Stage 1, Stage 2, etc.)",

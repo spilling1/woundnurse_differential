@@ -39,11 +39,15 @@ export async function callOpenAI(model: string, messages: any[], responseFormat:
   }
 }
 
-export async function analyzeWoundImage(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
+export async function analyzeWoundImage(imageBase64: string, model: string, mimeType: string = 'image/jpeg', agentInstructions: string = ''): Promise<any> {
+  const systemMessage = agentInstructions ? 
+    `${agentInstructions}\n\nAnalyze the wound image and provide a structured assessment in JSON format.` :
+    "You are a medical AI assistant specializing in wound assessment. Analyze the wound image and provide a structured assessment in JSON format.";
+    
   const messages = [
     {
       role: "system",
-      content: "You are a medical AI assistant specializing in wound assessment. Analyze the wound image and provide a structured assessment in JSON format."
+      content: systemMessage
     },
     {
       role: "user",
