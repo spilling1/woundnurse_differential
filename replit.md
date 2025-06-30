@@ -123,6 +123,9 @@ Changelog:
 - June 29, 2025. Implemented confidence-based questioning where AI asks questions WITHOUT pre-filled answers for user to complete
 - June 29, 2025. Added support for multiple rounds of questions (up to 3 rounds) to improve diagnostic accuracy
 - June 29, 2025. Fixed all OpenAI API integration issues including MIME type handling and error responses
+- June 30, 2025. Fixed critical diagnostic issue where AI question answers weren't being integrated into care plan generation
+- June 30, 2025. Updated Agent Instructions to mandate diabetes question for ALL foot/heel wounds regardless of visual classification
+- June 30, 2025. Implemented diagnostic override system where patient answers can reclassify wound type when contradicting visual assessment
 ```
 
 ## User Preferences
