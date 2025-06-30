@@ -123,15 +123,12 @@ export default function NurseEvaluation() {
   };
 
   const handleRerunEvaluation = () => {
-    if (!selectedWoundType || !assessmentData?.imageData) return;
+    if (!selectedWoundType || !caseId) return;
     
     setIsRerunning(true);
     rerunEvaluationMutation.mutate({
       caseId,
-      woundType: selectedWoundType,
-      imageData: assessmentData.imageData,
-      model: assessmentData.model,
-      audience: assessmentData.audience
+      woundType: selectedWoundType
     });
   };
 

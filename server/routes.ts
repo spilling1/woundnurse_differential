@@ -904,12 +904,21 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
   // Nurse re-run evaluation with different wound type
   app.post("/api/nurse-rerun-evaluation", isAuthenticated, async (req, res) => {
     try {
-      const { caseId, woundType, imageData, model, audience } = req.body;
+      const { caseId, woundType } = req.body;
       
-      if (!caseId || !woundType || !imageData) {
+      if (!caseId || !woundType) {
         return res.status(400).json({
           code: "MISSING_REQUIRED_DATA", 
-          message: "Case ID, wound type, and image data are required"
+          message: "Case ID and wound type are required"
+        });
+      }
+
+      // Get the existing assessment data to use the same image and settings
+      const existingAssessment = await storage.getWoundAssessment(caseId);
+      if (!existingAssessment) {
+        return res.status(404).json({
+          code: "ASSESSMENT_NOT_FOUND",
+          message: "Assessment not found"
         });
       }
 
@@ -927,14 +936,14 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
 
       // Generate new care plan with the specified wound type
       const carePlan = await generateCarePlan(
-        audience,
+        existingAssessment.audience,
         modifiedClassification,
         { 
           nurseOverride: true, 
           specifiedWoundType: woundType,
           agentInstructions: agentInstructionsText
         },
-        model
+        existingAssessment.model
       );
 
       res.json({ 
