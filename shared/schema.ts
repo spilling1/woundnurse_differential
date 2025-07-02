@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, timestamp, json, boolean, varchar, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, json, jsonb, boolean, varchar, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -7,7 +7,7 @@ export const sessions = pgTable(
   "sessions",
   {
     sid: varchar("sid").primaryKey(),
-    sess: json("sess").notNull(),
+    sess: jsonb("sess").notNull(),
     expire: timestamp("expire").notNull(),
   },
   (table) => [index("IDX_session_expire").on(table.expire)],
@@ -47,7 +47,7 @@ export const woundAssessments = pgTable("wound_assessments", {
   nutritionStatus: text("nutrition_status"),
   
   // AI Analysis results
-  classification: json("classification"), // wound type, stage, size, etc.
+  classification: jsonb("classification"), // wound type, stage, size, etc.
   carePlan: text("care_plan").notNull(),
   
   // Follow-up and versioning
@@ -57,7 +57,7 @@ export const woundAssessments = pgTable("wound_assessments", {
   previousVersion: integer("previous_version"), // Reference to previous version
   progressNotes: text("progress_notes"), // Patient-reported progress since last assessment
   treatmentResponse: text("treatment_response"), // How wound responded to previous treatment
-  contextData: json("context_data"), // Store all questionnaire data as JSON
+  contextData: jsonb("context_data"), // Store all questionnaire data as JSON
   
   createdAt: timestamp("created_at").defaultNow(),
 }, (table) => ({
