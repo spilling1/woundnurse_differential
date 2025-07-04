@@ -16,7 +16,7 @@ export default function Landing() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Stethoscope className="text-medical-blue text-2xl mr-3" />
-              <span className="text-xl font-bold text-gray-900">Wound Nurses</span>
+              <span className="text-xl font-bold text-gray-900">The Wound Nurse</span>
             </div>
             <div className="flex items-center gap-3">
               {isLoading ? (
@@ -63,7 +63,7 @@ export default function Landing() {
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
-            Wound Nurses
+            The Wound Nurse
           </h1>
           <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
             Advanced AI-powered wound assessment and care plan generation. 
@@ -213,7 +213,7 @@ export default function Landing() {
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Stethoscope className="text-medical-blue text-2xl mr-3" />
-              <span className="text-xl font-bold">Wound Nurses</span>
+              <span className="text-xl font-bold">The Wound Nurse</span>
             </div>
             <p className="text-gray-400 mb-4">
               AI-powered wound care assessment for better health outcomes
