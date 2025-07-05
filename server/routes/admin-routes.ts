@@ -275,7 +275,7 @@ export function registerAdminRoutes(app: Express): void {
   // ===== ADMIN USER MANAGEMENT ROUTES =====
   
   // Get all users (admin only)
-  app.get("/api/admin/users", isAdmin, async (req, res) => {
+  app.get("/api/admin/users", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       res.json(users);
@@ -289,7 +289,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Get users by company (admin only)
-  app.get("/api/admin/users/company/:companyId", isAdmin, async (req, res) => {
+  app.get("/api/admin/users/company/:companyId", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const companyId = parseInt(req.params.companyId);
       if (isNaN(companyId)) {
@@ -311,7 +311,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Update user (admin only)
-  app.put("/api/admin/users/:userId", isAdmin, async (req, res) => {
+  app.put("/api/admin/users/:userId", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const userId = req.params.userId;
       const validation = userUpdateSchema.safeParse(req.body);
@@ -336,7 +336,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Delete user (admin only)
-  app.delete("/api/admin/users/:userId", isAdmin, async (req, res) => {
+  app.delete("/api/admin/users/:userId", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const userId = req.params.userId;
       const success = await storage.deleteUser(userId);
@@ -361,7 +361,7 @@ export function registerAdminRoutes(app: Express): void {
   // ===== ADMIN ASSESSMENT MANAGEMENT ROUTES =====
 
   // Get all wound assessments (admin only)
-  app.get("/api/admin/assessments", isAdmin, async (req, res) => {
+  app.get("/api/admin/assessments", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const assessments = await storage.getAllWoundAssessments();
       res.json(assessments);
@@ -375,7 +375,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Get assessments by user (admin only)
-  app.get("/api/admin/assessments/user/:userId", isAdmin, async (req, res) => {
+  app.get("/api/admin/assessments/user/:userId", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const userId = req.params.userId;
       const assessments = await storage.getWoundAssessmentsByUser(userId);
@@ -392,7 +392,7 @@ export function registerAdminRoutes(app: Express): void {
   // ===== ADMIN COMPANY MANAGEMENT ROUTES =====
 
   // Get all companies (admin only)
-  app.get("/api/admin/companies", isAdmin, async (req, res) => {
+  app.get("/api/admin/companies", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const companies = await storage.getAllCompanies();
       res.json(companies);
@@ -406,7 +406,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Get single company (admin only)
-  app.get("/api/admin/companies/:id", isAdmin, async (req, res) => {
+  app.get("/api/admin/companies/:id", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -435,7 +435,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Create company (admin only)
-  app.post("/api/admin/companies", isAdmin, async (req, res) => {
+  app.post("/api/admin/companies", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const validation = companyCreateSchema.safeParse(req.body);
       
@@ -459,7 +459,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Update company (admin only)
-  app.put("/api/admin/companies/:id", isAdmin, async (req, res) => {
+  app.put("/api/admin/companies/:id", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -491,7 +491,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Delete company (admin only)
-  app.delete("/api/admin/companies/:id", isAdmin, async (req, res) => {
+  app.delete("/api/admin/companies/:id", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -523,7 +523,7 @@ export function registerAdminRoutes(app: Express): void {
   // ===== ADMIN DASHBOARD STATS =====
 
   // Get admin dashboard stats (admin only)
-  app.get("/api/admin/dashboard", isAdmin, async (req, res) => {
+  app.get("/api/admin/dashboard", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const [users, assessments, companies] = await Promise.all([
         storage.getAllUsers(),
