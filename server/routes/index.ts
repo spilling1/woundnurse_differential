@@ -32,6 +32,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Detection status endpoint for UI status monitor
+  app.get('/api/detection-status', async (req, res) => {
+    try {
+      // Try YOLO service first
+      const yoloResponse = await fetch('http://localhost:8081/health');
+      if (yoloResponse.ok) {
+        const yoloData = await yoloResponse.json();
+        res.json({
+          status: 'healthy',
+          method: 'YOLO',
+          service: yoloData.service,
+          version: yoloData.version
+        });
+        return;
+      }
+    } catch (error) {
+      // YOLO not available, check cloud APIs
+      console.log('YOLO service not available, checking cloud APIs');
+    }
+
+    // Check if cloud APIs are configured
+    const hasGoogleApi = !!process.env.GOOGLE_API_KEY;
+    const hasAzureApi = !!process.env.AZURE_COMPUTER_VISION_KEY;
+    
+    if (hasGoogleApi || hasAzureApi) {
+      res.json({
+        status: 'healthy',
+        method: hasGoogleApi ? 'Google Cloud Vision' : 'Azure Computer Vision',
+        service: 'cloud-detection',
+        version: '1.0'
+      });
+    } else {
+      res.json({
+        status: 'healthy',
+        method: 'Enhanced Fallback',
+        service: 'fallback-detection',
+        version: '1.0'
+      });
+    }
+  });
+
   // Serve the YOLO test page
   app.get('/yolo-test', (req, res) => {
     res.send(`

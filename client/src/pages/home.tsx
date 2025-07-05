@@ -3,6 +3,7 @@ import { Stethoscope, Circle, HelpCircle, LogOut, Settings } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import NewAssessmentFlow from "@/components/NewAssessmentFlow";
+import ImageDetectionStatus from "@/components/ImageDetectionStatus";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -27,6 +28,7 @@ export default function Home() {
                   System Online
                 </span>
               </div>
+              <ImageDetectionStatus />
               
               
               {/* Authentication-aware navigation */}

@@ -13,6 +13,7 @@ import {
 import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect } from "react";
+import ImageDetectionStatus from "@/components/ImageDetectionStatus";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -147,6 +148,7 @@ export default function MyCases() {
                   System Online
                 </span>
               </div>
+              <ImageDetectionStatus />
               <Button 
                 variant="outline"
                 onClick={() => setLocation("/assessment")}
