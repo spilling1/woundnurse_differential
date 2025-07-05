@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import path from "path";
 import { setupAuth } from "../replitAuth";
 import { registerAuthRoutes } from "./auth-routes";
 import { registerAssessmentRoutes } from "./assessment-routes";
@@ -29,6 +30,151 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(503).json({ error: 'YOLO service not available' });
     }
+  });
+
+  // Serve the YOLO test page
+  app.get('/yolo-test', (req, res) => {
+    res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO Wound Detection Service Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #cce7ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🩺 YOLO Wound Detection Service</h1>
+        
+        <div class="info">
+            <strong>Service Status:</strong> <span id="status">Checking...</span>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="checkHealth()">Check Health</button>
+            <button onclick="getServiceInfo()">Get Service Info</button>
+        </div>
+        
+        <div id="result"></div>
+        
+        <script>
+            async function checkHealth() {
+                document.getElementById('status').textContent = 'Checking...';
+                document.getElementById('result').innerHTML = '';
+                
+                try {
+                    const response = await fetch('/api/yolo/health');
+                    const data = await response.json();
+                    
+                    if (data.status === 'healthy') {
+                        document.getElementById('status').textContent = 'Healthy ✅';
+                        document.getElementById('result').innerHTML = \`
+                            <div class="success">
+                                <strong>YOLO Service is Running!</strong>
+                                <pre>\${JSON.stringify(data, null, 2)}</pre>
+                            </div>
+                        \`;
+                    } else {
+                        throw new Error('Service not healthy');
+                    }
+                } catch (error) {
+                    document.getElementById('status').textContent = 'Error ❌';
+                    document.getElementById('result').innerHTML = \`
+                        <div class="error">
+                            <strong>Service Error:</strong> \${error.message}
+                        </div>
+                    \`;
+                }
+            }
+            
+            async function getServiceInfo() {
+                document.getElementById('result').innerHTML = '';
+                
+                try {
+                    const response = await fetch('/api/yolo');
+                    const data = await response.json();
+                    
+                    document.getElementById('result').innerHTML = \`
+                        <div class="success">
+                            <strong>Service Information:</strong>
+                            <pre>\${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    \`;
+                } catch (error) {
+                    document.getElementById('result').innerHTML = \`
+                        <div class="error">
+                            <strong>Service Error:</strong> \${error.message}
+                        </div>
+                    \`;
+                }
+            }
+            
+            // Check health on page load
+            window.onload = checkHealth;
+        </script>
+    </div>
+</body>
+</html>
+    `);
   });
 
   // Register all route modules
