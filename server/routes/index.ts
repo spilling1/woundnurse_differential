@@ -6,8 +6,65 @@ import { registerAuthRoutes } from "./auth-routes";
 import { registerAssessmentRoutes } from "./assessment-routes";
 import { registerFollowUpRoutes } from "./follow-up-routes";
 import { registerAdminRoutes } from "./admin-routes";
+import { spawn, ChildProcess } from "child_process";
+
+// Global YOLO service management
+let yoloProcess: ChildProcess | null = null;
+let yoloHealthy = false;
+
+function startYoloService() {
+  if (yoloProcess) {
+    try {
+      yoloProcess.kill();
+    } catch (e) {
+      // Ignore error
+    }
+    yoloProcess = null;
+  }
+
+  console.log('Starting YOLO service...');
+  yoloProcess = spawn('python3', ['yolo_service.py'], {
+    stdio: ['ignore', 'pipe', 'pipe'],
+    detached: false,
+    cwd: process.cwd()
+  });
+
+  yoloProcess.stdout?.on('data', (data) => {
+    console.log(`YOLO stdout: ${data}`);
+  });
+
+  yoloProcess.stderr?.on('data', (data) => {
+    console.error(`YOLO stderr: ${data}`);
+  });
+
+  yoloProcess.on('exit', (code) => {
+    console.log(`YOLO process exited with code ${code}`);
+    yoloHealthy = false;
+    yoloProcess = null;
+    // Restart after 5 seconds
+    setTimeout(() => {
+      console.log('Restarting YOLO service...');
+      startYoloService();
+    }, 5000);
+  });
+
+  // Check health after startup
+  setTimeout(async () => {
+    try {
+      const response = await fetch('http://localhost:8081/health');
+      yoloHealthy = response.ok;
+      console.log(`YOLO health check: ${yoloHealthy ? 'healthy' : 'failed'}`);
+    } catch (error) {
+      console.log('YOLO health check failed:', error);
+      yoloHealthy = false;
+    }
+  }, 3000);
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Start YOLO service
+  startYoloService();
+  
   // Auth middleware
   await setupAuth(app);
 
@@ -34,11 +91,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Detection status endpoint for UI status monitor
   app.get('/api/detection-status', async (req, res) => {
+    // Check internal YOLO health status first
+    if (yoloHealthy && yoloProcess) {
+      res.json({
+        status: 'healthy',
+        method: 'YOLO',
+        service: 'yolo-wound-detection',
+        version: '1.0'
+      });
+      return;
+    }
+    
+    // Double-check by trying to reach the service
     try {
-      // Try YOLO service first
       const yoloResponse = await fetch('http://localhost:8081/health');
       if (yoloResponse.ok) {
         const yoloData = await yoloResponse.json();
+        yoloHealthy = true; // Update internal state
         res.json({
           status: 'healthy',
           method: 'YOLO',
