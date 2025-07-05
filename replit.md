@@ -38,11 +38,11 @@ The application follows a modern full-stack architecture:
 4. **Agents Logger**: Maintains case history in structured markdown format
 
 ### AI Model Support
-- GPT-4o (primary model)
+- Gemini 2.5 Pro (primary model)
+- Gemini 2.5 Flash
+- GPT-4o
 - GPT-3.5
 - GPT-3.5-pro
-- Gemini 2.5 Flash
-- Gemini 2.5 Pro
 - Dynamic model selection per assessment with both OpenAI and Google AI support
 
 ### Audience Targeting
@@ -167,6 +167,7 @@ Changelog:
 - July 5, 2025. **ADMIN DASHBOARD**: Created full-featured admin dashboard with user role management, assessment overview, and system statistics
 - July 5, 2025. **ROLE MANAGEMENT**: Added toggleable admin role system allowing admins to promote/demote users with one-click role switching
 - July 5, 2025. **MULTI-TENANT READY**: Built company management structure for future multi-tenant support with admin oversight capabilities
+- July 5, 2025. **DEFAULT MODEL CHANGE**: Changed default AI analytics engine from GPT-4o to Gemini 2.5 Pro as primary model for wound assessment
 ```
 
 ## User Preferences

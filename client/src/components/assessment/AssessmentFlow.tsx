@@ -12,7 +12,7 @@ export default function AssessmentFlow() {
   const [state, setState] = useState<AssessmentFlowState>({
     currentStep: 'audience',
     audience: 'family',
-    model: 'gpt-4o',
+    model: 'gemini-2.5-pro',
     selectedImage: null,
     imagePreview: null,
     aiQuestions: [],

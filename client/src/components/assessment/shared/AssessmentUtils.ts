@@ -162,10 +162,10 @@ export const assessmentHelpers = {
 
   // Get model option configurations
   getModelOptions: () => [
-    { value: 'gpt-4o' as const, label: 'GPT-4o (Recommended)' },
-    { value: 'gpt-3.5' as const, label: 'GPT-3.5' },
-    { value: 'gpt-3.5-pro' as const, label: 'GPT-3.5 Pro' },
+    { value: 'gemini-2.5-pro' as const, label: 'Gemini 2.5 Pro (Recommended)' },
     { value: 'gemini-2.5-flash' as const, label: 'Gemini 2.5 Flash' },
-    { value: 'gemini-2.5-pro' as const, label: 'Gemini 2.5 Pro' }
+    { value: 'gpt-4o' as const, label: 'GPT-4o' },
+    { value: 'gpt-3.5' as const, label: 'GPT-3.5' },
+    { value: 'gpt-3.5-pro' as const, label: 'GPT-3.5 Pro' }
   ]
 }; 
