@@ -161,6 +161,8 @@ Changelog:
 - July 5, 2025. **PRODUCT RECOMMENDATIONS**: Fixed product recommendation system to generate dynamic, contextual Amazon search links instead of broken static URLs
 - July 5, 2025. **AI CONFIGURATION**: Enhanced Product Recommendations tab with comprehensive guidelines, examples, and working Amazon search link templates
 - July 5, 2025. **SETTINGS UI**: Improved Product Recommendations settings page with helpful tips, examples, and dynamic link formatting guidance
+- July 5, 2025. **HTML FORMATTING FIX**: Fixed care plan rendering to properly display HTML content with inline styles for urgent medical alerts
+- July 5, 2025. **AI INSTRUCTIONS**: Updated care plan structure to generate proper HTML formatting for urgent messages with red styling and emphasis
 ```
 
 ## User Preferences

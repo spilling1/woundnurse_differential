@@ -443,6 +443,19 @@ export default function CarePlan() {
     // Remove detection analysis from main content
     const planWithoutDetection = cleanPlan.replace(/---\s*\n\n\*\*DETECTION SYSTEM ANALYSIS:\*\*[\s\S]*$/, '');
     
+    // Check if the content contains HTML tags
+    const hasHtmlTags = /<[^>]*>/g.test(planWithoutDetection);
+    
+    if (hasHtmlTags) {
+      // If content contains HTML, render it as HTML with proper sanitization
+      return (
+        <div 
+          dangerouslySetInnerHTML={{ __html: planWithoutDetection }}
+          className="prose prose-lg max-w-none [&_p]:mb-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-medium [&_h3]:mb-2 [&_ul]:mb-4 [&_ol]:mb-4 [&_li]:mb-2"
+        />
+      );
+    }
+    
     const sections = planWithoutDetection.split('\n\n');
     return sections.map((section, index) => {
       // Skip empty sections and lines with just dashes
