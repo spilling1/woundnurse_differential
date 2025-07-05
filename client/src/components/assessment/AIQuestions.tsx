@@ -22,33 +22,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
     onStateChange({ aiQuestions: updatedQuestions });
   };
 
-  // Generate final care plan mutation
-  const finalPlanMutation = useMutation({
-    mutationFn: async () => {
-      return await assessmentApi.finalPlan(
-        state.selectedImage,
-        state.audience,
-        state.model,
-        state.aiQuestions,
-        state.woundClassification,
-        state.userFeedback
-      );
-    },
-    onSuccess: (data: any) => {
-      onStateChange({
-        finalCaseId: data.caseId,
-        currentStep: 'final-plan'
-      });
-      onNextStep();
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Plan Generation Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+
 
   // Handle follow-up questions
   const handleFollowUpQuestions = async () => {
@@ -78,16 +52,12 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
           description: `Round ${data.round} questions based on your Agent Instructions.`
         });
       } else {
-        // No more questions needed, proceed to care plan
+        // No more questions needed, proceed to care plan generation
         onStateChange({ 
           aiQuestions: [],
-          currentStep: 'final-plan'
+          currentStep: 'generating-plan'
         });
-        
-        // Auto-trigger final plan generation
-        setTimeout(() => {
-          finalPlanMutation.mutate();
-        }, 500);
+        onNextStep();
         
         toast({
           title: "Questions Complete",
@@ -106,7 +76,8 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
   };
 
   const handleProceedToPlan = () => {
-    finalPlanMutation.mutate();
+    onStateChange({ currentStep: 'generating-plan' });
+    onNextStep();
   };
 
   return (
@@ -211,40 +182,21 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               
               <Button 
                 onClick={handleProceedToPlan}
-                disabled={finalPlanMutation.isPending}
+                disabled={false}
                 variant="outline"
                 className="w-full"
               >
-                {finalPlanMutation.isPending ? (
-                  <>
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    Generating Plan...
-                  </>
-                ) : (
-                  <>
-                    Proceed with Current Assessment
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
+                Proceed with Current Assessment
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           ) : (
             <Button 
               onClick={handleProceedToPlan}
-              disabled={finalPlanMutation.isPending}
               className="w-full bg-medical-blue hover:bg-medical-blue/90 mt-4"
             >
-              {finalPlanMutation.isPending ? (
-                <>
-                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  Generating Final Plan...
-                </>
-              ) : (
-                <>
-                  Generate Final Care Plan
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </>
-              )}
+              Generate Final Care Plan
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           )}
         </CardContent>

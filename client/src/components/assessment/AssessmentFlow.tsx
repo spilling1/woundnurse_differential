@@ -4,6 +4,7 @@ import type { AssessmentFlowState, FlowStep } from "./shared/AssessmentTypes";
 import AudienceSelection from "./AudienceSelection";
 import ImageUpload from "./ImageUpload";
 import AIQuestions from "./AIQuestions";
+import CarePlanGeneration from "./CarePlanGeneration";
 
 
 export default function AssessmentFlow() {
@@ -30,7 +31,7 @@ export default function AssessmentFlow() {
 
   // Navigation functions
   const handleNextStep = () => {
-    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'final-plan'];
+    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'generating-plan', 'final-plan'];
     const currentIndex = steps.indexOf(state.currentStep);
     if (currentIndex < steps.length - 1) {
       const nextStep = steps[currentIndex + 1];
@@ -39,7 +40,7 @@ export default function AssessmentFlow() {
   };
 
   const handlePrevStep = () => {
-    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'final-plan'];
+    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'generating-plan', 'final-plan'];
     const currentIndex = steps.indexOf(state.currentStep);
     if (currentIndex > 0) {
       const prevStep = steps[currentIndex - 1];
@@ -65,7 +66,8 @@ export default function AssessmentFlow() {
         return <ImageUpload {...stepProps} />;
       case 'ai-questions':
         return <AIQuestions {...stepProps} />;
-
+      case 'generating-plan':
+        return <CarePlanGeneration {...stepProps} />;
       case 'final-plan':
         return (
           <div className="text-center py-8">
@@ -85,7 +87,8 @@ export default function AssessmentFlow() {
       { key: 'audience', label: 'Audience' },
       { key: 'upload', label: 'Upload' },
       { key: 'ai-questions', label: 'AI Analysis' },
-      { key: 'final-plan', label: 'Final Plan' }
+      { key: 'generating-plan', label: 'Generating Plan' },
+      { key: 'final-plan', label: 'Complete' }
     ];
 
     return steps.map((step, index) => {

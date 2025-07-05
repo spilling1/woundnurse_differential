@@ -16,7 +16,7 @@ export interface WoundClassification {
   }>;
 }
 
-export type FlowStep = 'audience' | 'upload' | 'ai-questions' | 'final-plan';
+export type FlowStep = 'audience' | 'upload' | 'ai-questions' | 'generating-plan' | 'final-plan';
 
 export type AudienceType = 'family' | 'patient' | 'medical';
 
