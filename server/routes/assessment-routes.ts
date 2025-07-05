@@ -38,8 +38,8 @@ export function registerAssessmentRoutes(app: Express): void {
 
       // Get user ID if authenticated (optional)
       let userId = null;
-      if (req.user && req.user.claims && req.user.claims.sub) {
-        userId = req.user.claims.sub;
+      if (req.user && (req.user as any).sub) {
+        userId = (req.user as any).sub;
       }
 
       // Validate request body
@@ -57,18 +57,21 @@ export function registerAssessmentRoutes(app: Express): void {
       // Analyze if agent needs to ask questions before generating care plan
       const sessionId = caseId; // Use case ID as session ID for question tracking
       const questionAnalysis = await analyzeAssessmentForQuestions(
-        imageBase64,
-        contextData,
-        audience,
-        model,
-        userId || 'anonymous',
-        sessionId
+        sessionId,
+        {
+          imageAnalysis: classification,
+          audience,
+          model,
+          previousQuestions: [],
+          round: 1,
+          instructions: null
+        }
       );
       
       // Generate care plan
       const carePlan = await generateCarePlan(audience, classification, contextData, model);
       
-      // Store assessment with image data and context
+      // Store assessment with image data, context, and detection data
       const assessment = await storage.createWoundAssessment({
         caseId,
         userId,
@@ -78,6 +81,7 @@ export function registerAssessmentRoutes(app: Express): void {
         imageMimeType: req.file.mimetype,
         imageSize: req.file.size,
         classification,
+        detectionData: classification.detectionMetadata || null,
         carePlan,
         woundOrigin: contextData.woundOrigin || null,
         medicalHistory: contextData.medicalHistory || null,
@@ -98,9 +102,9 @@ export function registerAssessmentRoutes(app: Express): void {
         plan: carePlan,
         model,
         version: assessment.version,
-        questionsNeeded: questionAnalysis.needsQuestions,
-        questions: questionAnalysis.questions,
-        questionReasoning: questionAnalysis.reasoning
+        questionsNeeded: questionAnalysis.length > 0,
+        questions: questionAnalysis,
+        questionReasoning: "Generated based on AI analysis and confidence level"
       });
       
     } catch (error: any) {

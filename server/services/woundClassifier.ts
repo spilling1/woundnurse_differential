@@ -1,22 +1,40 @@
 import { analyzeWoundImage } from "./openai";
 import { analyzeWoundImageWithGemini } from "./gemini";
 import { storage } from "../storage";
+import { woundDetectionService } from "./woundDetection";
 
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
   try {
+    // Step 1: Perform wound detection first
+    const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
+    
     // Get agent instructions from database to include in analysis
     const agentInstructions = await storage.getActiveAgentInstructions();
     const instructions = agentInstructions?.content || '';
     
+    // Step 2: Enhance AI analysis with detection data
+    const enhancedInstructions = `${instructions}
+
+WOUND DETECTION DATA:
+- Number of wounds detected: ${detectionResult.detections.length}
+- Detection confidence: ${detectionResult.detections[0]?.confidence || 0}
+${detectionResult.detections.length > 0 ? `
+- Wound measurements: ${detectionResult.detections[0].measurements.lengthMm}mm x ${detectionResult.detections[0].measurements.widthMm}mm
+- Wound area: ${detectionResult.detections[0].measurements.areaMm2}mm²
+- Scale calibrated: ${detectionResult.detections[0].scaleCalibrated ? 'Yes' : 'No'}
+- Reference object detected: ${detectionResult.detections[0].referenceObjectDetected ? 'Yes' : 'No'}
+` : ''}
+Use this detection data to improve your wound analysis accuracy.`;
+    
     let classification;
     
     if (model.startsWith('gemini-')) {
-      classification = await analyzeWoundImageWithGemini(imageBase64, model, instructions);
+      classification = await analyzeWoundImageWithGemini(imageBase64, model, enhancedInstructions);
     } else {
-      classification = await analyzeWoundImage(imageBase64, model, mimeType, instructions);
+      classification = await analyzeWoundImage(imageBase64, model, mimeType, enhancedInstructions);
     }
     
-    // Validate and normalize the classification
+    // Step 3: Validate and normalize the classification
     const normalizedClassification = {
       woundType: classification.woundType || "Unspecified",
       stage: classification.stage || "Not determined",
@@ -31,7 +49,13 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       confidence: classification.confidence || 0.5
     };
 
-    return normalizedClassification;
+    // Step 4: Enhance classification with detection data
+    const enhancedClassification = woundDetectionService.enhanceClassificationWithDetection(
+      normalizedClassification, 
+      detectionResult
+    );
+
+    return enhancedClassification;
   } catch (error: any) {
     console.error('Wound classification error:', error);
     throw new Error(`Wound classification failed: ${error.message}`);

@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useRef } from "react";
 import type { WoundAssessment } from "@shared/schema";
+import WoundVisualization from "@/components/WoundVisualization";
 
 export default function CarePlan() {
   const [, setLocation] = useLocation();
@@ -694,9 +695,20 @@ export default function CarePlan() {
           </div>
         </div>
 
-        {/* Wound Images Section */}
+        {/* Enhanced Wound Visualization Section */}
         {(assessmentData as any)?.imageData && (
-          <Card className="mb-8 shadow-md">
+          <div className="mb-8 no-print">
+            <WoundVisualization
+              imageData={(assessmentData as any).imageData}
+              detectionData={(assessmentData as any).detectionData}
+              classification={(assessmentData as any).classification}
+            />
+          </div>
+        )}
+
+        {/* Original Image Section for Print */}
+        {(assessmentData as any)?.imageData && (
+          <Card className="mb-8 shadow-md print:block hidden">
             <CardHeader className="bg-slate-50 border-b">
               <CardTitle className="flex items-center text-lg">
                 <MapPin className="h-5 w-5 mr-3 text-medical-blue" />

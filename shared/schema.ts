@@ -48,6 +48,7 @@ export const woundAssessments = pgTable("wound_assessments", {
   
   // AI Analysis results
   classification: jsonb("classification"), // wound type, stage, size, etc.
+  detectionData: jsonb("detection_data"), // YOLO9 detection results, measurements, bounding boxes
   carePlan: text("care_plan").notNull(),
   
   // Follow-up and versioning
