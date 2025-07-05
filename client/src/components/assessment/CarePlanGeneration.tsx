@@ -5,11 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi } from "./shared/AssessmentUtils";
 
 export default function CarePlanGeneration({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [progress, setProgress] = useState(0);
   const [generatedPlan, setGeneratedPlan] = useState<any>(null);
 
@@ -69,7 +71,10 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
   }, []);
 
   const handleViewCarePlan = () => {
-    onNextStep();
+    if (generatedPlan?.caseId) {
+      // Navigate to the care plan page for this case
+      setLocation(`/care-plan/${generatedPlan.caseId}`);
+    }
   };
 
   if (finalPlanMutation.isPending) {
