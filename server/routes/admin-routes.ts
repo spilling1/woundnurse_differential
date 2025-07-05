@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { storage } from "../storage";
-import { isAuthenticated } from "../replitAuth";
+import { isAuthenticated, isAdmin } from "../replitAuth";
 import { generateCarePlan } from "../services/carePlanGenerator";
+import { userUpdateSchema, companyCreateSchema, companyUpdateSchema } from "@shared/schema";
 
 export function registerAdminRoutes(app: Express): void {
   // Get system status
@@ -267,6 +268,290 @@ export function registerAdminRoutes(app: Express): void {
       res.status(500).json({
         code: "ADD_INSTRUCTIONS_ERROR",
         message: error.message || "Failed to add instructions"
+      });
+    }
+  });
+
+  // ===== ADMIN USER MANAGEMENT ROUTES =====
+  
+  // Get all users (admin only)
+  app.get("/api/admin/users", isAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error: any) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({
+        code: "FETCH_USERS_ERROR",
+        message: error.message || "Failed to fetch users"
+      });
+    }
+  });
+
+  // Get users by company (admin only)
+  app.get("/api/admin/users/company/:companyId", isAdmin, async (req, res) => {
+    try {
+      const companyId = parseInt(req.params.companyId);
+      if (isNaN(companyId)) {
+        return res.status(400).json({
+          code: "INVALID_COMPANY_ID",
+          message: "Invalid company ID"
+        });
+      }
+
+      const users = await storage.getUsersByCompany(companyId);
+      res.json(users);
+    } catch (error: any) {
+      console.error('Error fetching users by company:', error);
+      res.status(500).json({
+        code: "FETCH_USERS_BY_COMPANY_ERROR",
+        message: error.message || "Failed to fetch users by company"
+      });
+    }
+  });
+
+  // Update user (admin only)
+  app.put("/api/admin/users/:userId", isAdmin, async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const validation = userUpdateSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({
+          code: "INVALID_USER_DATA",
+          message: "Invalid user data",
+          errors: validation.error.errors
+        });
+      }
+
+      const user = await storage.updateUser(userId, validation.data);
+      res.json(user);
+    } catch (error: any) {
+      console.error('Error updating user:', error);
+      res.status(500).json({
+        code: "UPDATE_USER_ERROR",
+        message: error.message || "Failed to update user"
+      });
+    }
+  });
+
+  // Delete user (admin only)
+  app.delete("/api/admin/users/:userId", isAdmin, async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const success = await storage.deleteUser(userId);
+      
+      if (!success) {
+        return res.status(404).json({
+          code: "USER_NOT_FOUND",
+          message: "User not found"
+        });
+      }
+
+      res.json({ success: true, message: "User deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({
+        code: "DELETE_USER_ERROR",
+        message: error.message || "Failed to delete user"
+      });
+    }
+  });
+
+  // ===== ADMIN ASSESSMENT MANAGEMENT ROUTES =====
+
+  // Get all wound assessments (admin only)
+  app.get("/api/admin/assessments", isAdmin, async (req, res) => {
+    try {
+      const assessments = await storage.getAllWoundAssessments();
+      res.json(assessments);
+    } catch (error: any) {
+      console.error('Error fetching assessments:', error);
+      res.status(500).json({
+        code: "FETCH_ASSESSMENTS_ERROR",
+        message: error.message || "Failed to fetch assessments"
+      });
+    }
+  });
+
+  // Get assessments by user (admin only)
+  app.get("/api/admin/assessments/user/:userId", isAdmin, async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const assessments = await storage.getWoundAssessmentsByUser(userId);
+      res.json(assessments);
+    } catch (error: any) {
+      console.error('Error fetching assessments by user:', error);
+      res.status(500).json({
+        code: "FETCH_ASSESSMENTS_BY_USER_ERROR",
+        message: error.message || "Failed to fetch assessments by user"
+      });
+    }
+  });
+
+  // ===== ADMIN COMPANY MANAGEMENT ROUTES =====
+
+  // Get all companies (admin only)
+  app.get("/api/admin/companies", isAdmin, async (req, res) => {
+    try {
+      const companies = await storage.getAllCompanies();
+      res.json(companies);
+    } catch (error: any) {
+      console.error('Error fetching companies:', error);
+      res.status(500).json({
+        code: "FETCH_COMPANIES_ERROR",
+        message: error.message || "Failed to fetch companies"
+      });
+    }
+  });
+
+  // Get single company (admin only)
+  app.get("/api/admin/companies/:id", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_COMPANY_ID",
+          message: "Invalid company ID"
+        });
+      }
+
+      const company = await storage.getCompany(id);
+      if (!company) {
+        return res.status(404).json({
+          code: "COMPANY_NOT_FOUND",
+          message: "Company not found"
+        });
+      }
+
+      res.json(company);
+    } catch (error: any) {
+      console.error('Error fetching company:', error);
+      res.status(500).json({
+        code: "FETCH_COMPANY_ERROR",
+        message: error.message || "Failed to fetch company"
+      });
+    }
+  });
+
+  // Create company (admin only)
+  app.post("/api/admin/companies", isAdmin, async (req, res) => {
+    try {
+      const validation = companyCreateSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({
+          code: "INVALID_COMPANY_DATA",
+          message: "Invalid company data",
+          errors: validation.error.errors
+        });
+      }
+
+      const company = await storage.createCompany(validation.data);
+      res.json(company);
+    } catch (error: any) {
+      console.error('Error creating company:', error);
+      res.status(500).json({
+        code: "CREATE_COMPANY_ERROR",
+        message: error.message || "Failed to create company"
+      });
+    }
+  });
+
+  // Update company (admin only)
+  app.put("/api/admin/companies/:id", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_COMPANY_ID",
+          message: "Invalid company ID"
+        });
+      }
+
+      const validation = companyUpdateSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({
+          code: "INVALID_COMPANY_DATA",
+          message: "Invalid company data",
+          errors: validation.error.errors
+        });
+      }
+
+      const company = await storage.updateCompany(id, validation.data);
+      res.json(company);
+    } catch (error: any) {
+      console.error('Error updating company:', error);
+      res.status(500).json({
+        code: "UPDATE_COMPANY_ERROR",
+        message: error.message || "Failed to update company"
+      });
+    }
+  });
+
+  // Delete company (admin only)
+  app.delete("/api/admin/companies/:id", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_COMPANY_ID",
+          message: "Invalid company ID"
+        });
+      }
+
+      const success = await storage.deleteCompany(id);
+      
+      if (!success) {
+        return res.status(404).json({
+          code: "COMPANY_NOT_FOUND",
+          message: "Company not found"
+        });
+      }
+
+      res.json({ success: true, message: "Company deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting company:', error);
+      res.status(500).json({
+        code: "DELETE_COMPANY_ERROR",
+        message: error.message || "Failed to delete company"
+      });
+    }
+  });
+
+  // ===== ADMIN DASHBOARD STATS =====
+
+  // Get admin dashboard stats (admin only)
+  app.get("/api/admin/dashboard", isAdmin, async (req, res) => {
+    try {
+      const [users, assessments, companies] = await Promise.all([
+        storage.getAllUsers(),
+        storage.getAllWoundAssessments(),
+        storage.getAllCompanies()
+      ]);
+
+      const stats = {
+        totalUsers: users.length,
+        activeUsers: users.filter(u => u.status === 'active').length,
+        totalAssessments: assessments.length,
+        totalCompanies: companies.length,
+        recentUsers: users.slice(0, 5),
+        recentAssessments: assessments.slice(0, 10),
+        usersByRole: {
+          admin: users.filter(u => u.role === 'admin').length,
+          user: users.filter(u => u.role === 'user').length,
+          nurse: users.filter(u => u.role === 'nurse').length,
+          manager: users.filter(u => u.role === 'manager').length,
+        }
+      };
+
+      res.json(stats);
+    } catch (error: any) {
+      console.error('Error fetching dashboard stats:', error);
+      res.status(500).json({
+        code: "FETCH_DASHBOARD_ERROR",
+        message: error.message || "Failed to fetch dashboard stats"
       });
     }
   });

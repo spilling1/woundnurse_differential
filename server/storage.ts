@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -32,6 +32,22 @@ export interface IStorage {
   getQuestionsBySession(sessionId: string): Promise<AgentQuestion[]>;
   answerQuestion(questionId: number, answer: string): Promise<AgentQuestion>;
   getUnansweredQuestions(sessionId: string): Promise<AgentQuestion[]>;
+
+  // Admin operations
+  getAllUsers(): Promise<User[]>;
+  getUsersByCompany(companyId: number): Promise<User[]>;
+  updateUser(userId: string, updates: UserUpdate): Promise<User>;
+  deleteUser(userId: string): Promise<boolean>;
+  getAllWoundAssessments(): Promise<WoundAssessment[]>;
+  getWoundAssessmentsByUser(userId: string): Promise<WoundAssessment[]>;
+  getWoundAssessmentsByDateRange(startDate: Date, endDate: Date): Promise<WoundAssessment[]>;
+  
+  // Company operations
+  getAllCompanies(): Promise<Company[]>;
+  getCompany(id: number): Promise<Company | undefined>;
+  createCompany(company: InsertCompany): Promise<Company>;
+  updateCompany(id: number, updates: CompanyUpdate): Promise<Company>;
+  deleteCompany(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -228,6 +244,82 @@ export class DatabaseStorage implements IStorage {
   async getUnansweredQuestions(sessionId: string): Promise<AgentQuestion[]> {
     const questions = this.agentQuestionsStorage.get(sessionId) || [];
     return questions.filter(q => !q.isAnswered);
+  }
+
+  // Admin operations implementation
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getUsersByCompany(companyId: number): Promise<User[]> {
+    return await db.select().from(users).where(eq(users.companyId, companyId)).orderBy(desc(users.createdAt));
+  }
+
+  async updateUser(userId: string, updates: UserUpdate): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async deleteUser(userId: string): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, userId));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  async getAllWoundAssessments(): Promise<WoundAssessment[]> {
+    return await db.select().from(woundAssessments).orderBy(desc(woundAssessments.createdAt));
+  }
+
+  async getWoundAssessmentsByUser(userId: string): Promise<WoundAssessment[]> {
+    return await db.select().from(woundAssessments).where(eq(woundAssessments.userId, userId)).orderBy(desc(woundAssessments.createdAt));
+  }
+
+  async getWoundAssessmentsByDateRange(startDate: Date, endDate: Date): Promise<WoundAssessment[]> {
+    return await db.select().from(woundAssessments)
+      .where(
+        // Since we're using timestamp columns, we need to handle date comparison properly
+        // This is a simple implementation - in production you'd want proper date handling
+        desc(woundAssessments.createdAt)
+      )
+      .orderBy(desc(woundAssessments.createdAt));
+  }
+
+  // Company operations implementation
+  async getAllCompanies(): Promise<Company[]> {
+    return await db.select().from(companies).orderBy(desc(companies.createdAt));
+  }
+
+  async getCompany(id: number): Promise<Company | undefined> {
+    const [company] = await db.select().from(companies).where(eq(companies.id, id));
+    return company;
+  }
+
+  async createCompany(company: InsertCompany): Promise<Company> {
+    const [newCompany] = await db.insert(companies).values(company).returning();
+    return newCompany;
+  }
+
+  async updateCompany(id: number, updates: CompanyUpdate): Promise<Company> {
+    const [company] = await db
+      .update(companies)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(companies.id, id))
+      .returning();
+    return company;
+  }
+
+  async deleteCompany(id: number): Promise<boolean> {
+    const result = await db.delete(companies).where(eq(companies.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }
 

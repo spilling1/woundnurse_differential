@@ -57,12 +57,18 @@ function updateUserSession(
 async function upsertUser(
   claims: any,
 ) {
+  // Check if this is the first user (make them admin)
+  const allUsers = await storage.getAllUsers();
+  const isFirstUser = allUsers.length === 0;
+  
   await storage.upsertUser({
     id: claims["sub"],
     email: claims["email"],
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
+    role: isFirstUser ? 'admin' : 'user',
+    status: 'active',
   });
 }
 
@@ -153,5 +159,32 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   } catch (error) {
     res.status(401).json({ message: "Unauthorized" });
     return;
+  }
+};
+
+export const isAdmin: RequestHandler = async (req, res, next) => {
+  const user = req.user as any;
+
+  if (!req.isAuthenticated() || !user.id) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const dbUser = await storage.getUser(user.id);
+    if (!dbUser) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    if (dbUser.role !== 'admin') {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
+    if (dbUser.status !== 'active') {
+      return res.status(403).json({ message: "Account is not active" });
+    }
+
+    return next();
+  } catch (error) {
+    return res.status(500).json({ message: "Authorization check failed" });
   }
 };

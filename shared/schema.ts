@@ -13,6 +13,18 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
+// Companies table for future multi-tenant support
+export const companies = pgTable("companies", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  domain: varchar("domain").unique(),
+  status: varchar("status").notNull().default("active"), // 'active' | 'inactive' | 'suspended'
+  maxUsers: integer("max_users").default(100),
+  subscriptionPlan: varchar("subscription_plan").default("basic"), // 'basic' | 'pro' | 'enterprise'
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // User storage table for Replit Auth
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
@@ -20,6 +32,10 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  role: varchar("role").notNull().default("user"), // 'admin' | 'user' | 'nurse' | 'manager'
+  status: varchar("status").notNull().default("active"), // 'active' | 'inactive' | 'suspended'
+  companyId: integer("company_id").references(() => companies.id),
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -123,6 +139,12 @@ export const insertAgentQuestionSchema = createInsertSchema(agentQuestions).omit
   answeredAt: true,
 });
 
+export const insertCompanySchema = createInsertSchema(companies).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertWoundAssessment = z.infer<typeof insertWoundAssessmentSchema>;
 export type WoundAssessment = typeof woundAssessments.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
@@ -131,6 +153,8 @@ export type InsertAgentInstructions = z.infer<typeof insertAgentInstructionsSche
 export type AgentInstructions = typeof agentInstructions.$inferSelect;
 export type InsertAgentQuestion = z.infer<typeof insertAgentQuestionSchema>;
 export type AgentQuestion = typeof agentQuestions.$inferSelect;
+export type InsertCompany = z.infer<typeof insertCompanySchema>;
+export type Company = typeof companies.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
@@ -173,3 +197,29 @@ export const followUpRequestSchema = z.object({
 export type UploadRequest = z.infer<typeof uploadRequestSchema>;
 export type FeedbackRequest = z.infer<typeof feedbackRequestSchema>;
 export type FollowUpRequest = z.infer<typeof followUpRequestSchema>;
+
+// Admin validation schemas
+export const userUpdateSchema = z.object({
+  role: z.enum(['admin', 'user', 'nurse', 'manager']).optional(),
+  status: z.enum(['active', 'inactive', 'suspended']).optional(),
+  companyId: z.number().nullable().optional(),
+});
+
+export const companyCreateSchema = z.object({
+  name: z.string().min(1, "Company name is required"),
+  domain: z.string().optional(),
+  maxUsers: z.number().positive().default(100),
+  subscriptionPlan: z.enum(['basic', 'pro', 'enterprise']).default('basic'),
+});
+
+export const companyUpdateSchema = z.object({
+  name: z.string().min(1).optional(),
+  domain: z.string().optional(),
+  status: z.enum(['active', 'inactive', 'suspended']).optional(),
+  maxUsers: z.number().positive().optional(),
+  subscriptionPlan: z.enum(['basic', 'pro', 'enterprise']).optional(),
+});
+
+export type UserUpdate = z.infer<typeof userUpdateSchema>;
+export type CompanyCreate = z.infer<typeof companyCreateSchema>;
+export type CompanyUpdate = z.infer<typeof companyUpdateSchema>;

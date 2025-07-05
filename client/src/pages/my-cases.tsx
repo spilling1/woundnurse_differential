@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw } from "lucide-react";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw, Shield } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect } from "react";
 import ImageDetectionStatus from "@/components/ImageDetectionStatus";
@@ -20,7 +20,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export default function MyCases() {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
 
   // Refresh data when component mounts or when user navigates back
@@ -181,6 +181,17 @@ export default function MyCases() {
               >
                 <Settings className="h-4 w-4" />
               </Button>
+              {(user as any)?.role === 'admin' && (
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLocation("/admin")}
+                  className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  title="Admin Dashboard"
+                >
+                  <Shield className="h-4 w-4" />
+                </Button>
+              )}
               <Button 
                 variant="ghost"
                 onClick={() => window.location.href = "/api/logout"}

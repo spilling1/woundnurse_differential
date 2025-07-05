@@ -12,6 +12,7 @@ import FollowUp from "@/pages/follow-up";
 import NurseEvaluation from "@/pages/nurse-evaluation";
 import AgentsPage from "@/pages/agents";
 import SettingsPage from "@/pages/settings";
+import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/nurse-evaluation/:caseId" component={NurseEvaluation} />
       <Route path="/agents" component={AgentsPage} />
       <Route path="/settings" component={SettingsPage} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
