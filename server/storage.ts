@@ -19,7 +19,12 @@ export interface IStorage {
   getFeedbacksByCase(caseId: string): Promise<Feedback[]>;
   getActiveAgentInstructions(): Promise<AgentInstructions | undefined>;
   createAgentInstructions(instructions: InsertAgentInstructions): Promise<AgentInstructions>;
-  updateAgentInstructions(id: number, content: string): Promise<AgentInstructions>;
+  updateAgentInstructions(id: number, instructions: {
+    systemPrompts?: string;
+    carePlanStructure?: string;
+    specificWoundCare?: string;
+    questionsGuidelines?: string | null;
+  }): Promise<AgentInstructions>;
   
   // Agent question operations
   createAgentQuestion(question: InsertAgentQuestion): Promise<AgentQuestion>;
@@ -161,10 +166,18 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateAgentInstructions(id: number, content: string): Promise<AgentInstructions> {
+  async updateAgentInstructions(id: number, instructions: {
+    systemPrompts?: string;
+    carePlanStructure?: string;
+    specificWoundCare?: string;
+    questionsGuidelines?: string | null;
+  }): Promise<AgentInstructions> {
     const [result] = await db
       .update(agentInstructions)
-      .set({ content, updatedAt: new Date() })
+      .set({ 
+        ...instructions,
+        updatedAt: new Date() 
+      })
       .where(eq(agentInstructions.id, id))
       .returning();
     return result;

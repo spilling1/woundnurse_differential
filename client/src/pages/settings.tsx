@@ -1,42 +1,51 @@
 import { useState, useEffect } from "react";
-import * as React from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, Settings, Save, RefreshCw } from "lucide-react";
-import { useLocation } from "wouter";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Settings, Save, RefreshCw, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "wouter";
 
-export default function SettingsPage() {
-  const [, setLocation] = useLocation();
+function SettingsPage() {
+  const [systemPrompts, setSystemPrompts] = useState("");
+  const [carePlanStructure, setCarePlanStructure] = useState("");
+  const [specificWoundCare, setSpecificWoundCare] = useState("");
+  const [questionsGuidelines, setQuestionsGuidelines] = useState("");
   const { toast } = useToast();
-  const [instructions, setInstructions] = useState("");
+  const queryClient = useQueryClient();
 
-  // Fetch current AI instructions
+  // Query to fetch current AI instructions
   const { data: agentData, isLoading } = useQuery({
     queryKey: ["/api/agents"],
-    retry: false,
   });
 
-  // Initialize instructions when data loads
+  // Update textareas when data is loaded
   useEffect(() => {
-    if (agentData && typeof agentData === 'object' && 'content' in agentData) {
-      setInstructions((agentData as any).content || "");
+    if (agentData && typeof agentData === 'object') {
+      const data = agentData as any;
+      setSystemPrompts(data.systemPrompts || "");
+      setCarePlanStructure(data.carePlanStructure || "");
+      setSpecificWoundCare(data.specificWoundCare || "");
+      setQuestionsGuidelines(data.questionsGuidelines || "");
     }
   }, [agentData]);
 
   // Mutation to update AI instructions
   const updateMutation = useMutation({
-    mutationFn: async (newInstructions: string) => {
+    mutationFn: async (newInstructions: {
+      systemPrompts: string;
+      carePlanStructure: string;
+      specificWoundCare: string;
+      questionsGuidelines: string;
+    }) => {
       const response = await fetch('/api/agents', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: newInstructions }),
+        body: JSON.stringify(newInstructions),
       });
       if (!response.ok) {
         throw new Error('Failed to update instructions');
@@ -60,12 +69,21 @@ export default function SettingsPage() {
   });
 
   const handleSave = () => {
-    updateMutation.mutate(instructions);
+    updateMutation.mutate({
+      systemPrompts,
+      carePlanStructure,
+      specificWoundCare,
+      questionsGuidelines
+    });
   };
 
   const handleReset = () => {
-    if (agentData && typeof agentData === 'object' && 'content' in agentData) {
-      setInstructions((agentData as any).content || "");
+    if (agentData && typeof agentData === 'object') {
+      const data = agentData as any;
+      setSystemPrompts(data.systemPrompts || "");
+      setCarePlanStructure(data.carePlanStructure || "");
+      setSpecificWoundCare(data.specificWoundCare || "");
+      setQuestionsGuidelines(data.questionsGuidelines || "");
       toast({
         title: "Reset Complete",
         description: "Settings have been reset to saved values.",
@@ -73,138 +91,169 @@ export default function SettingsPage() {
     }
   };
 
+  const hasChanges = () => {
+    if (!agentData) return false;
+    const data = agentData as any;
+    return (
+      systemPrompts !== (data.systemPrompts || "") ||
+      carePlanStructure !== (data.carePlanStructure || "") ||
+      specificWoundCare !== (data.specificWoundCare || "") ||
+      questionsGuidelines !== (data.questionsGuidelines || "")
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-bg-light flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-medical-blue mx-auto mb-3"></div>
+          <p className="text-gray-600">Loading settings...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header Navigation */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation('/my-cases')}
-                className="mr-4"
-              >
+    <div className="min-h-screen bg-bg-light">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-4">
+            <Link href="/my-cases">
+              <Button variant="outline" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to My Cases
               </Button>
-              <div className="flex items-center">
-                <Settings className="text-medical-blue text-xl mr-3" />
-                <div>
-                  <h1 className="text-lg font-semibold text-gray-900">Settings</h1>
-                  <p className="text-sm text-gray-500">AI Configuration Management</p>
-                </div>
-              </div>
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+                <Settings className="mr-3 h-8 w-8 text-medical-blue" />
+                AI Configuration Settings
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Configure how the AI analyzes wounds and generates care plans
+              </p>
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Settings className="h-5 w-5 mr-2 text-medical-blue" />
-              AI Configuration
+        {/* Settings Content */}
+        <Card className="shadow-lg border-0">
+          <CardHeader className="bg-gradient-to-r from-medical-blue to-blue-600 text-white">
+            <CardTitle className="text-xl font-semibold flex items-center">
+              <Settings className="h-6 w-6 mr-3" />
+              AI Instructions Configuration
             </CardTitle>
-            <p className="text-sm text-gray-600">
-              Configure the AI agent instructions that guide wound assessment and care plan generation. 
-              Changes will affect all future assessments.
-            </p>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {isLoading ? (
-              <div className="flex items-center justify-center p-8">
-                <RefreshCw className="h-6 w-6 animate-spin text-medical-blue mr-2" />
-                <span className="text-gray-600">Loading configuration...</span>
-              </div>
-            ) : (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="instructions" className="text-sm font-medium">
-                    AI Agent Instructions
-                  </Label>
-                  <Textarea
-                    id="instructions"
-                    value={instructions}
-                    onChange={(e) => setInstructions(e.target.value)}
-                    placeholder="Enter AI agent instructions for wound care assessment..."
-                    className="min-h-[400px] font-mono text-sm"
-                    disabled={updateMutation.isPending}
-                  />
-                  <p className="text-xs text-gray-500">
-                    These instructions guide the AI in analyzing wound images and generating care plans. 
-                    Use clear, specific language for best results.
-                  </p>
-                </div>
+          <CardContent className="p-6">
+            <Tabs defaultValue="system" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 mb-6">
+                <TabsTrigger value="system">System Prompts</TabsTrigger>
+                <TabsTrigger value="structure">Care Plan Structure</TabsTrigger>
+                <TabsTrigger value="wound">Specific Wound Care</TabsTrigger>
+                <TabsTrigger value="questions">Questions Guidelines</TabsTrigger>
+              </TabsList>
 
-                <div className="flex justify-between items-center pt-4 border-t">
-                  <div className="text-sm text-gray-500">
-                    {agentData && typeof agentData === 'object' && 'updatedAt' in agentData && (
-                      <span>Last updated: {new Date((agentData as any).updatedAt).toLocaleString()}</span>
-                    )}
-                  </div>
-                  <div className="flex space-x-3">
-                    <Button
-                      variant="outline"
-                      onClick={handleReset}
-                      disabled={updateMutation.isPending || !(agentData && typeof agentData === 'object' && 'content' in agentData)}
-                    >
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                      Reset
-                    </Button>
-                    <Button
-                      onClick={handleSave}
-                      disabled={updateMutation.isPending || instructions === (agentData && typeof agentData === 'object' && 'content' in agentData ? (agentData as any).content : '')}
-                      className="bg-medical-blue hover:bg-blue-700"
-                    >
-                      {updateMutation.isPending ? (
-                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Save className="h-4 w-4 mr-2" />
-                      )}
-                      Save Changes
-                    </Button>
-                  </div>
+              <TabsContent value="system" className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">System Prompts</h3>
+                  <p className="text-gray-600 mb-4">
+                    Core mission and behavior instructions for the AI assistant.
+                  </p>
+                  <Textarea
+                    value={systemPrompts}
+                    onChange={(e) => setSystemPrompts(e.target.value)}
+                    rows={20}
+                    className="font-mono text-sm"
+                    placeholder="Enter system prompts..."
+                  />
                 </div>
-              </>
-            )}
+              </TabsContent>
+
+              <TabsContent value="structure" className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Care Plan Structure</h3>
+                  <p className="text-gray-600 mb-4">
+                    How the AI should format and organize care plan responses.
+                  </p>
+                  <Textarea
+                    value={carePlanStructure}
+                    onChange={(e) => setCarePlanStructure(e.target.value)}
+                    rows={20}
+                    className="font-mono text-sm"
+                    placeholder="Enter care plan structure instructions..."
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="wound" className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Specific Wound Care Instructions</h3>
+                  <p className="text-gray-600 mb-4">
+                    Medical knowledge and guidelines for different wound types.
+                  </p>
+                  <Textarea
+                    value={specificWoundCare}
+                    onChange={(e) => setSpecificWoundCare(e.target.value)}
+                    rows={20}
+                    className="font-mono text-sm"
+                    placeholder="Enter specific wound care instructions..."
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="questions" className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Questions Guidelines</h3>
+                  <p className="text-gray-600 mb-4">
+                    How to ask follow-up questions to improve diagnostic accuracy.
+                  </p>
+                  <Textarea
+                    value={questionsGuidelines}
+                    onChange={(e) => setQuestionsGuidelines(e.target.value)}
+                    rows={20}
+                    className="font-mono text-sm"
+                    placeholder="Enter questions guidelines..."
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
+
+            {/* Action Buttons */}
+            <div className="flex justify-between items-center pt-6 border-t mt-6">
+              <div className="text-sm text-gray-500">
+                {agentData && typeof agentData === 'object' && 'lastModified' in agentData && (
+                  <span>Last updated: {new Date((agentData as any).lastModified).toLocaleString()}</span>
+                )}
+              </div>
+              <div className="flex space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={handleReset}
+                  disabled={updateMutation.isPending || !hasChanges()}
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Reset
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  disabled={updateMutation.isPending || !hasChanges()}
+                  className="bg-medical-blue hover:bg-blue-700"
+                >
+                  {updateMutation.isPending ? (
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
+                  Save Changes
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
-
-        {/* Information Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Best Practices</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-2">
-              <ul className="list-disc list-inside space-y-1">
-                <li>Use clear, specific medical terminology</li>
-                <li>Include evidence-based care protocols</li>
-                <li>Specify different approaches for various wound types</li>
-                <li>Consider patient safety and professional standards</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Impact</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-2">
-              <ul className="list-disc list-inside space-y-1">
-                <li>Changes affect all new assessments</li>
-                <li>Existing assessments remain unchanged</li>
-                <li>Updates are logged for audit purposes</li>
-                <li>Regular review is recommended</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );
 }
+
+export default SettingsPage;

@@ -319,7 +319,8 @@ export function registerAssessmentRoutes(app: Express): void {
       
       // Get agent instructions to determine if more questions are needed
       const agentInstructions = await storage.getActiveAgentInstructions();
-      const instructions = agentInstructions?.content || '';
+      const instructions = agentInstructions ? 
+        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
       
       const contextData = {
         previousQuestions: parsedQuestions,

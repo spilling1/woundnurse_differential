@@ -10,7 +10,8 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
     
     // Get agent instructions from database to include in analysis
     const agentInstructions = await storage.getActiveAgentInstructions();
-    const instructions = agentInstructions?.content || '';
+    const instructions = agentInstructions ? 
+      `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
     
     // Step 2: Enhance AI analysis with detection data
     const enhancedInstructions = `${instructions}

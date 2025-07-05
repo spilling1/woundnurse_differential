@@ -141,6 +141,14 @@ Changelog:
 - July 5, 2025. Successfully integrated YOLO service into wound classification pipeline with proper service management and automatic restart
 - July 5, 2025. Fixed wound detection service routing to use YOLO first, then fallback to cloud APIs or enhanced detection
 - July 5, 2025. Completed full YOLO integration - system now uses YOLO9 for primary wound detection with precise measurements and high accuracy
+- July 5, 2025. **MAJOR ARCHITECTURAL CHANGE**: Restructured AI instructions from single content field into four structured sections:
+  - **System Prompts**: Core mission and behavior instructions
+  - **Care Plan Structure**: Response formatting and organization guidelines  
+  - **Specific Wound Care**: Medical knowledge for different wound types
+  - **Questions Guidelines**: How to ask diagnostic follow-up questions
+- July 5, 2025. Updated database schema, storage interfaces, and API endpoints to support structured AI instructions
+- July 5, 2025. Created new tabbed Settings page interface allowing independent editing of each instruction section
+- July 5, 2025. Enhanced AI instruction system for better maintainability and granular control over wound care behavior
 ```
 
 ## User Preferences

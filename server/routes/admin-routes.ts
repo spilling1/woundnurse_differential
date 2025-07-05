@@ -20,45 +20,19 @@ export function registerAdminRoutes(app: Express): void {
       const instructions = await storage.getActiveAgentInstructions();
       
       if (!instructions) {
-        // Create default instructions if none exist
-        const defaultContent = `# AI Agent Instructions for Wound Care Assessment
-
-## Core Rules
-1. Always prioritize patient safety and recommend consulting healthcare professionals
-2. Provide audience-specific language (family, patient, medical)
-3. Base recommendations on wound classification and patient context
-4. Include clear medical disclaimers
-
-## Assessment Guidelines
-- Analyze wound type, stage, size, and location from images
-- Consider patient medical history and current care
-- Evaluate pain levels and support systems
-- Provide step-by-step care instructions
-
-## Care Plan Format
-- Start with medical disclaimer
-- Provide immediate care steps
-- Include monitoring instructions
-- Suggest when to seek professional help
-- Tailor language to selected audience`;
-
-        const newInstructions = await storage.createAgentInstructions({
-          content: defaultContent,
-          version: 1
-        });
-        
-        return res.json({
-          content: newInstructions.content,
-          lastModified: newInstructions.updatedAt,
-          size: newInstructions.content.length,
-          version: newInstructions.version
+        return res.status(404).json({
+          code: "NO_INSTRUCTIONS",
+          message: "No agent instructions found"
         });
       }
       
+      // Return the structured instructions
       res.json({
-        content: instructions.content,
+        systemPrompts: instructions.systemPrompts,
+        carePlanStructure: instructions.carePlanStructure,
+        specificWoundCare: instructions.specificWoundCare,
+        questionsGuidelines: instructions.questionsGuidelines,
         lastModified: instructions.updatedAt,
-        size: instructions.content.length,
         version: instructions.version
       });
       
@@ -109,12 +83,12 @@ export function registerAdminRoutes(app: Express): void {
   // Update Agent Instructions
   app.post("/api/agents", async (req, res) => {
     try {
-      const { content } = req.body;
+      const { systemPrompts, carePlanStructure, specificWoundCare, questionsGuidelines } = req.body;
       
-      if (!content || typeof content !== 'string') {
+      if (!systemPrompts || !carePlanStructure || !specificWoundCare) {
         return res.status(400).json({
           code: "INVALID_CONTENT",
-          message: "Content is required and must be a string"
+          message: "System prompts, care plan structure, and specific wound care are required"
         });
       }
       
@@ -123,11 +97,19 @@ export function registerAdminRoutes(app: Express): void {
       
       if (currentInstructions) {
         // Update existing instructions
-        result = await storage.updateAgentInstructions(currentInstructions.id, content);
+        result = await storage.updateAgentInstructions(currentInstructions.id, {
+          systemPrompts,
+          carePlanStructure,
+          specificWoundCare,
+          questionsGuidelines
+        });
       } else {
         // Create new instructions
         result = await storage.createAgentInstructions({
-          content,
+          systemPrompts,
+          carePlanStructure,
+          specificWoundCare,
+          questionsGuidelines,
           version: 1
         });
       }
@@ -136,7 +118,6 @@ export function registerAdminRoutes(app: Express): void {
         success: true,
         message: "Agent instructions updated successfully",
         lastModified: result.updatedAt,
-        size: content.length,
         version: result.version
       });
       
@@ -189,7 +170,8 @@ export function registerAdminRoutes(app: Express): void {
 
       // Get current agent instructions to include in generation
       const agentInstructions = await storage.getActiveAgentInstructions();
-      const agentInstructionsText = agentInstructions?.content || '';
+      const agentInstructionsText = agentInstructions ? 
+        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
 
       // Merge existing context with nurse updates
       let existingContext = {};
@@ -257,12 +239,16 @@ export function registerAdminRoutes(app: Express): void {
       
       let updatedContent;
       if (currentInstructions) {
-        updatedContent = currentInstructions.content + additionalText;
-        await storage.updateAgentInstructions(currentInstructions.id, updatedContent);
+        updatedContent = currentInstructions.systemPrompts + additionalText;
+        await storage.updateAgentInstructions(currentInstructions.id, {
+          systemPrompts: updatedContent
+        });
       } else {
         updatedContent = `# AI Agent Instructions\n\n## Initial Instructions\n\nProvide comprehensive wound care assessments.${additionalText}`;
         await storage.createAgentInstructions({
-          content: updatedContent,
+          systemPrompts: updatedContent,
+          carePlanStructure: 'Default care plan structure',
+          specificWoundCare: 'Default wound care instructions',
           isActive: true
         });
       }
