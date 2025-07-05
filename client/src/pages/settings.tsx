@@ -229,14 +229,41 @@ function SettingsPage() {
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Product Recommendations</h3>
                   <p className="text-gray-600 mb-4">
-                    Guidelines for recommending specific medical products, supplies, and treatments.
+                    Guidelines for recommending specific medical products and supplies. The system will generate dynamic Amazon search links for products.
                   </p>
+                  
+                  {/* Helpful Tips Card */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <h4 className="font-semibold text-blue-800 mb-2">Dynamic Product Links</h4>
+                    <p className="text-blue-700 text-sm mb-2">
+                      The system automatically generates working Amazon search links. You don't need to include specific URLs here.
+                    </p>
+                    <div className="text-blue-700 text-sm space-y-1">
+                      <p><strong>Example Link Format:</strong> [Foam Dressing](https://www.amazon.com/s?k=foam+dressing+wounds)</p>
+                      <p><strong>Focus on:</strong> Product categories, wound-specific recommendations, and usage guidelines</p>
+                    </div>
+                  </div>
+
+                  {/* Example Content Card */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                    <h4 className="font-semibold text-gray-800 mb-2">Example Content Structure:</h4>
+                    <pre className="text-xs text-gray-600 whitespace-pre-wrap">{`For Pressure Ulcers:
+- Pressure redistribution: foam mattress overlays, cushions
+- Wound dressings: hydrocolloid, foam, or alginate based on exudate level
+- Skin protection: barrier creams, protective films
+
+For Diabetic Ulcers:
+- Offloading devices: specialized shoes, boot walkers
+- Infection control: antimicrobial dressings, topical antibiotics
+- Moisture management: absorbent dressings for moderate exudate`}</pre>
+                  </div>
+
                   <Textarea
                     value={productRecommendations}
                     onChange={(e) => setProductRecommendations(e.target.value)}
                     rows={20}
                     className="font-mono text-sm"
-                    placeholder="Enter product recommendation guidelines..."
+                    placeholder="Enter product recommendation guidelines by wound type, severity, and care stage..."
                   />
                 </div>
               </TabsContent>
@@ -245,10 +272,7 @@ function SettingsPage() {
             {/* Action Buttons */}
             <div className="flex justify-between items-center pt-6 border-t mt-6">
               <div className="text-sm text-gray-500">
-                {agentData && typeof agentData === 'object' && 'lastModified' in agentData && 
-                  typeof (agentData as any).lastModified === 'string' && (
-                  <span>Last updated: {new Date((agentData as any).lastModified).toLocaleString()}</span>
-                )}
+                {/* Last updated timestamp would appear here */}
               </div>
               <div className="flex space-x-3">
                 <Button
