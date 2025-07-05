@@ -1,5 +1,5 @@
 import { apiRequest } from "@/lib/queryClient";
-import type { AIGeneratedQuestion, WoundClassification, AudienceType, ModelType, PreliminaryCareplan } from "./AssessmentTypes";
+import type { AIGeneratedQuestion, WoundClassification, AudienceType, ModelType } from "./AssessmentTypes";
 
 export const assessmentApi = {
   // Step 1: Initial image analysis
@@ -36,14 +36,13 @@ export const assessmentApi = {
     return await response.json();
   },
 
-  // Step 3: Generate final care plan
+  // Generate final care plan directly after questions
   finalPlan: async (
     image: File | null,
     audience: AudienceType,
     model: ModelType,
     questions: AIGeneratedQuestion[],
     classification: WoundClassification | null,
-    preliminaryPlan: PreliminaryCareplan | null,
     userFeedback: string
   ) => {
     const formData = new FormData();
@@ -54,7 +53,6 @@ export const assessmentApi = {
     formData.append('model', model);
     formData.append('questions', JSON.stringify(questions));
     formData.append('classification', JSON.stringify(classification));
-    formData.append('preliminaryPlan', JSON.stringify(preliminaryPlan));
     formData.append('userFeedback', userFeedback);
 
     const response = await fetch('/api/assessment/final-plan', {

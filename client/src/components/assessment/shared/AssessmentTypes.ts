@@ -16,15 +16,7 @@ export interface WoundClassification {
   }>;
 }
 
-export interface PreliminaryCareplan {
-  assessment: string;
-  recommendations: string[];
-  confidence: number;
-  needsMoreInfo: boolean;
-  additionalQuestions?: string[];
-}
-
-export type FlowStep = 'audience' | 'upload' | 'ai-questions' | 'preliminary-plan' | 'final-plan';
+export type FlowStep = 'audience' | 'upload' | 'ai-questions' | 'final-plan';
 
 export type AudienceType = 'family' | 'patient' | 'medical';
 
@@ -38,7 +30,6 @@ export interface AssessmentFlowState {
   imagePreview: string | null;
   aiQuestions: AIGeneratedQuestion[];
   woundClassification: WoundClassification | null;
-  preliminaryPlan: PreliminaryCareplan | null;
   finalCaseId: string | null;
   userFeedback: string;
   selectedAlternative: string | null;

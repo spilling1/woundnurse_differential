@@ -4,7 +4,7 @@ import type { AssessmentFlowState, FlowStep } from "./shared/AssessmentTypes";
 import AudienceSelection from "./AudienceSelection";
 import ImageUpload from "./ImageUpload";
 import AIQuestions from "./AIQuestions";
-import PreliminaryPlan from "./PreliminaryPlan";
+
 
 export default function AssessmentFlow() {
   // Main assessment flow state
@@ -16,7 +16,6 @@ export default function AssessmentFlow() {
     imagePreview: null,
     aiQuestions: [],
     woundClassification: null,
-    preliminaryPlan: null,
     finalCaseId: null,
     userFeedback: '',
     selectedAlternative: null,
@@ -31,7 +30,7 @@ export default function AssessmentFlow() {
 
   // Navigation functions
   const handleNextStep = () => {
-    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'preliminary-plan', 'final-plan'];
+    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'final-plan'];
     const currentIndex = steps.indexOf(state.currentStep);
     if (currentIndex < steps.length - 1) {
       const nextStep = steps[currentIndex + 1];
@@ -40,7 +39,7 @@ export default function AssessmentFlow() {
   };
 
   const handlePrevStep = () => {
-    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'preliminary-plan', 'final-plan'];
+    const steps: FlowStep[] = ['audience', 'upload', 'ai-questions', 'final-plan'];
     const currentIndex = steps.indexOf(state.currentStep);
     if (currentIndex > 0) {
       const prevStep = steps[currentIndex - 1];
@@ -48,13 +47,7 @@ export default function AssessmentFlow() {
     }
   };
 
-  // Auto-trigger preliminary plan when reaching that step with no pending questions
-  useEffect(() => {
-    if (state.currentStep === 'preliminary-plan' && !state.preliminaryPlan && state.aiQuestions.length === 0) {
-      console.log('Auto-triggering preliminary plan generation');
-      // This would be handled by the PreliminaryPlan component
-    }
-  }, [state.currentStep, state.preliminaryPlan, state.aiQuestions.length]);
+
 
   // Render step content
   const renderStepContent = () => {
@@ -72,8 +65,7 @@ export default function AssessmentFlow() {
         return <ImageUpload {...stepProps} />;
       case 'ai-questions':
         return <AIQuestions {...stepProps} />;
-      case 'preliminary-plan':
-        return <PreliminaryPlan {...stepProps} />;
+
       case 'final-plan':
         return (
           <div className="text-center py-8">
@@ -93,7 +85,6 @@ export default function AssessmentFlow() {
       { key: 'audience', label: 'Audience' },
       { key: 'upload', label: 'Upload' },
       { key: 'ai-questions', label: 'AI Analysis' },
-      { key: 'preliminary-plan', label: 'Preliminary Plan' },
       { key: 'final-plan', label: 'Final Plan' }
     ];
 

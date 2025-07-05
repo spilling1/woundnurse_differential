@@ -22,23 +22,22 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
     onStateChange({ aiQuestions: updatedQuestions });
   };
 
-  // Generate preliminary care plan mutation
-  const preliminaryPlanMutation = useMutation({
+  // Generate final care plan mutation
+  const finalPlanMutation = useMutation({
     mutationFn: async () => {
-      return await assessmentApi.preliminaryPlan(
+      return await assessmentApi.finalPlan(
         state.selectedImage,
         state.audience,
         state.model,
         state.aiQuestions,
         state.woundClassification,
-        state.selectedAlternative,
         state.userFeedback
       );
     },
     onSuccess: (data: any) => {
       onStateChange({
-        preliminaryPlan: data,
-        currentStep: 'preliminary-plan'
+        finalCaseId: data.caseId,
+        currentStep: 'final-plan'
       });
       onNextStep();
     },
@@ -82,12 +81,12 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         // No more questions needed, proceed to care plan
         onStateChange({ 
           aiQuestions: [],
-          currentStep: 'preliminary-plan'
+          currentStep: 'final-plan'
         });
         
-        // Auto-trigger preliminary plan generation
+        // Auto-trigger final plan generation
         setTimeout(() => {
-          preliminaryPlanMutation.mutate();
+          finalPlanMutation.mutate();
         }, 500);
         
         toast({
@@ -107,7 +106,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
   };
 
   const handleProceedToPlan = () => {
-    preliminaryPlanMutation.mutate();
+    finalPlanMutation.mutate();
   };
 
   return (
@@ -212,11 +211,11 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               
               <Button 
                 onClick={handleProceedToPlan}
-                disabled={preliminaryPlanMutation.isPending}
+                disabled={finalPlanMutation.isPending}
                 variant="outline"
                 className="w-full"
               >
-                {preliminaryPlanMutation.isPending ? (
+                {finalPlanMutation.isPending ? (
                   <>
                     <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
                     Generating Plan...
@@ -232,17 +231,17 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
           ) : (
             <Button 
               onClick={handleProceedToPlan}
-              disabled={preliminaryPlanMutation.isPending}
+              disabled={finalPlanMutation.isPending}
               className="w-full bg-medical-blue hover:bg-medical-blue/90 mt-4"
             >
-              {preliminaryPlanMutation.isPending ? (
+              {finalPlanMutation.isPending ? (
                 <>
                   <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  Generating Preliminary Plan...
+                  Generating Final Plan...
                 </>
               ) : (
                 <>
-                  Generate Preliminary Care Plan
+                  Generate Final Care Plan
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
