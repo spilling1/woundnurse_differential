@@ -59,7 +59,9 @@ export class WoundDetectionService {
       let detectionResult: DetectionResult;
       
       try {
+        console.log('Attempting YOLO detection...');
         detectionResult = await this.callYoloService(imageBuffer, imageWidth, imageHeight);
+        console.log('YOLO detection successful, model:', detectionResult.model);
       } catch (error) {
         console.warn('YOLO9 service unavailable, using fallback detection:', error);
         detectionResult = await this.fallbackDetection(imageBuffer, imageWidth, imageHeight);
@@ -131,6 +133,8 @@ export class WoundDetectionService {
    * Fallback to local YOLO service
    */
   private async callLocalYoloService(imageBuffer: Buffer, width: number, height: number): Promise<DetectionResult> {
+    console.log(`Calling YOLO service at ${this.yoloEndpoint} with image size: ${width}x${height}`);
+    
     const response = await axios.post(this.yoloEndpoint, {
       image: imageBuffer.toString('base64'),
       confidence_threshold: 0.5,
@@ -143,6 +147,8 @@ export class WoundDetectionService {
         'Accept': 'application/json'
       }
     });
+
+    console.log('YOLO service response received:', response.status, response.data);
 
     const yoloData = response.data;
     
