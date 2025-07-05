@@ -135,6 +135,9 @@ Changelog:
 - July 5, 2025. Integrated cloud-based computer vision APIs (Google Cloud Vision, Azure Computer Vision) with intelligent fallback system
 - July 5, 2025. Created enhanced wound detection service with multiple API support and automatic failover capabilities
 - July 5, 2025. Updated detection priority order: YOLO first, then cloud APIs as backup, then enhanced fallback
+- July 5, 2025. Added Image Detection status monitor component displaying real-time detection method status (YOLO/Cloud/Fallback)
+- July 5, 2025. Created detection status API endpoint at /api/detection-status with automatic service health monitoring
+- July 5, 2025. Implemented YOLO service management scripts with automatic restart capabilities to maintain service availability
 ```
 
 ## User Preferences
