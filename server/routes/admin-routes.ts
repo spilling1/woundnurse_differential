@@ -8,23 +8,22 @@ export function registerAdminRoutes(app: Express): void {
   // Debug authentication
   app.get("/api/admin/debug", isAuthenticated, async (req, res) => {
     const user = req.user as any;
-    console.log('Debug - req.isAuthenticated():', req.isAuthenticated());
-    console.log('Debug - user:', user);
+    const userId = user?.claims?.sub || user?.id;
     
-    if (user && user.id) {
+    if (user && userId) {
       try {
-        const dbUser = await storage.getUser(user.id);
-        console.log('Debug - dbUser:', dbUser);
+        const dbUser = await storage.getUser(userId);
         res.json({ 
           authenticated: req.isAuthenticated(),
+          userId: userId,
           user: user,
           dbUser: dbUser,
           isAdmin: dbUser?.role === 'admin'
         });
       } catch (error) {
-        console.error('Debug - Error fetching user:', error);
         res.json({ 
           authenticated: req.isAuthenticated(),
+          userId: userId,
           user: user,
           error: error.message
         });

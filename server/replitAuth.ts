@@ -165,37 +165,30 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 export const isAdmin: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
-  console.log('isAdmin middleware - req.isAuthenticated():', req.isAuthenticated());
-  console.log('isAdmin middleware - user:', user);
+  // Get user ID from the correct location in the user object
+  const userId = user?.claims?.sub || user?.id;
 
-  if (!req.isAuthenticated() || !user.id) {
-    console.log('isAdmin middleware - Authentication failed');
+  if (!req.isAuthenticated() || !userId) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
-    const dbUser = await storage.getUser(user.id);
-    console.log('isAdmin middleware - dbUser:', dbUser);
+    const dbUser = await storage.getUser(userId);
     
     if (!dbUser) {
-      console.log('isAdmin middleware - User not found in database');
       return res.status(401).json({ message: "User not found" });
     }
 
     if (dbUser.role !== 'admin') {
-      console.log('isAdmin middleware - User role is not admin:', dbUser.role);
       return res.status(403).json({ message: "Admin access required" });
     }
 
     if (dbUser.status !== 'active') {
-      console.log('isAdmin middleware - User status is not active:', dbUser.status);
       return res.status(403).json({ message: "Account is not active" });
     }
 
-    console.log('isAdmin middleware - Success, user is admin');
     return next();
   } catch (error) {
-    console.error('isAdmin middleware - Error:', error);
     return res.status(500).json({ message: "Authorization check failed" });
   }
 };
