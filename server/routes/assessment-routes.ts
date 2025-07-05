@@ -68,8 +68,16 @@ export function registerAssessmentRoutes(app: Express): void {
         }
       );
       
-      // Generate care plan
-      const carePlan = await generateCarePlan(audience, classification, contextData, model);
+      // Generate care plan with detection information
+      const carePlan = await generateCarePlan(
+        audience, 
+        classification, 
+        contextData, 
+        model,
+        undefined, // imageData not needed for non-vision models here
+        undefined, // imageMimeType
+        classification.detectionMetadata // Pass detection info
+      );
       
       // Store assessment with image data, context, and detection data
       const assessment = await storage.createWoundAssessment({
@@ -368,7 +376,10 @@ export function registerAssessmentRoutes(app: Express): void {
         audience,
         finalClassification,
         contextData,
-        model
+        model,
+        undefined, // imageData
+        undefined, // imageMimeType
+        finalClassification.detectionMetadata // Pass detection info
       );
 
       // Check if user feedback requires clarifying questions
@@ -503,12 +514,15 @@ Return either "NO_QUESTIONS_NEEDED" or the questions, one per line.
         return acc;
       }, {});
 
-      // Generate final care plan
+      // Generate final care plan with detection information
       const carePlan = await generateCarePlan(
         audience,
         classification,
         { ...contextData, userFeedback, preliminaryPlan },
-        model
+        model,
+        undefined, // imageData
+        undefined, // imageMimeType
+        classification.detectionMetadata // Pass detection info
       );
 
       // Process image data

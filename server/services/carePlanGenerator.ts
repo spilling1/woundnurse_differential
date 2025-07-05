@@ -8,7 +8,8 @@ export async function generateCarePlan(
   contextData?: any,
   model: string = 'gpt-4o',
   imageData?: string,
-  imageMimeType?: string
+  imageMimeType?: string,
+  detectionInfo?: any
 ): Promise<string> {
   try {
     const prompt = await getPromptTemplate(audience, classification, contextData);
@@ -60,7 +61,31 @@ export async function generateCarePlan(
     // Add safety disclaimer
     const disclaimer = "**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.";
     
-    return `${disclaimer}\n\n${carePlan}`;
+    // Add detection system information if available
+    let detectionSystemInfo = "";
+    if (detectionInfo) {
+      const detectionMethod = detectionInfo.model || 'Enhanced Fallback';
+      const processingTime = detectionInfo.processingTime || 'N/A';
+      const hasDetections = classification.detection;
+      
+      detectionSystemInfo = `\n\n---\n\n**DETECTION SYSTEM ANALYSIS:**\n
+**Method Used:** ${detectionMethod}
+**Processing Time:** ${processingTime}ms
+**System Status:** ${detectionMethod === 'yolo9' ? 'YOLO9 Active' : detectionMethod === 'enhanced-fallback' ? 'Enhanced Fallback Mode' : 'Cloud Vision Active'}
+${hasDetections ? `
+**Detection Results:**
+- Confidence: ${Math.round((hasDetections.confidence || 0) * 100)}%
+- Wound Measurements:
+  - Length: ${hasDetections.measurements?.lengthMm || 'N/A'}mm
+  - Width: ${hasDetections.measurements?.widthMm || 'N/A'}mm  
+  - Area: ${hasDetections.measurements?.areaMm2 || 'N/A'}mm²
+- Scale Calibrated: ${hasDetections.scaleCalibrated ? 'Yes' : 'No'}
+- Precise Measurements: ${classification.preciseMeasurements ? 'Available' : 'Estimated'}
+` : ''}
+**Multiple Wounds:** ${detectionInfo.multipleWounds ? 'Yes' : 'No'}`;
+    }
+    
+    return `${disclaimer}\n\n${carePlan}${detectionSystemInfo}`;
     
   } catch (error: any) {
     console.error('Care plan generation error:', error);
