@@ -17,7 +17,8 @@ import {
   CheckCircle,
   XCircle,
   Search,
-  Filter
+  Filter,
+  RotateCcw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,6 +128,27 @@ export default function AdminDashboard() {
       toast({
         title: "Error",
         description: error.message || "Failed to delete user",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const toggleUserRoleMutation = useMutation({
+    mutationFn: async ({ userId, newRole }: { userId: string; newRole: string }) => {
+      return apiRequest('PUT', `/api/admin/users/${userId}`, { role: newRole });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/dashboard'] });
+      toast({
+        title: "Success",
+        description: "User role updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update user role",
         variant: "destructive",
       });
     },
@@ -455,6 +477,18 @@ export default function AdminDashboard() {
                           <Badge className={getStatusColor(user.status)}>
                             {user.status}
                           </Badge>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              const newRole = user.role === 'admin' ? 'user' : 'admin';
+                              toggleUserRoleMutation.mutate({ userId: user.id, newRole });
+                            }}
+                            disabled={toggleUserRoleMutation.isPending}
+                            title={user.role === 'admin' ? 'Remove Admin Role' : 'Make Admin'}
+                          >
+                            <RotateCcw className={`h-4 w-4 ${user.role === 'admin' ? 'text-red-500' : 'text-green-500'}`} />
+                          </Button>
                           <Button 
                             variant="ghost" 
                             size="sm"
