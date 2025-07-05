@@ -318,7 +318,7 @@ export class WoundDetectionService {
         processingTime: Date.now() - startTime
       };
     } catch (error) {
-      throw new Error(`Google Cloud Vision API failed: ${error.message}`);
+      throw new Error(`Google Cloud Vision API failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -358,12 +358,12 @@ export class WoundDetectionService {
       }));
 
       return {
-        objects: convertedObjects.length > 0 ? convertedObjects : [this.createDefaultDetection()],
+        objects: convertedObjects.length > 0 ? convertedObjects : [this.createDefaultCloudDetection()],
         referenceObjectFound: this.detectReferenceObjects(result.tags || []),
         processingTime: Date.now() - startTime
       };
     } catch (error) {
-      throw new Error(`Azure Computer Vision API failed: ${error.message}`);
+      throw new Error(`Azure Computer Vision API failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -373,16 +373,16 @@ export class WoundDetectionService {
   private async useIntelligentFallback(base64Image: string, startTime: number): Promise<any> {
     // Create a smart default detection based on image analysis principles
     return {
-      objects: [this.createDefaultDetection()],
+      objects: [this.createDefaultCloudDetection()],
       referenceObjectFound: false,
       processingTime: Date.now() - startTime
     };
   }
 
   /**
-   * Create a default detection object
+   * Create a default detection object for cloud APIs
    */
-  private createDefaultDetection(): any {
+  private createDefaultCloudDetection(): any {
     return {
       name: 'wound_area',
       score: 0.75,
