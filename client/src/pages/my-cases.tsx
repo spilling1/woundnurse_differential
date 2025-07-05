@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink } from "lucide-react";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect } from "react";
 import ImageDetectionStatus from "@/components/ImageDetectionStatus";
@@ -22,6 +22,11 @@ export default function MyCases() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
+
+  // Refresh data when component mounts or when user navigates back
+  useEffect(() => {
+    refetch();
+  }, []);
 
   // Temporarily disable auth check to stop infinite loop
   // TODO: Re-enable after fixing useAuth hook
@@ -41,10 +46,12 @@ export default function MyCases() {
   }, [isAuthenticated, authLoading, toast]);
   */
 
-  const { data: cases, isLoading, error } = useQuery({
+  const { data: cases, isLoading, error, refetch } = useQuery({
     queryKey: ["/api/my-cases"],
     retry: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    staleTime: 0, // Always consider data stale to ensure fresh data
   });
 
   // Group assessments by case ID and sort by version
@@ -155,6 +162,15 @@ export default function MyCases() {
                 className="border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white"
               >
                 New Assessment
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => refetch()}
+                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                title="Refresh Cases"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
               </Button>
               <Button 
                 variant="ghost"
