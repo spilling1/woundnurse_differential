@@ -22,8 +22,16 @@ ${agentInstructions.specificWoundCare || ''}
 QUESTIONS GUIDELINES:
 ${agentInstructions.questionsGuidelines || ''}
 
-PRODUCT RECOMMENDATIONS:
+PRODUCT RECOMMENDATIONS GUIDELINES:
 ${agentInstructions.productRecommendations || ''}
+
+IMPORTANT: For "Items to Purchase" section, you MUST provide specific, working product recommendations with proper Amazon search links:
+- Use format: [Product Name](https://www.amazon.com/s?k=search+terms+here)
+- Replace spaces with + in search terms
+- Be specific with wound care products based on actual assessment
+- Include multiple options for each category (dressings, cleansers, etc.)
+- Example: [Foam Dressing for Wounds](https://www.amazon.com/s?k=foam+dressing+wounds+adhesive)
+- Example: [Saline Wound Cleanser](https://www.amazon.com/s?k=saline+wound+cleanser+sterile)
 `.trim();
   
 
@@ -149,6 +157,17 @@ FOLLOW-UP ASSESSMENT: This is a follow-up assessment. Please compare current sta
 - Keep paragraphs concise and well-structured
 - Format links properly as [Product Name](URL)
 - Use proper spacing and indentation for sub-items
+
+**ITEMS TO PURCHASE REQUIREMENTS:**
+You MUST include a specific "ITEMS TO PURCHASE" section with:
+- Contextual product recommendations based on wound type: ${classification.woundType}
+- Working Amazon search links using format: https://www.amazon.com/s?k=product+search+terms
+- At least 3-4 specific products relevant to this wound type
+- Examples for ${classification.woundType}:
+  * [Hydrocolloid Dressings](https://www.amazon.com/s?k=hydrocolloid+dressings+wound+care)
+  * [Medical Tape](https://www.amazon.com/s?k=medical+tape+hypoallergenic)
+  * [Wound Cleansing Solution](https://www.amazon.com/s?k=wound+cleansing+solution+sterile)
+  * [Antibacterial Ointment](https://www.amazon.com/s?k=antibacterial+ointment+wounds)
 
 Generate a well-formatted care plan that follows the structure guidelines above.`;
 
