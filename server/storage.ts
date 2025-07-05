@@ -24,6 +24,7 @@ export interface IStorage {
     carePlanStructure?: string;
     specificWoundCare?: string;
     questionsGuidelines?: string | null;
+    productRecommendations?: string | null;
   }): Promise<AgentInstructions>;
   
   // Agent question operations
@@ -171,6 +172,7 @@ export class DatabaseStorage implements IStorage {
     carePlanStructure?: string;
     specificWoundCare?: string;
     questionsGuidelines?: string | null;
+    productRecommendations?: string | null;
   }): Promise<AgentInstructions> {
     const [result] = await db
       .update(agentInstructions)

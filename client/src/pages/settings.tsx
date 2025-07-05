@@ -13,6 +13,7 @@ function SettingsPage() {
   const [carePlanStructure, setCarePlanStructure] = useState("");
   const [specificWoundCare, setSpecificWoundCare] = useState("");
   const [questionsGuidelines, setQuestionsGuidelines] = useState("");
+  const [productRecommendations, setProductRecommendations] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -29,6 +30,7 @@ function SettingsPage() {
       setCarePlanStructure(data.carePlanStructure || "");
       setSpecificWoundCare(data.specificWoundCare || "");
       setQuestionsGuidelines(data.questionsGuidelines || "");
+      setProductRecommendations(data.productRecommendations || "");
     }
   }, [agentData]);
 
@@ -39,6 +41,7 @@ function SettingsPage() {
       carePlanStructure: string;
       specificWoundCare: string;
       questionsGuidelines: string;
+      productRecommendations: string;
     }) => {
       const response = await fetch('/api/agents', {
         method: 'POST',
@@ -73,7 +76,8 @@ function SettingsPage() {
       systemPrompts,
       carePlanStructure,
       specificWoundCare,
-      questionsGuidelines
+      questionsGuidelines,
+      productRecommendations
     });
   };
 
@@ -84,6 +88,7 @@ function SettingsPage() {
       setCarePlanStructure(data.carePlanStructure || "");
       setSpecificWoundCare(data.specificWoundCare || "");
       setQuestionsGuidelines(data.questionsGuidelines || "");
+      setProductRecommendations(data.productRecommendations || "");
       toast({
         title: "Reset Complete",
         description: "Settings have been reset to saved values.",
@@ -98,7 +103,8 @@ function SettingsPage() {
       systemPrompts !== (data.systemPrompts || "") ||
       carePlanStructure !== (data.carePlanStructure || "") ||
       specificWoundCare !== (data.specificWoundCare || "") ||
-      questionsGuidelines !== (data.questionsGuidelines || "")
+      questionsGuidelines !== (data.questionsGuidelines || "") ||
+      productRecommendations !== (data.productRecommendations || "")
     );
   };
 
@@ -147,11 +153,12 @@ function SettingsPage() {
           </CardHeader>
           <CardContent className="p-6">
             <Tabs defaultValue="system" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 mb-6">
+              <TabsList className="grid w-full grid-cols-5 mb-6">
                 <TabsTrigger value="system">System Prompts</TabsTrigger>
                 <TabsTrigger value="structure">Care Plan Structure</TabsTrigger>
                 <TabsTrigger value="wound">Specific Wound Care</TabsTrigger>
                 <TabsTrigger value="questions">Questions Guidelines</TabsTrigger>
+                <TabsTrigger value="products">Product Recommendations</TabsTrigger>
               </TabsList>
 
               <TabsContent value="system" className="space-y-4">
@@ -217,12 +224,29 @@ function SettingsPage() {
                   />
                 </div>
               </TabsContent>
+
+              <TabsContent value="products" className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Product Recommendations</h3>
+                  <p className="text-gray-600 mb-4">
+                    Guidelines for recommending specific medical products, supplies, and treatments.
+                  </p>
+                  <Textarea
+                    value={productRecommendations}
+                    onChange={(e) => setProductRecommendations(e.target.value)}
+                    rows={20}
+                    className="font-mono text-sm"
+                    placeholder="Enter product recommendation guidelines..."
+                  />
+                </div>
+              </TabsContent>
             </Tabs>
 
             {/* Action Buttons */}
             <div className="flex justify-between items-center pt-6 border-t mt-6">
               <div className="text-sm text-gray-500">
-                {agentData && typeof agentData === 'object' && 'lastModified' in agentData && (
+                {agentData && typeof agentData === 'object' && 'lastModified' in agentData && 
+                  typeof (agentData as any).lastModified === 'string' && (
                   <span>Last updated: {new Date((agentData as any).lastModified).toLocaleString()}</span>
                 )}
               </div>

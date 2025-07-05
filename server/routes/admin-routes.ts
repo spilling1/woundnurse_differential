@@ -32,6 +32,7 @@ export function registerAdminRoutes(app: Express): void {
         carePlanStructure: instructions.carePlanStructure,
         specificWoundCare: instructions.specificWoundCare,
         questionsGuidelines: instructions.questionsGuidelines,
+        productRecommendations: instructions.productRecommendations,
         lastModified: instructions.updatedAt,
         version: instructions.version
       });
@@ -83,7 +84,7 @@ export function registerAdminRoutes(app: Express): void {
   // Update Agent Instructions
   app.post("/api/agents", async (req, res) => {
     try {
-      const { systemPrompts, carePlanStructure, specificWoundCare, questionsGuidelines } = req.body;
+      const { systemPrompts, carePlanStructure, specificWoundCare, questionsGuidelines, productRecommendations } = req.body;
       
       if (!systemPrompts || !carePlanStructure || !specificWoundCare) {
         return res.status(400).json({
@@ -101,7 +102,8 @@ export function registerAdminRoutes(app: Express): void {
           systemPrompts,
           carePlanStructure,
           specificWoundCare,
-          questionsGuidelines
+          questionsGuidelines,
+          productRecommendations
         });
       } else {
         // Create new instructions
@@ -110,6 +112,7 @@ export function registerAdminRoutes(app: Express): void {
           carePlanStructure,
           specificWoundCare,
           questionsGuidelines,
+          productRecommendations,
           version: 1
         });
       }

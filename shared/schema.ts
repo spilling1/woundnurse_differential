@@ -80,6 +80,7 @@ export const agentInstructions = pgTable("agent_instructions", {
   carePlanStructure: text("care_plan_structure").notNull(),
   specificWoundCare: text("specific_wound_care").notNull(),
   questionsGuidelines: text("questions_guidelines"),
+  productRecommendations: text("product_recommendations"),
   version: integer("version").notNull().default(1),
   isActive: boolean("is_active").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
