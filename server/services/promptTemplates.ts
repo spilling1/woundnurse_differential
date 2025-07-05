@@ -138,7 +138,19 @@ ${baseInfo}
 
 TARGET AUDIENCE: ${audience.toUpperCase()}
 ${contextData?.isFollowUp ? `
-FOLLOW-UP ASSESSMENT: This is a follow-up assessment. Please compare current status to previous assessments and provide updated recommendations based on wound progression.` : ''}`;
+FOLLOW-UP ASSESSMENT: This is a follow-up assessment. Please compare current status to previous assessments and provide updated recommendations based on wound progression.` : ''}
+
+**CRITICAL FORMATTING REQUIREMENTS - MUST FOLLOW:**
+- Use proper markdown formatting throughout your response
+- Start each section with bold headers: **SECTION NAME**
+- Use bullet points (-) for lists and recommendations
+- Use numbered lists (1., 2., 3.) for sequential care steps
+- Separate sections with blank lines for readability
+- Keep paragraphs concise and well-structured
+- Format links properly as [Product Name](URL)
+- Use proper spacing and indentation for sub-items
+
+Generate a well-formatted care plan that follows the structure guidelines above.`;
 
   return fullPrompt;
 }
