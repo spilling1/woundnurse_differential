@@ -1,12 +1,12 @@
 import { analyzeWoundImage } from "./openai";
 import { analyzeWoundImageWithGemini } from "./gemini";
 import { storage } from "../storage";
-import { cloudWoundDetectionService } from "./cloudWoundDetection";
+import { woundDetectionService } from "./woundDetection";
 
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
   try {
-    // Step 1: Perform cloud-based wound detection first
-    const detectionResult = await cloudWoundDetectionService.detectWounds(imageBase64);
+    // Step 1: Perform YOLO-based wound detection first (with cloud fallback)
+    const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
     
     // Get agent instructions from database to include in analysis
     const agentInstructions = await storage.getActiveAgentInstructions();
