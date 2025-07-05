@@ -1,6 +1,7 @@
 import { callOpenAI } from "./openai";
 import { callGemini } from "./gemini";
 import { getPromptTemplate } from "./promptTemplates";
+import { storage } from "../storage";
 
 export async function generateCarePlan(
   audience: string,
@@ -12,12 +13,16 @@ export async function generateCarePlan(
   detectionInfo?: any
 ): Promise<string> {
   try {
+    // Get AI instructions to use proper system prompts
+    const agentInstructions = await storage.getActiveAgentInstructions();
+    const systemPrompt = agentInstructions?.systemPrompts || 
+      "You are a medical AI assistant specializing in wound care. Generate comprehensive, evidence-based care plans tailored to the specified audience.";
+    
     const prompt = await getPromptTemplate(audience, classification, contextData);
     
     let carePlan;
     
     if (model.startsWith('gemini-')) {
-      const systemPrompt = "You are a medical AI assistant specializing in wound care. Generate comprehensive, evidence-based care plans tailored to the specified audience.";
       const fullPrompt = `${systemPrompt}\n\n${prompt}`;
       if (imageData) {
         carePlan = await callGemini(model, fullPrompt, imageData);
@@ -28,7 +33,7 @@ export async function generateCarePlan(
       const messages = [
         {
           role: "system",
-          content: "You are a medical AI assistant specializing in wound care. Generate comprehensive, evidence-based care plans tailored to the specified audience."
+          content: systemPrompt
         },
         {
           role: "user",

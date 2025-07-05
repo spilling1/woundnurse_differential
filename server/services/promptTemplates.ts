@@ -3,9 +3,31 @@ import { storage } from "../storage";
 export async function getPromptTemplate(audience: string, classification: any, contextData?: any): Promise<string> {
   // Get agent instructions from database
   const agentInstructions = await storage.getActiveAgentInstructions();
-  const instructions = agentInstructions?.content || `Default wound care guidelines: Always prioritize patient safety and recommend consulting healthcare professionals.`;
   
-  const productRecommendationGuidelines = `
+  // Build the complete instructions from the structured fields
+  let instructions = '';
+  if (agentInstructions) {
+    instructions = `
+${agentInstructions.systemPrompts || ''}
+
+CARE PLAN STRUCTURE GUIDELINES:
+${agentInstructions.carePlanStructure || ''}
+
+SPECIFIC WOUND CARE INSTRUCTIONS:
+${agentInstructions.specificWoundCare || ''}
+
+QUESTIONS GUIDELINES:
+${agentInstructions.questionsGuidelines || ''}
+
+PRODUCT RECOMMENDATIONS:
+${agentInstructions.productRecommendations || ''}
+`.trim();
+  } else {
+    instructions = `Default wound care guidelines: Always prioritize patient safety and recommend consulting healthcare professionals.`;
+  }
+  
+  const productRecommendationGuidelines = agentInstructions?.productRecommendations ? 
+    agentInstructions.productRecommendations : `
 PRODUCT RECOMMENDATION REQUIREMENTS:
 1. Include specific wound care product recommendations with Amazon links
 2. Base recommendations on the wound type, size, exudate level, and location

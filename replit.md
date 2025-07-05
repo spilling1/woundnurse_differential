@@ -149,6 +149,9 @@ Changelog:
 - July 5, 2025. Updated database schema, storage interfaces, and API endpoints to support structured AI instructions
 - July 5, 2025. Created new tabbed Settings page interface allowing independent editing of each instruction section
 - July 5, 2025. Enhanced AI instruction system for better maintainability and granular control over wound care behavior
+- July 5, 2025. Added Product Recommendations section to AI Configuration with dedicated tab interface
+- July 5, 2025. **CRITICAL FIX**: Fixed care plan generation to properly use AI Settings instead of hardcoded prompts
+- July 5, 2025. Updated promptTemplates.ts and carePlanGenerator.ts to correctly integrate structured AI instructions from database
 ```
 
 ## User Preferences
