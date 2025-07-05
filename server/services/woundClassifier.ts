@@ -1,12 +1,12 @@
 import { analyzeWoundImage } from "./openai";
 import { analyzeWoundImageWithGemini } from "./gemini";
 import { storage } from "../storage";
-import { woundDetectionService } from "./woundDetection";
+import { cloudWoundDetectionService } from "./cloudWoundDetection";
 
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
   try {
-    // Step 1: Perform wound detection first
-    const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
+    // Step 1: Perform cloud-based wound detection first
+    const detectionResult = await cloudWoundDetectionService.detectWounds(imageBase64);
     
     // Get agent instructions from database to include in analysis
     const agentInstructions = await storage.getActiveAgentInstructions();
@@ -50,7 +50,7 @@ Use this detection data to improve your wound analysis accuracy.`;
     };
 
     // Step 4: Enhance classification with detection data
-    const enhancedClassification = woundDetectionService.enhanceClassificationWithDetection(
+    const enhancedClassification = enhanceClassificationWithDetection(
       normalizedClassification, 
       detectionResult
     );
@@ -76,4 +76,38 @@ function normalizeExudate(exudate: string): string {
     return normalized;
   }
   return 'moderate'; // default
+}
+
+function enhanceClassificationWithDetection(classification: any, detectionResult: any): any {
+  if (!detectionResult.detections || detectionResult.detections.length === 0) {
+    return classification;
+  }
+  
+  const primaryWound = detectionResult.detections[0];
+  
+  return {
+    ...classification,
+    detection: {
+      confidence: primaryWound.confidence,
+      boundingBox: primaryWound.boundingBox,
+      measurements: primaryWound.measurements,
+      scaleCalibrated: primaryWound.scaleCalibrated
+    },
+    size: categorizeSizeFromMeasurements(primaryWound.measurements),
+    preciseMeasurements: primaryWound.measurements,
+    detectionMetadata: {
+      model: detectionResult.model,
+      version: detectionResult.version,
+      processingTime: detectionResult.processingTime,
+      multipleWounds: detectionResult.detections.length > 1
+    }
+  };
+}
+
+function categorizeSizeFromMeasurements(measurements: any): string {
+  const areaMm2 = measurements.areaMm2;
+  
+  if (areaMm2 < 100) return 'small';
+  if (areaMm2 < 500) return 'medium';
+  return 'large';
 }
