@@ -75,15 +75,15 @@ export class WoundDetectionService {
   }
 
   /**
-   * Call cloud-based detection service (Google Vision, Azure, or local YOLO)
+   * Call detection service (YOLO first, then cloud APIs as backup)
    */
   private async callYoloService(imageBuffer: Buffer, width: number, height: number): Promise<DetectionResult> {
-    // Try cloud APIs first, then fallback to local YOLO
+    // Try local YOLO first, then fallback to cloud APIs
     try {
-      return await this.callCloudDetectionAPI(imageBuffer, width, height);
-    } catch (cloudError: any) {
-      console.log('Cloud API unavailable, trying local YOLO:', cloudError.message);
       return await this.callLocalYoloService(imageBuffer, width, height);
+    } catch (yoloError: any) {
+      console.log('Local YOLO unavailable, trying cloud APIs:', yoloError.message);
+      return await this.callCloudDetectionAPI(imageBuffer, width, height);
     }
   }
 
