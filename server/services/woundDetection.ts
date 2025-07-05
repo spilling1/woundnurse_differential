@@ -37,7 +37,7 @@ export class WoundDetectionService {
   private fallbackEnabled: boolean = true;
   
   constructor() {
-    this.yoloEndpoint = process.env.YOLO_ENDPOINT || 'http://localhost:8080/detect';
+    this.yoloEndpoint = process.env.YOLO_ENDPOINT || 'http://localhost:8081/detect';
   }
 
   /**
