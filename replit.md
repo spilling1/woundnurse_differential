@@ -129,6 +129,9 @@ Changelog:
 - June 30, 2025. Fixed image display issues in My Cases and Care Plan pages by correcting base64 encoding in final plan route
 - June 30, 2025. Completely redesigned Care Plan page layout with professional styling, improved typography, and better content organization
 - June 30, 2025. Fixed overly aggressive follow-up question generation - now only asks additional questions when confidence is low (≤75%) or when truly needed
+- July 5, 2025. Integrated YOLO9 wound detection service with fallback system for precise wound measurements and boundary detection
+- July 5, 2025. Enhanced database schema with detection data storage and created interactive wound visualization component
+- July 5, 2025. Updated YOLO endpoint to localhost:8081 and implemented comprehensive wound analysis workflow
 ```
 
 ## User Preferences
