@@ -13,10 +13,13 @@ export async function generateCarePlan(
   detectionInfo?: any
 ): Promise<string> {
   try {
-    // Get AI instructions to use proper system prompts
+    // Get AI instructions - must be configured
     const agentInstructions = await storage.getActiveAgentInstructions();
-    const systemPrompt = agentInstructions?.systemPrompts || 
-      "You are a medical AI assistant specializing in wound care. Generate comprehensive, evidence-based care plans tailored to the specified audience.";
+    if (!agentInstructions?.systemPrompts) {
+      throw new Error('AI Configuration not found. Please configure AI system prompts in Settings before generating care plans.');
+    }
+    
+    const systemPrompt = agentInstructions.systemPrompts;
     
     const prompt = await getPromptTemplate(audience, classification, contextData);
     

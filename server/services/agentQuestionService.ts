@@ -33,12 +33,19 @@ INSTRUCTIONS:
 Return only the questions, one per line, without numbering.
 `;
 
+    // Get AI instructions for system prompt
+    const agentInstructions = await storage.getActiveAgentInstructions();
+    if (!agentInstructions?.systemPrompts) {
+      throw new Error('AI Configuration not found. Please configure AI system prompts in Settings.');
+    }
+
     let questions: string;
     if (model.startsWith('gemini-')) {
-      questions = await callGemini(model, prompt);
+      const fullPrompt = `${agentInstructions.systemPrompts}\n\n${prompt}`;
+      questions = await callGemini(model, fullPrompt);
     } else {
       const messages = [
-        { role: "system", content: "You are a medical AI assistant. Generate clarifying questions based on user feedback." },
+        { role: "system", content: agentInstructions.systemPrompts },
         { role: "user", content: prompt }
       ];
       questions = await callOpenAI(model, messages);
@@ -86,7 +93,19 @@ export async function analyzeAssessmentForQuestions(
   
   // Get agent instructions to check for custom questions that should always be asked
   const agentInstructions = await storage.getActiveAgentInstructions();
-  const instructions = providedInstructions || agentInstructions?.content || '';
+  // Build complete instructions from structured fields if not provided
+  let instructions = providedInstructions;
+  if (!instructions && agentInstructions) {
+    instructions = `
+${agentInstructions.systemPrompts || ''}
+${agentInstructions.carePlanStructure || ''}
+${agentInstructions.specificWoundCare || ''}
+${agentInstructions.questionsGuidelines || ''}
+${agentInstructions.productRecommendations || ''}
+`.trim();
+  } else if (!instructions) {
+    throw new Error('AI Configuration not found. Please configure AI instructions in Settings.');
+  }
   
   // Check if agent instructions contain question requirements
   const instructionsLower = instructions.toLowerCase();
@@ -147,49 +166,23 @@ FOLLOW-UP ASSESSMENT:
 
 TARGET AUDIENCE: ${audience}
 
-QUESTION GENERATION RULES:
-${isFollowUp ? `
-1. Review previous answers to determine if Agent Instructions are satisfied
-2. Only ask follow-up questions if Agent Instructions require more specific information
-3. Do NOT repeat questions that have already been answered
-4. Check if diagnostic confidence can be improved with additional clarification
-5. Generate 0-2 targeted follow-up questions, or empty array if no more questions needed
-` : `
-1. Carefully read the AGENT INSTRUCTIONS above
-2. Look for any "always ask" or "Always ask" requirements in the instructions  
-3. Generate questions based ONLY on what the Agent Instructions specify
-4. If Agent Instructions require questions regardless of confidence, generate them
-5. Generate 2-4 initial questions based on Agent Instructions requirements
-`}
-6. Generate questions WITHOUT pre-filled answers (leave answer field empty)
-7. Only generate questions that the Agent Instructions explicitly require
+Follow ONLY the Agent Instructions above for question generation. Do not use any other hardcoded rules.
+
+${isFollowUp ? 'This is a follow-up round of questions. Only ask additional questions if the Agent Instructions require them.' : 'Generate initial questions based strictly on what the Agent Instructions specify.'}
 
 RESPONSE FORMAT:
 Return a JSON array of objects with this structure:
 [
   {
     "id": "q1",
-    "question": "Specific diagnostic question to clarify uncertainty",
+    "question": "Question as specified by Agent Instructions",
     "answer": "",
     "category": "category_name",
     "confidence": 0.0
   }
 ]
 
-QUESTION CATEGORIES (use appropriate category based on question content):
-- "location" - Body location and wound site questions
-- "patient_info" - Age, demographics, and patient details
-- "symptoms" - Pain, swelling, and symptom-related questions
-- "medical_history" - Pre-existing conditions and medical background
-- "wound_assessment" - Wound characteristics and changes
-- "other" - Any other questions specified by Agent Instructions
-
-GUIDELINES FOR UNCERTAIN DIAGNOSES:
-- Ask specific questions that help differentiate between possible wound types
-- Focus on history, symptoms, and context not visible in the image
-- Leave answer field empty - user will fill these in
-- Ask maximum 3 questions per round
-- Prioritize questions that most impact treatment decisions
+Use appropriate categories: location, patient_info, symptoms, medical_history, wound_assessment, other
 `;
 
   try {
