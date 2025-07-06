@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -48,6 +48,15 @@ export interface IStorage {
   createCompany(company: InsertCompany): Promise<Company>;
   updateCompany(id: number, updates: CompanyUpdate): Promise<Company>;
   deleteCompany(id: number): Promise<boolean>;
+  
+  // Detection model operations
+  getAllDetectionModels(): Promise<DetectionModel[]>;
+  getEnabledDetectionModels(): Promise<DetectionModel[]>;
+  getDetectionModel(id: number): Promise<DetectionModel | undefined>;
+  createDetectionModel(model: InsertDetectionModel): Promise<DetectionModel>;
+  updateDetectionModel(id: number, updates: Partial<DetectionModel>): Promise<DetectionModel>;
+  toggleDetectionModel(id: number, enabled: boolean): Promise<DetectionModel>;
+  deleteDetectionModel(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -319,6 +328,56 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCompany(id: number): Promise<boolean> {
     const result = await db.delete(companies).where(eq(companies.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // Detection model operations implementation
+  async getAllDetectionModels(): Promise<DetectionModel[]> {
+    return await db.select().from(detectionModels).orderBy(desc(detectionModels.priority), detectionModels.name);
+  }
+
+  async getEnabledDetectionModels(): Promise<DetectionModel[]> {
+    return await db.select().from(detectionModels)
+      .where(eq(detectionModels.isEnabled, true))
+      .orderBy(desc(detectionModels.priority), detectionModels.name);
+  }
+
+  async getDetectionModel(id: number): Promise<DetectionModel | undefined> {
+    const [model] = await db.select().from(detectionModels).where(eq(detectionModels.id, id));
+    return model;
+  }
+
+  async createDetectionModel(model: InsertDetectionModel): Promise<DetectionModel> {
+    const [newModel] = await db.insert(detectionModels).values(model).returning();
+    return newModel;
+  }
+
+  async updateDetectionModel(id: number, updates: Partial<DetectionModel>): Promise<DetectionModel> {
+    const [model] = await db
+      .update(detectionModels)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(detectionModels.id, id))
+      .returning();
+    return model;
+  }
+
+  async toggleDetectionModel(id: number, enabled: boolean): Promise<DetectionModel> {
+    const [model] = await db
+      .update(detectionModels)
+      .set({
+        isEnabled: enabled,
+        updatedAt: new Date(),
+      })
+      .where(eq(detectionModels.id, id))
+      .returning();
+    return model;
+  }
+
+  async deleteDetectionModel(id: number): Promise<boolean> {
+    const result = await db.delete(detectionModels).where(eq(detectionModels.id, id));
     return result.rowCount !== null && result.rowCount > 0;
   }
 }

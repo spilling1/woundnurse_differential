@@ -117,6 +117,24 @@ export const agentQuestions = pgTable("agent_questions", {
   answeredAt: timestamp("answered_at"),
 });
 
+// Detection Models Configuration
+export const detectionModels = pgTable("detection_models", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(), // 'yolo9', 'google-cloud-vision', 'azure-computer-vision', 'cnn-classifier', 'enhanced-fallback'
+  displayName: varchar("display_name").notNull(), // 'YOLO9 Detection', 'Google Cloud Vision', etc.
+  description: text("description").notNull(),
+  isEnabled: boolean("is_enabled").notNull().default(true),
+  priority: integer("priority").notNull().default(0), // Higher priority = tried first
+  endpoint: varchar("endpoint"), // API endpoint or service URL
+  requiresApiKey: boolean("requires_api_key").notNull().default(false),
+  apiKeyName: varchar("api_key_name"), // Environment variable name for API key
+  modelType: varchar("model_type").notNull(), // 'yolo', 'cloud-api', 'cnn', 'fallback'
+  capabilities: jsonb("capabilities").notNull(), // JSON array of capabilities: ['detection', 'measurements', 'classification']
+  config: jsonb("config"), // Model-specific configuration
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertWoundAssessmentSchema = createInsertSchema(woundAssessments).omit({
   id: true,
   createdAt: true,
@@ -139,6 +157,12 @@ export const insertAgentQuestionSchema = createInsertSchema(agentQuestions).omit
   answeredAt: true,
 });
 
+export const insertDetectionModelSchema = createInsertSchema(detectionModels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertCompanySchema = createInsertSchema(companies).omit({
   id: true,
   createdAt: true,
@@ -153,6 +177,8 @@ export type InsertAgentInstructions = z.infer<typeof insertAgentInstructionsSche
 export type AgentInstructions = typeof agentInstructions.$inferSelect;
 export type InsertAgentQuestion = z.infer<typeof insertAgentQuestionSchema>;
 export type AgentQuestion = typeof agentQuestions.$inferSelect;
+export type InsertDetectionModel = z.infer<typeof insertDetectionModelSchema>;
+export type DetectionModel = typeof detectionModels.$inferSelect;
 export type InsertCompany = z.infer<typeof insertCompanySchema>;
 export type Company = typeof companies.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;

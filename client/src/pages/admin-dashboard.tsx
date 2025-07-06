@@ -30,7 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
-import type { User, Company, WoundAssessment } from "@shared/schema";
+import type { User, Company, WoundAssessment, DetectionModel } from "@shared/schema";
 
 interface DashboardStats {
   totalUsers: number;
@@ -56,6 +56,7 @@ export default function AdminDashboard() {
   const [userFilter, setUserFilter] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [selectedDetectionModel, setSelectedDetectionModel] = useState<DetectionModel | null>(null);
 
   // Redirect if not admin
   useEffect(() => {
@@ -87,6 +88,11 @@ export default function AdminDashboard() {
 
   const { data: assessments = [], isLoading: isAssessmentsLoading } = useQuery<WoundAssessment[]>({
     queryKey: ['/api/admin/assessments'],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
+
+  const { data: detectionModels = [], isLoading: isDetectionModelsLoading } = useQuery<DetectionModel[]>({
+    queryKey: ['/api/admin/detection-models'],
     enabled: isAuthenticated && user?.role === 'admin',
   });
 
@@ -218,6 +224,67 @@ export default function AdminDashboard() {
     },
   });
 
+  // Detection model management mutations
+  const toggleDetectionModelMutation = useMutation({
+    mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) => {
+      return apiRequest('PUT', `/api/admin/detection-models/${id}/toggle`, { enabled });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/detection-models'] });
+      toast({
+        title: "Success",
+        description: "Detection model status updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update detection model",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateDetectionModelMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      return apiRequest('PUT', `/api/admin/detection-models/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/detection-models'] });
+      toast({
+        title: "Success",
+        description: "Detection model updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update detection model",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteDetectionModelMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest('DELETE', `/api/admin/detection-models/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/detection-models'] });
+      toast({
+        title: "Success",
+        description: "Detection model deleted successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete detection model",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Filter users
   const filteredUsers = users.filter(user => 
     user.email?.toLowerCase().includes(userFilter.toLowerCase()) ||
@@ -297,11 +364,12 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="companies">Companies</TabsTrigger>
             <TabsTrigger value="assessments">Assessments</TabsTrigger>
+            <TabsTrigger value="detection-models">Detection Models</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Overview */}
@@ -636,6 +704,95 @@ export default function AdminDashboard() {
               </div>
             )}
           </TabsContent>
+
+          {/* Detection Models Tab */}
+          <TabsContent value="detection-models" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold">Detection Models</h3>
+                <p className="text-sm text-gray-600">
+                  Manage AI detection models used for wound analysis
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => queryClient.invalidateQueries({ queryKey: ['/api/admin/detection-models'] })}
+                >
+                  <RotateCcw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+              </div>
+            </div>
+
+            {isDetectionModelsLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardContent className="pt-6">
+                      <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {detectionModels.map((model) => (
+                  <Card key={model.id} className="relative">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <h4 className="font-medium">{model.displayName}</h4>
+                            <Badge 
+                              variant={model.isEnabled ? "default" : "secondary"}
+                              className={model.isEnabled ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
+                            >
+                              {model.isEnabled ? 'Enabled' : 'Disabled'}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-3">
+                            {model.description}
+                          </p>
+                          <div className="flex items-center space-x-2 text-sm text-gray-500">
+                            <span>Priority: {model.priority}</span>
+                            <span>•</span>
+                            <span>Type: {model.name}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleDetectionModelMutation.mutate({ 
+                              id: model.id, 
+                              enabled: !model.isEnabled 
+                            })}
+                            disabled={toggleDetectionModelMutation.isPending}
+                          >
+                            {model.isEnabled ? (
+                              <XCircle className="h-4 w-4 text-red-500" />
+                            ) : (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedDetectionModel(model)}
+                          >
+                            <Edit3 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </div>
 
@@ -803,6 +960,102 @@ export default function AdminDashboard() {
                   disabled={updateCompanyMutation.isPending || createCompanyMutation.isPending}
                 >
                   {selectedCompany.id ? 'Save Changes' : 'Create Company'}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Detection Model Edit Modal */}
+      {selectedDetectionModel && (
+        <Dialog open={!!selectedDetectionModel} onOpenChange={() => setSelectedDetectionModel(null)}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Edit Detection Model</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Display Name</label>
+                <Input 
+                  value={selectedDetectionModel.displayName || ''} 
+                  onChange={(e) => setSelectedDetectionModel({
+                    ...selectedDetectionModel, 
+                    displayName: e.target.value
+                  })}
+                  placeholder="Enter display name"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Description</label>
+                <Input 
+                  value={selectedDetectionModel.description || ''} 
+                  onChange={(e) => setSelectedDetectionModel({
+                    ...selectedDetectionModel, 
+                    description: e.target.value
+                  })}
+                  placeholder="Enter description"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Priority</label>
+                <Input 
+                  type="number"
+                  value={selectedDetectionModel.priority || 1} 
+                  onChange={(e) => setSelectedDetectionModel({
+                    ...selectedDetectionModel, 
+                    priority: parseInt(e.target.value)
+                  })}
+                  min="1"
+                  max="10"
+                />
+                <p className="text-xs text-gray-500">
+                  Lower numbers have higher priority (1 = highest priority)
+                </p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Configuration (JSON)</label>
+                <textarea 
+                  className="w-full p-2 border rounded-md text-sm font-mono"
+                  rows={6}
+                  value={selectedDetectionModel.config ? JSON.stringify(selectedDetectionModel.config, null, 2) : '{}'}
+                  onChange={(e) => {
+                    try {
+                      const config = JSON.parse(e.target.value);
+                      setSelectedDetectionModel({
+                        ...selectedDetectionModel, 
+                        config: config
+                      });
+                    } catch (error) {
+                      // Keep current value if JSON is invalid
+                    }
+                  }}
+                  placeholder="Enter configuration as JSON"
+                />
+                <p className="text-xs text-gray-500">
+                  Model-specific configuration parameters
+                </p>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setSelectedDetectionModel(null)}>
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    updateDetectionModelMutation.mutate({
+                      id: selectedDetectionModel.id,
+                      data: {
+                        displayName: selectedDetectionModel.displayName,
+                        description: selectedDetectionModel.description,
+                        priority: selectedDetectionModel.priority,
+                        config: selectedDetectionModel.config,
+                      }
+                    });
+                    setSelectedDetectionModel(null);
+                  }}
+                  disabled={updateDetectionModelMutation.isPending}
+                >
+                  Save Changes
                 </Button>
               </div>
             </div>

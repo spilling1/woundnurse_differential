@@ -2,7 +2,8 @@ import type { Express } from "express";
 import { storage } from "../storage";
 import { isAuthenticated, isAdmin } from "../replitAuth";
 import { generateCarePlan } from "../services/carePlanGenerator";
-import { userUpdateSchema, companyCreateSchema, companyUpdateSchema } from "@shared/schema";
+import { userUpdateSchema, companyCreateSchema, companyUpdateSchema, insertDetectionModelSchema } from "@shared/schema";
+import type { InsertDetectionModel } from "@shared/schema";
 
 export function registerAdminRoutes(app: Express): void {
   // Debug authentication
@@ -583,6 +584,142 @@ export function registerAdminRoutes(app: Express): void {
       res.status(500).json({
         code: "FETCH_DASHBOARD_ERROR",
         message: error.message || "Failed to fetch dashboard stats"
+      });
+    }
+  });
+
+  // ===== DETECTION MODEL MANAGEMENT ROUTES =====
+
+  // Get all detection models (admin only)
+  app.get("/api/admin/detection-models", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const models = await storage.getAllDetectionModels();
+      res.json(models);
+    } catch (error: any) {
+      console.error('Error fetching detection models:', error);
+      res.status(500).json({
+        code: "FETCH_DETECTION_MODELS_ERROR",
+        message: error.message || "Failed to fetch detection models"
+      });
+    }
+  });
+
+  // Get enabled detection models (admin only)
+  app.get("/api/admin/detection-models/enabled", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const models = await storage.getEnabledDetectionModels();
+      res.json(models);
+    } catch (error: any) {
+      console.error('Error fetching enabled detection models:', error);
+      res.status(500).json({
+        code: "FETCH_ENABLED_DETECTION_MODELS_ERROR",
+        message: error.message || "Failed to fetch enabled detection models"
+      });
+    }
+  });
+
+  // Create detection model (admin only)
+  app.post("/api/admin/detection-models", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const validation = insertDetectionModelSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({
+          code: "INVALID_DETECTION_MODEL_DATA",
+          message: "Invalid detection model data",
+          errors: validation.error.errors
+        });
+      }
+
+      const model = await storage.createDetectionModel(validation.data);
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error creating detection model:', error);
+      res.status(500).json({
+        code: "CREATE_DETECTION_MODEL_ERROR",
+        message: error.message || "Failed to create detection model"
+      });
+    }
+  });
+
+  // Update detection model (admin only)
+  app.patch("/api/admin/detection-models/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_MODEL_ID",
+          message: "Invalid model ID"
+        });
+      }
+
+      const model = await storage.updateDetectionModel(id, req.body);
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error updating detection model:', error);
+      res.status(500).json({
+        code: "UPDATE_DETECTION_MODEL_ERROR",
+        message: error.message || "Failed to update detection model"
+      });
+    }
+  });
+
+  // Toggle detection model (admin only)
+  app.patch("/api/admin/detection-models/:id/toggle", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_MODEL_ID",
+          message: "Invalid model ID"
+        });
+      }
+
+      const { enabled } = req.body;
+      if (typeof enabled !== 'boolean') {
+        return res.status(400).json({
+          code: "INVALID_ENABLED_VALUE",
+          message: "Enabled must be a boolean value"
+        });
+      }
+
+      const model = await storage.toggleDetectionModel(id, enabled);
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error toggling detection model:', error);
+      res.status(500).json({
+        code: "TOGGLE_DETECTION_MODEL_ERROR",
+        message: error.message || "Failed to toggle detection model"
+      });
+    }
+  });
+
+  // Delete detection model (admin only)
+  app.delete("/api/admin/detection-models/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_MODEL_ID",
+          message: "Invalid model ID"
+        });
+      }
+
+      const success = await storage.deleteDetectionModel(id);
+      
+      if (!success) {
+        return res.status(404).json({
+          code: "MODEL_NOT_FOUND",
+          message: "Detection model not found"
+        });
+      }
+
+      res.json({ success: true, message: "Detection model deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting detection model:', error);
+      res.status(500).json({
+        code: "DELETE_DETECTION_MODEL_ERROR",
+        message: error.message || "Failed to delete detection model"
       });
     }
   });
