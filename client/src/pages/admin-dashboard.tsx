@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
@@ -762,22 +763,22 @@ export default function AdminDashboard() {
                             <span>Type: {model.name}</span>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleDetectionModelMutation.mutate({ 
-                              id: model.id, 
-                              enabled: !model.isEnabled 
-                            })}
-                            disabled={toggleDetectionModelMutation.isPending}
-                          >
-                            {model.isEnabled ? (
-                              <XCircle className="h-4 w-4 text-red-500" />
-                            ) : (
-                              <CheckCircle className="h-4 w-4 text-green-500" />
-                            )}
-                          </Button>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm font-medium">
+                              {model.isEnabled ? 'ON' : 'OFF'}
+                            </span>
+                            <Switch
+                              checked={model.isEnabled}
+                              onCheckedChange={(checked) => 
+                                toggleDetectionModelMutation.mutate({ 
+                                  id: model.id, 
+                                  enabled: checked 
+                                })
+                              }
+                              disabled={toggleDetectionModelMutation.isPending}
+                            />
+                          </div>
                           <Button
                             variant="ghost"
                             size="sm"

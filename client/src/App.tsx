@@ -30,6 +30,7 @@ function Router() {
       <Route path="/agents" component={AgentsPage} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin-dashboard" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
