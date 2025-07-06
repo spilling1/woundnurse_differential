@@ -749,19 +749,42 @@ export default function CarePlan() {
             </CardHeader>
             <CardContent className="p-6">
               <div className="flex justify-center">
-                <div className="bg-white border-2 border-gray-200 rounded-xl p-4 shadow-sm max-w-md">
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-sm max-w-2xl w-full">
                   <img 
                     src={`data:${(assessmentData as any).imageMimeType};base64,${(assessmentData as any).imageData}`} 
                     alt="Wound assessment image"
-                    className="w-full h-64 object-contain rounded-lg border border-gray-100"
+                    className="w-full max-h-96 object-contain rounded-lg border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={(e) => {
+                      // Create modal overlay for full-size view
+                      const modal = document.createElement('div');
+                      modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
+                      modal.onclick = () => modal.remove();
+                      
+                      const img = document.createElement('img');
+                      img.src = (e.target as HTMLImageElement).src;
+                      img.className = 'max-w-full max-h-full object-contain rounded-lg';
+                      img.onclick = (e) => e.stopPropagation();
+                      
+                      const closeBtn = document.createElement('button');
+                      closeBtn.innerHTML = '×';
+                      closeBtn.className = 'absolute top-4 right-4 text-white text-4xl font-bold bg-black bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-opacity-75';
+                      closeBtn.onclick = () => modal.remove();
+                      
+                      modal.appendChild(img);
+                      modal.appendChild(closeBtn);
+                      document.body.appendChild(modal);
+                    }}
                   />
                   <div className="mt-4 text-center">
                     <p className="text-sm font-medium text-gray-700 mb-1">Assessment Image</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 mb-2">
                       {(((assessmentData as any).imageSize || 0) / 1024).toFixed(1)} KB • {(assessmentData as any).imageMimeType}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-gray-400 mb-2">
                       Captured: {new Date(assessmentData?.createdAt || '').toLocaleDateString()}
+                    </p>
+                    <p className="text-xs text-blue-600 italic">
+                      Click image to view full size for detailed medical review
                     </p>
                   </div>
                 </div>

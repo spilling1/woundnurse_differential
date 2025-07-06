@@ -195,6 +195,7 @@ Changelog:
 - July 6, 2025. **SMART IMAGE UPLOAD**: Added conditional image upload capability in questions section for photo-related questions (photo/image/picture keywords trigger upload option)
 - July 6, 2025. **CLEAN CARE PLAN LAYOUT**: Removed duplicate images and additional upload capability from care plan page - now shows single clean image display only
 - July 6, 2025. **SIMPLIFIED IMAGE PRESENTATION**: Care plan page now has clean, professional single image display without upload distractions
+- July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
 ```
 
 ## User Preferences
