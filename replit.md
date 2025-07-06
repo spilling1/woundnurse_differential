@@ -201,6 +201,7 @@ Changelog:
 - July 6, 2025. **CONFIDENCE TRANSPARENCY**: Fixed misleading 50% confidence defaults by requiring authentic confidence scores from AI models, lowered fallback to 40% for honest uncertainty indication, and added confidence scoring to Gemini models previously missing this capability
 - July 6, 2025. **DETECTION METHOD VISIBILITY**: Added clear detection method labels showing users exactly which analysis system was used (Color-based Detection vs AI Vision), replaced misleading "YOLO9" label with accurate "Color-based Detection" description
 - July 6, 2025. **DIAGNOSTIC TRANSPARENCY**: Enhanced UI to display thumbnail images and analysis methods used during assessment process, helping users understand which detection engines analyzed their wounds
+- July 6, 2025. **ESTIMATED IMPROVEMENT INDICATORS**: Replaced repetitive AI confidence scores with helpful "Estimated Improvement" indicators showing users exactly how answering each question will help: "Confidence Improvement" (better wound detection) vs "Care Plan Improvement" (better treatment guidance)
 ```
 
 ## User Preferences

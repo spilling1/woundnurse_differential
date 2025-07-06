@@ -58,11 +58,11 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
   const getImprovementType = (category: string): string => {
     switch (category) {
       case 'diagnostic':
-        return 'Diagnostic Accuracy';
+        return 'Confidence Improvement';
       case 'location':
-        return 'Diagnostic Accuracy';
+        return 'Confidence Improvement';
       case 'medical_history':
-        return 'Diagnostic Accuracy';
+        return 'Confidence Improvement';
       case 'treatment':
         return 'Care Plan Improvement';
       case 'symptoms':
@@ -351,7 +351,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center text-sm text-blue-600">
                 <ArrowRight className="h-4 w-4 mr-1" />
-                Estimated Confidence Improvement: +{getConfidenceImprovement(question.category)}%
+                {getImprovementType(question.category)}: +{getConfidenceImprovement(question.category)}%
               </div>
               <div className="text-xs text-gray-500">
                 {getPriorityLevel(question.category)}
