@@ -80,16 +80,33 @@ export async function generateCarePlan(
 **Method Used:** ${detectionMethod}
 **Processing Time:** ${processingTime}ms
 **System Status:** ${detectionMethod === 'yolo9' ? 'YOLO9 Active' : detectionMethod === 'enhanced-fallback' ? 'Enhanced Fallback Mode' : 'Cloud Vision Active'}
+
+**Detailed Detection Results:**
+1. **Wound Type:** ${classification.woundType || 'N/A'}
+2. **Location:** ${classification.location || 'N/A'}
+3. **Size:** ${hasDetections?.measurements?.areaMm2 ? `${hasDetections.measurements.areaMm2}mm²` : 'N/A'}
+4. **Depth:** ${classification.depth || 'N/A'}
+5. **Exudate:** ${classification.exudate || 'N/A'}
+6. **Wound Edges:** ${classification.woundEdges || 'N/A'}
+7. **Signs of Infection:** ${classification.signsOfInfection || 'N/A'}
+
 ${hasDetections ? `
-**Detection Results:**
+**Technical Measurements:**
 - Confidence: ${Math.round((hasDetections.confidence || 0) * 100)}%
-- Wound Measurements:
-  - Length: ${hasDetections.measurements?.lengthMm || 'N/A'}mm
-  - Width: ${hasDetections.measurements?.widthMm || 'N/A'}mm  
-  - Area: ${hasDetections.measurements?.areaMm2 || 'N/A'}mm²
+- Length: ${hasDetections.measurements?.lengthMm || 'N/A'}mm
+- Width: ${hasDetections.measurements?.widthMm || 'N/A'}mm  
+- Area: ${hasDetections.measurements?.areaMm2 || 'N/A'}mm²
 - Scale Calibrated: ${hasDetections.scaleCalibrated ? 'Yes' : 'No'}
 - Precise Measurements: ${classification.preciseMeasurements ? 'Available' : 'Estimated'}
-` : ''}
+` : `
+**Technical Measurements:**
+- Confidence: N/A
+- Length: N/A
+- Width: N/A
+- Area: N/A
+- Scale Calibrated: No
+- Precise Measurements: Not evaluated
+`}
 **Multiple Wounds:** ${detectionInfo.multipleWounds ? 'Yes' : 'No'}`;
     }
     

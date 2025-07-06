@@ -18,7 +18,7 @@ export default function CarePlan() {
   const params = useParams();
   const search = useSearch();
   const { toast } = useToast();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [feedbackText, setFeedbackText] = useState("");
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -592,9 +592,14 @@ export default function CarePlan() {
     }).filter(Boolean);
   };
 
-  // Function to render detection analysis separately
+  // Function to render detection analysis separately (admin only)
   const renderDetectionAnalysis = (plan: string) => {
     if (!plan) return null;
+    
+    // Only show to admin users
+    if (!user || user.role !== 'admin') {
+      return null;
+    }
     
     const detectionAnalysisMatch = plan.match(/\*\*DETECTION SYSTEM ANALYSIS:\*\*[\s\S]*$/);
     if (!detectionAnalysisMatch) return null;
