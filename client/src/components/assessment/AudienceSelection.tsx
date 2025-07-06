@@ -71,7 +71,7 @@ export default function AudienceSelection({ state, onStateChange, onNextStep }: 
               onChange={(e) => handleModelChange(e.target.value as typeof state.model)}
               className="w-full mt-1 p-2 border rounded-md"
             >
-              {modelOptions?.map(option => (
+              {(modelOptions || []).map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>

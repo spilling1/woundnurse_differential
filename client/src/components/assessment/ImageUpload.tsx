@@ -272,14 +272,7 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
                       </Button>
                     </div>
                     
-                    {/* Image Description */}
-                    <div className="p-2 bg-gray-50 text-xs text-gray-600">
-                      {index === 0 && "Primary image for AI analysis"}
-                      {index === 1 && "Additional context"}
-                      {index === 2 && "Different angle"}
-                      {index === 3 && "Close-up details"}
-                      {index === 4 && "Scale reference"}
-                    </div>
+
                   </div>
                 ))}
               </div>
