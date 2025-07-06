@@ -14,7 +14,6 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
   // Helper function to get user-friendly detection method names
   const getDetectionMethodName = (model: string): string => {
     switch (model) {
-      case 'yolo9':
       case 'yolo8':
       case 'yolov8':
       case 'smart-yolo-yolo':
