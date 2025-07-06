@@ -17,7 +17,9 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
       case 'yolo9':
       case 'yolo8':
       case 'yolov8':
-        return 'Smart Wound Detection';
+      case 'smart-yolo-yolo':
+        return 'YOLO v8 Detection';
+      case 'smart-yolo-color':
       case 'color-detection':
         return 'Color-based Detection';
       case 'google-cloud-vision':

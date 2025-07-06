@@ -185,6 +185,7 @@ Changelog:
 - July 6, 2025. **REAL YOLO INTEGRATION**: Installed ultralytics and added proper YOLO v8 detection engine alongside existing color-based detection
 - July 6, 2025. **HONEST CAPABILITY REPORTING**: Replaced made-up accuracy percentages with realistic capability assessments requiring proper clinical validation
 - July 6, 2025. **YOLO SERVICE ACTIVATION**: Successfully activated real YOLO v8 wound detection by fixing service startup configuration - system now uses actual YOLOv8 models for primary wound boundary detection with 200ms inference time, falling back to color detection only when needed
+- July 6, 2025. **DETECTION METHOD TRANSPARENCY**: Fixed detection method display to show "YOLO v8 Detection" instead of generic "Image Analysis" when using actual YOLO models, providing users with accurate information about which detection engine analyzed their wounds
 - July 6, 2025. **ITERATIVE CONFIDENCE IMPROVEMENT**: Implemented confidence-based questioning system requiring 80% confidence before final care plan generation
 - July 6, 2025. **SMART PHOTO SUGGESTIONS**: Added AI-driven photo upload recommendations based on detection quality and missing visual information
 - July 6, 2025. **ENHANCED USER GUIDANCE**: Added detailed instructions emphasizing that more detailed answers result in better assessment accuracy
