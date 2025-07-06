@@ -225,11 +225,9 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
                       </span>
                     </div>
                     
-                    {state.model?.includes('gemini') && (
-                      <div className="text-xs text-blue-600 bg-blue-100 p-2 rounded">
-                        <strong>Note:</strong> Gemini provides thorough medical analysis but may take up to 60 seconds.
-                      </div>
-                    )}
+                    <div className="text-xs text-blue-600 bg-blue-100 p-2 rounded">
+                      <strong>Note:</strong> Analysis can take up to 60 seconds for thorough medical image processing. Please be patient while we generate your detailed assessment.
+                    </div>
                   </div>
                 </div>
               </div>
