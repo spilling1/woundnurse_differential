@@ -284,23 +284,28 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
   return (
     <div className="space-y-6">
       {/* Thumbnail Image Display */}
-      {state.selectedImage && (
+      {state.selectedImages && state.selectedImages.length > 0 && (
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Camera className="h-5 w-5 mr-2 text-medical-blue" />
-              Assessment Image
+              Assessment Images ({state.selectedImages.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-center">
-              <div className="bg-white border-2 border-gray-200 rounded-lg p-2 shadow-sm">
-                <img 
-                  src={URL.createObjectURL(state.selectedImage)} 
-                  alt="Wound assessment"
-                  className="h-32 w-32 object-cover rounded-lg"
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {state.selectedImages.map((image, index) => (
+                <div key={image.id || index} className="bg-white border-2 border-gray-200 rounded-lg p-2 shadow-sm">
+                  <img 
+                    src={image.preview || URL.createObjectURL(image.file)} 
+                    alt={`Wound assessment ${index + 1}`}
+                    className="w-full h-32 object-contain rounded"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 text-center">
+                    Image {index + 1} {index === 0 ? '(Primary)' : ''}
+                  </p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>

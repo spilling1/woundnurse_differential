@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings, Save, RefreshCw, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 
 function SettingsPage() {
   const [systemPrompts, setSystemPrompts] = useState("");
@@ -16,6 +17,8 @@ function SettingsPage() {
   const [productRecommendations, setProductRecommendations] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const [, setLocation] = useLocation();
 
   // Query to fetch current AI instructions
   const { data: agentData, isLoading } = useQuery({
@@ -108,7 +111,26 @@ function SettingsPage() {
     );
   };
 
-  if (isLoading) {
+  // Admin access check
+  if (!authLoading && (!isAuthenticated || user?.role !== 'admin')) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Settings className="mx-auto h-12 w-12 text-gray-400" />
+          <h1 className="mt-4 text-xl font-semibold text-gray-900">Access Denied</h1>
+          <p className="mt-2 text-gray-600">Only administrators can access system settings.</p>
+          <Button 
+            onClick={() => setLocation(isAuthenticated ? '/my-cases' : '/')}
+            className="mt-4"
+          >
+            {isAuthenticated ? 'Back to My Cases' : 'Go Home'}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading || authLoading) {
     return (
       <div className="min-h-screen bg-bg-light flex items-center justify-center">
         <div className="text-center">

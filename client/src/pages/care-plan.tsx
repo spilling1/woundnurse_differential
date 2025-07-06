@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState, useRef } from "react";
 import type { WoundAssessment } from "@shared/schema";
 import WoundVisualization from "@/components/WoundVisualization";
+import AdminNavigation from "@/components/shared/AdminNavigation";
 
 export default function CarePlan() {
   const [, setLocation] = useLocation();
@@ -718,6 +719,9 @@ export default function CarePlan() {
           </div>
         </div>
       </nav>
+
+      {/* Admin Navigation */}
+      <AdminNavigation />
 
       {/* Printable Content */}
       <div ref={printRef} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

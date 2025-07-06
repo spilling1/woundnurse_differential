@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import NewAssessmentFlow from "@/components/NewAssessmentFlow";
 import ImageDetectionStatus from "@/components/ImageDetectionStatus";
+import AdminNavigation from "@/components/shared/AdminNavigation";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -42,15 +43,7 @@ export default function Home() {
                   >
                     My Cases
                   </Button>
-                  <Button 
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setLocation("/settings")}
-                    className="p-2"
-                    title="Settings"
-                  >
-                    <Settings className="h-4 w-4" />
-                  </Button>
+                  <AdminNavigation />
                   <Button 
                     variant="outline" 
                     size="sm"
