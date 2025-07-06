@@ -449,7 +449,7 @@ export function registerAssessmentRoutes(app: Express): void {
       const classification = JSON.parse(req.body.classification || '{}');
       
       // Check if this is a follow-up to an existing case
-      const { existingCaseId } = req.body;
+      const { existingCaseId, forceNew } = req.body;
       let caseId = existingCaseId || generateCaseId();
       let versionNumber = 1;
       let isFollowUp = false;
@@ -489,6 +489,24 @@ export function registerAssessmentRoutes(app: Express): void {
         imageBase64 = req.file.buffer.toString('base64');
         imageMimeType = req.file.mimetype;
         imageSize = req.file.size;
+        
+        // Check for duplicate images to inform user about potential follow-up
+        const userId = (req as any).user?.claims?.sub;
+        if (userId && imageSize > 0 && !forceNew) {
+          const duplicateAssessment = await storage.findAssessmentByImageData(userId, imageBase64, imageSize);
+          if (duplicateAssessment && !existingCaseId) {
+            // Return information about the duplicate so frontend can ask user
+            return res.json({
+              duplicateDetected: true,
+              existingCase: {
+                caseId: duplicateAssessment.caseId,
+                createdAt: duplicateAssessment.createdAt,
+                classification: duplicateAssessment.classification
+              },
+              message: "We found an identical image in your previous assessments. Would you like to create a follow-up assessment or start a new case?"
+            });
+          }
+        }
       }
       
       // Create wound assessment record

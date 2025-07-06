@@ -1,6 +1,6 @@
 import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations - required for Replit Auth
@@ -14,6 +14,7 @@ export interface IStorage {
   getLatestWoundAssessment(caseId: string): Promise<WoundAssessment | undefined>;
   getWoundAssessmentHistory(caseId: string): Promise<WoundAssessment[]>;
   createFollowUpAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
+  findAssessmentByImageData(userId: string, imageData: string, imageSize: number): Promise<WoundAssessment | undefined>;
   deleteWoundAssessment(caseId: string): Promise<boolean>;
   createFeedback(feedback: InsertFeedback): Promise<Feedback>;
   getFeedbacksByCase(caseId: string): Promise<Feedback[]>;
@@ -143,6 +144,22 @@ export class DatabaseStorage implements IStorage {
       .values(followUpAssessment)
       .returning();
     return result;
+  }
+
+  async findAssessmentByImageData(userId: string, imageData: string, imageSize: number): Promise<WoundAssessment | undefined> {
+    const [result] = await db
+      .select()
+      .from(woundAssessments)
+      .where(
+        and(
+          eq(woundAssessments.userId, userId),
+          eq(woundAssessments.imageData, imageData),
+          eq(woundAssessments.imageSize, imageSize)
+        )
+      )
+      .orderBy(desc(woundAssessments.createdAt))
+      .limit(1);
+    return result || undefined;
   }
 
   async deleteWoundAssessment(caseId: string): Promise<boolean> {

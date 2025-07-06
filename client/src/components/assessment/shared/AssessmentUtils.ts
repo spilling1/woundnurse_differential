@@ -43,7 +43,9 @@ export const assessmentApi = {
     model: ModelType,
     questions: AIGeneratedQuestion[],
     classification: WoundClassification | null,
-    userFeedback: string
+    userFeedback: string,
+    existingCaseId?: string | null,
+    forceNew?: boolean
   ) => {
     const formData = new FormData();
     if (image) {
@@ -54,6 +56,13 @@ export const assessmentApi = {
     formData.append('questions', JSON.stringify(questions));
     formData.append('classification', JSON.stringify(classification));
     formData.append('userFeedback', userFeedback);
+    
+    if (existingCaseId) {
+      formData.append('existingCaseId', existingCaseId);
+    }
+    if (forceNew) {
+      formData.append('forceNew', 'true');
+    }
 
     const response = await fetch('/api/assessment/final-plan', {
       method: 'POST',
