@@ -32,12 +32,23 @@ export async function callGemini(model: string, prompt: string, imageBase64?: st
     parts.push({ text: prompt });
     console.log(`Sending request to Gemini with ${parts.length} parts`);
 
-    const result = await ai.models.generateContent({
-      model,
-      contents: parts,
-    });
+    let result;
+    try {
+      console.log(`About to call generateContent with model: ${model}`);
+      result = await ai.models.generateContent({
+        model,
+        contents: parts,
+      });
+      console.log('Gemini API call successful');
+    } catch (apiError: any) {
+      console.error('Gemini API call failed:', apiError);
+      console.error('API Error message:', apiError.message);
+      console.error('API Error details:', JSON.stringify(apiError, null, 2));
+      throw apiError;
+    }
 
     console.log('Gemini result structure:', Object.keys(result));
+    console.log('Gemini result type:', typeof result);
     console.log('Gemini result:', result);
 
     const text = result.text;
