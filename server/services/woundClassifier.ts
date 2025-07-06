@@ -31,7 +31,18 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
     // Step 2: Perform YOLO-based wound detection for measurements (regardless of classification method)
     const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
     
-    // Step 3: If CNN failed, use AI vision models as fallback
+    // Step 3: Smart fallback logic - If CNN says "background" but YOLO detects wounds, override CNN
+    const shouldOverrideCNN = usedCNN && 
+      classification.woundType === 'No wound detected' && 
+      detectionResult.detections.length > 0 && 
+      detectionResult.detections[0].confidence > 0.3;
+    
+    if (shouldOverrideCNN) {
+      console.log(`CNN said no wound, but YOLO detected ${detectionResult.detections.length} wounds. Using AI vision for classification.`);
+      usedCNN = false;
+    }
+    
+    // Step 4: If CNN failed or was overridden, use AI vision models as fallback
     if (!usedCNN) {
       // Get agent instructions from database to include in analysis
       const agentInstructions = await storage.getActiveAgentInstructions();

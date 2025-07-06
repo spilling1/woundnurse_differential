@@ -295,6 +295,13 @@ export const cnnWoundClassifier = CNNWoundClassifier.getInstance();
 
 // Helper function to convert CNN result to standard classification format
 export function convertCNNToStandardClassification(cnnResult: CNNClassificationResult): any {
+  // Log detailed probabilities for debugging
+  console.log('CNN Detailed Results:', {
+    predicted: cnnResult.woundType,
+    confidence: cnnResult.confidence,
+    allProbabilities: cnnResult.allProbabilities
+  });
+  
   // Map CNN wound types to standard wound classification
   const woundTypeMapping: Record<string, string> = {
     'background': 'No wound detected',
@@ -304,6 +311,19 @@ export function convertCNNToStandardClassification(cnnResult: CNNClassificationR
     'surgical_wound': 'Surgical wound',
     'venous_ulcer': 'Venous leg ulcer'
   };
+  
+  // Check if any wound type has high probability even if not the top prediction
+  const woundProbabilities = Object.entries(cnnResult.allProbabilities)
+    .filter(([type, _]) => type !== 'background')
+    .sort(([_, a], [__, b]) => b - a);
+  
+  // If background is predicted but a wound type has >40% probability, flag for review
+  if (cnnResult.woundType === 'background' && woundProbabilities.length > 0) {
+    const [topWoundType, topWoundProb] = woundProbabilities[0];
+    if (topWoundProb > 40) {
+      console.log(`CNN: Background predicted but ${topWoundType} has ${topWoundProb.toFixed(1)}% probability - may need review`);
+    }
+  }
 
   // Determine size category based on confidence and type
   const determineSize = (woundType: string, confidence: number): string => {
