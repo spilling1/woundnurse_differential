@@ -228,7 +228,7 @@ export default function AdminDashboard() {
   // Detection model management mutations
   const toggleDetectionModelMutation = useMutation({
     mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) => {
-      return apiRequest('PUT', `/api/admin/detection-models/${id}/toggle`, { enabled });
+      return apiRequest('PATCH', `/api/admin/detection-models/${id}/toggle`, { enabled });
     },
     onMutate: async ({ id, enabled }) => {
       // Cancel any outgoing refetches so they don't overwrite our optimistic update
