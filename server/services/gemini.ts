@@ -8,32 +8,54 @@ export async function callGemini(model: string, prompt: string, imageBase64?: st
     throw new Error("Invalid Gemini model selection");
   }
 
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY is not configured");
+  }
+
   try {
-    const contents = [];
+    console.log(`Calling Gemini model: ${model}`);
+    
+    const parts = [];
     
     if (imageBase64) {
-      contents.push({
+      // Remove data URL prefix if present
+      const base64Data = imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
+      console.log(`Adding image data, size: ${base64Data.length} characters`);
+      parts.push({
         inlineData: {
-          data: imageBase64,
+          data: base64Data,
           mimeType: "image/jpeg",
         },
       });
     }
     
-    contents.push(prompt);
+    parts.push({ text: prompt });
+    console.log(`Sending request to Gemini with ${parts.length} parts`);
 
-    const response = await ai.models.generateContent({
+    const result = await ai.models.generateContent({
       model,
-      contents: contents,
+      contents: parts,
     });
 
-    if (!response.text) {
+    const text = result.text;
+
+    if (!text) {
+      console.error('Gemini returned empty response');
       throw new Error("No response from Gemini");
     }
 
-    return response.text;
+    console.log(`Gemini response received, length: ${text.length}`);
+    return text;
   } catch (error: any) {
-    console.error('Gemini API error:', error);
+    console.error('Gemini API error details:', error);
+    console.error('Error type:', typeof error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    if (error.message?.includes('API key')) {
+      throw new Error('Invalid or missing Gemini API key');
+    }
+    
     throw new Error(`Gemini processing failed: ${error.message}`);
   }
 }
