@@ -169,12 +169,44 @@ export const assessmentHelpers = {
     { value: 'medical' as const, label: 'Medical Professional', desc: 'Clinical terminology and protocols' }
   ],
 
-  // Get model option configurations
-  getModelOptions: () => [
-    { value: 'gemini-2.5-pro' as const, label: 'Gemini 2.5 Pro (Recommended)' },
-    { value: 'gemini-2.5-flash' as const, label: 'Gemini 2.5 Flash' },
-    { value: 'gpt-4o' as const, label: 'GPT-4o' },
-    { value: 'gpt-3.5' as const, label: 'GPT-3.5' },
-    { value: 'gpt-3.5-pro' as const, label: 'GPT-3.5 Pro' }
-  ]
+  // Get model option configurations from API
+  getModelOptions: async () => {
+    try {
+      const response = await fetch('/api/ai-analysis-models');
+      if (!response.ok) {
+        throw new Error('Failed to fetch AI models');
+      }
+      const models = await response.json();
+      return models.map((model: any) => ({
+        value: model.model_id,
+        label: model.displayName + (model.isDefault ? ' (Default)' : ''),
+        isDefault: model.isDefault
+      }));
+    } catch (error) {
+      console.error('Error fetching AI models:', error);
+      // Fallback to hardcoded options if API fails
+      return [
+        { value: 'gemini-2.5-pro' as const, label: 'Gemini 2.5 Pro (Recommended)', isDefault: true },
+        { value: 'gpt-4o' as const, label: 'GPT-4o', isDefault: false },
+        { value: 'gpt-3.5' as const, label: 'GPT-3.5', isDefault: false },
+        { value: 'gpt-3.5-pro' as const, label: 'GPT-3.5 Pro', isDefault: false }
+      ];
+    }
+  },
+
+  // Get default model from API
+  getDefaultModel: async () => {
+    try {
+      const response = await fetch('/api/ai-analysis-models');
+      if (!response.ok) {
+        throw new Error('Failed to fetch AI models');
+      }
+      const models = await response.json();
+      const defaultModel = models.find((model: any) => model.isDefault);
+      return defaultModel ? defaultModel.model_id : 'gemini-2.5-pro';
+    } catch (error) {
+      console.error('Error fetching default model:', error);
+      return 'gemini-2.5-pro';
+    }
+  }
 }; 

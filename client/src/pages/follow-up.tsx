@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,6 +16,7 @@ import { z } from "zod";
 import { ArrowLeft, Upload, Camera, Clock, TrendingUp, AlertCircle, Loader2 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { assessmentHelpers } from "@/components/assessment/shared/AssessmentUtils";
 
 const followUpSchema = z.object({
   model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro']),
@@ -47,7 +48,7 @@ export default function FollowUpAssessment() {
   const form = useForm({
     resolver: zodResolver(followUpSchema),
     defaultValues: {
-      model: 'gpt-4o',
+      model: 'gemini-2.5-pro', // Default fallback
       progressNotes: '',
       treatmentResponse: '',
       additionalInfo: '',
@@ -67,6 +68,34 @@ export default function FollowUpAssessment() {
     queryKey: [`/api/assessment/${caseId}`],
     enabled: !!caseId,
   });
+
+  // Load available models from API
+  const { data: modelOptions, isLoading: modelsLoading, error: modelsError } = useQuery({
+    queryKey: ['/api/ai-analysis-models'],
+    queryFn: async () => {
+      const response = await fetch('/api/ai-analysis-models/enabled');
+      if (!response.ok) throw new Error('Failed to fetch models');
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Set default model from API once loaded
+  useEffect(() => {
+    const loadDefaultModel = async () => {
+      try {
+        const defaultModel = await assessmentHelpers.getDefaultModel();
+        form.setValue('model', defaultModel);
+      } catch (error) {
+        console.error('Failed to load default model:', error);
+        // Keep fallback default
+      }
+    };
+    
+    if (!modelsLoading && modelOptions) {
+      loadDefaultModel();
+    }
+  }, [modelsLoading, modelOptions, form]);
 
   const followUpMutation = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -551,11 +580,11 @@ export default function FollowUpAssessment() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="gpt-4o">GPT-4o (Recommended)</SelectItem>
-                          <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
-                          <SelectItem value="gpt-3.5-pro">GPT-3.5 Pro</SelectItem>
-                          <SelectItem value="gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
-                          <SelectItem value="gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                          {modelOptions?.map(option => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />

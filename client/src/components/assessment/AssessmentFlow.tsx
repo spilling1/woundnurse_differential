@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { CheckCircle } from "lucide-react";
 import type { AssessmentFlowState, FlowStep } from "./shared/AssessmentTypes";
+import { assessmentHelpers } from "./shared/AssessmentUtils";
 import AudienceSelection from "./AudienceSelection";
 import ImageUpload from "./ImageUpload";
 import AIQuestions from "./AIQuestions";
@@ -12,7 +13,7 @@ export default function AssessmentFlow() {
   const [state, setState] = useState<AssessmentFlowState>({
     currentStep: 'audience',
     audience: 'family',
-    model: 'gemini-2.5-pro',
+    model: 'gemini-2.5-pro', // Default fallback
     selectedImage: null,
     imagePreview: null,
     aiQuestions: [],
@@ -23,6 +24,21 @@ export default function AssessmentFlow() {
     questionRound: 1,
     answeredQuestions: []
   });
+
+  // Load default model from API on mount
+  useEffect(() => {
+    const loadDefaultModel = async () => {
+      try {
+        const defaultModel = await assessmentHelpers.getDefaultModel();
+        setState(prev => ({ ...prev, model: defaultModel }));
+      } catch (error) {
+        console.error('Failed to load default model:', error);
+        // Keep fallback default
+      }
+    };
+    
+    loadDefaultModel();
+  }, []);
 
   // Update state function
   const handleStateChange = (updates: Partial<AssessmentFlowState>) => {

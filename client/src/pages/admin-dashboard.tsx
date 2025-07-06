@@ -350,6 +350,7 @@ export default function AdminDashboard() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/ai-analysis-models'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/ai-analysis-models'] });
     },
   });
 
@@ -359,6 +360,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/ai-analysis-models'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/ai-analysis-models'] });
       toast({
         title: "Success",
         description: "Default AI analysis model updated successfully",

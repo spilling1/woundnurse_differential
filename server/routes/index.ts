@@ -287,6 +287,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     `);
   });
 
+  // Public AI models endpoint for user dropdowns
+  app.get('/api/ai-analysis-models', async (req, res) => {
+    try {
+      const { storage } = await import('../storage');
+      const models = await storage.getEnabledAiAnalysisModels();
+      res.json(models);
+    } catch (error: any) {
+      console.error('Error fetching enabled AI analysis models:', error);
+      res.status(500).json({
+        code: "FETCH_AI_MODELS_ERROR",
+        message: error.message || "Failed to fetch AI models"
+      });
+    }
+  });
+
   // Register all route modules
   registerAuthRoutes(app);
   registerAssessmentRoutes(app);

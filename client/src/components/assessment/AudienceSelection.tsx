@@ -1,13 +1,20 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@tanstack/react-query";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentHelpers } from "./shared/AssessmentUtils";
 
 export default function AudienceSelection({ state, onStateChange, onNextStep }: StepProps) {
   const audienceOptions = assessmentHelpers.getAudienceOptions();
-  const modelOptions = assessmentHelpers.getModelOptions();
+
+  // Load AI models from API
+  const { data: modelOptions, isLoading: modelsLoading, error } = useQuery({
+    queryKey: ['/api/ai-analysis-models'],
+    queryFn: assessmentHelpers.getModelOptions,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   const handleAudienceChange = (audience: typeof state.audience) => {
     onStateChange({ audience });
@@ -49,17 +56,28 @@ export default function AudienceSelection({ state, onStateChange, onNextStep }: 
         
         <div className="mt-6">
           <Label>AI Model</Label>
-          <select 
-            value={state.model} 
-            onChange={(e) => handleModelChange(e.target.value as typeof state.model)}
-            className="w-full mt-1 p-2 border rounded-md"
-          >
-            {modelOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          {modelsLoading ? (
+            <div className="w-full mt-1 p-2 border rounded-md flex items-center">
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              Loading AI models...
+            </div>
+          ) : error ? (
+            <div className="w-full mt-1 p-2 border rounded-md text-red-600">
+              Error loading models. Using default options.
+            </div>
+          ) : (
+            <select 
+              value={state.model} 
+              onChange={(e) => handleModelChange(e.target.value as typeof state.model)}
+              className="w-full mt-1 p-2 border rounded-md"
+            >
+              {modelOptions?.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
         
         <Button 
