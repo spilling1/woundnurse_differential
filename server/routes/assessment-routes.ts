@@ -444,7 +444,17 @@ export function registerAssessmentRoutes(app: Express): void {
   // Step 3: Generate final care plan with case creation
   app.post("/api/assessment/final-plan", isAuthenticated, upload.single('image'), async (req, res) => {
     try {
-      const { audience, model, userFeedback } = req.body;
+      console.log('Final plan request body keys:', Object.keys(req.body));
+      console.log('Final plan model field:', req.body.model);
+      
+      const { audience, userFeedback } = req.body;
+      let { model } = req.body;
+      
+      // Fallback to default model if undefined
+      if (!model || model === 'undefined') {
+        console.log('Model was undefined, using gemini-2.5-pro as fallback');
+        model = 'gemini-2.5-pro';
+      }
       const questions = JSON.parse(req.body.questions || '[]');
       const classification = JSON.parse(req.body.classification || '{}');
       

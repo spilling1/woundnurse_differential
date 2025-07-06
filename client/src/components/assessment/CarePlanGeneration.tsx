@@ -21,6 +21,8 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
   // Generate final care plan mutation
   const finalPlanMutation = useMutation({
     mutationFn: async () => {
+      console.log('CarePlanGeneration: state.model =', state.model);
+      console.log('CarePlanGeneration: state.audience =', state.audience);
       return await assessmentApi.finalPlan(
         state.selectedImage,
         state.audience,
