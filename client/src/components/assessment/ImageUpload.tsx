@@ -193,7 +193,7 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
           <Alert className="bg-blue-50 border-blue-200">
             <Info className="h-4 w-4 text-blue-600" />
             <AlertDescription className="text-blue-800">
-              <strong>For best analysis results, upload multiple images:</strong>
+              <strong>The system can process with just one image, however for best analysis results, upload multiple images:</strong>
               <ul className="mt-2 ml-4 list-disc space-y-1 text-sm">
                 <li><strong>Primary shot:</strong> Clear, well-lit photo of the entire wound</li>
                 <li><strong>Close-up:</strong> Detailed view of wound bed and edges</li>
