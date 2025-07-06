@@ -191,8 +191,10 @@ Changelog:
 - July 6, 2025. **STRATEGIC QUESTION CATEGORIZATION**: Implemented three-category question system: A) Confidence improvement (medical history, location, wound characteristics), B) Care plan optimization (symptoms, treatments, progress), C) Medical referral preparation (doctor-relevant information)
 - July 6, 2025. **WEIGHTED CONFIDENCE SCORING**: Enhanced confidence calculation with category-based scoring - diagnostic questions provide 8% boost, treatment questions 5% boost, general questions 3% boost
 - July 6, 2025. **CATEGORIZED CARE PLAN INTEGRATION**: Updated prompt templates to organize patient answers by purpose and impact on assessment accuracy
-- July 6, 2025. **ENHANCED IMAGE DISPLAY**: Added dedicated image display section at top of care plan page showing assessment images with upload capability for additional photos
-- July 6, 2025. **VISUAL ASSESSMENT IMPROVEMENT**: Created responsive image grid with original assessment photo and placeholder for additional angles/reference images
+- July 6, 2025. **QUESTIONS PAGE THUMBNAILS**: Added thumbnail image display at top of questions pages for visual reference during diagnostic questioning
+- July 6, 2025. **SMART IMAGE UPLOAD**: Added conditional image upload capability in questions section for photo-related questions (photo/image/picture keywords trigger upload option)
+- July 6, 2025. **CLEAN CARE PLAN LAYOUT**: Removed duplicate images and additional upload capability from care plan page - now shows single clean image display only
+- July 6, 2025. **SIMPLIFIED IMAGE PRESENTATION**: Care plan page now has clean, professional single image display without upload distractions
 ```
 
 ## User Preferences

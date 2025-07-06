@@ -738,97 +738,13 @@ export default function CarePlan() {
           </div>
         </div>
 
-        {/* Image Display Section - Always at Top */}
-        <Card className="mb-8 shadow-md">
-          <CardHeader className="bg-slate-50 border-b">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <div className="flex items-center">
-                <MapPin className="h-5 w-5 mr-3 text-medical-blue" />
-                Assessment Images
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => document.getElementById('additional-image-upload')?.click()}
-                className="text-medical-blue border-medical-blue hover:bg-medical-blue hover:text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Image
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Original Assessment Image */}
-              {(assessmentData as any)?.imageData && (
-                <div className="bg-white border-2 border-gray-200 rounded-xl p-4 shadow-sm">
-                  <img 
-                    src={`data:${(assessmentData as any).imageMimeType};base64,${(assessmentData as any).imageData}`} 
-                    alt="Original wound assessment"
-                    className="w-full h-48 object-cover rounded-lg border border-gray-100 mb-3"
-                  />
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Original Assessment</p>
-                    <p className="text-xs text-gray-500">
-                      {(((assessmentData as any).imageSize || 0) / 1024).toFixed(1)} KB
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(assessmentData?.createdAt || '').toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              {/* Placeholder for additional images */}
-              <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center h-64 hover:border-medical-blue hover:bg-blue-50 cursor-pointer transition-colors"
-                   onClick={() => document.getElementById('additional-image-upload')?.click()}>
-                <Plus className="h-8 w-8 text-gray-400 mb-2" />
-                <p className="text-sm text-gray-500 text-center">
-                  Add additional photos
-                  <br />
-                  <span className="text-xs">Different angles, closer views, reference objects</span>
-                </p>
-              </div>
-            </div>
-            
-            {/* Hidden file input */}
-            <input 
-              id="additional-image-upload"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  // Handle additional image upload
-                  toast({
-                    title: "Image Upload",
-                    description: "Additional image upload functionality will be implemented in next iteration."
-                  });
-                }
-              }}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Enhanced Wound Visualization Section */}
+        {/* Image Display Section - Clean Display Only */}
         {(assessmentData as any)?.imageData && (
-          <div className="mb-8 no-print">
-            <WoundVisualization
-              imageData={(assessmentData as any).imageData}
-              detectionData={(assessmentData as any).detectionData}
-              classification={(assessmentData as any).classification}
-            />
-          </div>
-        )}
-
-        {/* Original Image Section for Print */}
-        {(assessmentData as any)?.imageData && (
-          <Card className="mb-8 shadow-md print:block hidden">
+          <Card className="mb-8 shadow-md">
             <CardHeader className="bg-slate-50 border-b">
               <CardTitle className="flex items-center text-lg">
                 <MapPin className="h-5 w-5 mr-3 text-medical-blue" />
-                Wound Documentation
+                Assessment Image
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
@@ -853,6 +769,8 @@ export default function CarePlan() {
             </CardContent>
           </Card>
         )}
+
+
 
         {/* Clinical Assessment */}
         <Card className="mb-8 shadow-md">

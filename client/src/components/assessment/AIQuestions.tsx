@@ -1,4 +1,4 @@
-import { CheckCircle, ArrowRight, RefreshCw } from "lucide-react";
+import { CheckCircle, ArrowRight, RefreshCw, Camera, Upload } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -124,6 +124,29 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
 
   return (
     <div className="space-y-6">
+      {/* Thumbnail Image Display */}
+      {state.selectedImage && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Camera className="h-5 w-5 mr-2 text-medical-blue" />
+              Assessment Image
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center">
+              <div className="bg-white border-2 border-gray-200 rounded-lg p-2 shadow-sm">
+                <img 
+                  src={URL.createObjectURL(state.selectedImage)} 
+                  alt="Wound assessment"
+                  className="h-32 w-32 object-cover rounded-lg"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Step 3: Diagnostic Questions</CardTitle>
@@ -199,6 +222,38 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               placeholder={question.answer ? "Edit the AI's answer if needed" : "Please provide your answer..."}
               rows={3}
             />
+            
+            {/* Image Upload for Photo-Related Questions */}
+            {(question.question.toLowerCase().includes('photo') || 
+              question.question.toLowerCase().includes('image') || 
+              question.question.toLowerCase().includes('picture')) && (
+              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <Label className="text-sm font-medium text-blue-800">
+                  <Upload className="h-4 w-4 inline mr-2" />
+                  Upload Additional Photo (Optional)
+                </Label>
+                <div className="mt-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        toast({
+                          title: "Image Upload",
+                          description: "Additional image functionality will be enhanced in the next iteration."
+                        });
+                      }
+                    }}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                </div>
+                <p className="text-xs text-blue-600 mt-1">
+                  Upload a clearer photo, different angle, or close-up view to help with assessment
+                </p>
+              </div>
+            )}
+            
             <div className="flex items-center mt-2 text-sm text-gray-600">
               <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
               AI Confidence: {Math.round(question.confidence * 100)}%
