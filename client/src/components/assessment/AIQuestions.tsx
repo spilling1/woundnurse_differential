@@ -180,15 +180,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                 </Button>
               )}
               
-              <Button 
-                onClick={handleProceedToPlan}
-                disabled={false}
-                variant="outline"
-                className="w-full"
-              >
-                Proceed with Current Assessment
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+
             </div>
           ) : (
             <Button 
