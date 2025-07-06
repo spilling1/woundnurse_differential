@@ -6,13 +6,16 @@ const openai = new OpenAI({
 });
 
 export async function callOpenAI(model: string, messages: any[], responseFormat: any = null): Promise<string> {
-  if (!["gpt-4o", "gpt-3.5", "gpt-3.5-pro"].includes(model)) {
-    throw new Error("Invalid OpenAI model selection");
+  // Normalize model name to lowercase
+  const normalizedModel = model.toLowerCase();
+  
+  if (!["gpt-4o", "gpt-3.5", "gpt-3.5-pro"].includes(normalizedModel)) {
+    throw new Error(`Invalid OpenAI model selection: ${model}. Supported models: gpt-4o, gpt-3.5, gpt-3.5-pro`);
   }
 
   try {
     const params: any = {
-      model: model === "gpt-3.5-pro" ? "gpt-3.5-turbo" : model,
+      model: normalizedModel === "gpt-3.5-pro" ? "gpt-3.5-turbo" : normalizedModel,
       messages,
       max_tokens: 1000,
     };

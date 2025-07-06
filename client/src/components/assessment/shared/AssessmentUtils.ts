@@ -188,7 +188,7 @@ export const assessmentHelpers = {
       }
       const models = await response.json();
       return models.map((model: any) => ({
-        value: model.model_id,
+        value: model.modelId,
         label: model.displayName + (model.isDefault ? ' (Default)' : ''),
         isDefault: model.isDefault
       }));
@@ -213,7 +213,7 @@ export const assessmentHelpers = {
       }
       const models = await response.json();
       const defaultModel = models.find((model: any) => model.isDefault);
-      return defaultModel ? defaultModel.model_id : 'gemini-2.5-pro';
+      return defaultModel ? defaultModel.modelId : 'gemini-2.5-pro';
     } catch (error) {
       console.error('Error fetching default model:', error);
       return 'gemini-2.5-pro';
