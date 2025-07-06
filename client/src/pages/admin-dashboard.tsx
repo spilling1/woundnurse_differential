@@ -764,7 +764,7 @@ export default function AdminDashboard() {
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-4 text-sm">
                                   <span className="font-medium text-gray-700">
-                                    Accuracy: {model.capabilities.accuracy || 'Unknown'}
+                                    Status: {model.capabilities.overall_accuracy || model.capabilities.accuracy || 'Not evaluated'}
                                   </span>
                                   <span className="text-gray-500">•</span>
                                   <span className="text-gray-600">
