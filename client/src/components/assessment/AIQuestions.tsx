@@ -22,11 +22,9 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
     onStateChange({ aiQuestions: updatedQuestions });
   };
 
-
-
-  // Handle follow-up questions
-  const handleFollowUpQuestions = async () => {
-    try {
+  // Follow-up questions mutation with loading state
+  const followUpMutation = useMutation({
+    mutationFn: async () => {
       // Store current questions as answered
       const newAnsweredQuestions = [...state.answeredQuestions, ...state.aiQuestions];
       const newRound = state.questionRound + 1;
@@ -36,7 +34,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         questionRound: newRound
       });
 
-      const data = await assessmentApi.followUpQuestions(
+      return await assessmentApi.followUpQuestions(
         state.selectedImage,
         state.audience,
         state.model,
@@ -44,7 +42,8 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         state.woundClassification,
         newRound
       );
-      
+    },
+    onSuccess: (data) => {
       if (data.needsMoreQuestions && data.questions && data.questions.length > 0) {
         onStateChange({ aiQuestions: data.questions });
         toast({
@@ -64,8 +63,8 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
           description: "Agent Instructions satisfied. Proceeding to care plan generation."
         });
       }
-      
-    } catch (error) {
+    },
+    onError: (error: any) => {
       console.error('Follow-up questions error:', error);
       toast({
         title: "Error",
@@ -73,6 +72,17 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         variant: "destructive"
       });
     }
+  });
+
+  // Handle follow-up questions
+  const handleFollowUpQuestions = () => {
+    // Show immediate feedback
+    toast({
+      title: "Processing Answers",
+      description: "Analyzing your responses to generate follow-up questions...",
+    });
+    
+    followUpMutation.mutate();
   };
 
   const handleProceedToPlan = () => {
@@ -173,10 +183,20 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               {state.questionRound < 3 && (
                 <Button 
                   onClick={handleFollowUpQuestions}
-                  className="w-full bg-yellow-600 hover:bg-yellow-700"
+                  disabled={followUpMutation.isPending}
+                  className="w-full bg-yellow-600 hover:bg-yellow-700 disabled:opacity-75"
                 >
-                  Submit Answers to Improve Assessment
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  {followUpMutation.isPending ? (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                      Processing Answers...
+                    </>
+                  ) : (
+                    <>
+                      Submit Answers to Improve Assessment
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               )}
               
