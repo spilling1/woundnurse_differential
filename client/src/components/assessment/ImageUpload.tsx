@@ -171,7 +171,6 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
                       <div><strong>AI Confidence:</strong> {Math.round(state.woundClassification.confidence * 100)}%</div>
                     )}
                     <div><strong>Wound Type:</strong> {state.woundClassification.woundType}</div>
-                    <div><strong>Location:</strong> {state.woundClassification.location}</div>
                   </div>
                 </div>
               )}

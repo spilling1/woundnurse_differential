@@ -25,7 +25,10 @@ export async function generateCarePlan(
     
     let carePlan;
     
-    if (model.startsWith('gemini-')) {
+    console.log(`CarePlanGenerator: Using model "${model}", trimmed: "${model.trim()}", starts with gemini: ${model.startsWith('gemini-')}`);
+    
+    if (model && model.trim().startsWith('gemini-')) {
+      console.log('CarePlanGenerator: Routing to Gemini');
       const fullPrompt = `${systemPrompt}\n\n${prompt}`;
       if (imageData) {
         carePlan = await callGemini(model, fullPrompt, imageData);
@@ -33,6 +36,7 @@ export async function generateCarePlan(
         carePlan = await callGemini(model, fullPrompt);
       }
     } else {
+      console.log('CarePlanGenerator: Routing to OpenAI');
       const messages = [
         {
           role: "system",
@@ -63,7 +67,7 @@ export async function generateCarePlan(
         } as any;
       }
       
-      carePlan = await callOpenAI(model, messages);
+      carePlan = await callOpenAI(model.trim(), messages);
     }
     
     // Add safety disclaimer

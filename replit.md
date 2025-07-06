@@ -211,6 +211,8 @@ Changelog:
 - July 6, 2025. **MODEL DOCUMENTATION UPDATE**: Updated Gemini Flash model configuration to reflect medical image limitations, disabled by default, and added warning in admin dashboard about content filtering issues
 - July 6, 2025. **AI MODEL RELIABILITY**: Confirmed Gemini 2.5 Pro as reliable primary model for medical image analysis, with proper fallback messaging when Flash model encounters content blocking
 - July 6, 2025. **PERFORMANCE EXPECTATION**: Documented that Gemini analysis can take up to 60 seconds for complex medical image processing - this is normal operating behavior
+- July 6, 2025. **ENHANCED PROGRESS INDICATORS**: Added comprehensive progress bar with model-specific timing estimates (Gemini: 65s, GPT-4o: 25s, GPT-3.5: 20s), real-time elapsed counters, step-by-step progress messages, and Gemini-specific processing notices during image analysis phase
+- July 6, 2025. **GEMINI ROUTING BUG FIX**: Fixed critical issue where Gemini models were incorrectly being routed to OpenAI service causing "Invalid OpenAI model selection" errors - added proper string trimming and model validation in care plan generator
 ```
 
 ## User Preferences
