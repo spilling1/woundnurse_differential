@@ -3,9 +3,19 @@ import type { AIGeneratedQuestion, WoundClassification, AudienceType, ModelType 
 
 export const assessmentApi = {
   // Step 1: Initial image analysis
-  initialAnalysis: async (image: File, audience: AudienceType, model: ModelType) => {
+  initialAnalysis: async (primaryImage: File, audience: AudienceType, model: ModelType, additionalImages?: File[]) => {
     const formData = new FormData();
-    formData.append('image', image);
+    
+    // Add primary image first
+    formData.append('images', primaryImage);
+    
+    // Add additional images if provided
+    if (additionalImages && additionalImages.length > 0) {
+      additionalImages.forEach(image => {
+        formData.append('images', image);
+      });
+    }
+    
     formData.append('audience', audience);
     formData.append('model', model);
     formData.append('analysisType', 'initial');

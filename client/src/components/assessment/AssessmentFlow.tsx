@@ -16,6 +16,7 @@ export default function AssessmentFlow() {
     model: 'gemini-2.5-pro', // Default fallback
     selectedImage: null,
     imagePreview: null,
+    selectedImages: [],
     aiQuestions: [],
     woundClassification: null,
     finalCaseId: null,

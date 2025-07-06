@@ -200,10 +200,17 @@ C) MEDICAL REFERRAL QUESTIONS (when referral indicated):
    - Medical conditions: "Any diabetes, circulation issues, or immune problems?"
 
 PHOTO SUGGESTIONS (when confidence < 70%):
+${contextData.imageCount > 1 ? 
+  `Current images: ${contextData.imageCount} photos provided
+- If wound edges still unclear: "Could you upload a clearer close-up photo of the wound edges?"
+- If size uncertain: "Could you upload a photo with a reference object (coin/ruler) for accurate measurements?"
+- If depth unclear: "Could you upload additional side-angle photos to show wound depth?"
+- If lighting inconsistent: "Could you upload a photo with consistent, bright lighting?"` :
+  `Single image provided - additional angles recommended:
 - If wound edges unclear: "Could you upload a clearer photo of the wound edges?"
 - If size uncertain: "Could you upload a photo with a reference object for size comparison?"
 - If depth unclear: "Could you upload a photo from a different angle?"
-- If lighting poor: "Could you upload a photo with better lighting?"
+- If lighting poor: "Could you upload a photo with better lighting?"`}
 
 QUESTION SELECTION STRATEGY:
 Current confidence: ${contextData.imageAnalysis.confidence}

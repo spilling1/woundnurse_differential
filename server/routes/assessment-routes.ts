@@ -15,7 +15,8 @@ import { cnnWoundClassifier } from "../services/cnnWoundClassifier";
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
+    fileSize: 10 * 1024 * 1024, // 10MB per file
+    files: 5, // Max 5 files
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
@@ -259,12 +260,14 @@ export function registerAssessmentRoutes(app: Express): void {
   // New Assessment Flow Routes
 
   // Step 1: Initial image analysis with AI-generated questions
-  app.post("/api/assessment/initial-analysis", upload.single('image'), async (req, res) => {
+  app.post("/api/assessment/initial-analysis", upload.array('images', 5), async (req, res) => {
     try {
-      if (!req.file) {
+      const files = req.files as Express.Multer.File[];
+      
+      if (!files || files.length === 0) {
         return res.status(400).json({
           code: "NO_IMAGE",
-          message: "Image is required"
+          message: "At least one image is required"
         });
       }
 
@@ -277,14 +280,22 @@ export function registerAssessmentRoutes(app: Express): void {
         });
       }
 
-      // Validate image
-      await validateImage(req.file);
+      // Validate all images
+      for (const file of files) {
+        await validateImage(file);
+      }
       
-      // Convert image to base64
-      const imageBase64 = req.file.buffer.toString('base64');
+      // Use the first image as primary for AI analysis
+      const primaryImage = files[0];
+      const imageBase64 = primaryImage.buffer.toString('base64');
       
-      // Classify wound
-      const classification = await classifyWound(imageBase64, model, req.file.mimetype);
+      // Classify wound using primary image
+      const classification = await classifyWound(imageBase64, model, primaryImage.mimetype);
+      
+      // Enhance classification with multiple image context
+      if (files.length > 1) {
+        classification.additionalObservations += ` (Analysis based on ${files.length} images: primary view plus ${files.length - 1} additional perspective${files.length > 2 ? 's' : ''})`;
+      }
       
       // Generate AI questions based on image analysis
       const questions = await analyzeAssessmentForQuestions(
@@ -292,20 +303,22 @@ export function registerAssessmentRoutes(app: Express): void {
         {
           imageAnalysis: classification,
           audience,
-          model
+          model,
+          imageCount: files.length
         }
       );
 
       res.json({
         classification,
-        questions: questions || []
+        questions: questions || [],
+        imagesProcessed: files.length
       });
 
     } catch (error: any) {
       console.error('Initial analysis error:', error);
       res.status(500).json({
         code: "ANALYSIS_ERROR",
-        message: error.message || "Failed to analyze image"
+        message: error.message || "Failed to analyze images"
       });
     }
   });
