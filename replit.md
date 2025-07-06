@@ -182,6 +182,8 @@ Changelog:
 - July 6, 2025. **WOUND DETECTION PRIORITY**: Reverted to AI vision models as primary method due to CNN accuracy concerns, maintaining YOLO for precise measurements
 - July 6, 2025. **DETECTION MODEL MANAGEMENT**: Added comprehensive admin interface for managing AI detection models with enable/disable toggles, priority settings, and configuration editing
 - July 6, 2025. **ACCURATE MODEL LABELING**: Fixed misleading "YOLO9" detection label - system actually uses color-based smart detection with YOLO fallback (ultralytics not installed)
+- July 6, 2025. **REAL YOLO INTEGRATION**: Installed ultralytics and added proper YOLO v8 detection engine alongside existing color-based detection
+- July 6, 2025. **HONEST CAPABILITY REPORTING**: Replaced made-up accuracy percentages with realistic capability assessments requiring proper clinical validation
 ```
 
 ## User Preferences
