@@ -50,6 +50,18 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
     
     // Step 4: If CNN failed or was overridden, use AI vision models as fallback
     if (!usedCNN) {
+      // Initialize classification to prevent undefined errors
+      classification = {
+        woundType: "Unspecified",
+        stage: "Not determined", 
+        size: "medium",
+        woundBed: "Not assessed",
+        exudate: "moderate",
+        infectionSigns: [],
+        location: "Not specified",
+        additionalObservations: "",
+        confidence: 0.4
+      };
       // Get agent instructions from database to include in analysis
       const agentInstructions = await storage.getActiveAgentInstructions();
       const instructions = agentInstructions ? 
@@ -70,7 +82,19 @@ ${detectionResult.detections.length > 0 ? `
 Use this detection data to improve your wound analysis accuracy.`;
       
       if (model.startsWith('gemini-')) {
-        classification = await analyzeWoundImageWithGemini(imageBase64, model, enhancedInstructions);
+        try {
+          classification = await analyzeWoundImageWithGemini(imageBase64, model, enhancedInstructions);
+        } catch (geminiError: any) {
+          // Check if this is a quota error
+          if (geminiError.message?.includes('quota') || geminiError.message?.includes('RESOURCE_EXHAUSTED')) {
+            console.log('WoundClassifier: Gemini service temporarily unavailable, automatically switching to GPT-4o');
+            // Automatically switch to GPT-4o when Gemini service is unavailable
+            classification = await analyzeWoundImage(imageBase64, 'gpt-4o', mimeType, enhancedInstructions);
+          } else {
+            // Re-throw non-quota errors
+            throw geminiError;
+          }
+        }
       } else {
         classification = await analyzeWoundImage(imageBase64, model, mimeType, enhancedInstructions);
       }

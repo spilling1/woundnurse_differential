@@ -246,7 +246,25 @@ Use appropriate categories: location, patient_info, symptoms, medical_history, w
     let response: string;
     
     if (model && model.startsWith('gemini')) {
-      response = await callGemini(model, analysisPrompt);
+      try {
+        response = await callGemini(model, analysisPrompt);
+      } catch (geminiError: any) {
+        // Check if this is a quota error
+        if (geminiError.message?.includes('quota') || geminiError.message?.includes('RESOURCE_EXHAUSTED')) {
+          console.log('AgentQuestionService: Gemini service temporarily unavailable, automatically switching to GPT-4o');
+          // Automatically switch to GPT-4o when Gemini service is unavailable
+          const messages = [
+            {
+              role: "user",
+              content: analysisPrompt
+            }
+          ];
+          response = await callOpenAI('gpt-4o', messages);
+        } else {
+          // Re-throw non-quota errors
+          throw geminiError;
+        }
+      }
     } else {
       const messages = [
         {

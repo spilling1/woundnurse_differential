@@ -33,10 +33,55 @@ export async function generateCarePlan(
     if (cleanModel.startsWith('gemini-')) {
       console.log('CarePlanGenerator: Routing to Gemini');
       const fullPrompt = `${systemPrompt}\n\n${prompt}`;
-      if (imageData) {
-        carePlan = await callGemini(cleanModel, fullPrompt, imageData);
-      } else {
-        carePlan = await callGemini(cleanModel, fullPrompt);
+      try {
+        if (imageData) {
+          carePlan = await callGemini(cleanModel, fullPrompt, imageData);
+        } else {
+          carePlan = await callGemini(cleanModel, fullPrompt);
+        }
+      } catch (geminiError: any) {
+        // Check if this is a quota error
+        if (geminiError.message?.includes('quota') || geminiError.message?.includes('RESOURCE_EXHAUSTED')) {
+          console.log('CarePlanGenerator: Gemini service temporarily unavailable, automatically switching to GPT-4o');
+          // Automatically switch to GPT-4o when Gemini service is unavailable
+          // Add a notice to the care plan about the service switch
+          const messages = [
+            {
+              role: "system",
+              content: systemPrompt
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ];
+          
+          if (imageData) {
+            // Add image to the user message for vision models
+            messages[1] = {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: prompt
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: `data:${imageMimeType || 'image/jpeg'};base64,${imageData}`
+                  }
+                }
+              ]
+            } as any;
+          }
+          
+          carePlan = await callOpenAI('gpt-4o', messages);
+          // Add a notice about the service switch
+          carePlan = `**⚠️ SYSTEM NOTICE:** The Gemini AI service is temporarily unavailable. This analysis was automatically completed using GPT-4o to ensure uninterrupted service.\n\n${carePlan}`;
+        } else {
+          // Re-throw non-quota errors
+          throw geminiError;
+        }
       }
     } else {
       console.log('CarePlanGenerator: Routing to OpenAI');
