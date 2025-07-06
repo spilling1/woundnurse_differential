@@ -9,8 +9,30 @@ import { useToast } from "@/hooks/use-toast";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
 
+
+
 export default function AIQuestions({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
+
+  // Helper function to get user-friendly detection method names
+  const getDetectionMethodName = (model: string): string => {
+    switch (model) {
+      case 'yolo9':
+      case 'yolo8':
+      case 'yolov8':
+        return 'Smart Wound Detection';
+      case 'color-detection':
+        return 'Color-based Detection';
+      case 'google-cloud-vision':
+        return 'Google Cloud Vision';
+      case 'azure-computer-vision':
+        return 'Azure Computer Vision';
+      case 'enhanced-fallback':
+        return 'Enhanced Image Analysis';
+      default:
+        return 'Image Analysis';
+    }
+  };
 
   // Update AI question answer
   const updateAnswer = (questionId: string, newAnswer: string) => {
@@ -151,23 +173,12 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         <CardHeader>
           <CardTitle>Step 3: Diagnostic Questions</CardTitle>
           
-          {/* Thumbnail Image Display */}
-          {state.imagePreview && (
-            <div className="mb-4 flex justify-center">
-              <img 
-                src={state.imagePreview} 
-                alt="Wound for reference" 
-                className="max-w-xs h-32 object-contain rounded-lg border"
-              />
-            </div>
-          )}
-          
-          {/* Detection Information */}
+          {/* Detection Information Only - No Duplicate Image */}
           {state.woundClassification?.detectionMetadata && (
             <div className="mb-4 p-3 bg-gray-50 rounded-lg border text-sm">
               <div className="font-medium text-gray-700 mb-1">Analysis Methods Used</div>
               <div className="space-y-1 text-xs text-gray-600">
-                <div><strong>Detection:</strong> {state.woundClassification.detectionMetadata.model === 'color-detection' ? 'Color-based Detection' : state.woundClassification.detectionMetadata.model}</div>
+                <div><strong>Detection:</strong> {getDetectionMethodName(state.woundClassification.detectionMetadata.model)}</div>
                 <div><strong>Classification:</strong> {state.woundClassification.classificationMethod || 'AI Vision'}</div>
               </div>
             </div>

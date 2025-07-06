@@ -11,6 +11,26 @@ import type { WoundClassification } from "@/../../shared/schema";
 export default function ImageUpload({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
 
+  // Helper function to get user-friendly detection method names
+  const getDetectionMethodName = (model: string): string => {
+    switch (model) {
+      case 'yolo9':
+      case 'yolo8':
+      case 'yolov8':
+        return 'Smart Wound Detection';
+      case 'color-detection':
+        return 'Color-based Detection';
+      case 'google-cloud-vision':
+        return 'Google Cloud Vision';
+      case 'azure-computer-vision':
+        return 'Azure Computer Vision';
+      case 'enhanced-fallback':
+        return 'Enhanced Image Analysis';
+      default:
+        return 'Image Analysis';
+    }
+  };
+
   // Handle image file selection
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -75,7 +95,7 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg border">
                   <div className="text-sm font-medium text-gray-700 mb-2">Detection Analysis</div>
                   <div className="space-y-1 text-xs text-gray-600">
-                    <div><strong>Detection Method:</strong> {state.woundClassification.detectionMetadata.model === 'yolo9' ? 'Color-based Detection' : state.woundClassification.detectionMetadata.model}</div>
+                    <div><strong>Detection Method:</strong> {getDetectionMethodName(state.woundClassification.detectionMetadata.model)}</div>
                     <div><strong>Classification Method:</strong> {state.woundClassification.classificationMethod || 'AI Vision'}</div>
                     {state.woundClassification.detectionMetadata.multipleWounds && (
                       <div><strong>Multiple Wounds:</strong> {state.woundClassification.detectionMetadata.multipleWounds ? 'Yes' : 'No'}</div>
