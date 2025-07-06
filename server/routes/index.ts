@@ -6,6 +6,7 @@ import { registerAuthRoutes } from "./auth-routes";
 import { registerAssessmentRoutes } from "./assessment-routes";
 import { registerFollowUpRoutes } from "./follow-up-routes";
 import { registerAdminRoutes } from "./admin-routes";
+import { registerProfileRoutes } from "./profile-routes";
 import { spawn, ChildProcess } from "child_process";
 
 // Global YOLO service management
@@ -307,6 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerAssessmentRoutes(app);
   registerFollowUpRoutes(app);
   registerAdminRoutes(app);
+  registerProfileRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

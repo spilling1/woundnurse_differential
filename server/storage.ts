@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, userProfiles, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel, type UserProfile, type InsertUserProfile } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
@@ -7,6 +7,12 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   getUserWoundAssessments(userId: string): Promise<WoundAssessment[]>;
+  
+  // User profile operations
+  getUserProfile(userId: string): Promise<UserProfile | undefined>;
+  createUserProfile(profile: InsertUserProfile): Promise<UserProfile>;
+  updateUserProfile(userId: string, profile: Partial<InsertUserProfile>): Promise<UserProfile>;
+  deleteUserProfile(userId: string): Promise<boolean>;
   
   // Wound assessment operations
   createWoundAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
@@ -484,6 +490,37 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAiAnalysisModel(id: number): Promise<boolean> {
     const result = await db.delete(aiAnalysisModels).where(eq(aiAnalysisModels.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // User profile operations
+  async getUserProfile(userId: string): Promise<UserProfile | undefined> {
+    const [profile] = await db.select().from(userProfiles).where(eq(userProfiles.userId, userId));
+    return profile;
+  }
+
+  async createUserProfile(profile: InsertUserProfile): Promise<UserProfile> {
+    const [newProfile] = await db
+      .insert(userProfiles)
+      .values(profile)
+      .returning();
+    return newProfile;
+  }
+
+  async updateUserProfile(userId: string, profile: Partial<InsertUserProfile>): Promise<UserProfile> {
+    const [updatedProfile] = await db
+      .update(userProfiles)
+      .set({
+        ...profile,
+        updatedAt: new Date(),
+      })
+      .where(eq(userProfiles.userId, userId))
+      .returning();
+    return updatedProfile;
+  }
+
+  async deleteUserProfile(userId: string): Promise<boolean> {
+    const result = await db.delete(userProfiles).where(eq(userProfiles.userId, userId));
     return result.rowCount !== null && result.rowCount > 0;
   }
 }

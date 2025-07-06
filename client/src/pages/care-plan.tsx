@@ -699,6 +699,15 @@ export default function CarePlan() {
                   <Button 
                     variant="ghost"
                     size="sm"
+                    onClick={() => setLocation("/profile")}
+                    className="p-2"
+                    title="My Profile"
+                  >
+                    <User className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setLocation("/settings")}
                     className="p-2"
                     title="Settings"

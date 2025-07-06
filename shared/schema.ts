@@ -40,6 +40,57 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// User profiles table for medical and personal information
+export const userProfiles = pgTable("user_profiles", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  
+  // Profile type and basic info
+  profileType: varchar("profile_type").notNull(), // "patient" or "caregiver"
+  age: integer("age"),
+  gender: varchar("gender"),
+  
+  // Medical conditions (for patients)
+  isDiabetic: boolean("is_diabetic").default(false),
+  hasHighBloodPressure: boolean("has_high_blood_pressure").default(false),
+  hasHeartDisease: boolean("has_heart_disease").default(false),
+  hasKidneyDisease: boolean("has_kidney_disease").default(false),
+  hasCirculationIssues: boolean("has_circulation_issues").default(false),
+  hasOstomy: boolean("has_ostomy").default(false),
+  ostomyType: varchar("ostomy_type"), // if has_ostomy is true
+  
+  // Mobility and lifestyle
+  mobilityStatus: varchar("mobility_status"), // "fully_mobile", "limited_mobility", "wheelchair", "bed_ridden"
+  assistiveDevices: text("assistive_devices").array(), // walker, crutches, etc.
+  activityLevel: varchar("activity_level"), // "very_active", "moderately_active", "sedentary"
+  
+  // Medications and allergies
+  currentMedications: text("current_medications"), // free text for now
+  medicationAllergies: text("medication_allergies"),
+  otherAllergies: text("other_allergies"),
+  
+  // Nutrition and lifestyle
+  nutritionStatus: varchar("nutrition_status"), // "excellent", "good", "fair", "poor"
+  dietRestrictions: text("diet_restrictions"),
+  smokingStatus: varchar("smoking_status"), // "never", "former", "current"
+  alcoholUse: varchar("alcohol_use"), // "none", "occasional", "moderate", "heavy"
+  
+  // Care goals and preferences
+  primaryGoals: text("primary_goals").array(), // quality_of_life, pain_management, independence, etc.
+  carePreferences: text("care_preferences"),
+  emergencyContact: varchar("emergency_contact"),
+  
+  // Caregiver-specific information
+  relationshipToPatient: varchar("relationship_to_patient"), // for caregivers
+  caregivingExperience: varchar("caregiving_experience"), // "none", "some", "experienced"
+  professionalBackground: varchar("professional_background"), // "medical", "non_medical", "retired_medical"
+  
+  // System fields
+  profileCompleted: boolean("profile_completed").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const woundAssessments = pgTable("wound_assessments", {
   id: serial("id").primaryKey(),
   caseId: text("case_id").notNull(),
@@ -194,6 +245,12 @@ export const insertCompanySchema = createInsertSchema(companies).omit({
   updatedAt: true,
 });
 
+export const insertUserProfileSchema = createInsertSchema(userProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertWoundAssessment = z.infer<typeof insertWoundAssessmentSchema>;
 export type WoundAssessment = typeof woundAssessments.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
@@ -210,6 +267,8 @@ export type InsertCompany = z.infer<typeof insertCompanySchema>;
 export type Company = typeof companies.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type InsertUserProfile = z.infer<typeof insertUserProfileSchema>;
+export type UserProfile = typeof userProfiles.$inferSelect;
 
 // Validation schemas for API endpoints
 export const uploadRequestSchema = z.object({
