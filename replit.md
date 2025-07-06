@@ -210,6 +210,7 @@ Changelog:
 - July 6, 2025. **ENHANCED ERROR HANDLING**: Added comprehensive Gemini API error handling with detailed content blocking detection and user-friendly error messages explaining medical image limitations
 - July 6, 2025. **MODEL DOCUMENTATION UPDATE**: Updated Gemini Flash model configuration to reflect medical image limitations, disabled by default, and added warning in admin dashboard about content filtering issues
 - July 6, 2025. **AI MODEL RELIABILITY**: Confirmed Gemini 2.5 Pro as reliable primary model for medical image analysis, with proper fallback messaging when Flash model encounters content blocking
+- July 6, 2025. **PERFORMANCE EXPECTATION**: Documented that Gemini analysis can take up to 60 seconds for complex medical image processing - this is normal operating behavior
 ```
 
 ## User Preferences

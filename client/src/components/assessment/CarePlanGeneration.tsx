@@ -102,6 +102,12 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
                 tailored for {state.audience === 'family' ? 'family caregivers' : state.audience === 'patient' ? 'patient self-care' : 'medical professionals'}.
               </p>
               
+              {state.model.includes('gemini') && (
+                <p className="mb-4 text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
+                  <strong>Note:</strong> Gemini analysis can take up to 60 seconds for thorough medical image processing. Please be patient while we generate your detailed care plan.
+                </p>
+              )}
+              
               <div className="space-y-2">
                 <Progress value={progress} className="w-full" />
                 <p className="text-sm text-gray-500">
