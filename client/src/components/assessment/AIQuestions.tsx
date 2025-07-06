@@ -54,6 +54,26 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
     }
   };
 
+  // Helper function to get improvement type description
+  const getImprovementType = (category: string): string => {
+    switch (category) {
+      case 'diagnostic':
+        return 'Diagnostic Accuracy';
+      case 'location':
+        return 'Diagnostic Accuracy';
+      case 'medical_history':
+        return 'Diagnostic Accuracy';
+      case 'treatment':
+        return 'Care Plan Improvement';
+      case 'symptoms':
+        return 'Care Plan Improvement';
+      case 'general':
+        return 'Care Plan Improvement';
+      default:
+        return 'Assessment Quality';
+    }
+  };
+
   // Helper function to get priority level description
   const getPriorityLevel = (category: string): string => {
     switch (category) {
