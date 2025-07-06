@@ -181,15 +181,17 @@ export default function MyCases() {
               >
                 <User className="h-4 w-4" />
               </Button>
-              <Button 
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation("/settings")}
-                className="p-2"
-                title="Settings"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
+              {(user as any)?.role === 'admin' && (
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLocation("/settings")}
+                  className="p-2"
+                  title="Settings"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              )}
               {(user as any)?.role === 'admin' && (
                 <Button 
                   variant="ghost"
