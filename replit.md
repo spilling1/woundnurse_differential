@@ -180,6 +180,8 @@ Changelog:
 - July 6, 2025. **CNN ACCURACY ISSUE IDENTIFIED**: CNN models showing poor real-world performance (classifying hand as diabetic ulcer), temporarily disabled CNN in favor of reliable AI vision models
 - July 6, 2025. **SMART FALLBACK SYSTEM**: Implemented intelligent override system where YOLO detection can override CNN misclassifications
 - July 6, 2025. **WOUND DETECTION PRIORITY**: Reverted to AI vision models as primary method due to CNN accuracy concerns, maintaining YOLO for precise measurements
+- July 6, 2025. **DETECTION MODEL MANAGEMENT**: Added comprehensive admin interface for managing AI detection models with enable/disable toggles, priority settings, and configuration editing
+- July 6, 2025. **ACCURATE MODEL LABELING**: Fixed misleading "YOLO9" detection label - system actually uses color-based smart detection with YOLO fallback (ultralytics not installed)
 ```
 
 ## User Preferences
