@@ -205,6 +205,10 @@ Changelog:
 - July 6, 2025. **DETECTION METHOD VISIBILITY**: Added clear detection method labels showing users exactly which analysis system was used (Color-based Detection vs AI Vision), replaced misleading "YOLO9" label with accurate "Color-based Detection" description
 - July 6, 2025. **DIAGNOSTIC TRANSPARENCY**: Enhanced UI to display thumbnail images and analysis methods used during assessment process, helping users understand which detection engines analyzed their wounds
 - July 6, 2025. **ESTIMATED IMPROVEMENT INDICATORS**: Replaced repetitive AI confidence scores with helpful "Estimated Improvement" indicators showing users exactly how answering each question will help: "Confidence Improvement" (better wound detection) vs "Care Plan Improvement" (better treatment guidance)
+- July 6, 2025. **GEMINI FLASH LIMITATION DISCOVERED**: Identified that Gemini 2.5 Flash has stricter content safety filters that block medical images with "blockReason: OTHER", while Gemini 2.5 Pro works correctly
+- July 6, 2025. **ENHANCED ERROR HANDLING**: Added comprehensive Gemini API error handling with detailed content blocking detection and user-friendly error messages explaining medical image limitations
+- July 6, 2025. **MODEL DOCUMENTATION UPDATE**: Updated Gemini Flash model configuration to reflect medical image limitations, disabled by default, and added warning in admin dashboard about content filtering issues
+- July 6, 2025. **AI MODEL RELIABILITY**: Confirmed Gemini 2.5 Pro as reliable primary model for medical image analysis, with proper fallback messaging when Flash model encounters content blocking
 ```
 
 ## User Preferences

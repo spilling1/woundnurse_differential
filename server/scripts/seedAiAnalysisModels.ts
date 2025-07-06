@@ -28,15 +28,15 @@ const defaultAiAnalysisModels: InsertAiAnalysisModel[] = [
   {
     name: "gemini-2.5-flash",
     displayName: "Gemini 2.5 Flash",
-    description: "Fast and efficient AI model for quick wound analysis with good accuracy",
-    isEnabled: true,
+    description: "Fast AI model - CAUTION: Has stricter content filters that block medical images. Use Gemini Pro for medical analysis.",
+    isEnabled: false,
     isDefault: false,
     priority: 90,
     provider: "google",
     modelId: "gemini-2.5-flash",
     requiresApiKey: true,
     apiKeyName: "GOOGLE_AI_API_KEY",
-    capabilities: ["vision", "text", "reasoning"],
+    capabilities: ["vision", "text", "reasoning", "medical_limitation"],
     config: {
       temperature: 0.1,
       max_tokens: 3000,
@@ -45,7 +45,8 @@ const defaultAiAnalysisModels: InsertAiAnalysisModel[] = [
         hate_speech: "BLOCK_MEDIUM_AND_ABOVE",
         sexually_explicit: "BLOCK_MEDIUM_AND_ABOVE",
         dangerous_content: "BLOCK_MEDIUM_AND_ABOVE"
-      }
+      },
+      medical_warning: "Content filters may block medical images"
     }
   },
   {
