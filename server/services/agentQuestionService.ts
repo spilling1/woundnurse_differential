@@ -172,16 +172,51 @@ FOLLOW-UP ASSESSMENT:
 
 TARGET AUDIENCE: ${audience}
 
-IMPORTANT INSTRUCTIONS:
-1. Follow ONLY the Agent Instructions above for question generation
-2. If confidence is below 80%, consider asking for additional photos:
-   - If wound edges are unclear: "Could you upload a clearer photo of the wound edges?"
-   - If wound size is uncertain: "Could you upload a photo with a reference object (like a coin or ruler) for size comparison?"
-   - If wound depth is unclear: "Could you upload a photo from a different angle to better show the wound depth?"
-   - If multiple wounds detected: "Could you upload photos of each wound separately for better analysis?"
-   - If lighting is poor: "Could you upload a photo with better lighting to see the wound details clearly?"
-3. Generate diagnostic questions based on what's unclear from the image analysis
-4. More detailed answers will result in better assessment accuracy
+QUESTION STRATEGY FRAMEWORK:
+
+A) CONFIDENCE IMPROVEMENT QUESTIONS (when confidence < 80%):
+   Focus on clarifying what was unclear in the image analysis:
+   - Location specifics: "Where exactly on the body is this wound located?"
+   - Medical history: "Do you have diabetes or circulation problems?"
+   - Wound bed characteristics: "What color is the wound bed (red, yellow, black)?"
+   - Wound edges: "Are the wound edges raised, flat, or undermined?"
+   - Timeline: "How long have you had this wound?"
+   - Origin: "How did this wound occur?"
+
+B) CARE PLAN OPTIMIZATION QUESTIONS (when confidence ≥ 80%):
+   Focus on treatment planning and symptom management:
+   - Symptoms: "Do you experience pain, numbness, or swelling around the wound?"
+   - Infection confirmation: "Is there increased warmth, red streaking, or foul odor?"
+   - Drainage details: "What type and amount of drainage do you see?"
+   - Current care: "What treatments have you tried so far?"
+   - Progress tracking: "Have you noticed any improvements or worsening?"
+
+C) MEDICAL REFERRAL QUESTIONS (when referral indicated):
+   Focus on information doctors need:
+   - Wound duration: "Exactly how long have you had this wound?"
+   - Injury mechanism: "What caused this wound initially?"
+   - Previous treatments: "What medical treatments have you received?"
+   - Associated symptoms: "Any fever, increased pain, or other concerning symptoms?"
+   - Medical conditions: "Any diabetes, circulation issues, or immune problems?"
+
+PHOTO SUGGESTIONS (when confidence < 70%):
+- If wound edges unclear: "Could you upload a clearer photo of the wound edges?"
+- If size uncertain: "Could you upload a photo with a reference object for size comparison?"
+- If depth unclear: "Could you upload a photo from a different angle?"
+- If lighting poor: "Could you upload a photo with better lighting?"
+
+QUESTION SELECTION STRATEGY:
+Current confidence: ${contextData.imageAnalysis.confidence}
+- If confidence < 80%: Focus on Category A (confidence improvement) questions
+- If confidence ≥ 80%: Focus on Category B (care plan optimization) questions  
+- If medical referral suspected: Include Category C (doctor preparation) questions
+- If confidence < 70%: Include photo suggestions
+
+Generate 2-4 strategically selected questions based on:
+1. What's unclear from the image analysis
+2. Current confidence level
+3. Information gaps that would most improve the assessment
+4. Whether referral to medical professional is likely needed
 
 ${isFollowUp ? 'This is a follow-up round of questions. Only ask additional questions if the Agent Instructions require them or if confidence is still below 80%.' : 'Generate initial questions based strictly on what the Agent Instructions specify, plus photo suggestions if confidence is low.'}
 

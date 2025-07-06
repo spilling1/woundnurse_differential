@@ -334,11 +334,38 @@ export function registerAssessmentRoutes(app: Express): void {
       // Calculate revised confidence based on answers provided
       let revisedConfidence = parsedClassification.confidence || 0.5;
       
-      // Improve confidence based on answered questions
+      // Improve confidence based on answered questions - categorize by purpose
       if (parsedQuestions.length > 0) {
         const answeredQuestions = parsedQuestions.filter((q: any) => q.answer && q.answer.trim().length > 0);
-        const confidenceBoost = Math.min(0.3, answeredQuestions.length * 0.05); // Max 30% boost, 5% per answered question
-        revisedConfidence = Math.min(1.0, revisedConfidence + confidenceBoost);
+        
+        // Different confidence boosts based on question category
+        let confidenceBoost = 0;
+        answeredQuestions.forEach((q: any) => {
+          const answer = q.answer.toLowerCase();
+          
+          // High-impact confidence questions (medical history, location, timeline)
+          if (q.question.toLowerCase().includes('diabetes') || 
+              q.question.toLowerCase().includes('where') ||
+              q.question.toLowerCase().includes('location') ||
+              q.question.toLowerCase().includes('how long') ||
+              q.question.toLowerCase().includes('wound bed') ||
+              q.question.toLowerCase().includes('color')) {
+            confidenceBoost += 0.08; // 8% boost for critical diagnostic info
+          }
+          // Medium-impact questions (symptoms, treatment history)
+          else if (q.question.toLowerCase().includes('pain') ||
+                   q.question.toLowerCase().includes('drainage') ||
+                   q.question.toLowerCase().includes('treatment') ||
+                   q.question.toLowerCase().includes('infection')) {
+            confidenceBoost += 0.05; // 5% boost for care plan optimization
+          }
+          // Lower-impact questions (general symptoms)
+          else {
+            confidenceBoost += 0.03; // 3% boost for other questions
+          }
+        });
+        
+        revisedConfidence = Math.min(1.0, revisedConfidence + Math.min(0.35, confidenceBoost));
       }
       
       // Update classification with revised confidence

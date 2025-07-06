@@ -57,24 +57,86 @@ ${contextData?.mobilityStatus ? `- Mobility status: ${contextData.mobilityStatus
 ${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionStatus}` : ''}
 `;
 
-  // Process AI Questions and Answers
+  // Process AI Questions and Answers by Category
   if (contextData?.aiQuestions && Array.isArray(contextData.aiQuestions)) {
-    baseInfo += `
-
-CRITICAL: AI Follow-up Questions and Patient Answers (MUST OVERRIDE VISUAL CLASSIFICATION IF ANSWERS CONTRADICT):
-`;
+    const categorizedQuestions: {
+      confidenceImprovement: any[];
+      carePlanOptimization: any[];
+      medicalReferral: any[];
+    } = {
+      confidenceImprovement: [],
+      carePlanOptimization: [],
+      medicalReferral: []
+    };
+    
+    // Categorize questions based on content
     contextData.aiQuestions.forEach((qa: any) => {
       if (qa.answer && qa.answer.trim() !== '') {
-        baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+        const question = qa.question.toLowerCase();
+        
+        // Category A: Confidence Improvement Questions
+        if (question.includes('diabetes') || question.includes('where') || 
+            question.includes('location') || question.includes('how long') ||
+            question.includes('wound bed') || question.includes('color') ||
+            question.includes('how did') || question.includes('occur')) {
+          categorizedQuestions.confidenceImprovement.push(qa);
+        }
+        // Category B: Care Plan Optimization Questions
+        else if (question.includes('pain') || question.includes('drainage') ||
+                 question.includes('treatment') || question.includes('infection') ||
+                 question.includes('numbness') || question.includes('swelling') ||
+                 question.includes('improvement') || question.includes('tried')) {
+          categorizedQuestions.carePlanOptimization.push(qa);
+        }
+        // Category C: Medical Referral Questions
+        else if (question.includes('fever') || question.includes('medical') ||
+                 question.includes('doctor') || question.includes('symptoms') ||
+                 question.includes('circulation') || question.includes('immune')) {
+          categorizedQuestions.medicalReferral.push(qa);
+        }
+        // Default to confidence improvement
+        else {
+          categorizedQuestions.confidenceImprovement.push(qa);
+        }
       }
     });
+
+    baseInfo += `
+
+CRITICAL: Patient Answers by Category (MUST OVERRIDE VISUAL CLASSIFICATION IF ANSWERS CONTRADICT):
+
+A) DIAGNOSTIC CONFIDENCE ANSWERS (Impact wound classification):
+`;
+    categorizedQuestions.confidenceImprovement.forEach((qa: any) => {
+      baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+    });
+
+    if (categorizedQuestions.carePlanOptimization.length > 0) {
+      baseInfo += `
+B) CARE PLAN OPTIMIZATION ANSWERS (Impact treatment recommendations):
+`;
+      categorizedQuestions.carePlanOptimization.forEach((qa: any) => {
+        baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+      });
+    }
+
+    if (categorizedQuestions.medicalReferral.length > 0) {
+      baseInfo += `
+C) MEDICAL REFERRAL PREPARATION ANSWERS (Impact urgency/referral need):
+`;
+      categorizedQuestions.medicalReferral.forEach((qa: any) => {
+        baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+      });
+    }
     
     baseInfo += `
 
 **IMPORTANT DIAGNOSTIC INSTRUCTION:** 
-The patient answers above MUST take precedence over visual image analysis when there's a contradiction. 
+Category A answers MUST take precedence over visual image analysis when there's a contradiction. 
 For example, if image suggests "diabetic ulcer" but patient clearly states "I do not have diabetes", 
 then reclassify as a different wound type (pressure ulcer, venous ulcer, etc.) based on location and features.
+Category B answers should enhance treatment recommendations and symptom management.
+Category C answers should influence urgency level and medical referral recommendations.
 Always explain your reasoning when patient answers contradict initial visual assessment.
 `;
   }

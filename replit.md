@@ -188,6 +188,11 @@ Changelog:
 - July 6, 2025. **SMART PHOTO SUGGESTIONS**: Added AI-driven photo upload recommendations based on detection quality and missing visual information
 - July 6, 2025. **ENHANCED USER GUIDANCE**: Added detailed instructions emphasizing that more detailed answers result in better assessment accuracy
 - July 6, 2025. **MULTI-ROUND ASSESSMENT**: Created iterative questioning workflow where users answer questions, see confidence improve, and continue until 80% threshold reached
+- July 6, 2025. **STRATEGIC QUESTION CATEGORIZATION**: Implemented three-category question system: A) Confidence improvement (medical history, location, wound characteristics), B) Care plan optimization (symptoms, treatments, progress), C) Medical referral preparation (doctor-relevant information)
+- July 6, 2025. **WEIGHTED CONFIDENCE SCORING**: Enhanced confidence calculation with category-based scoring - diagnostic questions provide 8% boost, treatment questions 5% boost, general questions 3% boost
+- July 6, 2025. **CATEGORIZED CARE PLAN INTEGRATION**: Updated prompt templates to organize patient answers by purpose and impact on assessment accuracy
+- July 6, 2025. **ENHANCED IMAGE DISPLAY**: Added dedicated image display section at top of care plan page showing assessment images with upload capability for additional photos
+- July 6, 2025. **VISUAL ASSESSMENT IMPROVEMENT**: Created responsive image grid with original assessment photo and placeholder for additional angles/reference images
 ```
 
 ## User Preferences
