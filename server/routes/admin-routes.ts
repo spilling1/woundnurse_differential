@@ -2,8 +2,8 @@ import type { Express } from "express";
 import { storage } from "../storage";
 import { isAuthenticated, isAdmin } from "../replitAuth";
 import { generateCarePlan } from "../services/carePlanGenerator";
-import { userUpdateSchema, companyCreateSchema, companyUpdateSchema, insertDetectionModelSchema } from "@shared/schema";
-import type { InsertDetectionModel } from "@shared/schema";
+import { userUpdateSchema, companyCreateSchema, companyUpdateSchema, insertDetectionModelSchema, insertAiAnalysisModelSchema } from "@shared/schema";
+import type { InsertDetectionModel, InsertAiAnalysisModel } from "@shared/schema";
 
 export function registerAdminRoutes(app: Express): void {
   // Debug authentication
@@ -720,6 +720,178 @@ export function registerAdminRoutes(app: Express): void {
       res.status(500).json({
         code: "DELETE_DETECTION_MODEL_ERROR",
         message: error.message || "Failed to delete detection model"
+      });
+    }
+  });
+
+  // ===== AI ANALYSIS MODEL MANAGEMENT ROUTES =====
+
+  // Get all AI analysis models (admin only)
+  app.get("/api/admin/ai-analysis-models", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const models = await storage.getAllAiAnalysisModels();
+      res.json(models);
+    } catch (error: any) {
+      console.error('Error fetching AI analysis models:', error);
+      res.status(500).json({
+        code: "FETCH_AI_ANALYSIS_MODELS_ERROR",
+        message: error.message || "Failed to fetch AI analysis models"
+      });
+    }
+  });
+
+  // Get enabled AI analysis models (admin only)
+  app.get("/api/admin/ai-analysis-models/enabled", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const models = await storage.getEnabledAiAnalysisModels();
+      res.json(models);
+    } catch (error: any) {
+      console.error('Error fetching enabled AI analysis models:', error);
+      res.status(500).json({
+        code: "FETCH_ENABLED_AI_ANALYSIS_MODELS_ERROR",
+        message: error.message || "Failed to fetch enabled AI analysis models"
+      });
+    }
+  });
+
+  // Get default AI analysis model (admin only)
+  app.get("/api/admin/ai-analysis-models/default", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const model = await storage.getDefaultAiAnalysisModel();
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error fetching default AI analysis model:', error);
+      res.status(500).json({
+        code: "FETCH_DEFAULT_AI_ANALYSIS_MODEL_ERROR",
+        message: error.message || "Failed to fetch default AI analysis model"
+      });
+    }
+  });
+
+  // Create AI analysis model (admin only)
+  app.post("/api/admin/ai-analysis-models", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const validation = insertAiAnalysisModelSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({
+          code: "INVALID_AI_ANALYSIS_MODEL_DATA",
+          message: "Invalid AI analysis model data",
+          errors: validation.error.errors
+        });
+      }
+
+      const model = await storage.createAiAnalysisModel(validation.data);
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error creating AI analysis model:', error);
+      res.status(500).json({
+        code: "CREATE_AI_ANALYSIS_MODEL_ERROR",
+        message: error.message || "Failed to create AI analysis model"
+      });
+    }
+  });
+
+  // Update AI analysis model (admin only)
+  app.patch("/api/admin/ai-analysis-models/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_MODEL_ID",
+          message: "Invalid model ID"
+        });
+      }
+
+      const model = await storage.updateAiAnalysisModel(id, req.body);
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error updating AI analysis model:', error);
+      res.status(500).json({
+        code: "UPDATE_AI_ANALYSIS_MODEL_ERROR",
+        message: error.message || "Failed to update AI analysis model"
+      });
+    }
+  });
+
+  // Toggle AI analysis model enabled/disabled (admin only)
+  app.patch("/api/admin/ai-analysis-models/:id/toggle", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_MODEL_ID",
+          message: "Invalid model ID"
+        });
+      }
+
+      const { enabled } = req.body;
+      if (typeof enabled !== 'boolean') {
+        return res.status(400).json({
+          code: "INVALID_ENABLED_VALUE",
+          message: "Enabled must be a boolean value"
+        });
+      }
+
+      const model = await storage.toggleAiAnalysisModel(id, enabled);
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error toggling AI analysis model:', error);
+      res.status(500).json({
+        code: "TOGGLE_AI_ANALYSIS_MODEL_ERROR",
+        message: error.message || "Failed to toggle AI analysis model"
+      });
+    }
+  });
+
+  // Set default AI analysis model (admin only)
+  app.patch("/api/admin/ai-analysis-models/:id/default", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_MODEL_ID",
+          message: "Invalid model ID"
+        });
+      }
+
+      const model = await storage.setDefaultAiAnalysisModel(id);
+      res.json(model);
+    } catch (error: any) {
+      console.error('Error setting default AI analysis model:', error);
+      res.status(500).json({
+        code: "SET_DEFAULT_AI_ANALYSIS_MODEL_ERROR",
+        message: error.message || "Failed to set default AI analysis model"
+      });
+    }
+  });
+
+  // Delete AI analysis model (admin only)
+  app.delete("/api/admin/ai-analysis-models/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_MODEL_ID",
+          message: "Invalid model ID"
+        });
+      }
+
+      const success = await storage.deleteAiAnalysisModel(id);
+      
+      if (!success) {
+        return res.status(404).json({
+          code: "MODEL_NOT_FOUND",
+          message: "AI analysis model not found"
+        });
+      }
+
+      res.json({ success: true, message: "AI analysis model deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting AI analysis model:', error);
+      res.status(500).json({
+        code: "DELETE_AI_ANALYSIS_MODEL_ERROR",
+        message: error.message || "Failed to delete AI analysis model"
       });
     }
   });

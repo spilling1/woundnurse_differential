@@ -135,6 +135,25 @@ export const detectionModels = pgTable("detection_models", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// AI Analysis Models Configuration
+export const aiAnalysisModels = pgTable("ai_analysis_models", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(), // 'gpt-4o', 'gpt-3.5', 'gemini-2.5-pro', etc.
+  displayName: varchar("display_name").notNull(), // 'GPT-4o', 'Gemini 2.5 Pro', etc.
+  description: text("description").notNull(),
+  isEnabled: boolean("is_enabled").notNull().default(true),
+  isDefault: boolean("is_default").notNull().default(false), // Only one can be default
+  priority: integer("priority").notNull().default(0), // Higher priority = preferred
+  provider: varchar("provider").notNull(), // 'openai', 'google', 'anthropic'
+  modelId: varchar("model_id").notNull(), // 'gpt-4o', 'gemini-2.5-pro', etc.
+  requiresApiKey: boolean("requires_api_key").notNull().default(true),
+  apiKeyName: varchar("api_key_name"), // Environment variable name for API key
+  capabilities: jsonb("capabilities").notNull(), // JSON array: ['vision', 'text', 'reasoning']
+  config: jsonb("config"), // Model-specific configuration like temperature, max_tokens
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertWoundAssessmentSchema = createInsertSchema(woundAssessments).omit({
   id: true,
   createdAt: true,
@@ -163,6 +182,12 @@ export const insertDetectionModelSchema = createInsertSchema(detectionModels).om
   updatedAt: true,
 });
 
+export const insertAiAnalysisModelSchema = createInsertSchema(aiAnalysisModels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertCompanySchema = createInsertSchema(companies).omit({
   id: true,
   createdAt: true,
@@ -179,6 +204,8 @@ export type InsertAgentQuestion = z.infer<typeof insertAgentQuestionSchema>;
 export type AgentQuestion = typeof agentQuestions.$inferSelect;
 export type InsertDetectionModel = z.infer<typeof insertDetectionModelSchema>;
 export type DetectionModel = typeof detectionModels.$inferSelect;
+export type InsertAiAnalysisModel = z.infer<typeof insertAiAnalysisModelSchema>;
+export type AiAnalysisModel = typeof aiAnalysisModels.$inferSelect;
 export type InsertCompany = z.infer<typeof insertCompanySchema>;
 export type Company = typeof companies.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;

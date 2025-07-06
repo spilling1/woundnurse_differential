@@ -31,7 +31,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
-import type { User, Company, WoundAssessment, DetectionModel } from "@shared/schema";
+import type { User, Company, WoundAssessment, DetectionModel, AiAnalysisModel } from "@shared/schema";
 
 interface DashboardStats {
   totalUsers: number;
@@ -94,6 +94,11 @@ export default function AdminDashboard() {
 
   const { data: detectionModels = [], isLoading: isDetectionModelsLoading } = useQuery<DetectionModel[]>({
     queryKey: ['/api/admin/detection-models'],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
+
+  const { data: aiAnalysisModels = [], isLoading: isAiAnalysisModelsLoading } = useQuery<AiAnalysisModel[]>({
+    queryKey: ['/api/admin/ai-analysis-models'],
     enabled: isAuthenticated && user?.role === 'admin',
   });
 
@@ -311,6 +316,63 @@ export default function AdminDashboard() {
     },
   });
 
+  // AI analysis model management mutations
+  const toggleAiAnalysisModelMutation = useMutation({
+    mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) => {
+      return apiRequest('PATCH', `/api/admin/ai-analysis-models/${id}/toggle`, { enabled });
+    },
+    onMutate: async ({ id, enabled }) => {
+      await queryClient.cancelQueries({ queryKey: ['/api/admin/ai-analysis-models'] });
+      const previousModels = queryClient.getQueryData(['/api/admin/ai-analysis-models']);
+      queryClient.setQueryData(['/api/admin/ai-analysis-models'], (old: any) => {
+        if (!old) return old;
+        return old.map((model: any) => 
+          model.id === id ? { ...model, isEnabled: enabled } : model
+        );
+      });
+      return { previousModels };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousModels) {
+        queryClient.setQueryData(['/api/admin/ai-analysis-models'], context.previousModels);
+      }
+      toast({
+        title: "Error",
+        description: "Failed to update AI analysis model",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "AI analysis model status updated successfully",
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ai-analysis-models'] });
+    },
+  });
+
+  const setDefaultAiAnalysisModelMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest('PATCH', `/api/admin/ai-analysis-models/${id}/default`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ai-analysis-models'] });
+      toast({
+        title: "Success",
+        description: "Default AI analysis model updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to set default AI analysis model",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Filter users
   const filteredUsers = users.filter(user => 
     user.email?.toLowerCase().includes(userFilter.toLowerCase()) ||
@@ -390,12 +452,13 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="companies">Companies</TabsTrigger>
             <TabsTrigger value="assessments">Assessments</TabsTrigger>
             <TabsTrigger value="detection-models">Detection Models</TabsTrigger>
+            <TabsTrigger value="ai-analysis-models">AI Analysis Models</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Overview */}
@@ -861,6 +924,128 @@ export default function AdminDashboard() {
                           >
                             <Edit3 className="h-4 w-4" />
                           </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* AI Analysis Models Management */}
+          <TabsContent value="ai-analysis-models" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-medium">AI Analysis Models</h3>
+                <p className="text-sm text-muted-foreground">
+                  Manage AI models used for wound analysis and care plan generation
+                </p>
+              </div>
+            </div>
+
+            {isAiAnalysisModelsLoading ? (
+              <div className="grid grid-cols-1 gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardContent className="pt-6">
+                      <div className="h-8 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {aiAnalysisModels.map((model) => (
+                  <Card key={model.id} className="overflow-hidden">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 space-y-3">
+                          <div className="flex items-center space-x-3">
+                            <div className="flex items-center space-x-2">
+                              <h4 className="font-medium">{model.displayName}</h4>
+                              {model.isDefault && (
+                                <Badge variant="default" className="text-xs">
+                                  Default
+                                </Badge>
+                              )}
+                              <Badge 
+                                variant={model.isEnabled ? "default" : "secondary"} 
+                                className="text-xs"
+                              >
+                                {model.isEnabled ? "Enabled" : "Disabled"}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {model.provider}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                Priority: {model.priority}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-muted-foreground">
+                            {model.description}
+                          </p>
+                          
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="font-medium">Model ID:</span>
+                              <span className="ml-2 text-muted-foreground">{model.modelId}</span>
+                            </div>
+                            <div>
+                              <span className="font-medium">API Key:</span>
+                              <span className="ml-2 text-muted-foreground">
+                                {model.requiresApiKey ? model.apiKeyName : "Not required"}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {model.capabilities && model.capabilities.length > 0 && (
+                            <div>
+                              <span className="text-sm font-medium">Capabilities:</span>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {model.capabilities.map((capability) => (
+                                  <Badge key={capability} variant="outline" className="text-xs">
+                                    {capability}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center space-x-2 ml-4">
+                          {!model.isDefault && model.isEnabled && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setDefaultAiAnalysisModelMutation.mutate(model.id);
+                              }}
+                              disabled={setDefaultAiAnalysisModelMutation.isPending}
+                            >
+                              Set Default
+                            </Button>
+                          )}
+                          
+                          <div className="flex items-center space-x-2">
+                            <label htmlFor={`ai-model-${model.id}`} className="text-sm font-medium">
+                              Enable
+                            </label>
+                            <Switch
+                              id={`ai-model-${model.id}`}
+                              checked={model.isEnabled}
+                              onCheckedChange={(enabled) => {
+                                toggleAiAnalysisModelMutation.mutate({ 
+                                  id: model.id, 
+                                  enabled 
+                                });
+                              }}
+                              disabled={toggleAiAnalysisModelMutation.isPending}
+                            />
+                          </div>
                         </div>
                       </div>
                     </CardContent>

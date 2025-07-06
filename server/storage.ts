@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
@@ -58,6 +58,17 @@ export interface IStorage {
   updateDetectionModel(id: number, updates: Partial<DetectionModel>): Promise<DetectionModel>;
   toggleDetectionModel(id: number, enabled: boolean): Promise<DetectionModel>;
   deleteDetectionModel(id: number): Promise<boolean>;
+  
+  // AI analysis model operations
+  getAllAiAnalysisModels(): Promise<AiAnalysisModel[]>;
+  getEnabledAiAnalysisModels(): Promise<AiAnalysisModel[]>;
+  getDefaultAiAnalysisModel(): Promise<AiAnalysisModel | undefined>;
+  getAiAnalysisModel(id: number): Promise<AiAnalysisModel | undefined>;
+  createAiAnalysisModel(model: InsertAiAnalysisModel): Promise<AiAnalysisModel>;
+  updateAiAnalysisModel(id: number, updates: Partial<AiAnalysisModel>): Promise<AiAnalysisModel>;
+  toggleAiAnalysisModel(id: number, enabled: boolean): Promise<AiAnalysisModel>;
+  setDefaultAiAnalysisModel(id: number): Promise<AiAnalysisModel>;
+  deleteAiAnalysisModel(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -395,6 +406,84 @@ export class DatabaseStorage implements IStorage {
 
   async deleteDetectionModel(id: number): Promise<boolean> {
     const result = await db.delete(detectionModels).where(eq(detectionModels.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // AI analysis model operations implementation
+  async getAllAiAnalysisModels(): Promise<AiAnalysisModel[]> {
+    return await db.select().from(aiAnalysisModels).orderBy(desc(aiAnalysisModels.priority), aiAnalysisModels.name);
+  }
+
+  async getEnabledAiAnalysisModels(): Promise<AiAnalysisModel[]> {
+    return await db.select().from(aiAnalysisModels)
+      .where(eq(aiAnalysisModels.isEnabled, true))
+      .orderBy(desc(aiAnalysisModels.priority), aiAnalysisModels.name);
+  }
+
+  async getDefaultAiAnalysisModel(): Promise<AiAnalysisModel | undefined> {
+    const [model] = await db.select().from(aiAnalysisModels)
+      .where(and(eq(aiAnalysisModels.isDefault, true), eq(aiAnalysisModels.isEnabled, true)));
+    return model;
+  }
+
+  async getAiAnalysisModel(id: number): Promise<AiAnalysisModel | undefined> {
+    const [model] = await db.select().from(aiAnalysisModels).where(eq(aiAnalysisModels.id, id));
+    return model;
+  }
+
+  async createAiAnalysisModel(model: InsertAiAnalysisModel): Promise<AiAnalysisModel> {
+    const [newModel] = await db.insert(aiAnalysisModels).values(model).returning();
+    return newModel;
+  }
+
+  async updateAiAnalysisModel(id: number, updates: Partial<AiAnalysisModel>): Promise<AiAnalysisModel> {
+    const [model] = await db
+      .update(aiAnalysisModels)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(aiAnalysisModels.id, id))
+      .returning();
+    return model;
+  }
+
+  async toggleAiAnalysisModel(id: number, enabled: boolean): Promise<AiAnalysisModel> {
+    const [model] = await db
+      .update(aiAnalysisModels)
+      .set({
+        isEnabled: enabled,
+        updatedAt: new Date(),
+      })
+      .where(eq(aiAnalysisModels.id, id))
+      .returning();
+    return model;
+  }
+
+  async setDefaultAiAnalysisModel(id: number): Promise<AiAnalysisModel> {
+    // First, unset all defaults
+    await db
+      .update(aiAnalysisModels)
+      .set({
+        isDefault: false,
+        updatedAt: new Date(),
+      });
+
+    // Then set the new default
+    const [model] = await db
+      .update(aiAnalysisModels)
+      .set({
+        isDefault: true,
+        isEnabled: true, // Ensure the default model is enabled
+        updatedAt: new Date(),
+      })
+      .where(eq(aiAnalysisModels.id, id))
+      .returning();
+    return model;
+  }
+
+  async deleteAiAnalysisModel(id: number): Promise<boolean> {
+    const result = await db.delete(aiAnalysisModels).where(eq(aiAnalysisModels.id, id));
     return result.rowCount !== null && result.rowCount > 0;
   }
 }
