@@ -177,6 +177,9 @@ Changelog:
 - July 6, 2025. **ENHANCED TRAINING DATA**: Successfully integrated 538 additional body context images with proper categorization (S→surgical, D→diabetic, V→venous, P→pressure)
 - July 6, 2025. **TRAINING PIPELINE EXPANSION**: Created comprehensive training infrastructure for ensemble models with body context understanding
 - July 6, 2025. **MODEL DIVERSITY**: Established multiple training approaches (enhanced_body_context_trainer.py, rapid_model_trainer.py, efficient_ensemble_trainer.py) for improved accuracy
+- July 6, 2025. **CNN ACCURACY ISSUE IDENTIFIED**: CNN models showing poor real-world performance (classifying hand as diabetic ulcer), temporarily disabled CNN in favor of reliable AI vision models
+- July 6, 2025. **SMART FALLBACK SYSTEM**: Implemented intelligent override system where YOLO detection can override CNN misclassifications
+- July 6, 2025. **WOUND DETECTION PRIORITY**: Reverted to AI vision models as primary method due to CNN accuracy concerns, maintaining YOLO for precise measurements
 ```
 
 ## User Preferences

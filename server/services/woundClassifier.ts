@@ -6,10 +6,15 @@ import { cnnWoundClassifier, convertCNNToStandardClassification } from "./cnnWou
 
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
   try {
-    // Step 1: Try CNN-based wound classification first (priority method)
+    // Step 1: TEMPORARILY DISABLED CNN due to poor accuracy (hand classified as diabetic ulcer)
+    // TODO: Retrain CNN models with better data quality and validation
     let classification;
     let usedCNN = false;
     
+    console.log('CNN temporarily disabled due to accuracy issues - using reliable AI vision models');
+    
+    // Keeping CNN code for future use once retrained:
+    /*
     try {
       const cnnModelInfo = await cnnWoundClassifier.getModelInfo();
       
@@ -27,6 +32,7 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       console.log('CNN classification failed, using AI vision models as fallback:', (cnnError as Error).message);
       usedCNN = false;
     }
+    */
     
     // Step 2: Perform YOLO-based wound detection for measurements (regardless of classification method)
     const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
