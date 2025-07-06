@@ -831,6 +831,44 @@ export default function CarePlan() {
               <div className="bg-purple-50 border border-purple-100 rounded-lg p-4">
                 <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-2">Size Assessment</div>
                 <div className="text-gray-900 font-medium">{(assessmentData?.classification as any)?.size || 'Not specified'}</div>
+                {/* Show precise measurements if available from detection */}
+                {(assessmentData?.classification as any)?.detection?.measurements && (
+                  <div className="mt-2 pt-2 border-t border-purple-200">
+                    <div className="text-xs text-purple-700 space-y-1">
+                      {(assessmentData?.classification as any)?.detection?.measurements?.length && (
+                        <div>Length: {(assessmentData?.classification as any)?.detection?.measurements?.length} mm</div>
+                      )}
+                      {(assessmentData?.classification as any)?.detection?.measurements?.width && (
+                        <div>Width: {(assessmentData?.classification as any)?.detection?.measurements?.width} mm</div>
+                      )}
+                      {(assessmentData?.classification as any)?.detection?.measurements?.area && (
+                        <div>Area: {(assessmentData?.classification as any)?.detection?.measurements?.area} mm²</div>
+                      )}
+                      {(assessmentData?.classification as any)?.detection?.measurements?.perimeter && (
+                        <div>Perimeter: {(assessmentData?.classification as any)?.detection?.measurements?.perimeter} mm</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {/* Show precise measurements if available from preciseMeasurements */}
+                {(assessmentData?.classification as any)?.preciseMeasurements && (
+                  <div className="mt-2 pt-2 border-t border-purple-200">
+                    <div className="text-xs text-purple-700 space-y-1">
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.length && (
+                        <div>Length: {(assessmentData?.classification as any)?.preciseMeasurements?.length} mm</div>
+                      )}
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.width && (
+                        <div>Width: {(assessmentData?.classification as any)?.preciseMeasurements?.width} mm</div>
+                      )}
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.area && (
+                        <div>Area: {(assessmentData?.classification as any)?.preciseMeasurements?.area} mm²</div>
+                      )}
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.perimeter && (
+                        <div>Perimeter: {(assessmentData?.classification as any)?.preciseMeasurements?.perimeter} mm</div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="bg-orange-50 border border-orange-100 rounded-lg p-4">
                 <div className="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-2">Anatomical Location</div>

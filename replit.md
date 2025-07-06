@@ -200,6 +200,9 @@ Changelog:
 - July 6, 2025. **CLEAN CARE PLAN LAYOUT**: Removed duplicate images and additional upload capability from care plan page - now shows single clean image display only
 - July 6, 2025. **SIMPLIFIED IMAGE PRESENTATION**: Care plan page now has clean, professional single image display without upload distractions
 - July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
+- July 6, 2025. **SIZE ASSESSMENT ENHANCEMENT**: Added precise wound dimensions display under Size Assessment card showing length, width, area, and perimeter measurements from YOLO detection system
+- July 6, 2025. **CARE PLAN STRUCTURE FIX**: Removed confusing "Questions for you" section from care plan output - questions are now only shown during assessment phase, not in final care plan
+- July 6, 2025. **AI INSTRUCTION UPDATE**: Updated care plan structure guidelines to explicitly prohibit generating additional questions in final care plan since all diagnostic questions are handled during assessment
 - July 6, 2025. **CRITICAL VERSIONING BUG FIX**: Fixed case versioning issue where duplicate case IDs were both showing v1 instead of proper v1/v2 numbering - corrected database and improved version numbering logic
 - July 6, 2025. **DUPLICATE IMAGE DETECTION**: Added intelligent duplicate image detection system that prompts users when uploading identical images - users can choose between creating follow-up assessments or new cases, preventing accidental case duplication while preserving user autonomy
 - July 6, 2025. **CONFIDENCE TRANSPARENCY**: Fixed misleading 50% confidence defaults by requiring authentic confidence scores from AI models, lowered fallback to 40% for honest uncertainty indication, and added confidence scoring to Gemini models previously missing this capability
