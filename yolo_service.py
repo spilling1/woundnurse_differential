@@ -49,7 +49,7 @@ class Detection(BaseModel):
 
 class DetectionResponse(BaseModel):
     detections: List[Detection]
-    model: str = "yolo9"
+    model: str = "color-detection"
     version: str = "1.0"
 
 def decode_base64_image(base64_str: str) -> np.ndarray:

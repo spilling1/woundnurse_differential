@@ -198,6 +198,9 @@ Changelog:
 - July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
 - July 6, 2025. **CRITICAL VERSIONING BUG FIX**: Fixed case versioning issue where duplicate case IDs were both showing v1 instead of proper v1/v2 numbering - corrected database and improved version numbering logic
 - July 6, 2025. **DUPLICATE IMAGE DETECTION**: Added intelligent duplicate image detection system that prompts users when uploading identical images - users can choose between creating follow-up assessments or new cases, preventing accidental case duplication while preserving user autonomy
+- July 6, 2025. **CONFIDENCE TRANSPARENCY**: Fixed misleading 50% confidence defaults by requiring authentic confidence scores from AI models, lowered fallback to 40% for honest uncertainty indication, and added confidence scoring to Gemini models previously missing this capability
+- July 6, 2025. **DETECTION METHOD VISIBILITY**: Added clear detection method labels showing users exactly which analysis system was used (Color-based Detection vs AI Vision), replaced misleading "YOLO9" label with accurate "Color-based Detection" description
+- July 6, 2025. **DIAGNOSTIC TRANSPARENCY**: Enhanced UI to display thumbnail images and analysis methods used during assessment process, helping users understand which detection engines analyzed their wounds
 ```
 
 ## User Preferences

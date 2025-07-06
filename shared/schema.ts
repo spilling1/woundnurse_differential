@@ -198,6 +198,39 @@ export const uploadRequestSchema = z.object({
   nutritionStatus: z.string().optional(),
 });
 
+// Wound Classification interface for frontend types
+export interface WoundClassification {
+  woundType: string;
+  stage: string;
+  size: string;
+  woundBed: string;
+  exudate: string;
+  infectionSigns: string[];
+  location: string;
+  additionalObservations: string;
+  confidence: number;
+  classificationMethod?: string;
+  modelInfo?: {
+    type: string;
+    accuracy: string;
+    apiCall?: boolean;
+    processingTime?: number;
+  };
+  detectionMetadata?: {
+    model: string;
+    version: string;
+    processingTime?: number;
+    multipleWounds: boolean;
+  };
+  detection?: {
+    confidence: number;
+    boundingBox: any;
+    measurements: any;
+    scaleCalibrated: boolean;
+  };
+  preciseMeasurements?: any;
+}
+
 export const feedbackRequestSchema = z.object({
   caseId: z.string(),
   feedbackType: z.enum(['helpful', 'not-helpful']),

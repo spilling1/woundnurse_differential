@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
+import type { WoundClassification } from "@/../../shared/schema";
 
 export default function ImageUpload({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
@@ -68,6 +69,23 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
                 className="max-w-full h-64 object-contain mx-auto rounded-lg"
               />
               <p className="text-sm text-gray-600">Click below to change image</p>
+              
+              {/* Detection Method Information */}
+              {state.woundClassification?.detectionMetadata && (
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg border">
+                  <div className="text-sm font-medium text-gray-700 mb-2">Detection Analysis</div>
+                  <div className="space-y-1 text-xs text-gray-600">
+                    <div><strong>Detection Method:</strong> {state.woundClassification.detectionMetadata.model === 'yolo9' ? 'Color-based Detection' : state.woundClassification.detectionMetadata.model}</div>
+                    <div><strong>Classification Method:</strong> {state.woundClassification.classificationMethod || 'AI Vision'}</div>
+                    {state.woundClassification.detectionMetadata.multipleWounds && (
+                      <div><strong>Multiple Wounds:</strong> {state.woundClassification.detectionMetadata.multipleWounds ? 'Yes' : 'No'}</div>
+                    )}
+                    {state.woundClassification.confidence && (
+                      <div><strong>AI Confidence:</strong> {Math.round(state.woundClassification.confidence * 100)}%</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="space-y-4">

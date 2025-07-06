@@ -150,6 +150,29 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
       <Card>
         <CardHeader>
           <CardTitle>Step 3: Diagnostic Questions</CardTitle>
+          
+          {/* Thumbnail Image Display */}
+          {state.imagePreview && (
+            <div className="mb-4 flex justify-center">
+              <img 
+                src={state.imagePreview} 
+                alt="Wound for reference" 
+                className="max-w-xs h-32 object-contain rounded-lg border"
+              />
+            </div>
+          )}
+          
+          {/* Detection Information */}
+          {state.woundClassification?.detectionMetadata && (
+            <div className="mb-4 p-3 bg-gray-50 rounded-lg border text-sm">
+              <div className="font-medium text-gray-700 mb-1">Analysis Methods Used</div>
+              <div className="space-y-1 text-xs text-gray-600">
+                <div><strong>Detection:</strong> {state.woundClassification.detectionMetadata.model === 'color-detection' ? 'Color-based Detection' : state.woundClassification.detectionMetadata.model}</div>
+                <div><strong>Classification:</strong> {state.woundClassification.classificationMethod || 'AI Vision'}</div>
+              </div>
+            </div>
+          )}
+          
           <p className="text-gray-600">
             {state.aiQuestions.length > 0 ? (
               "The AI needs more information to improve its diagnosis. Please answer these questions:"
