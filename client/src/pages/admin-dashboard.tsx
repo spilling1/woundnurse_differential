@@ -230,19 +230,44 @@ export default function AdminDashboard() {
     mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) => {
       return apiRequest('PUT', `/api/admin/detection-models/${id}/toggle`, { enabled });
     },
+    onMutate: async ({ id, enabled }) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ['/api/admin/detection-models'] });
+
+      // Snapshot the previous value
+      const previousModels = queryClient.getQueryData(['/api/admin/detection-models']);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['/api/admin/detection-models'], (old: any) => {
+        if (!old) return old;
+        return old.map((model: any) => 
+          model.id === id ? { ...model, isEnabled: enabled } : model
+        );
+      });
+
+      // Return a context object with the snapshotted value
+      return { previousModels };
+    },
+    onError: (err, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousModels) {
+        queryClient.setQueryData(['/api/admin/detection-models'], context.previousModels);
+      }
+      toast({
+        title: "Error",
+        description: "Failed to update detection model",
+        variant: "destructive",
+      });
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/detection-models'] });
       toast({
         title: "Success",
         description: "Detection model status updated successfully",
       });
     },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update detection model",
-        variant: "destructive",
-      });
+    onSettled: () => {
+      // Always refetch after error or success to ensure we have latest data
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/detection-models'] });
     },
   });
 
