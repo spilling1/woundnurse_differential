@@ -37,10 +37,15 @@ export async function callGemini(model: string, prompt: string, imageBase64?: st
       contents: parts,
     });
 
+    console.log('Gemini result structure:', Object.keys(result));
+    console.log('Gemini result:', result);
+
     const text = result.text;
 
     if (!text) {
       console.error('Gemini returned empty response');
+      console.error('Result text property:', text);
+      console.error('Result object:', JSON.stringify(result, null, 2));
       throw new Error("No response from Gemini");
     }
 
