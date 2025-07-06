@@ -12,14 +12,19 @@ async function updateGeminiFlash(): Promise<void> {
       return;
     }
     
-    // Update the model with warning about medical images
+    // Update the model to enable it with relaxed safety settings
     await storage.updateAiAnalysisModel(flashModel.id!, {
-      description: "Fast AI model - CAUTION: Has stricter content filters that block medical images. Use Gemini Pro for medical analysis.",
-      isEnabled: false,
-      capabilities: [...(flashModel.capabilities || []), "medical_limitation"],
+      description: "Fast and efficient AI model for quick wound analysis with relaxed safety settings for medical images",
+      isEnabled: true,
+      capabilities: flashModel.capabilities?.filter(c => c !== "medical_limitation") || [],
       config: {
         ...flashModel.config,
-        medical_warning: "Content filters may block medical images"
+        safety_settings: {
+          harassment: "BLOCK_NONE",
+          hate_speech: "BLOCK_NONE", 
+          sexually_explicit: "BLOCK_NONE",
+          dangerous_content: "BLOCK_NONE"
+        }
       }
     });
     
