@@ -1,0 +1,926 @@
+[
+  {
+    "image_name": "8.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 8"
+  },
+  {
+    "image_name": "101_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 101_0"
+  },
+  {
+    "image_name": "123_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 123_0"
+  },
+  {
+    "image_name": "97_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 97_0"
+  },
+  {
+    "image_name": "68_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 68_0"
+  },
+  {
+    "image_name": "55_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 55_0"
+  },
+  {
+    "image_name": "98_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 98_0"
+  },
+  {
+    "image_name": "139_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 139_0"
+  },
+  {
+    "image_name": "149_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 149_0"
+  },
+  {
+    "image_name": "85_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 85_0"
+  },
+  {
+    "image_name": "114_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 114_0"
+  },
+  {
+    "image_name": "131_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 131_0"
+  },
+  {
+    "image_name": "17.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 17"
+  },
+  {
+    "image_name": "116_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 116_0"
+  },
+  {
+    "image_name": "45.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 45"
+  },
+  {
+    "image_name": "50_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 50_0"
+  },
+  {
+    "image_name": "23.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 23"
+  },
+  {
+    "image_name": "153_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 153_0"
+  },
+  {
+    "image_name": "50.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 50"
+  },
+  {
+    "image_name": "40_6.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 40_6"
+  },
+  {
+    "image_name": "15_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 15_0"
+  },
+  {
+    "image_name": "41.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 41"
+  },
+  {
+    "image_name": "150_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 150_0"
+  },
+  {
+    "image_name": "29_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 29_0"
+  },
+  {
+    "image_name": "14.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 14"
+  },
+  {
+    "image_name": "69_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 69_0"
+  },
+  {
+    "image_name": "89_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 89_0"
+  },
+  {
+    "image_name": "118_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 118_1"
+  },
+  {
+    "image_name": "16.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 16"
+  },
+  {
+    "image_name": "17_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 17_0"
+  },
+  {
+    "image_name": "32_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 32_0"
+  },
+  {
+    "image_name": "88_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 88_0"
+  },
+  {
+    "image_name": "40_3.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 40_3"
+  },
+  {
+    "image_name": "84_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 84_0"
+  },
+  {
+    "image_name": "52_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 52_0"
+  },
+  {
+    "image_name": "15_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 15_1"
+  },
+  {
+    "image_name": "41_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 41_1"
+  },
+  {
+    "image_name": "144_4.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 144_4"
+  },
+  {
+    "image_name": "44_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 44_0"
+  },
+  {
+    "image_name": "64_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 64_1"
+  },
+  {
+    "image_name": "90_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 90_0"
+  },
+  {
+    "image_name": "66.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 66"
+  },
+  {
+    "image_name": "40_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 40_0"
+  },
+  {
+    "image_name": "83_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 83_0"
+  },
+  {
+    "image_name": "137_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 137_1"
+  },
+  {
+    "image_name": "77_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 77_0"
+  },
+  {
+    "image_name": "40.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 40"
+  },
+  {
+    "image_name": "102_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 102_0"
+  },
+  {
+    "image_name": "57.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 57"
+  },
+  {
+    "image_name": "91_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 91_0"
+  },
+  {
+    "image_name": "46_2.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 46_2"
+  },
+  {
+    "image_name": "147_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 147_1"
+  },
+  {
+    "image_name": "56.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 56"
+  },
+  {
+    "image_name": "86_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 86_0"
+  },
+  {
+    "image_name": "108_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 108_0"
+  },
+  {
+    "image_name": "58.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 58"
+  },
+  {
+    "image_name": "23_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 23_1"
+  },
+  {
+    "image_name": "59_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 59_0"
+  },
+  {
+    "image_name": "60_1.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 60_1"
+  },
+  {
+    "image_name": "19.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 19"
+  },
+  {
+    "image_name": "73_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 73_0"
+  },
+  {
+    "image_name": "113_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 113_0"
+  },
+  {
+    "image_name": "21_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 21_0"
+  },
+  {
+    "image_name": "117_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 117_0"
+  },
+  {
+    "image_name": "95_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 95_0"
+  },
+  {
+    "image_name": "107_0.jpg",
+    "wound_type": "pressure_ulcer",
+    "body_region_id": 220,
+    "bbox": [
+      0.5,
+      0.5,
+      0.3,
+      0.3
+    ],
+    "severity": "moderate",
+    "confidence": 0.7,
+    "notes": "Auto-generated from filename pattern: 107_0"
+  }
+]
