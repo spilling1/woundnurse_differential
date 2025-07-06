@@ -219,6 +219,10 @@ Changelog:
 - July 6, 2025. **SMART PHOTO RECOMMENDATIONS**: Enhanced AI question service to provide specific photo suggestions based on current image count and analysis confidence
 - July 6, 2025. **BACKEND MULTI-IMAGE SUPPORT**: Updated assessment API endpoints to handle multiple images with proper validation and processing
 - July 6, 2025. **VISUAL IMAGE MANAGEMENT**: Created intuitive image gallery with primary image selection, individual image removal, and helpful descriptions
+- July 6, 2025. **CONFIDENCE-BASED PHOTO SUGGESTIONS**: Added confidence indicator showing current assessment confidence with improvement estimates for additional images
+- July 6, 2025. **QUESTIONS PAGE PHOTO UPLOAD**: Implemented photo upload capability in questions section when AI requests specific images (different angles, close-ups, better lighting)
+- July 6, 2025. **STREAMLINED IMAGE INTERFACE**: Removed unnecessary "Set Primary" and delete buttons from initial upload, simplified interface for cleaner user experience
+- July 6, 2025. **SMART ADDITIONAL IMAGES**: When confidence is below 90%, system shows dedicated upload section with suggestions for optimal image types
 ```
 
 ## User Preferences

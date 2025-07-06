@@ -1,10 +1,11 @@
-import { CheckCircle, ArrowRight, RefreshCw, Camera, Upload } from "lucide-react";
+import { CheckCircle, ArrowRight, RefreshCw, Camera, Upload, Info, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
@@ -13,6 +14,81 @@ import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
 
 export default function AIQuestions({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
+  
+  // Handle additional image uploads
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file (JPG, PNG, GIF, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Validate file size (10MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const preview = e.target?.result as string;
+      const imageId = `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Add to selectedImages array
+      const newImage = {
+        file,
+        preview,
+        id: imageId,
+        description: ''
+      };
+      
+      const updatedImages = [...state.selectedImages, newImage];
+      onStateChange({ 
+        selectedImages: updatedImages,
+        selectedImage: file, // Keep compatibility
+        imagePreview: preview
+      });
+      
+      toast({
+        title: "Image added",
+        description: "Additional image uploaded successfully",
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  // Remove additional image
+  const removeAdditionalImage = (imageId: string) => {
+    const updatedImages = state.selectedImages.filter(img => img.id !== imageId);
+    onStateChange({ selectedImages: updatedImages });
+    
+    toast({
+      title: "Image removed",
+      description: "Additional image removed successfully",
+    });
+  };
+  
+  // Calculate potential confidence improvement
+  const calculateConfidenceImprovement = (): number => {
+    const currentConfidence = state.woundClassification?.confidence || 0;
+    if (currentConfidence >= 0.9) return 0;
+    
+    // Base improvement from additional images
+    const imageImprovement = Math.min(15, (5 - state.selectedImages.length) * 3);
+    return Math.max(0, imageImprovement);
+  };
 
   // Helper function to get user-friendly detection method names
   const getDetectionMethodName = (model: string): string => {
@@ -230,6 +306,18 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         </Card>
       )}
 
+      {/* Confidence Indicator */}
+      {state.woundClassification?.confidence && state.woundClassification.confidence < 0.9 && (
+        <Alert className="mb-4 bg-blue-50 border-blue-200">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800">
+            <strong>Current assessment confidence: {Math.round(state.woundClassification.confidence * 100)}%</strong>
+            <br />
+            Adding additional images could improve confidence by up to {calculateConfidenceImprovement()}%.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Step 3: Diagnostic Questions</CardTitle>
@@ -331,15 +419,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        toast({
-                          title: "Image Upload",
-                          description: "Additional image functionality will be enhanced in the next iteration."
-                        });
-                      }
-                    }}
+                    onChange={handleImageUpload}
                     className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   />
                 </div>
@@ -361,6 +441,66 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
           </CardContent>
         </Card>
       ))}
+
+      {/* Additional Image Upload Section */}
+      {state.woundClassification?.confidence && state.woundClassification.confidence < 0.9 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Camera className="h-5 w-5 mr-2 text-medical-blue" />
+              Upload Additional Images
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600">
+                Adding more images can help improve assessment accuracy. Consider uploading:
+              </p>
+              <ul className="text-sm text-gray-600 ml-4 list-disc space-y-1">
+                <li>Different angles or lighting</li>
+                <li>Close-up views of wound edges</li>
+                <li>Photos with size reference (coin, ruler)</li>
+                <li>Wider context showing surrounding skin</li>
+              </ul>
+              
+              <div className="mt-4">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-medical-blue file:text-white hover:file:bg-medical-blue/90"
+                />
+              </div>
+              
+              {/* Display Additional Images */}
+              {state.selectedImages.length > 1 && (
+                <div className="mt-4">
+                  <Label className="text-sm font-medium text-gray-700">Additional Images ({state.selectedImages.length - 1})</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                    {state.selectedImages.slice(1).map((image, index) => (
+                      <div key={image.id} className="relative bg-white border-2 border-gray-200 rounded-lg p-2 shadow-sm">
+                        <img 
+                          src={image.preview} 
+                          alt={`Additional view ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeAdditionalImage(image.id)}
+                          className="absolute top-1 right-1 h-6 w-6 p-0 bg-white/90 border-gray-300 text-red-600 hover:bg-red-50"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardContent className="pt-6">

@@ -250,27 +250,7 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
                       </div>
                     )}
                     
-                    {/* Image Controls */}
-                    <div className="absolute top-2 right-2 flex space-x-1">
-                      {state.selectedImage !== image.file && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setPrimaryImage(image.id)}
-                          className="bg-white/90 border-gray-300 text-xs px-2 py-1"
-                        >
-                          Set Primary
-                        </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeImage(image.id)}
-                        className="bg-white/90 border-gray-300 text-red-600 hover:bg-red-50"
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
+
                     
 
                   </div>
