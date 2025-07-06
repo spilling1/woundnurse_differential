@@ -448,8 +448,18 @@ export function registerAssessmentRoutes(app: Express): void {
       const questions = JSON.parse(req.body.questions || '[]');
       const classification = JSON.parse(req.body.classification || '{}');
       
-      // Generate case ID
-      const caseId = generateCaseId();
+      // Check if this is a follow-up to an existing case
+      const { existingCaseId } = req.body;
+      let caseId = existingCaseId || generateCaseId();
+      let versionNumber = 1;
+      let isFollowUp = false;
+      
+      // If this is a follow-up, get the latest version number
+      if (existingCaseId) {
+        const latestAssessment = await storage.getLatestWoundAssessment(existingCaseId);
+        versionNumber = latestAssessment ? (latestAssessment.versionNumber + 1) : 1;
+        isFollowUp = true;
+      }
       
       // Convert questions to context data format
       const contextData = questions.reduce((acc: any, q: any) => {
@@ -493,8 +503,8 @@ export function registerAssessmentRoutes(app: Express): void {
         classification: JSON.stringify(classification),
         contextData: JSON.stringify(contextData),
         carePlan,
-        versionNumber: 1,
-        isFollowUp: false
+        versionNumber,
+        isFollowUp
       });
 
       res.json({

@@ -196,6 +196,7 @@ Changelog:
 - July 6, 2025. **CLEAN CARE PLAN LAYOUT**: Removed duplicate images and additional upload capability from care plan page - now shows single clean image display only
 - July 6, 2025. **SIMPLIFIED IMAGE PRESENTATION**: Care plan page now has clean, professional single image display without upload distractions
 - July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
+- July 6, 2025. **CRITICAL VERSIONING BUG FIX**: Fixed case versioning issue where duplicate case IDs were both showing v1 instead of proper v1/v2 numbering - corrected database and improved version numbering logic
 ```
 
 ## User Preferences
