@@ -25,15 +25,18 @@ export async function generateCarePlan(
     
     let carePlan;
     
-    console.log(`CarePlanGenerator: Using model "${model}", trimmed: "${model.trim()}", starts with gemini: ${model.startsWith('gemini-')}`);
+    // Validate and clean model parameter
+    const cleanModel = model?.trim() || 'gemini-2.5-pro';
     
-    if (model && model.trim().startsWith('gemini-')) {
+    console.log(`CarePlanGenerator: Raw model: "${model}", clean model: "${cleanModel}", starts with gemini: ${cleanModel.startsWith('gemini-')}`);
+    
+    if (cleanModel.startsWith('gemini-')) {
       console.log('CarePlanGenerator: Routing to Gemini');
       const fullPrompt = `${systemPrompt}\n\n${prompt}`;
       if (imageData) {
-        carePlan = await callGemini(model, fullPrompt, imageData);
+        carePlan = await callGemini(cleanModel, fullPrompt, imageData);
       } else {
-        carePlan = await callGemini(model, fullPrompt);
+        carePlan = await callGemini(cleanModel, fullPrompt);
       }
     } else {
       console.log('CarePlanGenerator: Routing to OpenAI');
@@ -67,7 +70,7 @@ export async function generateCarePlan(
         } as any;
       }
       
-      carePlan = await callOpenAI(model.trim(), messages);
+      carePlan = await callOpenAI(cleanModel, messages);
     }
     
     // Add safety disclaimer

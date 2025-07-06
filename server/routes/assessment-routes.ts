@@ -450,9 +450,9 @@ export function registerAssessmentRoutes(app: Express): void {
       const { audience, userFeedback } = req.body;
       let { model } = req.body;
       
-      // Fallback to default model if undefined
-      if (!model || model === 'undefined') {
-        console.log('Model was undefined, using gemini-2.5-pro as fallback');
+      // Fallback to default model if undefined/null/empty
+      if (!model || model === 'undefined' || model === 'null' || model === '') {
+        console.log('Model was invalid:', model, '- using gemini-2.5-pro as fallback');
         model = 'gemini-2.5-pro';
       }
       const questions = JSON.parse(req.body.questions || '[]');

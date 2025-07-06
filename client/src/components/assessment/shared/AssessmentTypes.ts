@@ -25,7 +25,7 @@ export type ModelType = 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash
 export interface AssessmentFlowState {
   currentStep: FlowStep;
   audience: AudienceType;
-  model: ModelType;
+  model: ModelType | null;
   selectedImage: File | null;
   imagePreview: string | null;
   aiQuestions: AIGeneratedQuestion[];

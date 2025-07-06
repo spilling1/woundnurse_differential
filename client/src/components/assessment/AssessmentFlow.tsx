@@ -42,7 +42,18 @@ export default function AssessmentFlow() {
 
   // Update state function
   const handleStateChange = (updates: Partial<AssessmentFlowState>) => {
-    setState(prev => ({ ...prev, ...updates }));
+    console.log('AssessmentFlow: State change requested:', updates);
+    console.log('AssessmentFlow: Current model before update:', state.model);
+    setState(prev => {
+      const newState = { ...prev, ...updates };
+      // Ensure model is never set to null accidentally
+      if (newState.model === null || newState.model === undefined) {
+        console.warn('AssessmentFlow: Model was null/undefined, preserving previous value:', prev.model);
+        newState.model = prev.model || 'gemini-2.5-pro';
+      }
+      console.log('AssessmentFlow: New state model:', newState.model);
+      return newState;
+    });
   };
 
   // Navigation functions
