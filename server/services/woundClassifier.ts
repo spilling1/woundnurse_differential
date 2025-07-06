@@ -88,7 +88,7 @@ Use this detection data to improve your wound analysis accuracy.`;
         : [],
       location: classification.location || "Not specified",
       additionalObservations: classification.additionalObservations || "",
-      confidence: classification.confidence || 0.5
+      confidence: classification.confidence || 0.4  // Lower default to indicate uncertainty when AI doesn't provide confidence
     };
 
     // Step 4: Enhance classification with detection data

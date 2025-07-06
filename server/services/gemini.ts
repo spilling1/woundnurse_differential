@@ -52,8 +52,15 @@ export async function analyzeWoundImageWithGemini(imageBase64: string, model: st
     "exudate": "none, low, moderate, or heavy",
     "infectionSigns": "array of observed signs (e.g., erythema, odor, increased warmth)",
     "location": "anatomical location",
-    "additionalObservations": "any other relevant clinical observations"
+    "additionalObservations": "any other relevant clinical observations",
+    "confidence": "confidence score from 0.0 to 1.0 representing diagnostic certainty"
   }
+
+  CONFIDENCE SCORING:
+  - 0.9-1.0: Highly confident - clear visual indicators, typical presentation
+  - 0.7-0.8: Moderately confident - good visual clarity, some uncertainty in classification
+  - 0.5-0.6: Low confidence - poor image quality, atypical presentation, or multiple possibilities
+  - 0.0-0.4: Very uncertain - insufficient visual information for reliable diagnosis
 
 Please provide only the JSON response without any additional text or formatting.`;
 
