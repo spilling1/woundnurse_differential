@@ -187,6 +187,7 @@ Changelog:
 - July 6, 2025. **YOLO SERVICE ACTIVATION**: Successfully activated real YOLO v8 wound detection by fixing service startup configuration - system now uses actual YOLOv8 models for primary wound boundary detection with 200ms inference time, falling back to color detection only when needed
 - July 6, 2025. **DETECTION METHOD TRANSPARENCY**: Fixed detection method display to show "YOLO v8 Detection" instead of generic "Image Analysis" when using actual YOLO models, providing users with accurate information about which detection engine analyzed their wounds
 - July 6, 2025. **ACCURATE MODEL REFERENCES**: Removed misleading "YOLO v9" references from detection method mapping - system now only shows correct detection engines (YOLO v8, Color-based Detection, Cloud APIs)
+- July 6, 2025. **CODEBASE CLEANUP**: Organized unused files into `to_delete/` and `training_archive/` folders without deletion - moved 40+ Python training files, legacy routes file (1,042 lines), shell scripts, and documentation files to appropriate archives for cleaner codebase maintenance
 - July 6, 2025. **ITERATIVE CONFIDENCE IMPROVEMENT**: Implemented confidence-based questioning system requiring 80% confidence before final care plan generation
 - July 6, 2025. **SMART PHOTO SUGGESTIONS**: Added AI-driven photo upload recommendations based on detection quality and missing visual information
 - July 6, 2025. **ENHANCED USER GUIDANCE**: Added detailed instructions emphasizing that more detailed answers result in better assessment accuracy
