@@ -1,0 +1,19 @@
+{
+  "classes": {
+    "0": "background",
+    "1": "diabetic_ulcer",
+    "2": "neuropathic_ulcer",
+    "3": "pressure_ulcer",
+    "4": "surgical_wound",
+    "5": "venous_ulcer"
+  },
+  "num_classes": 6,
+  "class_names": [
+    "background",
+    "diabetic_ulcer",
+    "neuropathic_ulcer",
+    "pressure_ulcer",
+    "surgical_wound",
+    "venous_ulcer"
+  ]
+}

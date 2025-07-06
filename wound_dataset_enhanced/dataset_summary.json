@@ -1,0 +1,24 @@
+{
+  "total_images": 696,
+  "splits": {
+    "train": 487,
+    "val": 139,
+    "test": 70
+  },
+  "classes": {
+    "train": {
+      "background": 75,
+      "diabetic_ulcer": 139,
+      "neuropathic_ulcer": 75,
+      "pressure_ulcer": 100,
+      "surgical_wound": 98
+    },
+    "val": {
+      "surgical_wound": 24,
+      "venous_ulcer": 115
+    },
+    "test": {
+      "venous_ulcer": 70
+    }
+  }
+}

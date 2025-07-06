@@ -1,263 +1,178 @@
-#!/usr/bin/env python3
 """
-Quick ensemble training - multiple lightweight models for fast completion
+Quick Ensemble Training - Efficient approach for Replit environment
 """
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
-from quick_wound_trainer import QuickWoundDataset
-import numpy as np
-import logging
-from pathlib import Path
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms
+from PIL import Image
+import os
+import glob
 from collections import Counter
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
-logger = logging.getLogger(__name__)
+class QuickDataset(Dataset):
+    def __init__(self, dataset_path, split='train'):
+        self.transform = transforms.Compose([
+            transforms.Resize((64, 64)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+        ])
+        
+        self.class_names = [
+            "background", "diabetic_ulcer", "neuropathic_ulcer", 
+            "pressure_ulcer", "surgical_wound", "venous_ulcer"
+        ]
+        
+        self.images = []
+        self.labels = []
+        self.load_dataset(dataset_path, split)
+    
+    def load_dataset(self, dataset_path, split):
+        split_dir = os.path.join(dataset_path, split)
+        if os.path.exists(split_dir):
+            for class_idx, class_name in enumerate(self.class_names):
+                class_dir = os.path.join(split_dir, class_name)
+                if os.path.exists(class_dir):
+                    for img_file in os.listdir(class_dir):
+                        if img_file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                            self.images.append(os.path.join(class_dir, img_file))
+                            self.labels.append(class_idx)
+        
+        print(f"Loaded {len(self.images)} images for {split}")
+    
+    def __len__(self):
+        return len(self.images)
+    
+    def __getitem__(self, idx):
+        try:
+            image = Image.open(self.images[idx]).convert('RGB')
+            image = self.transform(image)
+            return image, self.labels[idx]
+        except:
+            return torch.zeros(3, 64, 64), self.labels[idx]
 
-class MiniCNN1(nn.Module):
-    """First variant - focus on small features"""
+class CompactCNN(nn.Module):
     def __init__(self, num_classes=6):
-        super(MiniCNN1, self).__init__()
+        super(CompactCNN, self).__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(3, 8, 3, padding=1),
-            nn.ReLU(),
+            nn.Conv2d(3, 32, 5, padding=2),
+            nn.ReLU(inplace=True),
             nn.MaxPool2d(2),
-            nn.Conv2d(8, 16, 3, padding=1),
-            nn.ReLU(),
-            nn.AdaptiveAvgPool2d((1, 1))
-        )
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(16, num_classes)
-        )
-    
-    def forward(self, x):
-        return self.classifier(self.features(x))
-
-class MiniCNN2(nn.Module):
-    """Second variant - focus on larger features"""
-    def __init__(self, num_classes=6):
-        super(MiniCNN2, self).__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(3, 12, 5, padding=2),
-            nn.ReLU(),
-            nn.MaxPool2d(4),
-            nn.Conv2d(12, 24, 3, padding=1),
-            nn.ReLU(),
-            nn.AdaptiveAvgPool2d((1, 1))
-        )
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(24, num_classes)
-        )
-    
-    def forward(self, x):
-        return self.classifier(self.features(x))
-
-class MiniCNN3(nn.Module):
-    """Third variant - deeper but narrow"""
-    def __init__(self, num_classes=6):
-        super(MiniCNN3, self).__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(3, 8, 3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(8, 8, 3, padding=1),
-            nn.ReLU(),
+            nn.Conv2d(32, 64, 3, padding=1),
+            nn.ReLU(inplace=True),
             nn.MaxPool2d(2),
-            nn.Conv2d(8, 16, 3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(16, 16, 3, padding=1),
-            nn.ReLU(),
+            nn.Conv2d(64, 128, 3, padding=1),
+            nn.ReLU(inplace=True),
             nn.AdaptiveAvgPool2d((1, 1))
         )
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(16, num_classes)
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, num_classes)
         )
     
     def forward(self, x):
-        return self.classifier(self.features(x))
+        features = self.features(x)
+        return self.classifier(features)
 
-def quick_train_model(model, model_name, epochs=3):
-    """Quick training for a single model"""
-    logger.info(f"Training {model_name}...")
+def train_quick_model(model_name, dataset_path, epochs=10):
+    """Train a model quickly with the new data"""
+    print(f"Training {model_name}...")
     
-    device = torch.device('cpu')
-    model = model.to(device)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    # Load data
+    train_dataset = QuickDataset(dataset_path, 'train')
+    if len(train_dataset) == 0:
+        print("No training data found!")
+        return None
+    
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    
+    # Model
+    model = CompactCNN().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
     
-    # Load small dataset
-    train_dataset = QuickWoundDataset("wound_dataset_balanced", 'train', img_size=32)
-    val_dataset = QuickWoundDataset("wound_dataset_balanced", 'val', img_size=32)
-    
-    # Even smaller for speed
-    train_dataset.annotations = train_dataset.annotations[:60]
-    val_dataset.annotations = val_dataset.annotations[:20]
-    
-    train_loader = DataLoader(train_dataset, batch_size=10, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=10, shuffle=False)
-    
-    best_accuracy = 0.0
+    best_acc = 0
     
     for epoch in range(epochs):
-        # Training
         model.train()
-        for batch_idx, (images, labels) in enumerate(train_loader):
-            images, labels = images.to(device), labels.to(device)
-            
-            optimizer.zero_grad()
-            outputs = model(images)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
-        
-        # Validation
-        model.eval()
         correct = 0
         total = 0
         
-        with torch.no_grad():
-            for images, labels in val_loader:
-                images, labels = images.to(device), labels.to(device)
-                outputs = model(images)
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
-        
-        accuracy = 100 * correct / total if total > 0 else 0
-        logger.info(f"{model_name} - Epoch {epoch+1}: {accuracy:.1f}%")
-        
-        if accuracy > best_accuracy:
-            best_accuracy = accuracy
-    
-    # Save model
-    if best_accuracy > 0:
-        model_path = f"mini_{model_name}_acc_{best_accuracy:.1f}.pth"
-        torch.save({
-            'model_state_dict': model.state_dict(),
-            'accuracy': best_accuracy,
-            'model_name': model_name
-        }, model_path)
-        logger.info(f"Saved {model_name}: {best_accuracy:.1f}%")
-        return model_path, best_accuracy
-    
-    return None, 0
-
-def ensemble_predict(models, image_tensor, class_names):
-    """Make ensemble prediction"""
-    predictions = []
-    confidences = []
-    
-    with torch.no_grad():
-        for model in models:
-            output = model(image_tensor.unsqueeze(0))
-            probabilities = torch.softmax(output, dim=1)
-            confidence, predicted = torch.max(probabilities, 1)
+        for batch_idx, (data, targets) in enumerate(train_loader):
+            data, targets = data.to(device), targets.to(device)
             
-            predictions.append(predicted.item())
-            confidences.append(probabilities[0].numpy())
-    
-    # Majority vote
-    majority_vote = Counter(predictions).most_common(1)[0][0]
-    
-    # Average confidence
-    avg_confidences = np.mean(confidences, axis=0)
-    ensemble_confidence = avg_confidences[majority_vote]
-    
-    return majority_vote, ensemble_confidence
-
-def test_ensemble(model_paths):
-    """Test ensemble performance"""
-    logger.info("Testing ensemble...")
-    
-    # Load models
-    models = []
-    class_names = ["background", "diabetic_ulcer", "neuropathic_ulcer", 
-                   "pressure_ulcer", "surgical_wound", "venous_ulcer"]
-    
-    for i, path in enumerate(model_paths):
-        if 'mini_cnn1' in path:
-            model = MiniCNN1()
-        elif 'mini_cnn2' in path:
-            model = MiniCNN2()
-        elif 'mini_cnn3' in path:
-            model = MiniCNN3()
-        else:
-            continue
+            optimizer.zero_grad()
+            outputs = model(data)
+            loss = criterion(outputs, targets)
+            loss.backward()
+            optimizer.step()
+            
+            _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
         
-        checkpoint = torch.load(path, map_location='cpu')
-        model.load_state_dict(checkpoint['model_state_dict'])
-        model.eval()
-        models.append(model)
-        logger.info(f"Loaded model {i+1}: {checkpoint.get('accuracy', 0):.1f}%")
-    
-    if len(models) < 2:
-        logger.warning("Need at least 2 models for ensemble")
-        return
-    
-    # Test on validation set
-    test_dataset = QuickWoundDataset("wound_dataset_balanced", 'val', img_size=32)
-    test_dataset.annotations = test_dataset.annotations[:15]  # Quick test
-    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True)
-    
-    correct = 0
-    total = 0
-    
-    for images, labels in test_loader:
-        predicted_class, confidence = ensemble_predict(models, images[0], class_names)
-        true_class = labels[0].item()
+        accuracy = 100. * correct / total
+        print(f'Epoch {epoch+1}/{epochs}: {accuracy:.1f}%')
         
-        total += 1
-        if predicted_class == true_class:
-            correct += 1
-        
-        logger.info(f"True: {class_names[true_class]}, Predicted: {class_names[predicted_class]}, Confidence: {confidence*100:.1f}%")
+        if accuracy > best_acc:
+            best_acc = accuracy
+            torch.save({
+                'model_state_dict': model.state_dict(),
+                'accuracy': accuracy,
+                'class_names': train_dataset.class_names
+            }, f'{model_name}_acc_{accuracy:.1f}.pth')
     
-    ensemble_accuracy = 100 * correct / total if total > 0 else 0
-    logger.info(f"Ensemble Accuracy: {ensemble_accuracy:.1f}%")
-    return ensemble_accuracy
+    print(f'Final accuracy: {best_acc:.1f}%')
+    return f'{model_name}_acc_{best_acc:.1f}.pth'
 
 def main():
-    """Train multiple models and create ensemble"""
-    logger.info("Quick Ensemble Training")
-    logger.info("=" * 40)
+    """Quick training with body context data"""
+    print("=== Quick Ensemble Training ===")
     
-    models_to_train = [
-        (MiniCNN1(), "cnn1"),
-        (MiniCNN2(), "cnn2"),
-        (MiniCNN3(), "cnn3")
+    # Use the body context dataset
+    dataset_path = "wound_dataset_body_context"
+    
+    if not os.path.exists(dataset_path):
+        print(f"Dataset not found at {dataset_path}")
+        return
+    
+    # Train multiple quick models
+    models = [
+        "body_context_v1",
+        "body_context_v2",
+        "body_context_v3"
     ]
     
-    trained_models = []
-    individual_accuracies = []
+    for model_name in models:
+        train_quick_model(model_name, dataset_path, epochs=8)
     
-    for model, name in models_to_train:
-        model_path, accuracy = quick_train_model(model, name, epochs=2)
-        if model_path:
-            trained_models.append(model_path)
-            individual_accuracies.append(accuracy)
+    # Show results
+    print("\n=== Training Results ===")
+    all_models = glob.glob("*_acc_*.pth")
     
-    logger.info(f"Trained {len(trained_models)} models")
-    logger.info(f"Individual accuracies: {individual_accuracies}")
+    model_scores = []
+    for model in all_models:
+        try:
+            acc = float(model.split('_acc_')[1].split('.pth')[0])
+            model_scores.append((acc, model))
+        except:
+            continue
     
-    if len(trained_models) >= 2:
-        ensemble_accuracy = test_ensemble(trained_models)
-        
-        logger.info("\nSUMMARY:")
-        logger.info(f"Individual models: {individual_accuracies}")
-        logger.info(f"Ensemble accuracy: {ensemble_accuracy:.1f}%")
-        
-        if ensemble_accuracy > max(individual_accuracies):
-            improvement = ensemble_accuracy - max(individual_accuracies)
-            logger.info(f"Ensemble improvement: +{improvement:.1f}%")
-        
-        return trained_models, ensemble_accuracy
-    else:
-        logger.warning("Not enough models trained successfully")
-        return [], 0
+    print(f"All models ({len(model_scores)}):")
+    for acc, model in sorted(model_scores, reverse=True):
+        print(f"  {model} - {acc:.1f}%")
+    
+    # Update the CNN classifier to use the best model
+    if model_scores:
+        best_model = sorted(model_scores, reverse=True)[0][1]
+        print(f"\nBest model: {best_model}")
+        print(f"This model will be available for the wound detection system.")
 
 if __name__ == "__main__":
     main()

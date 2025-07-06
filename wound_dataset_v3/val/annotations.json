@@ -1,0 +1,2087 @@
+[
+  {
+    "image_name": "98_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 246,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/98_0",
+    "notes": "Extracted from S/98_0"
+  },
+  {
+    "image_name": "101_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 30,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/101_0",
+    "notes": "Extracted from S/101_0"
+  },
+  {
+    "image_name": "102_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 30,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/102_0",
+    "notes": "Extracted from S/102_0"
+  },
+  {
+    "image_name": "103_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 63,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/103_0",
+    "notes": "Extracted from S/103_0"
+  },
+  {
+    "image_name": "105_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 30,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/105_0",
+    "notes": "Extracted from S/105_0"
+  },
+  {
+    "image_name": "106_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 63,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/106_0",
+    "notes": "Extracted from S/106_0"
+  },
+  {
+    "image_name": "107_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 45,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/107_0",
+    "notes": "Extracted from S/107_0"
+  },
+  {
+    "image_name": "108_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 62,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/108_0",
+    "notes": "Extracted from S/108_0"
+  },
+  {
+    "image_name": "109_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 45,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/109_0",
+    "notes": "Extracted from S/109_0"
+  },
+  {
+    "image_name": "110_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 45,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/110_0",
+    "notes": "Extracted from S/110_0"
+  },
+  {
+    "image_name": "110_1.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/110_1",
+    "notes": "Extracted from S/110_1"
+  },
+  {
+    "image_name": "112_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 426,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/112_0",
+    "notes": "Extracted from S/112_0"
+  },
+  {
+    "image_name": "113_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 272,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/113_0",
+    "notes": "Extracted from S/113_0"
+  },
+  {
+    "image_name": "114_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 276,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/114_0",
+    "notes": "Extracted from S/114_0"
+  },
+  {
+    "image_name": "115_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 25,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/115_0",
+    "notes": "Extracted from S/115_0"
+  },
+  {
+    "image_name": "116_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 483,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/116_0",
+    "notes": "Extracted from S/116_0"
+  },
+  {
+    "image_name": "117_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 367,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/117_0",
+    "notes": "Extracted from S/117_0"
+  },
+  {
+    "image_name": "119_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 454,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/119_0",
+    "notes": "Extracted from S/119_0"
+  },
+  {
+    "image_name": "120_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 30,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/120_0",
+    "notes": "Extracted from S/120_0"
+  },
+  {
+    "image_name": "122_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 45,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/122_0",
+    "notes": "Extracted from S/122_0"
+  },
+  {
+    "image_name": "123_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 13,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/123_0",
+    "notes": "Extracted from S/123_0"
+  },
+  {
+    "image_name": "125_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 63,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/125_0",
+    "notes": "Extracted from S/125_0"
+  },
+  {
+    "image_name": "126_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 13,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/126_0",
+    "notes": "Extracted from S/126_0"
+  },
+  {
+    "image_name": "127_0.jpg",
+    "wound_type": "surgical_wound",
+    "wound_class_id": 4,
+    "body_region_id": 63,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "S/127_0",
+    "notes": "Extracted from S/127_0"
+  },
+  {
+    "image_name": "1_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 67,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/1_0",
+    "notes": "Extracted from V/1_0"
+  },
+  {
+    "image_name": "3_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 70,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/3_0",
+    "notes": "Extracted from V/3_0"
+  },
+  {
+    "image_name": "4_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/4_0",
+    "notes": "Extracted from V/4_0"
+  },
+  {
+    "image_name": "5_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/5_0",
+    "notes": "Extracted from V/5_0"
+  },
+  {
+    "image_name": "5_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/5_1",
+    "notes": "Extracted from V/5_1"
+  },
+  {
+    "image_name": "6_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/6_0",
+    "notes": "Extracted from V/6_0"
+  },
+  {
+    "image_name": "6_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/6_1",
+    "notes": "Extracted from V/6_1"
+  },
+  {
+    "image_name": "6_2.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/6_2",
+    "notes": "Extracted from V/6_2"
+  },
+  {
+    "image_name": "6_3.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/6_3",
+    "notes": "Extracted from V/6_3"
+  },
+  {
+    "image_name": "8_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/8_0",
+    "notes": "Extracted from V/8_0"
+  },
+  {
+    "image_name": "8_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/8_1",
+    "notes": "Extracted from V/8_1"
+  },
+  {
+    "image_name": "9_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 447,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/9_0",
+    "notes": "Extracted from V/9_0"
+  },
+  {
+    "image_name": "13_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/13_0",
+    "notes": "Extracted from V/13_0"
+  },
+  {
+    "image_name": "14_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/14_0",
+    "notes": "Extracted from V/14_0"
+  },
+  {
+    "image_name": "15_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/15_0",
+    "notes": "Extracted from V/15_0"
+  },
+  {
+    "image_name": "16_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 480,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/16_0",
+    "notes": "Extracted from V/16_0"
+  },
+  {
+    "image_name": "18_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/18_0",
+    "notes": "Extracted from V/18_0"
+  },
+  {
+    "image_name": "19_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 483,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/19_0",
+    "notes": "Extracted from V/19_0"
+  },
+  {
+    "image_name": "20_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 370,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/20_0",
+    "notes": "Extracted from V/20_0"
+  },
+  {
+    "image_name": "21_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/21_0",
+    "notes": "Extracted from V/21_0"
+  },
+  {
+    "image_name": "22_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 479,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/22_0",
+    "notes": "Extracted from V/22_0"
+  },
+  {
+    "image_name": "23_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/23_0",
+    "notes": "Extracted from V/23_0"
+  },
+  {
+    "image_name": "23_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/23_1",
+    "notes": "Extracted from V/23_1"
+  },
+  {
+    "image_name": "24_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 370,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/24_0",
+    "notes": "Extracted from V/24_0"
+  },
+  {
+    "image_name": "26_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 367,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/26_0",
+    "notes": "Extracted from V/26_0"
+  },
+  {
+    "image_name": "27_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 369,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/27_0",
+    "notes": "Extracted from V/27_0"
+  },
+  {
+    "image_name": "29_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 480,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/29_0",
+    "notes": "Extracted from V/29_0"
+  },
+  {
+    "image_name": "30_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 480,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/30_0",
+    "notes": "Extracted from V/30_0"
+  },
+  {
+    "image_name": "30_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 371,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/30_1",
+    "notes": "Extracted from V/30_1"
+  },
+  {
+    "image_name": "31_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 370,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/31_0",
+    "notes": "Extracted from V/31_0"
+  },
+  {
+    "image_name": "32_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 80,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/32_0",
+    "notes": "Extracted from V/32_0"
+  },
+  {
+    "image_name": "33_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/33_0",
+    "notes": "Extracted from V/33_0"
+  },
+  {
+    "image_name": "34_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/34_0",
+    "notes": "Extracted from V/34_0"
+  },
+  {
+    "image_name": "35_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 425,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/35_0",
+    "notes": "Extracted from V/35_0"
+  },
+  {
+    "image_name": "36_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 448,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/36_0",
+    "notes": "Extracted from V/36_0"
+  },
+  {
+    "image_name": "38_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/38_0",
+    "notes": "Extracted from V/38_0"
+  },
+  {
+    "image_name": "38_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 451,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/38_1",
+    "notes": "Extracted from V/38_1"
+  },
+  {
+    "image_name": "39_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/39_0",
+    "notes": "Extracted from V/39_0"
+  },
+  {
+    "image_name": "39_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/39_1",
+    "notes": "Extracted from V/39_1"
+  },
+  {
+    "image_name": "40_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_0",
+    "notes": "Extracted from V/40_0"
+  },
+  {
+    "image_name": "40_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_1",
+    "notes": "Extracted from V/40_1"
+  },
+  {
+    "image_name": "40_2.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_2",
+    "notes": "Extracted from V/40_2"
+  },
+  {
+    "image_name": "40_3.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_3",
+    "notes": "Extracted from V/40_3"
+  },
+  {
+    "image_name": "40_4.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_4",
+    "notes": "Extracted from V/40_4"
+  },
+  {
+    "image_name": "40_5.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_5",
+    "notes": "Extracted from V/40_5"
+  },
+  {
+    "image_name": "40_6.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_6",
+    "notes": "Extracted from V/40_6"
+  },
+  {
+    "image_name": "40_7.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/40_7",
+    "notes": "Extracted from V/40_7"
+  },
+  {
+    "image_name": "41_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 423,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/41_0",
+    "notes": "Extracted from V/41_0"
+  },
+  {
+    "image_name": "41_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 423,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/41_1",
+    "notes": "Extracted from V/41_1"
+  },
+  {
+    "image_name": "41_2.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 420,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/41_2",
+    "notes": "Extracted from V/41_2"
+  },
+  {
+    "image_name": "43_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 423,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/43_0",
+    "notes": "Extracted from V/43_0"
+  },
+  {
+    "image_name": "44_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 423,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/44_0",
+    "notes": "Extracted from V/44_0"
+  },
+  {
+    "image_name": "45_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 367,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/45_0",
+    "notes": "Extracted from V/45_0"
+  },
+  {
+    "image_name": "46_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 273,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/46_0",
+    "notes": "Extracted from V/46_0"
+  },
+  {
+    "image_name": "46_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 271,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/46_1",
+    "notes": "Extracted from V/46_1"
+  },
+  {
+    "image_name": "46_2.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 272,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/46_2",
+    "notes": "Extracted from V/46_2"
+  },
+  {
+    "image_name": "46_3.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 268,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/46_3",
+    "notes": "Extracted from V/46_3"
+  },
+  {
+    "image_name": "48_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 423,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/48_0",
+    "notes": "Extracted from V/48_0"
+  },
+  {
+    "image_name": "49_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 370,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/49_0",
+    "notes": "Extracted from V/49_0"
+  },
+  {
+    "image_name": "50_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/50_0",
+    "notes": "Extracted from V/50_0"
+  },
+  {
+    "image_name": "52_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/52_0",
+    "notes": "Extracted from V/52_0"
+  },
+  {
+    "image_name": "52_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/52_1",
+    "notes": "Extracted from V/52_1"
+  },
+  {
+    "image_name": "54_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/54_0",
+    "notes": "Extracted from V/54_0"
+  },
+  {
+    "image_name": "54_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 247,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/54_1",
+    "notes": "Extracted from V/54_1"
+  },
+  {
+    "image_name": "55_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/55_0",
+    "notes": "Extracted from V/55_0"
+  },
+  {
+    "image_name": "57_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 254,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/57_0",
+    "notes": "Extracted from V/57_0"
+  },
+  {
+    "image_name": "58_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/58_0",
+    "notes": "Extracted from V/58_0"
+  },
+  {
+    "image_name": "59_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 452,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/59_0",
+    "notes": "Extracted from V/59_0"
+  },
+  {
+    "image_name": "60_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 454,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/60_0",
+    "notes": "Extracted from V/60_0"
+  },
+  {
+    "image_name": "60_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 450,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/60_1",
+    "notes": "Extracted from V/60_1"
+  },
+  {
+    "image_name": "62_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/62_0",
+    "notes": "Extracted from V/62_0"
+  },
+  {
+    "image_name": "63_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 372,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/63_0",
+    "notes": "Extracted from V/63_0"
+  },
+  {
+    "image_name": "63_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 370,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/63_1",
+    "notes": "Extracted from V/63_1"
+  },
+  {
+    "image_name": "64_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/64_0",
+    "notes": "Extracted from V/64_0"
+  },
+  {
+    "image_name": "64_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 421,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/64_1",
+    "notes": "Extracted from V/64_1"
+  },
+  {
+    "image_name": "65_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/65_0",
+    "notes": "Extracted from V/65_0"
+  },
+  {
+    "image_name": "66_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/66_0",
+    "notes": "Extracted from V/66_0"
+  },
+  {
+    "image_name": "68_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/68_0",
+    "notes": "Extracted from V/68_0"
+  },
+  {
+    "image_name": "68_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/68_1",
+    "notes": "Extracted from V/68_1"
+  },
+  {
+    "image_name": "69_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 477,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/69_0",
+    "notes": "Extracted from V/69_0"
+  },
+  {
+    "image_name": "70_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 477,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/70_0",
+    "notes": "Extracted from V/70_0"
+  },
+  {
+    "image_name": "71_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/71_0",
+    "notes": "Extracted from V/71_0"
+  },
+  {
+    "image_name": "72_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 421,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/72_0",
+    "notes": "Extracted from V/72_0"
+  },
+  {
+    "image_name": "73_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 451,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/73_0",
+    "notes": "Extracted from V/73_0"
+  },
+  {
+    "image_name": "74_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 45,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/74_0",
+    "notes": "Extracted from V/74_0"
+  },
+  {
+    "image_name": "76_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 477,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/76_0",
+    "notes": "Extracted from V/76_0"
+  },
+  {
+    "image_name": "77_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 308,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/77_0",
+    "notes": "Extracted from V/77_0"
+  },
+  {
+    "image_name": "79_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/79_0",
+    "notes": "Extracted from V/79_0"
+  },
+  {
+    "image_name": "80_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/80_0",
+    "notes": "Extracted from V/80_0"
+  },
+  {
+    "image_name": "82_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/82_0",
+    "notes": "Extracted from V/82_0"
+  },
+  {
+    "image_name": "83_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 46,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/83_0",
+    "notes": "Extracted from V/83_0"
+  },
+  {
+    "image_name": "84_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/84_0",
+    "notes": "Extracted from V/84_0"
+  },
+  {
+    "image_name": "85_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/85_0",
+    "notes": "Extracted from V/85_0"
+  },
+  {
+    "image_name": "86_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 448,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/86_0",
+    "notes": "Extracted from V/86_0"
+  },
+  {
+    "image_name": "87_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/87_0",
+    "notes": "Extracted from V/87_0"
+  },
+  {
+    "image_name": "87_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/87_1",
+    "notes": "Extracted from V/87_1"
+  },
+  {
+    "image_name": "87_2.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/87_2",
+    "notes": "Extracted from V/87_2"
+  },
+  {
+    "image_name": "87_3.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/87_3",
+    "notes": "Extracted from V/87_3"
+  },
+  {
+    "image_name": "87_4.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/87_4",
+    "notes": "Extracted from V/87_4"
+  },
+  {
+    "image_name": "89_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 448,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/89_0",
+    "notes": "Extracted from V/89_0"
+  },
+  {
+    "image_name": "90_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/90_0",
+    "notes": "Extracted from V/90_0"
+  },
+  {
+    "image_name": "91_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 477,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/91_0",
+    "notes": "Extracted from V/91_0"
+  },
+  {
+    "image_name": "91_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 481,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/91_1",
+    "notes": "Extracted from V/91_1"
+  },
+  {
+    "image_name": "92_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 423,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/92_0",
+    "notes": "Extracted from V/92_0"
+  },
+  {
+    "image_name": "93_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 448,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/93_0",
+    "notes": "Extracted from V/93_0"
+  },
+  {
+    "image_name": "94_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 370,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/94_0",
+    "notes": "Extracted from V/94_0"
+  },
+  {
+    "image_name": "95_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 451,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/95_0",
+    "notes": "Extracted from V/95_0"
+  },
+  {
+    "image_name": "96_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 82,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/96_0",
+    "notes": "Extracted from V/96_0"
+  },
+  {
+    "image_name": "97_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/97_0",
+    "notes": "Extracted from V/97_0"
+  },
+  {
+    "image_name": "97_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/97_1",
+    "notes": "Extracted from V/97_1"
+  },
+  {
+    "image_name": "97_2.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 81,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/97_2",
+    "notes": "Extracted from V/97_2"
+  },
+  {
+    "image_name": "98_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/98_0",
+    "notes": "Extracted from V/98_0"
+  },
+  {
+    "image_name": "98_1.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 47,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/98_1",
+    "notes": "Extracted from V/98_1"
+  },
+  {
+    "image_name": "99_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 478,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/99_0",
+    "notes": "Extracted from V/99_0"
+  },
+  {
+    "image_name": "100_0.jpg",
+    "wound_type": "venous_ulcer",
+    "wound_class_id": 5,
+    "body_region_id": 415,
+    "bbox": [
+      0.5,
+      0.5,
+      0.4,
+      0.4
+    ],
+    "confidence": 1.0,
+    "original_path": "V/100_0",
+    "notes": "Extracted from V/100_0"
+  }
+]
