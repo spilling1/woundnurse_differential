@@ -34,6 +34,46 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
     }
   };
 
+  // Helper function to calculate confidence improvement based on question category
+  const getConfidenceImprovement = (category: string): number => {
+    switch (category) {
+      case 'diagnostic':
+        return 8; // High impact on diagnosis accuracy
+      case 'treatment':
+        return 5; // Medium impact on treatment planning
+      case 'medical_history':
+        return 6; // Important for context
+      case 'location':
+        return 7; // Critical for wound assessment
+      case 'symptoms':
+        return 4; // Helpful for care planning
+      case 'general':
+        return 3; // Lower impact but still useful
+      default:
+        return 5; // Default moderate improvement
+    }
+  };
+
+  // Helper function to get priority level description
+  const getPriorityLevel = (category: string): string => {
+    switch (category) {
+      case 'diagnostic':
+        return 'High Priority';
+      case 'location':
+        return 'High Priority';
+      case 'medical_history':
+        return 'Medium Priority';
+      case 'treatment':
+        return 'Medium Priority';
+      case 'symptoms':
+        return 'Low Priority';
+      case 'general':
+        return 'Low Priority';
+      default:
+        return 'Medium Priority';
+    }
+  };
+
   // Update AI question answer
   const updateAnswer = (questionId: string, newAnswer: string) => {
     const updatedQuestions = assessmentHelpers.updateQuestionAnswer(
@@ -288,9 +328,14 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               </div>
             )}
             
-            <div className="flex items-center mt-2 text-sm text-gray-600">
-              <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
-              AI Confidence: {Math.round(question.confidence * 100)}%
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center text-sm text-blue-600">
+                <ArrowRight className="h-4 w-4 mr-1" />
+                Estimated Confidence Improvement: +{getConfidenceImprovement(question.category)}%
+              </div>
+              <div className="text-xs text-gray-500">
+                {getPriorityLevel(question.category)}
+              </div>
             </div>
           </CardContent>
         </Card>
