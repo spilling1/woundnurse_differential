@@ -38,6 +38,24 @@ export async function callGemini(model: string, prompt: string, imageBase64?: st
       result = await ai.models.generateContent({
         model,
         contents: parts,
+        safetySettings: [
+          {
+            category: 'HARM_CATEGORY_HARASSMENT',
+            threshold: 'BLOCK_ONLY_HIGH',
+          },
+          {
+            category: 'HARM_CATEGORY_HATE_SPEECH',
+            threshold: 'BLOCK_ONLY_HIGH',
+          },
+          {
+            category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+            threshold: 'BLOCK_ONLY_HIGH',
+          },
+          {
+            category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+            threshold: 'BLOCK_ONLY_HIGH',
+          },
+        ],
       });
       console.log('Gemini API call successful');
     } catch (apiError: any) {
@@ -51,12 +69,29 @@ export async function callGemini(model: string, prompt: string, imageBase64?: st
     console.log('Gemini result type:', typeof result);
     console.log('Gemini result:', result);
 
+    // Check for content blocking
+    if (result.promptFeedback?.blockReason) {
+      console.error('Gemini content blocked:', result.promptFeedback);
+      throw new Error(`Gemini blocked request: ${result.promptFeedback.blockReason}. This may be due to content safety filters for medical images. Try using Gemini Pro instead.`);
+    }
+
     const text = result.text;
 
     if (!text) {
       console.error('Gemini returned empty response');
       console.error('Result text property:', text);
       console.error('Result object:', JSON.stringify(result, null, 2));
+      
+      // Check if we have candidates but no text
+      if (result.candidates && result.candidates.length > 0) {
+        const candidate = result.candidates[0];
+        console.error('Candidate structure:', Object.keys(candidate));
+        console.error('Candidate:', candidate);
+        
+        if (candidate.finishReason) {
+          throw new Error(`Gemini response blocked: ${candidate.finishReason}`);
+        }
+      }
       throw new Error("No response from Gemini");
     }
 
