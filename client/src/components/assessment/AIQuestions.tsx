@@ -44,14 +44,46 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
       );
     },
     onSuccess: (data) => {
-      if (data.needsMoreQuestions && data.questions && data.questions.length > 0) {
+      // Update classification with revised confidence
+      if (data.updatedClassification) {
+        onStateChange({ 
+          woundClassification: data.updatedClassification
+        });
+      }
+      
+      // Show confidence improvement
+      if (data.updatedConfidence) {
+        const oldConfidence = state.woundClassification?.confidence || 0.5;
+        const newConfidence = data.updatedConfidence;
+        if (newConfidence > oldConfidence) {
+          toast({
+            title: "Confidence Improved",
+            description: `Assessment confidence increased to ${Math.round(newConfidence * 100)}%`
+          });
+        }
+      }
+      
+      if (data.shouldProceedToPlan) {
+        // Confidence reached 80%+, proceed to care plan generation
+        onStateChange({ 
+          aiQuestions: [],
+          currentStep: 'generating-plan'
+        });
+        onNextStep();
+        
+        toast({
+          title: "Ready for Care Plan",
+          description: `Confidence reached ${Math.round(data.updatedConfidence * 100)}%. Generating care plan...`
+        });
+      } else if (data.needsMoreQuestions && data.questions && data.questions.length > 0) {
+        // Need more questions to reach 80% confidence
         onStateChange({ aiQuestions: data.questions });
         toast({
-          title: "Follow-up Questions Generated",
-          description: `Round ${data.round} questions based on your Agent Instructions.`
+          title: "Additional Questions Generated",
+          description: `Confidence: ${Math.round(data.updatedConfidence * 100)}%. Need to reach 80% for final assessment.`
         });
       } else {
-        // No more questions needed, proceed to care plan generation
+        // Confidence reached but no more questions - proceed anyway
         onStateChange({ 
           aiQuestions: [],
           currentStep: 'generating-plan'
@@ -60,7 +92,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         
         toast({
           title: "Questions Complete",
-          description: "Agent Instructions satisfied. Proceeding to care plan generation."
+          description: "Proceeding to care plan generation."
         });
       }
     },
@@ -102,6 +134,14 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               "The AI is confident in its initial assessment. Proceeding to care plan generation."
             )}
           </p>
+          {state.aiQuestions.length > 0 && (
+            <div className="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <p className="text-sm text-blue-800">
+                <strong>Important:</strong> More detailed answers will result in better assessment accuracy. 
+                Please provide as much relevant information as possible for each question.
+              </p>
+            </div>
+          )}
         </CardHeader>
       </Card>
 
@@ -114,7 +154,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="font-medium">{state.woundClassification.woundType}</div>
-                <Badge variant={state.woundClassification.confidence > 0.75 ? 'default' : 'secondary'}>
+                <Badge variant={state.woundClassification.confidence > 0.80 ? 'default' : 'secondary'}>
                   {Math.round(state.woundClassification.confidence * 100)}% confidence
                 </Badge>
               </div>

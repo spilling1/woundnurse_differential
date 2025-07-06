@@ -127,7 +127,7 @@ ${agentInstructions.productRecommendations || ''}
   
   if (isFollowUp && currentRound > 1) {
     // For follow-up questions, be much more selective
-    if (confidence > 0.75) {
+    if (confidence > 0.80) {
       console.log(`Follow-up round ${currentRound}: High confidence (${confidence}) - skipping additional questions`);
       return [];
     } else {
@@ -137,7 +137,7 @@ ${agentInstructions.productRecommendations || ''}
     // Initial questions - check Agent Instructions requirements
     if (hasQuestionRequirements) {
       console.log(`Agent instructions require questions - generating questions (confidence: ${confidence})`);
-    } else if (confidence > 0.75) {
+    } else if (confidence > 0.80) {
       console.log(`High confidence (${confidence}) and no question requirements - skipping questions`);
       return [];
     } else {
@@ -154,6 +154,12 @@ ${instructions}
 WOUND ANALYSIS RESULTS:
 ${JSON.stringify(imageAnalysis, null, 2)}
 
+CONFIDENCE ASSESSMENT:
+Current confidence level: ${Math.round(confidence * 100)}%
+${confidence < 0.50 ? 'Very low confidence - additional photos and detailed information needed' : 
+  confidence < 0.80 ? 'Low confidence - more questions and possibly additional photos needed' : 
+  'High confidence - minimal additional questions needed'}
+
 ${isFollowUp ? `PREVIOUS QUESTIONS AND ANSWERS (Round ${currentRound - 1}):
 ${JSON.stringify(previousQuestions, null, 2)}
 
@@ -166,9 +172,18 @@ FOLLOW-UP ASSESSMENT:
 
 TARGET AUDIENCE: ${audience}
 
-Follow ONLY the Agent Instructions above for question generation. Do not use any other hardcoded rules.
+IMPORTANT INSTRUCTIONS:
+1. Follow ONLY the Agent Instructions above for question generation
+2. If confidence is below 80%, consider asking for additional photos:
+   - If wound edges are unclear: "Could you upload a clearer photo of the wound edges?"
+   - If wound size is uncertain: "Could you upload a photo with a reference object (like a coin or ruler) for size comparison?"
+   - If wound depth is unclear: "Could you upload a photo from a different angle to better show the wound depth?"
+   - If multiple wounds detected: "Could you upload photos of each wound separately for better analysis?"
+   - If lighting is poor: "Could you upload a photo with better lighting to see the wound details clearly?"
+3. Generate diagnostic questions based on what's unclear from the image analysis
+4. More detailed answers will result in better assessment accuracy
 
-${isFollowUp ? 'This is a follow-up round of questions. Only ask additional questions if the Agent Instructions require them.' : 'Generate initial questions based strictly on what the Agent Instructions specify.'}
+${isFollowUp ? 'This is a follow-up round of questions. Only ask additional questions if the Agent Instructions require them or if confidence is still below 80%.' : 'Generate initial questions based strictly on what the Agent Instructions specify, plus photo suggestions if confidence is low.'}
 
 RESPONSE FORMAT:
 Return a JSON array of objects with this structure:
@@ -182,7 +197,7 @@ Return a JSON array of objects with this structure:
   }
 ]
 
-Use appropriate categories: location, patient_info, symptoms, medical_history, wound_assessment, other
+Use appropriate categories: location, patient_info, symptoms, medical_history, wound_assessment, photo_request, other
 `;
 
   try {

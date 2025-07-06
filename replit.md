@@ -184,6 +184,10 @@ Changelog:
 - July 6, 2025. **ACCURATE MODEL LABELING**: Fixed misleading "YOLO9" detection label - system actually uses color-based smart detection with YOLO fallback (ultralytics not installed)
 - July 6, 2025. **REAL YOLO INTEGRATION**: Installed ultralytics and added proper YOLO v8 detection engine alongside existing color-based detection
 - July 6, 2025. **HONEST CAPABILITY REPORTING**: Replaced made-up accuracy percentages with realistic capability assessments requiring proper clinical validation
+- July 6, 2025. **ITERATIVE CONFIDENCE IMPROVEMENT**: Implemented confidence-based questioning system requiring 80% confidence before final care plan generation
+- July 6, 2025. **SMART PHOTO SUGGESTIONS**: Added AI-driven photo upload recommendations based on detection quality and missing visual information
+- July 6, 2025. **ENHANCED USER GUIDANCE**: Added detailed instructions emphasizing that more detailed answers result in better assessment accuracy
+- July 6, 2025. **MULTI-ROUND ASSESSMENT**: Created iterative questioning workflow where users answer questions, see confidence improve, and continue until 80% threshold reached
 ```
 
 ## User Preferences

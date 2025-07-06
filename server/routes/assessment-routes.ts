@@ -331,10 +331,26 @@ export function registerAssessmentRoutes(app: Express): void {
         model
       };
       
+      // Calculate revised confidence based on answers provided
+      let revisedConfidence = parsedClassification.confidence || 0.5;
+      
+      // Improve confidence based on answered questions
+      if (parsedQuestions.length > 0) {
+        const answeredQuestions = parsedQuestions.filter((q: any) => q.answer && q.answer.trim().length > 0);
+        const confidenceBoost = Math.min(0.3, answeredQuestions.length * 0.05); // Max 30% boost, 5% per answered question
+        revisedConfidence = Math.min(1.0, revisedConfidence + confidenceBoost);
+      }
+      
+      // Update classification with revised confidence
+      const updatedClassification = {
+        ...parsedClassification,
+        confidence: revisedConfidence
+      };
+      
       // Use the agent question service to determine if more questions are needed
       const sessionId = `follow-up-${Date.now()}`;
       const newQuestions = await analyzeAssessmentForQuestions(sessionId, {
-        imageAnalysis: parsedClassification,
+        imageAnalysis: updatedClassification,
         audience,
         model,
         previousQuestions: parsedQuestions,
@@ -342,10 +358,16 @@ export function registerAssessmentRoutes(app: Express): void {
         instructions
       });
       
+      // Only proceed to care plan if confidence is 80% or higher AND no more questions needed
+      const shouldProceedToPlan = revisedConfidence >= 0.80 && newQuestions.length === 0;
+      
       res.json({
         questions: newQuestions,
-        needsMoreQuestions: newQuestions.length > 0,
-        round: parseInt(round)
+        needsMoreQuestions: !shouldProceedToPlan && newQuestions.length > 0,
+        round: parseInt(round),
+        updatedConfidence: revisedConfidence,
+        updatedClassification,
+        shouldProceedToPlan
       });
       
     } catch (error: any) {
