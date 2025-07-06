@@ -106,27 +106,33 @@ class SmartYOLODetector:
         """Load YOLO model if available"""
         try:
             from ultralytics import YOLO
+            logger.info("Starting YOLO model loading process...")
             
             # Try custom model first
             custom_path = self.config["custom_model_path"]
+            logger.info(f"Checking custom model path: {custom_path}")
             if os.path.exists(custom_path):
                 logger.info(f"Loading custom wound model: {custom_path}")
                 self.yolo_model = YOLO(custom_path)
                 self.config["model_type"] = "custom"
+                logger.info("Custom YOLO model loaded successfully!")
                 return
             
             # Try general model
             general_path = self.config["model_path"]
+            logger.info(f"Checking general model path: {general_path}")
             if os.path.exists(general_path):
                 logger.info(f"Loading general YOLO model: {general_path}")
                 self.yolo_model = YOLO(general_path)
                 self.config["model_type"] = "general"
+                logger.info("General YOLO model loaded successfully!")
                 return
             
-            # Download default model
-            logger.info("Downloading YOLOv8 model...")
+            # Force load yolov8n.pt directly
+            logger.info("Forcing load of yolov8n.pt...")
             self.yolo_model = YOLO("yolov8n.pt")
             self.config["model_type"] = "downloaded"
+            logger.info("YOLOv8n model loaded successfully!")
             
         except ImportError:
             logger.error("Ultralytics not installed - YOLO disabled")
@@ -152,14 +158,14 @@ class SmartYOLODetector:
             "confidence_requirement": confidence_threshold
         }
         
-        # Simple scoring system
-        score = 0
-        if factors["image_quality"] > 0.7:
-            score += 0.4
-        if factors["recent_performance"] > 0.6:
+        # More permissive scoring system - favor YOLO when available
+        score = 0.2  # Base score for having YOLO available
+        if factors["image_quality"] > 0.5:  # Lower threshold
             score += 0.3
-        if factors["confidence_requirement"] > 0.7:
+        if factors["recent_performance"] > 0.4:  # Lower threshold
             score += 0.3
+        if factors["confidence_requirement"] > 0.3:  # Much lower threshold
+            score += 0.2
         
         return score > 0.5
     
@@ -191,17 +197,24 @@ class SmartYOLODetector:
         start_time = time.time()
         
         # Determine method
+        use_yolo = False
+        
         if force_method == "yolo":
             use_yolo = True
         elif force_method == "color":
             use_yolo = False
         else:
-            use_yolo = self.should_use_yolo(image.shape[:2], confidence_threshold)
+            # For auto mode, prefer YOLO if available
+            use_yolo = self.config["yolo_enabled"] and self.yolo_model is not None
         
-        # Perform detection
-        if use_yolo and self.yolo_model:
+        # Perform detection with debug output
+        print(f"DEBUG: force_method={force_method}, use_yolo={use_yolo}, yolo_model_exists={self.yolo_model is not None}")
+        
+        if use_yolo and self.yolo_model is not None:
+            print("DEBUG: Using YOLO detection")
             detections, method = self.yolo_detection(image, confidence_threshold)
         else:
+            print("DEBUG: Using color detection (fallback)")
             detections, method = self.color_detection(image, confidence_threshold)
         
         processing_time = time.time() - start_time
@@ -459,5 +472,5 @@ async def health_check():
     }
 
 if __name__ == "__main__":
-    logger.info("Starting Smart YOLO Wound Detection Service on port 8083")
-    uvicorn.run(app, host="0.0.0.0", port=8083, log_level="info")
+    logger.info("Starting Smart YOLO Wound Detection Service on port 8081")
+    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="info")

@@ -23,7 +23,7 @@ function startYoloService() {
   }
 
   console.log('Starting YOLO service...');
-  yoloProcess = spawn('python3', ['yolo_service.py'], {
+  yoloProcess = spawn('python3', ['yolo_smart_service.py'], {
     stdio: ['ignore', 'pipe', 'pipe'],
     detached: false,
     cwd: process.cwd()
