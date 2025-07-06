@@ -2,19 +2,44 @@ import { analyzeWoundImage } from "./openai";
 import { analyzeWoundImageWithGemini } from "./gemini";
 import { storage } from "../storage";
 import { woundDetectionService } from "./woundDetection";
+import { cnnWoundClassifier, convertCNNToStandardClassification } from "./cnnWoundClassifier";
 
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
   try {
-    // Step 1: Perform YOLO-based wound detection first (with cloud fallback)
+    // Step 1: Try CNN-based wound classification first (priority method)
+    let classification;
+    let usedCNN = false;
+    
+    try {
+      const cnnModelInfo = await cnnWoundClassifier.getModelInfo();
+      
+      if (cnnModelInfo.available) {
+        console.log(`Using trained CNN model: ${cnnModelInfo.bestModel}`);
+        const cnnResult = await cnnWoundClassifier.classifyWound(imageBase64);
+        classification = convertCNNToStandardClassification(cnnResult);
+        usedCNN = true;
+        console.log(`CNN Classification: ${cnnResult.woundType} (${cnnResult.confidence.toFixed(1)}% confidence)`);
+      } else {
+        console.log('No trained CNN models available, falling back to AI vision models');
+        throw new Error('CNN models not available');
+      }
+    } catch (cnnError) {
+      console.log('CNN classification failed, using AI vision models as fallback:', (cnnError as Error).message);
+      usedCNN = false;
+    }
+    
+    // Step 2: Perform YOLO-based wound detection for measurements (regardless of classification method)
     const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
     
-    // Get agent instructions from database to include in analysis
-    const agentInstructions = await storage.getActiveAgentInstructions();
-    const instructions = agentInstructions ? 
-      `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
-    
-    // Step 2: Enhance AI analysis with detection data
-    const enhancedInstructions = `${instructions}
+    // Step 3: If CNN failed, use AI vision models as fallback
+    if (!usedCNN) {
+      // Get agent instructions from database to include in analysis
+      const agentInstructions = await storage.getActiveAgentInstructions();
+      const instructions = agentInstructions ? 
+        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
+      
+      // Enhance AI analysis with detection data
+      const enhancedInstructions = `${instructions}
 
 WOUND DETECTION DATA:
 - Number of wounds detected: ${detectionResult.detections.length}
@@ -26,13 +51,12 @@ ${detectionResult.detections.length > 0 ? `
 - Reference object detected: ${detectionResult.detections[0].referenceObjectDetected ? 'Yes' : 'No'}
 ` : ''}
 Use this detection data to improve your wound analysis accuracy.`;
-    
-    let classification;
-    
-    if (model.startsWith('gemini-')) {
-      classification = await analyzeWoundImageWithGemini(imageBase64, model, enhancedInstructions);
-    } else {
-      classification = await analyzeWoundImage(imageBase64, model, mimeType, enhancedInstructions);
+      
+      if (model.startsWith('gemini-')) {
+        classification = await analyzeWoundImageWithGemini(imageBase64, model, enhancedInstructions);
+      } else {
+        classification = await analyzeWoundImage(imageBase64, model, mimeType, enhancedInstructions);
+      }
     }
     
     // Step 3: Validate and normalize the classification
@@ -55,6 +79,12 @@ Use this detection data to improve your wound analysis accuracy.`;
       normalizedClassification, 
       detectionResult
     );
+
+    // Add classification method metadata
+    enhancedClassification.classificationMethod = usedCNN ? 'CNN' : 'AI Vision';
+    enhancedClassification.modelInfo = usedCNN ? 
+      { type: 'Trained CNN', accuracy: 'High', processingTime: classification.cnnData?.processingTime } :
+      { type: model, accuracy: 'Variable', apiCall: true };
 
     return enhancedClassification;
   } catch (error: any) {

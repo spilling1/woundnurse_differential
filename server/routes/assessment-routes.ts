@@ -10,6 +10,7 @@ import { isAuthenticated } from "../replitAuth";
 import { analyzeAssessmentForQuestions } from "../services/agentQuestionService";
 import { callOpenAI } from "../services/openai";
 import { callGemini } from "../services/gemini";
+import { cnnWoundClassifier } from "../services/cnnWoundClassifier";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -457,6 +458,69 @@ export function registerAssessmentRoutes(app: Express): void {
       res.status(500).json({
         code: "FINAL_PLAN_ERROR",
         message: error.message || "Failed to generate final care plan"
+      });
+    }
+  });
+
+  // CNN Model Status endpoint
+  app.get("/api/cnn-status", async (req, res) => {
+    try {
+      const modelInfo = await cnnWoundClassifier.getModelInfo();
+      
+      res.json({
+        ...modelInfo,
+        status: modelInfo.available ? 'active' : 'unavailable',
+        description: modelInfo.available ? 
+          `CNN models available for wound classification with ${modelInfo.bestModel}` :
+          'No trained CNN models found. Using AI vision models as fallback.'
+      });
+      
+    } catch (error: any) {
+      console.error('CNN status error:', error);
+      res.status(500).json({
+        available: false,
+        status: 'error',
+        description: `CNN status check failed: ${error.message}`,
+        models: []
+      });
+    }
+  });
+
+  // CNN Test endpoint (for testing CNN classification)
+  app.post("/api/cnn-test", upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          code: "NO_IMAGE",
+          message: "Image is required for CNN testing"
+        });
+      }
+
+      await validateImage(req.file);
+      const imageBase64 = req.file.buffer.toString('base64');
+      
+      const modelInfo = await cnnWoundClassifier.getModelInfo();
+      if (!modelInfo.available) {
+        return res.status(503).json({
+          code: "CNN_UNAVAILABLE",
+          message: "No trained CNN models available"
+        });
+      }
+      
+      const cnnResult = await cnnWoundClassifier.classifyWound(imageBase64);
+      
+      res.json({
+        success: true,
+        result: cnnResult,
+        modelUsed: modelInfo.bestModel,
+        description: `CNN classification completed using ${modelInfo.bestModel}`
+      });
+      
+    } catch (error: any) {
+      console.error('CNN test error:', error);
+      res.status(500).json({
+        code: "CNN_TEST_ERROR",
+        message: error.message || "CNN test failed"
       });
     }
   });
