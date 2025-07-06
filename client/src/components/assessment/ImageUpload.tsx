@@ -281,16 +281,27 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
           <CardContent className="pt-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Analyzing wound images...</span>
-                <span className="text-sm text-gray-500">{elapsedTime}s</span>
+                <div className="flex items-center space-x-2">
+                  <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />
+                  <span className="text-sm font-medium text-blue-600">Analyzing Image</span>
+                </div>
+                <span className="text-sm text-gray-500">{elapsedTime}s / ~{getEstimatedTime(state.model || 'gemini-2.5-pro')}s</span>
               </div>
               <Progress value={progress} className="w-full" />
-              <div className="text-xs text-gray-500 space-y-1">
-                <div>• Processing {state.selectedImages.length} image{state.selectedImages.length !== 1 ? 's' : ''}</div>
-                <div>• Estimated time: {getEstimatedTime(state.model || 'gemini-2.5-pro')}s</div>
-                {state.model?.includes('gemini') && (
-                  <div>• Gemini models provide detailed medical analysis (may take longer)</div>
-                )}
+              
+              {/* Detailed Step Messages */}
+              <div className="text-sm text-gray-700 font-medium">
+                {progress < 20 && "Processing image..."}
+                {progress >= 20 && progress < 35 && "Detecting wound boundaries..."}
+                {progress >= 35 && progress < 50 && "Analyzing wound characteristics..."}
+                {progress >= 50 && progress < 65 && "Measuring wound dimensions..."}
+                {progress >= 65 && progress < 80 && "Classifying wound type..."}
+                {progress >= 80 && progress < 95 && "Generating assessment..."}
+                {progress >= 95 && "Finalizing analysis..."}
+              </div>
+              
+              <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                <strong>Note:</strong> Analysis can take up to {getEstimatedTime(state.model || 'gemini-2.5-pro')} seconds for thorough medical image processing. Please be patient while we generate your detailed assessment.
               </div>
             </div>
           </CardContent>
