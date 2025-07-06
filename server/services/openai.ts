@@ -87,3 +87,63 @@ export async function analyzeWoundImage(imageBase64: string, model: string, mime
   const response = await callOpenAI(model, messages, { type: "json_object" });
   return JSON.parse(response);
 }
+
+export async function analyzeMultipleWoundImages(images: Array<{base64: string, mimeType: string}>, model: string, agentInstructions: string = ''): Promise<any> {
+  const systemMessage = agentInstructions ? 
+    `${agentInstructions}\n\nAnalyze the multiple wound images and provide a structured assessment. IMPORTANT: If images show different wounds, clearly identify this and focus on the primary wound for assessment.` :
+    "You are a medical AI assistant specializing in wound assessment. Analyze the multiple wound images and provide a structured assessment. IMPORTANT: If images show different wounds, clearly identify this and focus on the primary wound for assessment.";
+    
+  const imageContents = images.map(img => ({
+    type: "image_url",
+    image_url: {
+      url: `data:${img.mimeType};base64,${img.base64}`,
+      detail: "high"
+    }
+  }));
+
+  const messages = [
+    {
+      role: "system",
+      content: systemMessage
+    },
+    {
+      role: "user",
+      content: [
+        {
+          type: "text",
+          text: `Analyze these ${images.length} wound images and provide a detailed assessment in JSON format with the following structure:
+          {
+            "multipleWounds": "boolean - true if images show different wounds/locations",
+            "woundType": "type of primary wound (e.g., pressure ulcer, diabetic foot ulcer, surgical wound, etc.)",
+            "stage": "stage if applicable (e.g., Stage 1, Stage 2, etc.)",
+            "size": "small, medium, or large",
+            "woundBed": "condition of wound bed (e.g., granulating, necrotic, sloughy, epithelializing)",
+            "exudate": "none, low, moderate, or heavy",
+            "infectionSigns": "array of observed signs (e.g., erythema, odor, increased warmth)",
+            "location": "anatomical location of primary wound",
+            "additionalObservations": "any other relevant clinical observations, including notes about multiple wounds if present",
+            "confidence": "confidence score from 0.0 to 1.0 representing diagnostic certainty",
+            "imageAnalysis": "detailed analysis of what each image shows and relationships between them"
+          }
+          
+          CRITICAL INSTRUCTIONS:
+          - If images show different wounds in different locations, set "multipleWounds": true
+          - Focus your assessment on the most significant/primary wound
+          - In "additionalObservations", clearly state if multiple wounds are present
+          - In "imageAnalysis", describe what each image shows and whether they're the same wound from different angles or different wounds entirely
+          - Don't be afraid to say when images appear to show different wounds - accuracy is more important than convenience
+          
+          CONFIDENCE SCORING:
+          - 0.9-1.0: Highly confident - clear visual indicators, typical presentation
+          - 0.7-0.8: Moderately confident - good visual clarity, some uncertainty in classification
+          - 0.5-0.6: Low confidence - poor image quality, atypical presentation, or multiple possibilities
+          - 0.0-0.4: Very uncertain - insufficient visual information for reliable diagnosis`
+        },
+        ...imageContents
+      ]
+    }
+  ];
+
+  const response = await callOpenAI(model, messages, { type: "json_object" });
+  return JSON.parse(response);
+}

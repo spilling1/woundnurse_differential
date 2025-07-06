@@ -338,6 +338,16 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
             </div>
           )}
           
+          {/* Multiple Wounds Warning */}
+          {state.woundClassification?.multipleWounds && (
+            <div className="mb-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200 text-sm">
+              <div className="font-medium text-yellow-800 mb-1">Multiple Wounds Detected</div>
+              <div className="text-yellow-700">
+                The AI has identified that your images may show different wounds. This assessment focuses on the primary wound.
+              </div>
+            </div>
+          )}
+          
           <p className="text-gray-600">
             {state.aiQuestions.length > 0 ? (
               "The AI needs more information to improve its diagnosis. Please answer these questions:"

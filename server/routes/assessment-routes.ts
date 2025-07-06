@@ -285,16 +285,66 @@ export function registerAssessmentRoutes(app: Express): void {
         await validateImage(file);
       }
       
-      // Use the first image as primary for AI analysis
-      const primaryImage = files[0];
-      const imageBase64 = primaryImage.buffer.toString('base64');
+      // Get agent instructions
+      const agentInstructions = await storage.getActiveAgentInstructions();
+      const instructions = agentInstructions ? 
+        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
       
-      // Classify wound using primary image
-      const classification = await classifyWound(imageBase64, model, primaryImage.mimetype);
+      let classification;
       
-      // Enhance classification with multiple image context
-      if (files.length > 1) {
-        classification.additionalObservations += ` (Analysis based on ${files.length} images: primary view plus ${files.length - 1} additional perspective${files.length > 2 ? 's' : ''})`;
+      if (files.length === 1) {
+        // Single image analysis
+        const primaryImage = files[0];
+        const imageBase64 = primaryImage.buffer.toString('base64');
+        classification = await classifyWound(imageBase64, model, primaryImage.mimetype);
+      } else {
+        // Multiple image analysis - use enhanced AI functions
+        const images = files.map(file => ({
+          base64: file.buffer.toString('base64'),
+          mimeType: file.mimetype
+        }));
+        
+        if (model.includes('gemini')) {
+          // Use Gemini multiple image analysis
+          const { analyzeMultipleWoundImagesWithGemini } = await import('../services/gemini');
+          const result = await analyzeMultipleWoundImagesWithGemini(images, model, instructions);
+          
+          // Convert to expected format
+          classification = {
+            woundType: result.woundType,
+            stage: result.stage,
+            size: result.size,
+            woundBed: result.woundBed,
+            exudate: result.exudate,
+            infectionSigns: result.infectionSigns,
+            location: result.location,
+            additionalObservations: result.additionalObservations,
+            confidence: result.confidence || 0.5,
+            imageAnalysis: result.imageAnalysis,
+            multipleWounds: result.multipleWounds,
+            classificationMethod: 'Multiple Image AI Analysis'
+          };
+        } else {
+          // Use OpenAI multiple image analysis
+          const { analyzeMultipleWoundImages } = await import('../services/openai');
+          const result = await analyzeMultipleWoundImages(images, model, instructions);
+          
+          // Convert to expected format
+          classification = {
+            woundType: result.woundType,
+            stage: result.stage,
+            size: result.size,
+            woundBed: result.woundBed,
+            exudate: result.exudate,
+            infectionSigns: result.infectionSigns,
+            location: result.location,
+            additionalObservations: result.additionalObservations,
+            confidence: result.confidence || 0.5,
+            imageAnalysis: result.imageAnalysis,
+            multipleWounds: result.multipleWounds,
+            classificationMethod: 'Multiple Image AI Analysis'
+          };
+        }
       }
       
       // Generate AI questions based on image analysis

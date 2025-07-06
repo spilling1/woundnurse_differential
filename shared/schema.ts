@@ -256,6 +256,8 @@ export interface WoundClassification {
     scaleCalibrated: boolean;
   };
   preciseMeasurements?: any;
+  imageAnalysis?: string;
+  multipleWounds?: boolean;
 }
 
 export const feedbackRequestSchema = z.object({
