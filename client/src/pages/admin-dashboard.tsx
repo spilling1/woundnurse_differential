@@ -757,7 +757,57 @@ export default function AdminDashboard() {
                           <p className="text-sm text-gray-600 mb-3">
                             {model.description}
                           </p>
-                          <div className="flex items-center space-x-2 text-sm text-gray-500">
+                          
+                          {/* Capabilities and Accuracy */}
+                          {model.capabilities && (
+                            <div className="space-y-3 mb-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-4 text-sm">
+                                  <span className="font-medium text-gray-700">
+                                    Accuracy: {model.capabilities.accuracy || 'Unknown'}
+                                  </span>
+                                  <span className="text-gray-500">•</span>
+                                  <span className="text-gray-600">
+                                    Speed: {model.capabilities.speed || 'Unknown'}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center space-x-3">
+                                {model.capabilities.detection && (
+                                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                                    Detection
+                                  </Badge>
+                                )}
+                                {model.capabilities.measurements && (
+                                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                    Measurements
+                                  </Badge>
+                                )}
+                                {model.capabilities.classification && (
+                                  <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                                    Classification
+                                  </Badge>
+                                )}
+                              </div>
+                              
+                              {model.capabilities.capabilities_list && model.capabilities.capabilities_list.length > 0 && (
+                                <div className="mt-2">
+                                  <p className="text-xs font-medium text-gray-700 mb-1">Capabilities:</p>
+                                  <div className="grid grid-cols-1 gap-1">
+                                    {model.capabilities.capabilities_list.map((capability: string, index: number) => (
+                                      <div key={index} className="text-xs text-gray-600 flex items-center">
+                                        <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
+                                        {capability}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center space-x-2 text-sm text-gray-500 border-t pt-3">
                             <span>Priority: {model.priority}</span>
                             <span>•</span>
                             <span>Type: {model.name}</span>
