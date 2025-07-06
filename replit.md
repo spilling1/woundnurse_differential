@@ -201,6 +201,7 @@ Changelog:
 - July 6, 2025. **SIMPLIFIED IMAGE PRESENTATION**: Care plan page now has clean, professional single image display without upload distractions
 - July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
 - July 6, 2025. **SIZE ASSESSMENT ENHANCEMENT**: Added precise wound dimensions display under Size Assessment card showing length, width, area, and perimeter measurements from YOLO detection system
+- July 6, 2025. **MEASUREMENT DISPLAY FIX**: Fixed field name mismatch between YOLO service (area_mm2) and care plan display, all measurements now rounded to nearest millimeter for clean presentation
 - July 6, 2025. **CARE PLAN STRUCTURE FIX**: Removed confusing "Questions for you" section from care plan output - questions are now only shown during assessment phase, not in final care plan
 - July 6, 2025. **AI INSTRUCTION UPDATE**: Updated care plan structure guidelines to explicitly prohibit generating additional questions in final care plan since all diagnostic questions are handled during assessment
 - July 6, 2025. **CRITICAL VERSIONING BUG FIX**: Fixed case versioning issue where duplicate case IDs were both showing v1 instead of proper v1/v2 numbering - corrected database and improved version numbering logic

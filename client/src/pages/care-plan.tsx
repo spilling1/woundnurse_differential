@@ -835,17 +835,17 @@ export default function CarePlan() {
                 {(assessmentData?.classification as any)?.detection?.measurements && (
                   <div className="mt-2 pt-2 border-t border-purple-200">
                     <div className="text-xs text-purple-700 space-y-1">
-                      {(assessmentData?.classification as any)?.detection?.measurements?.length && (
-                        <div>Length: {(assessmentData?.classification as any)?.detection?.measurements?.length} mm</div>
+                      {(assessmentData?.classification as any)?.detection?.measurements?.length_mm && (
+                        <div>Length: {Math.round(Number((assessmentData?.classification as any)?.detection?.measurements?.length_mm))} mm</div>
                       )}
-                      {(assessmentData?.classification as any)?.detection?.measurements?.width && (
-                        <div>Width: {(assessmentData?.classification as any)?.detection?.measurements?.width} mm</div>
+                      {(assessmentData?.classification as any)?.detection?.measurements?.width_mm && (
+                        <div>Width: {Math.round(Number((assessmentData?.classification as any)?.detection?.measurements?.width_mm))} mm</div>
                       )}
-                      {(assessmentData?.classification as any)?.detection?.measurements?.area && (
-                        <div>Area: {(assessmentData?.classification as any)?.detection?.measurements?.area} mm²</div>
+                      {(assessmentData?.classification as any)?.detection?.measurements?.area_mm2 && (
+                        <div>Area: {Math.round(Number((assessmentData?.classification as any)?.detection?.measurements?.area_mm2))} mm²</div>
                       )}
-                      {(assessmentData?.classification as any)?.detection?.measurements?.perimeter && (
-                        <div>Perimeter: {(assessmentData?.classification as any)?.detection?.measurements?.perimeter} mm</div>
+                      {(assessmentData?.classification as any)?.detection?.measurements?.perimeter_mm && (
+                        <div>Perimeter: {Math.round(Number((assessmentData?.classification as any)?.detection?.measurements?.perimeter_mm))} mm</div>
                       )}
                     </div>
                   </div>
@@ -854,17 +854,17 @@ export default function CarePlan() {
                 {(assessmentData?.classification as any)?.preciseMeasurements && (
                   <div className="mt-2 pt-2 border-t border-purple-200">
                     <div className="text-xs text-purple-700 space-y-1">
-                      {(assessmentData?.classification as any)?.preciseMeasurements?.length && (
-                        <div>Length: {(assessmentData?.classification as any)?.preciseMeasurements?.length} mm</div>
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.length_mm && (
+                        <div>Length: {Math.round(Number((assessmentData?.classification as any)?.preciseMeasurements?.length_mm))} mm</div>
                       )}
-                      {(assessmentData?.classification as any)?.preciseMeasurements?.width && (
-                        <div>Width: {(assessmentData?.classification as any)?.preciseMeasurements?.width} mm</div>
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.width_mm && (
+                        <div>Width: {Math.round(Number((assessmentData?.classification as any)?.preciseMeasurements?.width_mm))} mm</div>
                       )}
-                      {(assessmentData?.classification as any)?.preciseMeasurements?.area && (
-                        <div>Area: {(assessmentData?.classification as any)?.preciseMeasurements?.area} mm²</div>
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.area_mm2 && (
+                        <div>Area: {Math.round(Number((assessmentData?.classification as any)?.preciseMeasurements?.area_mm2))} mm²</div>
                       )}
-                      {(assessmentData?.classification as any)?.preciseMeasurements?.perimeter && (
-                        <div>Perimeter: {(assessmentData?.classification as any)?.preciseMeasurements?.perimeter} mm</div>
+                      {(assessmentData?.classification as any)?.preciseMeasurements?.perimeter_mm && (
+                        <div>Perimeter: {Math.round(Number((assessmentData?.classification as any)?.preciseMeasurements?.perimeter_mm))} mm</div>
                       )}
                     </div>
                   </div>

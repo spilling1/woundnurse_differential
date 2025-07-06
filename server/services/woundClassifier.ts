@@ -153,9 +153,10 @@ function enhanceClassificationWithDetection(classification: any, detectionResult
 }
 
 function categorizeSizeFromMeasurements(measurements: any): string {
-  const areaMm2 = measurements.areaMm2;
+  // Handle both field name formats from different services
+  const areaMm2 = measurements.area_mm2 || measurements.areaMm2;
   
-  if (areaMm2 < 100) return 'small';
+  if (!areaMm2 || areaMm2 < 100) return 'small';
   if (areaMm2 < 500) return 'medium';
   return 'large';
 }
