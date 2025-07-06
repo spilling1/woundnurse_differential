@@ -284,7 +284,6 @@ export function registerAssessmentRoutes(app: Express): void {
       const imageBase64 = req.file.buffer.toString('base64');
       
       // Classify wound
-      console.log('Assessment route - model parameter:', model);
       const classification = await classifyWound(imageBase64, model, req.file.mimetype);
       
       // Generate AI questions based on image analysis

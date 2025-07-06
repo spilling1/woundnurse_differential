@@ -48,16 +48,19 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
     mutationFn: async () => {
       if (!state.selectedImage) throw new Error('No image selected');
       
+      // Ensure model is set with fallback
+      const model = state.model || 'gemini-2.5-pro';
+      
       console.log('Frontend - sending analysis request with:', {
         audience: state.audience,
-        model: state.model,
+        model: model,
         imageFile: state.selectedImage?.name
       });
       
       return await assessmentApi.initialAnalysis(
         state.selectedImage,
         state.audience,
-        state.model
+        model
       );
     },
     onSuccess: (data: any) => {

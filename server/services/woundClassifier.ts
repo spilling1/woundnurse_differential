@@ -5,7 +5,6 @@ import { woundDetectionService } from "./woundDetection";
 import { cnnWoundClassifier, convertCNNToStandardClassification } from "./cnnWoundClassifier";
 
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg'): Promise<any> {
-  console.log('classifyWound called with model:', model, 'starts with gemini:', model.startsWith('gemini-'));
   try {
     // Step 1: TEMPORARILY DISABLED CNN due to poor accuracy (hand classified as diabetic ulcer)
     // TODO: Retrain CNN models with better data quality and validation
