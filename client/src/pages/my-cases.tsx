@@ -126,7 +126,7 @@ export default function MyCases() {
         <div className="text-center text-white">
           <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
           <p className="mb-4">Please log in to view your cases.</p>
-          <Button onClick={() => window.location.href = "/api/login"} className="bg-white text-medical-blue hover:bg-gray-100">
+          <Button onClick={() => setLocation("/login")} className="bg-white text-medical-blue hover:bg-gray-100">
             Log In
           </Button>
         </div>

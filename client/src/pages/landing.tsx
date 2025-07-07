@@ -116,7 +116,7 @@ export default function Landing() {
             ) : (
               <Button 
                 size="lg"
-                onClick={() => setLocation("/start-assessment")}
+                onClick={() => setLocation("/login")}
                 className="bg-medical-blue hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
               >
                 Start New Case

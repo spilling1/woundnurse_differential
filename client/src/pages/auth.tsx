@@ -104,16 +104,16 @@ export default function AuthPage() {
               <CardContent className="space-y-6">
                 <div className="text-center">
                   <p className="text-gray-600 mb-6">
-                    Use your Replit account to get started quickly and securely
+                    Create an account or sign in to manage your wound assessments
                   </p>
                   
                   <Button 
                     size="lg"
                     className="w-full bg-medical-blue hover:bg-medical-blue/90 text-lg py-6"
-                    onClick={() => window.location.href = "/api/login"}
+                    onClick={() => setLocation("/login")}
                   >
                     <ArrowRight className="mr-2 h-5 w-5" />
-                    Continue with Replit
+                    Sign In or Create Account
                   </Button>
                 </div>
 
