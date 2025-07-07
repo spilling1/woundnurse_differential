@@ -205,7 +205,10 @@ export default function MyCases() {
               )}
               <Button 
                 variant="ghost"
-                onClick={() => window.location.href = "/api/logout"}
+                onClick={() => {
+                  localStorage.removeItem('auth_token');
+                  setLocation('/');
+                }}
               >
                 Log Out
               </Button>

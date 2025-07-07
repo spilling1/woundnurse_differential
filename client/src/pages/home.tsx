@@ -47,7 +47,10 @@ export default function Home() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => window.location.href = "/api/logout"}
+                    onClick={() => {
+                      localStorage.removeItem('auth_token');
+                      setLocation('/');
+                    }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Log Out

@@ -5,6 +5,11 @@ import { isAuthenticated } from "../customAuth";
 export function registerAuthRoutes(app: Express): void {
   // Note: /api/auth/user endpoint is now handled in customAuth.ts
   
+  // Logout endpoint (for compatibility with old system)
+  app.get('/api/logout', (req, res) => {
+    res.json({ message: "Logged out successfully" });
+  });
+  
   // Get user's wound assessments
   app.get('/api/my-cases', isAuthenticated, async (req: any, res) => {
     try {

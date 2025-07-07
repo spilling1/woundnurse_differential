@@ -205,6 +205,8 @@ Changelog:
 - July 6, 2025. **EXISTING USER MIGRATION**: Set default password "Woundnurse" for existing users with mandatory password change on first login for security
 - July 6, 2025. **COMPREHENSIVE AUTH PAGES**: Created dedicated login/register page and password change page with professional UI and security validations
 - July 6, 2025. **ROUTE SECURITY UPDATE**: Updated all API routes to use JWT authentication instead of Replit Auth, maintaining full functionality while enabling future HIPAA compliance
+- July 6, 2025. **LOGOUT FUNCTIONALITY FIX**: Fixed logout functionality across all pages to properly clear JWT tokens from localStorage instead of calling non-existent /api/logout endpoints
+- July 6, 2025. **AUTHENTICATION MIGRATION COMPLETE**: Successfully migrated entire application from Replit Auth to custom JWT authentication system with preserved user data and full functionality
 - July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
 - July 6, 2025. **SIZE ASSESSMENT ENHANCEMENT**: Added precise wound dimensions display under Size Assessment card showing length, width, area, and perimeter measurements from YOLO detection system
 - July 6, 2025. **MEASUREMENT DISPLAY FIX**: Fixed field name mismatch between YOLO service (area_mm2) and care plan display, all measurements now rounded to nearest millimeter for clean presentation
