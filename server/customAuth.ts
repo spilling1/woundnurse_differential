@@ -7,6 +7,13 @@ import { z } from 'zod';
 // JWT secret - use SESSION_SECRET or generate a new one
 const JWT_SECRET = process.env.SESSION_SECRET || 'your-jwt-secret-key';
 
+// Permanent admin users - these users always have admin privileges
+const PERMANENT_ADMINS = [
+  'wardkevinpaul@gmail.com',
+  'sampilling@higharc.com',
+  'spilling@gmail.com'
+];
+
 // Extend Request interface to include user
 declare global {
   namespace Express {
@@ -41,11 +48,15 @@ const changePasswordSchema = z.object({
 
 // Generate JWT token
 export function generateToken(user: { id: string; email: string; role: string; mustChangePassword?: boolean }) {
+  // Check if user is a permanent admin
+  const isPermanentAdmin = PERMANENT_ADMINS.includes(user.email || '');
+  const userRole = isPermanentAdmin ? 'admin' : user.role;
+  
   return jwt.sign(
     { 
       id: user.id, 
       email: user.email, 
-      role: user.role,
+      role: userRole,
       mustChangePassword: user.mustChangePassword 
     },
     JWT_SECRET,
@@ -88,10 +99,14 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
       return res.status(401).json({ message: 'User not found or inactive' });
     }
 
+    // Check if user is a permanent admin
+    const isPermanentAdmin = PERMANENT_ADMINS.includes(user.email || '');
+    const userRole = isPermanentAdmin ? 'admin' : user.role;
+
     req.customUser = {
       id: user.id,
       email: user.email!,
-      role: user.role,
+      role: userRole,
       mustChangePassword: user.mustChangePassword || false,
     };
 
