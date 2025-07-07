@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { storage } from "../storage";
-import { isAuthenticated, isAdmin } from "../replitAuth";
+import { isAuthenticated, isAdmin } from "../customAuth";
 import { generateCarePlan } from "../services/carePlanGenerator";
 import { userUpdateSchema, companyCreateSchema, companyUpdateSchema, insertDetectionModelSchema, insertAiAnalysisModelSchema } from "@shared/schema";
 import type { InsertDetectionModel, InsertAiAnalysisModel } from "@shared/schema";

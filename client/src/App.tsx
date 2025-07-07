@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "@/pages/landing";
 import AuthPage from "@/pages/auth";
+import LoginPage from "@/pages/login";
+import ChangePasswordPage from "@/pages/change-password";
 import Home from "@/pages/home";
 import CarePlan from "@/pages/care-plan";
 import MyCases from "@/pages/my-cases";
@@ -22,6 +24,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/change-password" component={ChangePasswordPage} />
       <Route path="/start-assessment" component={AuthPage} />
       <Route path="/assessment" component={Home} />
       <Route path="/care-plan/:caseId?" component={CarePlan} />

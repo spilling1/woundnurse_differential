@@ -25,10 +25,11 @@ export const companies = pgTable("companies", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// User storage table for Replit Auth
+// User storage table for custom authentication
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
+  email: varchar("email").unique().notNull(),
+  password: varchar("password"), // bcrypt hashed password
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
@@ -36,6 +37,7 @@ export const users = pgTable("users", {
   status: varchar("status").notNull().default("active"), // 'active' | 'inactive' | 'suspended'
   companyId: integer("company_id").references(() => companies.id),
   lastLoginAt: timestamp("last_login_at"),
+  mustChangePassword: boolean("must_change_password").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -350,6 +352,9 @@ export const userUpdateSchema = z.object({
   role: z.enum(['admin', 'user', 'nurse', 'manager']).optional(),
   status: z.enum(['active', 'inactive', 'suspended']).optional(),
   companyId: z.number().nullable().optional(),
+  password: z.string().optional(),
+  mustChangePassword: z.boolean().optional(),
+  lastLoginAt: z.date().optional(),
 });
 
 export const companyCreateSchema = z.object({

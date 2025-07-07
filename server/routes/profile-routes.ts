@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { storage } from "../storage";
-import { isAuthenticated } from "../replitAuth";
+import { isAuthenticated } from "../customAuth";
 import { insertUserProfileSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -8,7 +8,7 @@ export function registerProfileRoutes(app: Express) {
   // Get user profile
   app.get('/api/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.customUser.id;
       const profile = await storage.getUserProfile(userId);
       res.json(profile);
     } catch (error) {
@@ -20,7 +20,7 @@ export function registerProfileRoutes(app: Express) {
   // Create or update user profile
   app.post('/api/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.customUser.id;
       
       // Validate request body
       const profileData = insertUserProfileSchema.parse({
@@ -54,7 +54,7 @@ export function registerProfileRoutes(app: Express) {
   // Update user profile
   app.patch('/api/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.customUser.id;
       
       // Validate request body (partial update)
       const profileData = insertUserProfileSchema.partial().parse(req.body);
@@ -74,7 +74,7 @@ export function registerProfileRoutes(app: Express) {
   // Delete user profile
   app.delete('/api/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.customUser.id;
       const success = await storage.deleteUserProfile(userId);
       
       if (success) {

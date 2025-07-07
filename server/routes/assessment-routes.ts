@@ -6,7 +6,7 @@ import { validateImage } from "../services/imageProcessor";
 import { classifyWound } from "../services/woundClassifier";
 import { generateCarePlan } from "../services/carePlanGenerator";
 import { generateCaseId } from "../services/utils";
-import { isAuthenticated } from "../replitAuth";
+import { isAuthenticated } from "../customAuth";
 import { analyzeAssessmentForQuestions } from "../services/agentQuestionService";
 import { callOpenAI } from "../services/openai";
 import { callGemini } from "../services/gemini";
@@ -215,7 +215,7 @@ export function registerAssessmentRoutes(app: Express): void {
   app.delete("/api/assessment/:caseId", isAuthenticated, async (req: any, res) => {
     try {
       const { caseId } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.customUser.id;
       
       // First check if the assessment exists and belongs to the user
       const assessment = await storage.getWoundAssessment(caseId);

@@ -13,10 +13,21 @@ export async function apiRequest(
   data?: unknown | undefined,
 ): Promise<Response> {
   const isFormData = data instanceof FormData;
+  const token = localStorage.getItem('auth_token');
+  
+  const headers: Record<string, string> = {};
+  
+  if (!isFormData && data) {
+    headers["Content-Type"] = "application/json";
+  }
+  
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
   
   const res = await fetch(url, {
     method,
-    headers: isFormData ? {} : (data ? { "Content-Type": "application/json" } : {}),
+    headers,
     body: isFormData ? data : (data ? JSON.stringify(data) : undefined),
     credentials: "include",
   });
@@ -31,7 +42,15 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    const token = localStorage.getItem('auth_token');
+    const headers: Record<string, string> = {};
+    
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    
     const res = await fetch(queryKey[0] as string, {
+      headers,
       credentials: "include",
     });
 
