@@ -76,6 +76,9 @@ export const assessmentApi = {
 
     const response = await fetch('/api/assessment/final-plan', {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+      },
       body: formData,
       credentials: 'include',
     });
@@ -125,6 +128,9 @@ export const assessmentApi = {
 
     const response = await fetch('/api/assessment/follow-up-questions', {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+      },
       body: formData
     });
 

@@ -210,6 +210,7 @@ Changelog:
 - July 6, 2025. **START ASSESSMENT REDIRECT FIX**: Fixed "Start New Case" buttons on landing page and auth page to redirect to new custom login system instead of old Replit Auth endpoints
 - July 6, 2025. **COMPLETE AUTH SYSTEM OVERHAUL**: All authentication touchpoints now use custom JWT system - login, logout, registration, password changes, and route protection all functional
 - July 6, 2025. **FINAL AUTH BUTTON FIX**: Fixed "Start Your Free Assessment" button to redirect to login page ensuring consistent authentication flow across entire application
+- July 6, 2025. **CARE PLAN AUTHENTICATION FIX**: Fixed critical JWT authentication issue in final care plan generation and follow-up questions API calls - added missing Authorization headers to prevent "No token provided" errors
 - July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
 - July 6, 2025. **SIZE ASSESSMENT ENHANCEMENT**: Added precise wound dimensions display under Size Assessment card showing length, width, area, and perimeter measurements from YOLO detection system
 - July 6, 2025. **MEASUREMENT DISPLAY FIX**: Fixed field name mismatch between YOLO service (area_mm2) and care plan display, all measurements now rounded to nearest millimeter for clean presentation
