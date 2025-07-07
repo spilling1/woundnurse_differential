@@ -199,6 +199,12 @@ Changelog:
 - July 6, 2025. **SMART IMAGE UPLOAD**: Added conditional image upload capability in questions section for photo-related questions (photo/image/picture keywords trigger upload option)
 - July 6, 2025. **CLEAN CARE PLAN LAYOUT**: Removed duplicate images and additional upload capability from care plan page - now shows single clean image display only
 - July 6, 2025. **SIMPLIFIED IMAGE PRESENTATION**: Care plan page now has clean, professional single image display without upload distractions
+- July 6, 2025. **MAJOR AUTHENTICATION OVERHAUL**: Completely removed Replit Auth and implemented custom JWT-based authentication system for HIPAA compliance readiness
+- July 6, 2025. **CUSTOM AUTH IMPLEMENTATION**: Built Node.js + Express + JWT authentication with bcrypt password hashing, user registration, login, and password change functionality
+- July 6, 2025. **DATABASE SCHEMA UPDATE**: Added password and mustChangePassword fields to users table with automatic password migration for existing users
+- July 6, 2025. **EXISTING USER MIGRATION**: Set default password "Woundnurse" for existing users with mandatory password change on first login for security
+- July 6, 2025. **COMPREHENSIVE AUTH PAGES**: Created dedicated login/register page and password change page with professional UI and security validations
+- July 6, 2025. **ROUTE SECURITY UPDATE**: Updated all API routes to use JWT authentication instead of Replit Auth, maintaining full functionality while enabling future HIPAA compliance
 - July 6, 2025. **ENHANCED MEDICAL IMAGE DISPLAY**: Upgraded care plan image to larger size (max-w-2xl, max-h-96) with click-to-zoom modal for detailed medical review when submitting to doctors
 - July 6, 2025. **SIZE ASSESSMENT ENHANCEMENT**: Added precise wound dimensions display under Size Assessment card showing length, width, area, and perimeter measurements from YOLO detection system
 - July 6, 2025. **MEASUREMENT DISPLAY FIX**: Fixed field name mismatch between YOLO service (area_mm2) and care plan display, all measurements now rounded to nearest millimeter for clean presentation

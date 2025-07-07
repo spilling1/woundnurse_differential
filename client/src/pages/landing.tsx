@@ -37,7 +37,10 @@ export default function Landing() {
                   </Button>
                   <Button 
                     variant="ghost"
-                    onClick={() => window.location.href = "/api/logout"}
+                    onClick={() => {
+                      localStorage.removeItem('auth_token');
+                      setLocation('/');
+                    }}
                   >
                     Log Out
                   </Button>
@@ -46,7 +49,7 @@ export default function Landing() {
                 <>
                   <Button 
                     variant="outline"
-                    onClick={() => window.location.href = "/api/login"}
+                    onClick={() => setLocation("/login")}
                   >
                     <LogIn className="mr-2 h-4 w-4" />
                     Log In
