@@ -201,7 +201,7 @@ export default function Landing() {
           <Button 
             size="lg"
             variant="secondary"
-            onClick={() => setLocation("/assessment")}
+            onClick={() => setLocation("/login")}
             className="bg-white text-medical-blue hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
           >
             Start Your Free Assessment
