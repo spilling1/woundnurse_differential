@@ -75,16 +75,20 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       console.log(`WoundClassifier: Independent AI classification complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
       
       // Log the independent classification
-      await storage.createAiInteraction({
-        caseId: sessionId || 'unknown',
-        stepType: 'independent_classification',
-        modelUsed: model,
-        promptSent: instructions,
-        responseReceived: JSON.stringify(classification),
-        parsedResult: classification,
-        confidenceScore: Math.round(classification.confidence * 100),
-        errorOccurred: false,
-      });
+      try {
+        await storage.createAiInteraction({
+          caseId: sessionId || 'temp-session',
+          stepType: 'independent_classification',
+          modelUsed: model,
+          promptSent: instructions,
+          responseReceived: JSON.stringify(classification),
+          parsedResult: classification,
+          confidenceScore: Math.round(classification.confidence * 100),
+          errorOccurred: false,
+        });
+      } catch (logError) {
+        console.error('Error logging AI interaction:', logError);
+      }
     }
     
     // Step 3: Now perform YOLO detection for additional context
@@ -178,16 +182,20 @@ Provide your updated assessment in the same JSON format, considering both your v
       console.log(`WoundClassifier: AI reconsideration complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
       
       // Log the YOLO reconsideration
-      await storage.createAiInteraction({
-        caseId: sessionId || 'unknown',
-        stepType: 'yolo_reconsideration',
-        modelUsed: model,
-        promptSent: reconsiderPrompt,
-        responseReceived: JSON.stringify(classification),
-        parsedResult: classification,
-        confidenceScore: Math.round(classification.confidence * 100),
-        errorOccurred: false,
-      });
+      try {
+        await storage.createAiInteraction({
+          caseId: sessionId || 'temp-session',
+          stepType: 'yolo_reconsideration',
+          modelUsed: model,
+          promptSent: reconsiderPrompt,
+          responseReceived: JSON.stringify(classification),
+          parsedResult: classification,
+          confidenceScore: Math.round(classification.confidence * 100),
+          errorOccurred: false,
+        });
+      } catch (logError) {
+        console.error('Error logging AI interaction:', logError);
+      }
     }
     
     // Store both classifications for transparency

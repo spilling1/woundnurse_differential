@@ -571,6 +571,14 @@ export default function MyCases() {
                                   Add Follow-up
                                 </Link>
                               </DropdownMenuItem>
+                              {user?.role === 'admin' && (
+                                <DropdownMenuItem asChild>
+                                  <Link href={`/admin/analysis/${caseId}`} className="flex items-center cursor-pointer">
+                                    <BarChart3 className="h-4 w-4 mr-2" />
+                                    Admin Analysis
+                                  </Link>
+                                </DropdownMenuItem>
+                              )}
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 onClick={() => handleDeleteCase(caseId)}

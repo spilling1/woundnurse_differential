@@ -306,7 +306,9 @@ export function registerAssessmentRoutes(app: Express): void {
         // Single image analysis
         const primaryImage = files[0];
         const imageBase64 = primaryImage.buffer.toString('base64');
-        classification = await classifyWound(imageBase64, model, primaryImage.mimetype, 'temp-session-id');
+        // Generate a case ID for logging (will be used later)
+        const caseId = generateCaseId();
+        classification = await classifyWound(imageBase64, model, primaryImage.mimetype, caseId);
       } else {
         // Multiple image analysis - use enhanced AI functions
         const images = files.map(file => ({
@@ -316,7 +318,9 @@ export function registerAssessmentRoutes(app: Express): void {
         
         // For multiple images, still need to run YOLO detection on primary image
         const primaryImage = images[0];
-        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType, 'temp-session-id');
+        // Generate a case ID for logging (will be used later)
+        const caseId = generateCaseId();
+        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType, caseId);
         
         if (model.includes('gemini')) {
           // Use Gemini multiple image analysis
@@ -582,6 +586,22 @@ export function registerAssessmentRoutes(app: Express): void {
         acc[key] = q.answer;
         return acc;
       }, {});
+
+      // Log care plan generation
+      try {
+        await storage.createAiInteraction({
+          caseId: caseId,
+          stepType: 'care_plan_generation',
+          modelUsed: model,
+          promptSent: `Care plan generation for ${classification.woundType} with context: ${JSON.stringify(contextData)}`,
+          responseReceived: 'Care plan generated successfully',
+          parsedResult: { caseId, audience, model },
+          confidenceScore: Math.round(classification.confidence * 100),
+          errorOccurred: false,
+        });
+      } catch (logError) {
+        console.error('Error logging care plan generation:', logError);
+      }
 
       // Generate final care plan with detection information
       const carePlan = await generateCarePlan(
