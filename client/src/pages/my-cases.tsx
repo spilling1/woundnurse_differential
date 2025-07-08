@@ -10,7 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw, Shield } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw, Shield, Edit3, Save, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect } from "react";
 import ImageDetectionStatus from "@/components/ImageDetectionStatus";
@@ -22,6 +24,9 @@ export default function MyCases() {
   const { toast } = useToast();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
+  const [isEditingCaseName, setIsEditingCaseName] = React.useState(false);
+  const [editedCaseName, setEditedCaseName] = React.useState("");
+  const [editingCaseId, setEditingCaseId] = React.useState("");
 
   // Refresh data when component mounts or when user navigates back
   useEffect(() => {
@@ -103,10 +108,58 @@ export default function MyCases() {
     },
   });
 
+  // Update case name mutation
+  const updateCaseNameMutation = useMutation({
+    mutationFn: async ({ caseId, caseName }: { caseId: string; caseName: string }) => {
+      return apiRequest('PATCH', `/api/case/${caseId}/name`, {
+        caseName
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Case Name Updated",
+        description: "Case name has been updated successfully.",
+      });
+      setIsEditingCaseName(false);
+      setEditedCaseName("");
+      setEditingCaseId("");
+      refetch();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleDeleteCase = (caseId: string) => {
     if (window.confirm("Are you sure you want to delete this case? This action cannot be undone.")) {
       deleteAssessmentMutation.mutate(caseId);
     }
+  };
+
+  // Functions to handle case name editing
+  const handleEditCaseName = (caseId: string, currentName: string) => {
+    setEditingCaseId(caseId);
+    setEditedCaseName(currentName || "");
+    setIsEditingCaseName(true);
+  };
+
+  const handleSaveCaseName = () => {
+    if (editedCaseName.trim() && editingCaseId) {
+      updateCaseNameMutation.mutate({
+        caseId: editingCaseId,
+        caseName: editedCaseName.trim()
+      });
+    }
+  };
+
+  const handleCancelEditCaseName = () => {
+    setIsEditingCaseName(false);
+    setEditedCaseName("");
+    setEditingCaseId("");
   };
 
   if (isLoading) {
@@ -285,6 +338,13 @@ export default function MyCases() {
                                   View Care Plan
                                 </Link>
                               </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleEditCaseName(caseId, latestAssessment.caseName)}
+                                className="cursor-pointer"
+                              >
+                                <Edit3 className="h-4 w-4 mr-2" />
+                                Edit Case Name
+                              </DropdownMenuItem>
                               <DropdownMenuItem asChild>
                                 <Link href={`/follow-up/${caseId}`} className="flex items-center cursor-pointer">
                                   <Plus className="h-4 w-4 mr-2" />
@@ -367,6 +427,57 @@ export default function MyCases() {
           )}
         </div>
       </div>
+
+      {/* Edit Case Name Dialog */}
+      <Dialog open={isEditingCaseName} onOpenChange={setIsEditingCaseName}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Case Name</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <label htmlFor="caseName" className="text-sm font-medium">
+                Case Name
+              </label>
+              <Input
+                id="caseName"
+                value={editedCaseName}
+                onChange={(e) => setEditedCaseName(e.target.value)}
+                placeholder="Enter a name for this case"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSaveCaseName();
+                  }
+                  if (e.key === 'Escape') {
+                    handleCancelEditCaseName();
+                  }
+                }}
+              />
+              <p className="text-xs text-gray-500">
+                Case ID: {editingCaseId}
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={handleCancelEditCaseName}
+              disabled={updateCaseNameMutation.isPending}
+            >
+              <X className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveCaseName}
+              disabled={updateCaseNameMutation.isPending || !editedCaseName.trim()}
+            >
+              <Save className="mr-2 h-4 w-4" />
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

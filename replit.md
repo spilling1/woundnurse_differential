@@ -252,6 +252,7 @@ Changelog:
 - July 8, 2025. **CASE NAMING SYSTEM**: Added case naming functionality with kebab menu on care plan page - users can now assign custom names to cases while preserving case ID display
 - July 8, 2025. **ENHANCED CASE DISPLAY**: Updated My Cases page to show custom case names as primary titles with case IDs as secondary information
 - July 8, 2025. **DATABASE SCHEMA UPDATE**: Added case_name column to wound_assessments table with API endpoint for updating case names
+- July 8, 2025. **MY CASES EDIT FUNCTIONALITY**: Added "Edit Case Name" option to My Cases page kebab menu for convenient case naming without navigating to care plan page
 ```
 
 ## User Preferences
