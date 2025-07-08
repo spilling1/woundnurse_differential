@@ -283,11 +283,9 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  // Agent question operations (using temporary in-memory storage)
+  // Agent question operations (using database storage)
   async createAgentQuestion(question: InsertAgentQuestion): Promise<AgentQuestion> {
-    const sessionQuestions = this.agentQuestionsStorage.get(question.sessionId) || [];
-    const newQuestion: AgentQuestion = {
-      id: sessionQuestions.length + 1,
+    const newQuestion = await db.insert(agentQuestions).values({
       userId: question.userId,
       sessionId: question.sessionId,
       caseId: question.caseId || null,
@@ -296,36 +294,38 @@ export class DatabaseStorage implements IStorage {
       questionType: question.questionType,
       isAnswered: false,
       context: question.context || null,
-      createdAt: new Date(),
-      answeredAt: null,
-    };
-    sessionQuestions.push(newQuestion);
-    this.agentQuestionsStorage.set(question.sessionId, sessionQuestions);
-    return newQuestion;
+    }).returning();
+    
+    return newQuestion[0];
   }
 
   async getQuestionsBySession(sessionId: string): Promise<AgentQuestion[]> {
-    return this.agentQuestionsStorage.get(sessionId) || [];
+    return await db.select().from(agentQuestions).where(eq(agentQuestions.sessionId, sessionId));
   }
 
   async answerQuestion(questionId: number, answer: string): Promise<AgentQuestion> {
-    const sessionIds = Array.from(this.agentQuestionsStorage.keys());
-    for (const sessionId of sessionIds) {
-      const questions = this.agentQuestionsStorage.get(sessionId) || [];
-      const question = questions.find(q => q.id === questionId);
-      if (question) {
-        question.answer = answer;
-        question.isAnswered = true;
-        question.answeredAt = new Date();
-        return question;
-      }
+    const updated = await db.update(agentQuestions)
+      .set({ 
+        answer, 
+        isAnswered: true, 
+        answeredAt: new Date() 
+      })
+      .where(eq(agentQuestions.id, questionId))
+      .returning();
+    
+    if (updated.length === 0) {
+      throw new Error(`Question with ID ${questionId} not found`);
     }
-    throw new Error(`Question with ID ${questionId} not found`);
+    
+    return updated[0];
   }
 
   async getUnansweredQuestions(sessionId: string): Promise<AgentQuestion[]> {
-    const questions = this.agentQuestionsStorage.get(sessionId) || [];
-    return questions.filter(q => !q.isAnswered);
+    return await db.select().from(agentQuestions)
+      .where(and(
+        eq(agentQuestions.sessionId, sessionId),
+        eq(agentQuestions.isAnswered, false)
+      ));
   }
 
   // Admin operations implementation

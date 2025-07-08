@@ -258,6 +258,12 @@ Changelog:
 - July 8, 2025. **SEPARATED SEARCH AND SORT UI**: Split search and sort functionality into separate cards with clear headers and distinct purposes for better user experience and visual clarity
 - July 8, 2025. **SIDE-BY-SIDE LAYOUT**: Arranged search and sort cards in responsive side-by-side layout with gray background for better visual separation and more efficient use of screen space
 - July 8, 2025. **OPTIMIZED CARD PROPORTIONS**: Adjusted search and sort card layout to 2/3 and 1/3 width respectively, providing optimal balance between search space and sort control visibility
+- July 8, 2025. **CRITICAL SYSTEM FIXES**: Fixed major issues preventing detailed case analysis:
+  - **Question Database Persistence**: Questions now properly stored in PostgreSQL instead of memory-only storage
+  - **Enhanced YOLO Integration**: YOLO detection data (confidence, measurements, bounding boxes) now fully passed to AI models for improved assessment
+  - **Comprehensive Analysis Interface**: Created detailed case analysis page showing AI model performance, YOLO detection results, questions asked, and their impact categories
+  - **Database API Enhancement**: Added questions endpoint for retrieving historical question data
+  - **Detection Data Transparency**: Fixed missing detection data storage and display issues
 ```
 
 ## User Preferences

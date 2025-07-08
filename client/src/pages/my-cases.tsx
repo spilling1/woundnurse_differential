@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw, Shield, Edit3, Save, X, Search, ChevronDown, ChevronUp, SortAsc, SortDesc } from "lucide-react";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw, Shield, Edit3, Save, X, Search, ChevronDown, ChevronUp, SortAsc, SortDesc, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import React, { useEffect, useState, useMemo } from "react";
 import ImageDetectionStatus from "@/components/ImageDetectionStatus";
@@ -550,6 +550,12 @@ export default function MyCases() {
                                 <Link href={`/care-plan/${caseId}`} className="flex items-center cursor-pointer">
                                   <ExternalLink className="h-4 w-4 mr-2" />
                                   View Care Plan
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/case-analysis/${caseId}`} className="flex items-center cursor-pointer">
+                                  <BarChart3 className="h-4 w-4 mr-2" />
+                                  Detailed Analysis
                                 </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem

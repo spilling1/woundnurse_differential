@@ -70,16 +70,23 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       // Enhance AI analysis with detection data
       const enhancedInstructions = `${instructions}
 
-WOUND DETECTION DATA:
+CRITICAL WOUND DETECTION DATA FROM YOLO ANALYSIS:
+- Detection Method: ${detectionResult.model || 'YOLO v8'}
+- Processing Time: ${detectionResult.processingTime || 'N/A'}ms
+- Image Dimensions: ${detectionResult.imageWidth}x${detectionResult.imageHeight}px
 - Number of wounds detected: ${detectionResult.detections.length}
-- Detection confidence: ${detectionResult.detections[0]?.confidence || 0}
+- Primary wound detection confidence: ${detectionResult.detections[0]?.confidence || 0} (0.0-1.0 scale)
 ${detectionResult.detections.length > 0 ? `
-- Wound measurements: ${detectionResult.detections[0].measurements.lengthMm}mm x ${detectionResult.detections[0].measurements.widthMm}mm
-- Wound area: ${detectionResult.detections[0].measurements.areaMm2}mm²
+- Wound bounding box: [${detectionResult.detections[0].boundingBox.x}, ${detectionResult.detections[0].boundingBox.y}, ${detectionResult.detections[0].boundingBox.width}, ${detectionResult.detections[0].boundingBox.height}]
+- Wound measurements: ${detectionResult.detections[0].measurements.lengthMm.toFixed(1)}mm x ${detectionResult.detections[0].measurements.widthMm.toFixed(1)}mm
+- Wound area: ${detectionResult.detections[0].measurements.areaMm2.toFixed(1)}mm²
+- Wound perimeter: ${detectionResult.detections[0].perimeter.toFixed(1)}px
 - Scale calibrated: ${detectionResult.detections[0].scaleCalibrated ? 'Yes' : 'No'}
 - Reference object detected: ${detectionResult.detections[0].referenceObjectDetected ? 'Yes' : 'No'}
-` : ''}
-Use this detection data to improve your wound analysis accuracy.`;
+${detectionResult.detections.length > 1 ? `- Additional wounds detected: ${detectionResult.detections.length - 1}` : ''}
+` : '- No wounds detected by YOLO system'}
+
+IMPORTANT: Use this YOLO detection data to inform your analysis confidence. If YOLO shows high confidence (>0.7) and precise measurements, increase your classification confidence. If YOLO shows low confidence (<0.3) or no detections, be more cautious in your assessment. Always consider both visual analysis and YOLO detection results together.`;
       
       if (model.startsWith('gemini-')) {
         try {

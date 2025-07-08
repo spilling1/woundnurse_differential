@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
-import { setupCustomAuth } from "../customAuth";
+import { setupCustomAuth, isAuthenticated } from "../customAuth";
 import { registerAuthRoutes } from "./auth-routes";
 import { registerAssessmentRoutes } from "./assessment-routes";
 import { registerFollowUpRoutes } from "./follow-up-routes";
@@ -301,6 +301,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         code: "FETCH_AI_MODELS_ERROR",
         message: error.message || "Failed to fetch AI models"
       });
+    }
+  });
+
+  // Questions API endpoint  
+  app.get('/api/questions/:sessionId', isAuthenticated, async (req, res) => {
+    try {
+      const { storage } = await import('../storage');
+      const questions = await storage.getQuestionsBySession(req.params.sessionId);
+      res.json(questions);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      res.status(500).json({ error: 'Failed to fetch questions' });
     }
   });
 
