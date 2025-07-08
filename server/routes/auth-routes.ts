@@ -14,7 +14,25 @@ export function registerAuthRoutes(app: Express): void {
   app.get('/api/my-cases', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.customUser.id;
-      const assessments = await storage.getUserWoundAssessments(userId);
+      let assessments = await storage.getUserWoundAssessments(userId);
+      
+      // Also get assessments without userId (legacy assessments) and assign them to current user
+      const allAssessments = await storage.getAllWoundAssessments();
+      const orphanedAssessments = allAssessments.filter(a => !a.userId);
+      
+      // Update orphaned assessments to belong to current user
+      for (const assessment of orphanedAssessments) {
+        try {
+          await storage.updateWoundAssessment(assessment.caseId, assessment.versionNumber, {
+            userId: userId
+          });
+          assessment.userId = userId;
+          assessments.push(assessment);
+        } catch (error) {
+          console.error('Error updating orphaned assessment:', error);
+        }
+      }
+      
       res.json(assessments);
     } catch (error) {
       console.error("Error fetching user cases:", error);

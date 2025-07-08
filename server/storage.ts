@@ -22,6 +22,7 @@ export interface IStorage {
   getWoundAssessmentHistory(caseId: string): Promise<WoundAssessment[]>;
   createFollowUpAssessment(assessment: InsertWoundAssessment): Promise<WoundAssessment>;
   findAssessmentByImageData(userId: string, imageData: string, imageSize: number): Promise<WoundAssessment | undefined>;
+  updateWoundAssessment(caseId: string, versionNumber: number, updates: Partial<WoundAssessment>): Promise<WoundAssessment>;
   deleteWoundAssessment(caseId: string): Promise<boolean>;
   createFeedback(feedback: InsertFeedback): Promise<Feedback>;
   getFeedbacksByCase(caseId: string): Promise<Feedback[]>;
@@ -195,6 +196,18 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(woundAssessments.createdAt))
       .limit(1);
     return result || undefined;
+  }
+
+  async updateWoundAssessment(caseId: string, versionNumber: number, updates: Partial<WoundAssessment>): Promise<WoundAssessment> {
+    const [result] = await db
+      .update(woundAssessments)
+      .set(updates)
+      .where(and(
+        eq(woundAssessments.caseId, caseId),
+        eq(woundAssessments.versionNumber, versionNumber)
+      ))
+      .returning();
+    return result;
   }
 
   async deleteWoundAssessment(caseId: string): Promise<boolean> {

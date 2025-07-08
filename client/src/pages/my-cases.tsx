@@ -28,9 +28,7 @@ export default function MyCases() {
     refetch();
   }, []);
 
-  // Temporarily disable auth check to stop infinite loop
-  // TODO: Re-enable after fixing useAuth hook
-  /*
+  // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       toast({
@@ -39,12 +37,11 @@ export default function MyCases() {
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        setLocation("/login");
       }, 500);
       return;
     }
-  }, [isAuthenticated, authLoading, toast]);
-  */
+  }, [isAuthenticated, authLoading, toast, setLocation]);
 
   const { data: cases, isLoading, error, refetch } = useQuery({
     queryKey: ["/api/my-cases"],

@@ -29,7 +29,7 @@ const upload = multer({
 
 export function registerAssessmentRoutes(app: Express): void {
   // Upload and analyze wound image
-  app.post("/api/upload", optionalAuth, upload.single('image'), async (req, res) => {
+  app.post("/api/upload", isAuthenticated, upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({
@@ -38,11 +38,8 @@ export function registerAssessmentRoutes(app: Express): void {
         });
       }
 
-      // Get user ID if authenticated (optional)
-      let userId = null;
-      if ((req as any).customUser?.id) {
-        userId = (req as any).customUser.id;
-      }
+      // Get user ID from authenticated user
+      const userId = (req as any).customUser.id;
 
       // Validate request body
       const { audience, model, ...contextData } = uploadRequestSchema.parse(req.body);
@@ -177,7 +174,7 @@ export function registerAssessmentRoutes(app: Express): void {
   });
 
   // Get assessment by case ID
-  app.get("/api/assessment/:caseId", async (req, res) => {
+  app.get("/api/assessment/:caseId", optionalAuth, async (req, res) => {
     try {
       const { caseId } = req.params;
       const { version } = req.query;
@@ -198,6 +195,19 @@ export function registerAssessmentRoutes(app: Express): void {
           code: "ASSESSMENT_NOT_FOUND",
           message: version ? `Assessment version ${version} not found` : "Assessment not found"
         });
+      }
+      
+      // Fix existing assessments that have null userId by assigning to current user
+      if (!assessment.userId && (req as any).customUser?.id) {
+        try {
+          await storage.updateWoundAssessment(assessment.caseId, assessment.versionNumber, {
+            userId: (req as any).customUser.id
+          });
+          assessment.userId = (req as any).customUser.id;
+        } catch (error) {
+          console.error('Error updating assessment userId:', error);
+          // Continue without failing the request
+        }
       }
       
       res.json(assessment);
@@ -602,7 +612,7 @@ export function registerAssessmentRoutes(app: Express): void {
       // Create wound assessment record
       const assessment = await storage.createWoundAssessment({
         caseId,
-        userId: (req as any).user?.claims?.sub || null,
+        userId: (req as any).customUser.id,
         audience,
         model,
         imageData: imageBase64,
