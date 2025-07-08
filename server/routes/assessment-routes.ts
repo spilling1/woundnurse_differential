@@ -260,7 +260,7 @@ export function registerAssessmentRoutes(app: Express): void {
   // New Assessment Flow Routes
 
   // Step 1: Initial image analysis with AI-generated questions
-  app.post("/api/assessment/initial-analysis", upload.array('images', 5), async (req, res) => {
+  app.post("/api/assessment/initial-analysis", isAuthenticated, upload.array('images', 5), async (req, res) => {
     try {
       const files = req.files as Express.Multer.File[];
       
@@ -564,7 +564,7 @@ export function registerAssessmentRoutes(app: Express): void {
         imageSize = req.file.size;
         
         // Check for duplicate images to inform user about potential follow-up
-        const userId = (req as any).user?.claims?.sub;
+        const userId = (req as any).customUser?.id;
         if (userId && imageSize > 0 && !forceNew) {
           const duplicateAssessment = await storage.findAssessmentByImageData(userId, imageBase64, imageSize);
           if (duplicateAssessment && !existingCaseId) {
