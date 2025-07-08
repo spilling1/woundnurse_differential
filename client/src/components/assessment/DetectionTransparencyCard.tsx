@@ -59,6 +59,7 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
   
   // Calculate influence percentages based on YOLO confidence
   // YOLO influence equals its confidence percentage (e.g., 11% confidence = 11% influence)
+  // Only show YOLO influence if detection data exists and YOLO found something
   const detectionInfluence = hasDetectionData && detectionFound ? Math.round(yoloConfidence * 100) : 0;
   const aiInfluence = 100 - detectionInfluence;
   
@@ -79,7 +80,7 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
               <div>
                 <div className="font-medium">YOLO Detection Model</div>
                 <div className="text-sm text-gray-600">
-                  {getModelDisplayName(rawModel)}
+                  {hasDetectionData ? getModelDisplayName(rawModel) : 'Model Disabled'}
                 </div>
                 {detectionFound && classification.yoloDetectedType && (
                   <div className="text-sm text-blue-600 font-medium mt-1">
@@ -94,14 +95,17 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
               </div>
             </div>
             <div className="text-right">
-              <Badge variant={detectionFound ? 'default' : 'secondary'}>
-                {detectionFound ? `${Math.round((classification.detection?.confidence || 0) * 100)}% confidence` : 
-                 detectionCount === 0 ? 'No detections found' : 'No detections'}
+              <Badge variant={hasDetectionData ? (detectionFound ? 'default' : 'secondary') : 'outline'}>
+                {hasDetectionData ? 
+                  (detectionFound ? `${Math.round((classification.detection?.confidence || 0) * 100)}% confidence` : 
+                   detectionCount === 0 ? 'No detections found' : 'No detections') :
+                  'Disabled'
+                }
               </Badge>
               <div className="text-xs text-gray-500 mt-1">
-                {classification.detectionMetadata?.processingTime ? 
+                {hasDetectionData && classification.detectionMetadata?.processingTime ? 
                   `${(classification.detectionMetadata.processingTime * 1000).toFixed(0)}ms` : 
-                  'Processing time N/A'}
+                  hasDetectionData ? 'Processing time N/A' : 'Skipped'}
               </div>
             </div>
           </div>
@@ -139,7 +143,7 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
               <Badge variant={aiConfidence > 0.8 ? 'default' : 'secondary'}>
                 {Math.round(aiConfidence * 100)}% confidence
               </Badge>
-              {classification.independentClassification && (
+              {classification.independentClassification && hasDetectionData && (
                 <div className="text-xs text-gray-500 mt-1">
                   {classification.independentClassification.confidence < aiConfidence ? 'Increased' : 'Decreased'} by YOLO
                 </div>
@@ -156,7 +160,7 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
                 <div className="text-sm text-gray-600">
                   {detectionInfluence > 0 ? 
                     `${detectionInfluence}% Detection + ${aiInfluence}% AI Classification` :
-                    '100% AI Classification (No detection data)'}
+                    hasDetectionData ? '100% AI Classification (No detection data)' : '100% AI Classification (YOLO Disabled)'}
                 </div>
               </div>
             </div>
@@ -170,8 +174,8 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
             </div>
           </div>
 
-          {/* Measurements if available */}
-          {classification.detection?.measurements && (
+          {/* Measurements if available and YOLO enabled */}
+          {hasDetectionData && classification.detection?.measurements && (
             <div className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
               <strong>Measurements:</strong> {' '}
               {classification.detection.measurements.length_mm && 

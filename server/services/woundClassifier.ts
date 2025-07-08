@@ -93,17 +93,27 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       }
     }
     
-    // Step 3: Now perform YOLO detection for additional context
-    console.log('WoundClassifier: Starting YOLO detection...');
-    const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
-    console.log('WoundClassifier: YOLO detection complete. Detections found:', detectionResult.detections?.length || 0);
-    console.log('WoundClassifier: Detection result model:', detectionResult.model);
+    // Step 3: Check if YOLO is enabled, then run detection
+    const enabledModels = await storage.getEnabledDetectionModels();
+    const yoloEnabled = enabledModels.some(model => model.modelType === 'yolo' && model.isEnabled);
+    
+    console.log('WoundClassifier: YOLO enabled status:', yoloEnabled);
+    
+    let detectionResult = null;
+    if (yoloEnabled) {
+      console.log('WoundClassifier: Starting YOLO detection...');
+      detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
+      console.log('WoundClassifier: YOLO detection complete. Detections found:', detectionResult.detections?.length || 0);
+      console.log('WoundClassifier: Detection result model:', detectionResult.model);
+    } else {
+      console.log('WoundClassifier: YOLO detection disabled, skipping...');
+    }
     
     // Step 4: Store the independent AI classification for transparency
     const independentClassification = { ...classification };
     
-    // Step 5: If YOLO found something, ask AI to reconsider with YOLO context
-    if (detectionResult.detections && detectionResult.detections.length > 0) {
+    // Step 5: If YOLO is enabled AND found something, ask AI to reconsider with YOLO context
+    if (yoloEnabled && detectionResult && detectionResult.detections && detectionResult.detections.length > 0) {
       const primaryWound = detectionResult.detections[0];
       const yoloConfidence = (primaryWound.confidence * 100).toFixed(1);
       
@@ -220,14 +230,19 @@ Provide your updated assessment in the same JSON format, considering both your v
       confidence: classification.confidence || 0.4  // Lower default to indicate uncertainty when AI doesn't provide confidence
     };
 
-    // Step 4: Enhance classification with detection data
-    console.log('WoundClassifier: Enhancing classification with detection data...');
-    const enhancedClassification = enhanceClassificationWithDetection(
-      normalizedClassification, 
-      detectionResult
-    );
-    console.log('WoundClassifier: Enhanced classification has detection data:', !!enhancedClassification.detection);
-    console.log('WoundClassifier: Enhanced classification has detectionMetadata:', !!enhancedClassification.detectionMetadata);
+    // Step 4: Enhance classification with detection data (only if YOLO is enabled)
+    let enhancedClassification = normalizedClassification;
+    if (yoloEnabled && detectionResult) {
+      console.log('WoundClassifier: Enhancing classification with YOLO detection data...');
+      enhancedClassification = enhanceClassificationWithDetection(
+        normalizedClassification, 
+        detectionResult
+      );
+      console.log('WoundClassifier: Enhanced classification has detection data:', !!enhancedClassification.detection);
+      console.log('WoundClassifier: Enhanced classification has detectionMetadata:', !!enhancedClassification.detectionMetadata);
+    } else {
+      console.log('WoundClassifier: YOLO disabled, skipping detection enhancement...');
+    }
 
     // Add classification method metadata
     enhancedClassification.classificationMethod = usedCNN ? 'CNN' : 'AI Vision';
