@@ -377,9 +377,9 @@ export default function MyCases() {
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   {/* Search Card */}
-                  <Card className="bg-gray-100 border-gray-200 shadow-sm">
+                  <Card className="bg-gray-100 border-gray-200 shadow-sm md:col-span-3">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-gray-700">Search Cases</CardTitle>
                     </CardHeader>
@@ -406,7 +406,7 @@ export default function MyCases() {
                   </Card>
 
                   {/* Sort Card */}
-                  <Card className="bg-gray-100 border-gray-200 shadow-sm">
+                  <Card className="bg-gray-100 border-gray-200 shadow-sm md:col-span-1">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-gray-700">Sort Cases</CardTitle>
                     </CardHeader>
