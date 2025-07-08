@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
 import type { WoundClassification } from "@/../../shared/schema";
+import AnalysisLogger from "./AnalysisLogger";
 
 export default function ImageUpload({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
@@ -307,6 +308,14 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
           </CardContent>
         </Card>
       )}
+
+      {/* Real-time Analysis Logger */}
+      <AnalysisLogger 
+        isActive={initialAnalysisMutation.isPending} 
+        onComplete={() => {
+          // Optional: Could trigger additional actions when analysis completes
+        }}
+      />
 
       {/* Action Buttons */}
       <div className="flex justify-between">

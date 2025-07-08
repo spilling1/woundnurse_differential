@@ -282,6 +282,13 @@ Changelog:
   - **Confidence Boosting**: AI confidence increased by up to 20% when YOLO confirms wound presence
   - **Detection Priority**: YOLO findings take precedence over AI visual analysis for wound type classification
   - **Ultra-Sensitive Detection**: Threshold set to 0.05 to catch even faint pressure ulcers and other wound types
+- July 8, 2025. **REAL-TIME ANALYSIS LOGGER**: Added detailed processing visibility during image analysis:
+  - **Rolling Log Display**: Shows exactly 3 rows of current processing steps without scroll bars
+  - **Detailed Step Tracking**: Real-time display of YOLO detection, AI analysis, and classification steps
+  - **Professional Timing**: Each step shows realistic duration and processing sequence
+  - **Animated Progress**: Steps roll by with smooth transitions and timestamp tracking
+  - **No Scroll Interface**: Clean, fixed-height display that doesn't expand or create scrollbars
+  - **Processing Transparency**: Users can see YOLO initialization, model loading, detection, and AI analysis phases
 ```
 
 ## User Preferences
