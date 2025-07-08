@@ -164,29 +164,49 @@ function normalizeExudate(exudate: string): string {
 }
 
 function enhanceClassificationWithDetection(classification: any, detectionResult: any): any {
-  if (!detectionResult.detections || detectionResult.detections.length === 0) {
-    return classification;
-  }
+  console.log('WoundClassifier: Enhancing with detection result:', {
+    hasDetections: detectionResult.detections?.length > 0,
+    detectionCount: detectionResult.detections?.length || 0,
+    model: detectionResult.model,
+    processingTime: detectionResult.processingTime
+  });
   
-  const primaryWound = detectionResult.detections[0];
-  
-  return {
+  // Always store detection metadata, even if no detections found
+  const enhancedClassification = {
     ...classification,
-    detection: {
-      confidence: primaryWound.confidence,
-      boundingBox: primaryWound.boundingBox,
-      measurements: primaryWound.measurements,
-      scaleCalibrated: primaryWound.scaleCalibrated
-    },
-    size: categorizeSizeFromMeasurements(primaryWound.measurements),
-    preciseMeasurements: primaryWound.measurements,
     detectionMetadata: {
       model: detectionResult.model,
       version: detectionResult.version,
       processingTime: detectionResult.processingTime,
-      multipleWounds: detectionResult.detections.length > 1
+      multipleWounds: detectionResult.detections?.length > 1 || false,
+      detectionCount: detectionResult.detections?.length || 0,
+      methodUsed: detectionResult.method_used || 'unknown'
     }
   };
+  
+  // Add detection data only if wounds were found
+  if (detectionResult.detections && detectionResult.detections.length > 0) {
+    const primaryWound = detectionResult.detections[0];
+    
+    enhancedClassification.detection = {
+      confidence: primaryWound.confidence,
+      boundingBox: primaryWound.boundingBox || primaryWound.bbox,
+      measurements: primaryWound.measurements,
+      scaleCalibrated: primaryWound.scaleCalibrated
+    };
+    
+    enhancedClassification.size = categorizeSizeFromMeasurements(primaryWound.measurements);
+    enhancedClassification.preciseMeasurements = primaryWound.measurements;
+    enhancedClassification.detectionMetadata.multipleWounds = detectionResult.detections.length > 1;
+  }
+  
+  console.log('WoundClassifier: Enhanced classification result:', {
+    hasDetection: !!enhancedClassification.detection,
+    hasDetectionMetadata: !!enhancedClassification.detectionMetadata,
+    detectionCount: enhancedClassification.detectionMetadata?.detectionCount
+  });
+  
+  return enhancedClassification;
 }
 
 function categorizeSizeFromMeasurements(measurements: any): string {

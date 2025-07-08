@@ -24,6 +24,7 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
   const hasDetectionData = classification.detection || classification.detectionMetadata;
   const detectionFound = classification.detection?.confidence > 0;
   const aiConfidence = classification.confidence || 0;
+  const detectionCount = classification.detectionMetadata?.detectionCount || 0;
   
   // Calculate influence percentages
   const detectionInfluence = hasDetectionData && detectionFound ? 40 : 0;
@@ -52,11 +53,12 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
             </div>
             <div className="text-right">
               <Badge variant={detectionFound ? 'default' : 'secondary'}>
-                {detectionFound ? `${Math.round((classification.detection?.confidence || 0) * 100)}% confidence` : 'No detections'}
+                {detectionFound ? `${Math.round((classification.detection?.confidence || 0) * 100)}% confidence` : 
+                 detectionCount === 0 ? 'No detections found' : 'No detections'}
               </Badge>
               <div className="text-xs text-gray-500 mt-1">
                 {classification.detectionMetadata?.processingTime ? 
-                  `${classification.detectionMetadata.processingTime.toFixed(1)}s` : 
+                  `${(classification.detectionMetadata.processingTime * 1000).toFixed(0)}ms` : 
                   'Processing time N/A'}
               </div>
             </div>

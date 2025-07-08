@@ -1,0 +1,11 @@
+{
+  "yolo_enabled": true,
+  "auto_toggle": true,
+  "yolo_threshold": 0.1,
+  "color_threshold": 0.5,
+  "performance_weight": 0.3,
+  "model_path": "models/yolov8n.pt",
+  "custom_model_path": "models/wound_yolo.pt",
+  "training_enabled": false,
+  "model_type": "custom"
+}

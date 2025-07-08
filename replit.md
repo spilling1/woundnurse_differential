@@ -270,6 +270,12 @@ Changelog:
   - **Combined Assessment**: Shows how detection data influences final assessment (percentage breakdown)
   - **Process Visibility**: Users can now see exactly what happened during each detection step
   - **Future Settings Toggle**: Prepared for optional on/off toggle in system settings
+- July 8, 2025. **YOLO DETECTION TROUBLESHOOTING**: Enhanced YOLO service debugging and detection metadata storage:
+  - **Enhanced Detection Metadata**: Fixed detection data storage to always include YOLO processing time and detection count
+  - **Improved Classification Enhancement**: Detection metadata now properly stored even when no wounds detected
+  - **YOLO Model Configuration**: Confirmed custom YOLO model supports 5 wound types (diabetic, neuropathic, pressure, surgical, venous ulcers)
+  - **Threshold Optimization**: Lowered YOLO detection threshold from 0.6 to 0.1 for improved sensitivity
+  - **Wound Class Classification**: Updated YOLO service to properly classify detected wounds by type instead of generic "wound"
 ```
 
 ## User Preferences

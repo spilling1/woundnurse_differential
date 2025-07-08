@@ -237,6 +237,17 @@ class SmartYOLODetector:
                         x1, y1, x2, y2 = box.xyxy[0].tolist()
                         confidence = box.conf[0].item()
                         
+                        # Get class name from class index
+                        class_names = {
+                            0: "diabetic_ulcer",
+                            1: "neuropathic_ulcer", 
+                            2: "pressure_ulcer",
+                            3: "surgical_wound",
+                            4: "venous_ulcer"
+                        }
+                        class_id = int(box.cls[0].item()) if hasattr(box, 'cls') else 0
+                        wound_class = class_names.get(class_id, "wound")
+                        
                         # Calculate measurements
                         width = x2 - x1
                         height = y2 - y1
@@ -260,7 +271,7 @@ class SmartYOLODetector:
                             measurements=measurements,
                             reference_object_detected=False,
                             scale_calibrated=True,
-                            wound_class="wound",
+                            wound_class=wound_class,
                             detection_method="yolo"
                         )
                         detections.append(detection)
