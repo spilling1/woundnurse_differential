@@ -253,7 +253,16 @@ export default function MyCases() {
                   <Card key={caseId} className="bg-white/95 backdrop-blur-sm hover:bg-white transition-all duration-200">
                     <CardHeader>
                       <CardTitle className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Case {caseId}</span>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {latestAssessment.caseName || `Case ${caseId}`}
+                          </span>
+                          {latestAssessment.caseName && (
+                            <span className="text-xs text-gray-500 font-normal">
+                              Case ID: {caseId}
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-2">
                           <Badge variant={originalAssessment.audience === 'medical' ? 'default' : 'secondary'}>
                             {originalAssessment.audience}

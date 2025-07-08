@@ -249,6 +249,9 @@ Changelog:
 - July 8, 2025. **USER EXPERIENCE IMPROVEMENT**: Restored proper authentication flow in My Cases page - users are now redirected to login page when not authenticated
 - July 8, 2025. **ANONYMOUS ASSESSMENTS FIXED**: Verified no anonymous assessments remain in database - automatic repair system working correctly
 - July 8, 2025. **CARE PLAN REFRESH**: Added automatic data refresh when care plan page loads plus manual refresh button with spinning icon
+- July 8, 2025. **CASE NAMING SYSTEM**: Added case naming functionality with kebab menu on care plan page - users can now assign custom names to cases while preserving case ID display
+- July 8, 2025. **ENHANCED CASE DISPLAY**: Updated My Cases page to show custom case names as primary titles with case IDs as secondary information
+- July 8, 2025. **DATABASE SCHEMA UPDATE**: Added case_name column to wound_assessments table with API endpoint for updating case names
 ```
 
 ## User Preferences

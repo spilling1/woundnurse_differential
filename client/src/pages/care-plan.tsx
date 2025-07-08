@@ -1,10 +1,13 @@
 import { useLocation, useParams, useSearch } from "wouter";
-import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Plus, LogOut, Settings, RefreshCw } from "lucide-react";
+import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Plus, LogOut, Settings, RefreshCw, MoreVertical, Edit3, Save, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +24,8 @@ export default function CarePlan() {
   const { toast } = useToast();
   const { isAuthenticated, user } = useAuth();
   const [feedbackText, setFeedbackText] = useState("");
+  const [isEditingCaseName, setIsEditingCaseName] = useState(false);
+  const [editedCaseName, setEditedCaseName] = useState("");
   const printRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -87,6 +92,29 @@ export default function CarePlan() {
     onError: (error: any) => {
       toast({
         title: "Feedback Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateCaseNameMutation = useMutation({
+    mutationFn: async (caseName: string) => {
+      return apiRequest('PATCH', `/api/case/${caseId}/name`, {
+        caseName
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Case Name Updated",
+        description: "Case name has been updated successfully.",
+      });
+      setIsEditingCaseName(false);
+      refetch();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update Failed",
         description: error.message,
         variant: "destructive",
       });
@@ -439,6 +467,22 @@ export default function CarePlan() {
     handleDownloadPDF();
   };
 
+  const handleEditCaseName = () => {
+    setEditedCaseName(assessmentData?.caseName || "");
+    setIsEditingCaseName(true);
+  };
+
+  const handleSaveCaseName = () => {
+    if (editedCaseName.trim()) {
+      updateCaseNameMutation.mutate(editedCaseName.trim());
+    }
+  };
+
+  const handleCancelEditCaseName = () => {
+    setIsEditingCaseName(false);
+    setEditedCaseName("");
+  };
+
   const formatCarePlan = (plan: string) => {
     if (!plan) return null;
     
@@ -759,7 +803,26 @@ export default function CarePlan() {
         
         {/* Professional Header */}
         <div className="header mb-8 text-center border-b-2 border-medical-blue pb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">Wound Care Assessment Report</h1>
+          <div className="flex justify-center items-center gap-4 mb-3">
+            <h1 className="text-3xl font-bold text-gray-900">
+              {assessmentData?.caseName || "Wound Care Assessment Report"}
+            </h1>
+            {isAuthenticated && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleEditCaseName}>
+                    <Edit3 className="h-4 w-4 mr-2" />
+                    Edit Case Name
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
           <div className="flex justify-center items-center space-x-6 text-sm text-gray-600">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-1" />
@@ -769,7 +832,6 @@ export default function CarePlan() {
               <FileText className="h-4 w-4 mr-1" />
               Case ID: {caseId}
             </div>
-            
           </div>
         </div>
 
@@ -1056,6 +1118,57 @@ export default function CarePlan() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Case Name Dialog */}
+      <Dialog open={isEditingCaseName} onOpenChange={setIsEditingCaseName}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Case Name</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <label htmlFor="caseName" className="text-sm font-medium">
+                Case Name
+              </label>
+              <Input
+                id="caseName"
+                value={editedCaseName}
+                onChange={(e) => setEditedCaseName(e.target.value)}
+                placeholder="Enter a name for this case"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSaveCaseName();
+                  }
+                  if (e.key === 'Escape') {
+                    handleCancelEditCaseName();
+                  }
+                }}
+              />
+              <p className="text-xs text-gray-500">
+                Case ID: {caseId}
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={handleCancelEditCaseName}
+              disabled={updateCaseNameMutation.isPending}
+            >
+              <X className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveCaseName}
+              disabled={updateCaseNameMutation.isPending || !editedCaseName.trim()}
+            >
+              <Save className="mr-2 h-4 w-4" />
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

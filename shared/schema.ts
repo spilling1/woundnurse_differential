@@ -96,6 +96,7 @@ export const userProfiles = pgTable("user_profiles", {
 export const woundAssessments = pgTable("wound_assessments", {
   id: serial("id").primaryKey(),
   caseId: text("case_id").notNull(),
+  caseName: text("case_name"), // Optional user-defined name for the case
   userId: varchar("user_id"), // Optional - for logged-in users
   audience: text("audience").notNull(), // 'family' | 'patient' | 'medical'
   model: text("model").notNull(), // 'gpt-4o' | 'gpt-3.5' | 'gpt-3.5-pro' | 'gemini-2.5-flash' | 'gemini-2.5-pro'

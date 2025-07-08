@@ -39,4 +39,22 @@ export function registerAuthRoutes(app: Express): void {
       res.status(500).json({ message: "Failed to fetch cases" });
     }
   });
+
+  // Update case name
+  app.patch('/api/case/:caseId/name', isAuthenticated, async (req: any, res) => {
+    try {
+      const { caseId } = req.params;
+      const { caseName } = req.body;
+      
+      if (!caseName || typeof caseName !== 'string' || caseName.trim().length === 0) {
+        return res.status(400).json({ message: "Case name is required" });
+      }
+
+      await storage.updateCaseName(caseId, caseName.trim());
+      res.json({ message: "Case name updated successfully" });
+    } catch (error) {
+      console.error("Error updating case name:", error);
+      res.status(500).json({ message: "Failed to update case name" });
+    }
+  });
 } 
