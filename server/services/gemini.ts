@@ -133,6 +133,17 @@ Please provide only the JSON response without any additional text or formatting.
   try {
     return JSON.parse(jsonStr);
   } catch (parseError) {
+    // Try to extract JSON from text that might have explanatory content
+    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        return JSON.parse(jsonMatch[0]);
+      } catch (secondParseError) {
+        console.error('Failed to parse extracted JSON:', jsonMatch[0]);
+        throw new Error('Failed to parse wound assessment data from Gemini');
+      }
+    }
+    
     console.error('Failed to parse Gemini JSON response:', jsonStr);
     throw new Error('Failed to parse wound assessment data from Gemini');
   }

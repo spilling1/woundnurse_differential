@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, userProfiles, productRecommendations, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel, type UserProfile, type InsertUserProfile, type ProductRecommendation, type InsertProductRecommendation } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, userProfiles, productRecommendations, aiInteractions, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel, type UserProfile, type InsertUserProfile, type ProductRecommendation, type InsertProductRecommendation } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
@@ -90,6 +90,22 @@ export interface IStorage {
   toggleProductRecommendation(id: number, isActive: boolean): Promise<ProductRecommendation>;
   incrementProductRecommendationUsage(id: number): Promise<ProductRecommendation>;
   deleteProductRecommendation(id: number): Promise<boolean>;
+  
+  // AI interaction logging operations
+  createAiInteraction(interaction: {
+    caseId: string;
+    stepType: string;
+    modelUsed: string;
+    promptSent: string;
+    responseReceived: string;
+    parsedResult?: any;
+    processingTimeMs?: number;
+    confidenceScore?: number;
+    errorOccurred?: boolean;
+    errorMessage?: string;
+  }): Promise<void>;
+  getAiInteractionsByCase(caseId: string): Promise<any[]>;
+  getAllAiInteractions(): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -630,6 +646,48 @@ export class DatabaseStorage implements IStorage {
   async deleteProductRecommendation(id: number): Promise<boolean> {
     const [deleted] = await db.delete(productRecommendations).where(eq(productRecommendations.id, id)).returning();
     return !!deleted;
+  }
+
+  // AI interaction logging operations
+  async createAiInteraction(interaction: {
+    caseId: string;
+    stepType: string;
+    modelUsed: string;
+    promptSent: string;
+    responseReceived: string;
+    parsedResult?: any;
+    processingTimeMs?: number;
+    confidenceScore?: number;
+    errorOccurred?: boolean;
+    errorMessage?: string;
+  }): Promise<void> {
+    await db.insert(aiInteractions).values({
+      caseId: interaction.caseId,
+      stepType: interaction.stepType,
+      modelUsed: interaction.modelUsed,
+      promptSent: interaction.promptSent,
+      responseReceived: interaction.responseReceived,
+      parsedResult: interaction.parsedResult || null,
+      processingTimeMs: interaction.processingTimeMs || null,
+      confidenceScore: interaction.confidenceScore || null,
+      errorOccurred: interaction.errorOccurred || false,
+      errorMessage: interaction.errorMessage || null,
+    });
+  }
+
+  async getAiInteractionsByCase(caseId: string): Promise<any[]> {
+    return await db
+      .select()
+      .from(aiInteractions)
+      .where(eq(aiInteractions.caseId, caseId))
+      .orderBy(aiInteractions.createdAt);
+  }
+
+  async getAllAiInteractions(): Promise<any[]> {
+    return await db
+      .select()
+      .from(aiInteractions)
+      .orderBy(desc(aiInteractions.createdAt));
   }
 }
 

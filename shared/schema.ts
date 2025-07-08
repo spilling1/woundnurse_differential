@@ -226,6 +226,22 @@ export const productRecommendations = pgTable("product_recommendations", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// AI interactions table for recording all AI prompts and responses
+export const aiInteractions = pgTable("ai_interactions", {
+  id: serial("id").primaryKey(),
+  caseId: varchar("case_id").notNull(), // Link to wound assessment case
+  stepType: varchar("step_type").notNull(), // 'independent_classification', 'yolo_reconsideration', 'question_generation', 'care_plan_generation'
+  modelUsed: varchar("model_used").notNull(), // 'gemini-2.5-pro', 'gpt-4o', etc.
+  promptSent: text("prompt_sent").notNull(), // Full prompt sent to AI
+  responseReceived: text("response_received").notNull(), // Full response from AI
+  parsedResult: jsonb("parsed_result"), // Parsed JSON result if applicable
+  processingTimeMs: integer("processing_time_ms"), // Time taken for this interaction
+  confidenceScore: integer("confidence_score"), // AI confidence (0-100)
+  errorOccurred: boolean("error_occurred").default(false),
+  errorMessage: text("error_message"), // Error details if any
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertWoundAssessmentSchema = createInsertSchema(woundAssessments).omit({
   id: true,
   createdAt: true,
@@ -276,6 +292,11 @@ export const insertProductRecommendationSchema = createInsertSchema(productRecom
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertAiInteractionSchema = createInsertSchema(aiInteractions).omit({
+  id: true,
+  createdAt: true,
 });
 
 export type InsertWoundAssessment = z.infer<typeof insertWoundAssessmentSchema>;

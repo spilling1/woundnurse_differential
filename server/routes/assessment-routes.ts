@@ -306,7 +306,7 @@ export function registerAssessmentRoutes(app: Express): void {
         // Single image analysis
         const primaryImage = files[0];
         const imageBase64 = primaryImage.buffer.toString('base64');
-        classification = await classifyWound(imageBase64, model, primaryImage.mimetype);
+        classification = await classifyWound(imageBase64, model, primaryImage.mimetype, 'temp-session-id');
       } else {
         // Multiple image analysis - use enhanced AI functions
         const images = files.map(file => ({
@@ -316,7 +316,7 @@ export function registerAssessmentRoutes(app: Express): void {
         
         // For multiple images, still need to run YOLO detection on primary image
         const primaryImage = images[0];
-        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType);
+        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType, 'temp-session-id');
         
         if (model.includes('gemini')) {
           // Use Gemini multiple image analysis
@@ -714,6 +714,39 @@ export function registerAssessmentRoutes(app: Express): void {
         code: "CNN_TEST_ERROR",
         message: error.message || "CNN test failed"
       });
+    }
+  });
+
+  // Get AI interactions for a specific case (admin only)
+  app.get('/api/admin/ai-interactions/:caseId', isAuthenticated, async (req, res) => {
+    try {
+      const user = (req as any).customUser;
+      if (user.role !== 'admin') {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+
+      const { caseId } = req.params;
+      const interactions = await storage.getAiInteractionsByCase(caseId);
+      res.json(interactions);
+    } catch (error) {
+      console.error('Error fetching AI interactions:', error);
+      res.status(500).json({ error: 'Failed to fetch AI interactions' });
+    }
+  });
+
+  // Get all AI interactions (admin only)
+  app.get('/api/admin/ai-interactions', isAuthenticated, async (req, res) => {
+    try {
+      const user = (req as any).customUser;
+      if (user.role !== 'admin') {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+
+      const interactions = await storage.getAllAiInteractions();
+      res.json(interactions);
+    } catch (error) {
+      console.error('Error fetching all AI interactions:', error);
+      res.status(500).json({ error: 'Failed to fetch AI interactions' });
     }
   });
 } 

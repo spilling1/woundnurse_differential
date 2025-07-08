@@ -19,6 +19,7 @@ import ProductManagement from "@/pages/admin/product-management";
 import ProfilePage from "@/pages/profile";
 import NotFound from "@/pages/not-found";
 import CaseAnalysis from "@/pages/case-analysis";
+import AdminAnalysisPage from "@/pages/AdminAnalysisPage";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -41,6 +42,7 @@ function Router() {
       <Route path="/admin-dashboard" component={AdminDashboard} />
       <Route path="/admin/products" component={ProductManagement} />
       <Route path="/case-analysis/:caseId" component={CaseAnalysis} />
+      <Route path="/admin/analysis/:caseId" component={AdminAnalysisPage} />
       <Route component={NotFound} />
     </Switch>
   );
