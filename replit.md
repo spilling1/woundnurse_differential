@@ -254,6 +254,7 @@ Changelog:
 - July 8, 2025. **DATABASE SCHEMA UPDATE**: Added case_name column to wound_assessments table with API endpoint for updating case names
 - July 8, 2025. **MY CASES EDIT FUNCTIONALITY**: Added "Edit Case Name" option to My Cases page kebab menu for convenient case naming without navigating to care plan page
 - July 8, 2025. **SEARCH AND SORT FUNCTIONALITY**: Added comprehensive search and sort controls to My Cases page - only appears when there are more than 9 cases, includes collapsible search bar with filtering by case name/ID/wound type and sorting by name/date/wound type with ascending/descending order
+- July 8, 2025. **IMPROVED SEARCH INTERFACE**: Replaced dropdown-based search with intuitive button-based sort controls and unified search across all fields (case name, ID, wound classification, audience type) without requiring field selection
 ```
 
 ## User Preferences

@@ -95,11 +95,21 @@ export default function MyCases() {
         const latestAssessment = groupedCases[caseId][0]; // First item is the latest
         const caseName = latestAssessment.caseName?.toLowerCase() || '';
         const caseIdLower = caseId.toLowerCase();
-        const woundType = latestAssessment.woundClassification?.toLowerCase() || '';
+        const audience = latestAssessment.audience?.toLowerCase() || '';
+        
+        // Search in classification object if it exists
+        let classificationText = '';
+        if (latestAssessment.classification) {
+          const classification = typeof latestAssessment.classification === 'string' 
+            ? latestAssessment.classification 
+            : JSON.stringify(latestAssessment.classification);
+          classificationText = classification.toLowerCase();
+        }
         
         return caseName.includes(term) || 
                caseIdLower.includes(term) || 
-               woundType.includes(term);
+               audience.includes(term) ||
+               classificationText.includes(term);
       });
     }
 
@@ -121,8 +131,21 @@ export default function MyCases() {
           bValue = new Date(bLatest.createdAt);
           break;
         case 'woundType':
-          aValue = aLatest.woundClassification || '';
-          bValue = bLatest.woundClassification || '';
+          // Extract wound type from classification object
+          aValue = '';
+          bValue = '';
+          if (aLatest.classification) {
+            const aClassification = typeof aLatest.classification === 'string' 
+              ? aLatest.classification 
+              : JSON.stringify(aLatest.classification);
+            aValue = aClassification;
+          }
+          if (bLatest.classification) {
+            const bClassification = typeof bLatest.classification === 'string' 
+              ? bLatest.classification 
+              : JSON.stringify(bLatest.classification);
+            bValue = bClassification;
+          }
           break;
         default:
           aValue = new Date(aLatest.createdAt);
@@ -362,7 +385,7 @@ export default function MyCases() {
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                           <Input
-                            placeholder="Search by case name, ID, or wound type..."
+                            placeholder="Search cases by name, ID, wound type, or audience..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-10"
@@ -371,23 +394,38 @@ export default function MyCases() {
                       </div>
 
                       {/* Sort Controls */}
-                      <div className="flex gap-2">
-                        <Select value={sortBy} onValueChange={(value: "name" | "date" | "woundType") => setSortBy(value)}>
-                          <SelectTrigger className="w-[140px]">
-                            <SelectValue placeholder="Sort by" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="name">Case Name</SelectItem>
-                            <SelectItem value="date">Date</SelectItem>
-                            <SelectItem value="woundType">Wound Type</SelectItem>
-                          </SelectContent>
-                        </Select>
-
+                      <div className="flex gap-2 items-center">
+                        <span className="text-sm text-gray-600 whitespace-nowrap">Sort by:</span>
+                        <Button
+                          variant={sortBy === 'name' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setSortBy('name')}
+                          className="text-xs"
+                        >
+                          Name
+                        </Button>
+                        <Button
+                          variant={sortBy === 'date' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setSortBy('date')}
+                          className="text-xs"
+                        >
+                          Date
+                        </Button>
+                        <Button
+                          variant={sortBy === 'woundType' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setSortBy('woundType')}
+                          className="text-xs"
+                        >
+                          Type
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                          className="px-3"
+                          className="px-2"
+                          title={sortOrder === 'asc' ? 'Sort ascending' : 'Sort descending'}
                         >
                           {sortOrder === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />}
                         </Button>
@@ -395,10 +433,11 @@ export default function MyCases() {
                     </div>
 
                     {/* Results Summary */}
-                    {searchTerm && (
+                    {(searchTerm || sortBy !== 'date') && (
                       <div className="mt-3 pt-3 border-t border-gray-200">
                         <p className="text-sm text-gray-600">
-                          Showing {filteredAndSortedCaseIds.length} of {Object.keys(groupedCases).length} cases
+                          {searchTerm ? `Showing ${filteredAndSortedCaseIds.length} of ${Object.keys(groupedCases).length} cases` : 
+                           `Sorted by ${sortBy === 'name' ? 'case name' : sortBy === 'date' ? 'date' : 'wound type'} (${sortOrder === 'asc' ? 'ascending' : 'descending'})`}
                         </p>
                       </div>
                     )}
