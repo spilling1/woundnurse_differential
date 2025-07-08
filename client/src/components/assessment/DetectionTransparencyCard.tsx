@@ -19,6 +19,9 @@ interface DetectionTransparencyCardProps {
       detectionCount?: number;
       methodUsed?: string;
     };
+    yoloDetectedType?: string;
+    size?: string;
+    preciseMeasurements?: any;
   };
 }
 
@@ -27,6 +30,7 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
   const detectionFound = classification.detection?.confidence > 0;
   const aiConfidence = classification.confidence || 0;
   const detectionCount = classification.detectionMetadata?.detectionCount || 0;
+  const yoloConfidence = classification.detection?.confidence || 0;
   
   // Debug log to track what data is being received
   console.log('DetectionTransparencyCard - Data received:', {
@@ -37,8 +41,9 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
     detectionConfidence: classification.detection?.confidence
   });
   
-  // Calculate influence percentages
-  const detectionInfluence = hasDetectionData && detectionFound ? 40 : 0;
+  // Calculate influence percentages based on YOLO confidence
+  // YOLO influence equals its confidence percentage (e.g., 11% confidence = 11% influence)
+  const detectionInfluence = hasDetectionData && detectionFound ? Math.round(yoloConfidence * 100) : 0;
   const aiInfluence = 100 - detectionInfluence;
   
   return (
@@ -60,6 +65,16 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
                 <div className="text-sm text-gray-600">
                   {classification.detectionMetadata?.model || 'smart-yolo-detection'}
                 </div>
+                {detectionFound && classification.yoloDetectedType && (
+                  <div className="text-sm text-blue-600 font-medium mt-1">
+                    Detected: {classification.yoloDetectedType}
+                  </div>
+                )}
+                {detectionFound && classification.preciseMeasurements && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    Size: {Math.round(classification.preciseMeasurements.lengthMm || 0)}mm × {Math.round(classification.preciseMeasurements.widthMm || 0)}mm
+                  </div>
+                )}
               </div>
             </div>
             <div className="text-right">
@@ -84,15 +99,20 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
                 <div className="text-sm text-gray-600">
                   {classification.classificationMethod || 'AI Vision'}
                 </div>
+                <div className="text-sm text-purple-600 font-medium mt-1">
+                  Classified as: {classification.woundType}
+                </div>
+                {classification.size && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    Stage/Size: {classification.size}
+                  </div>
+                )}
               </div>
             </div>
             <div className="text-right">
               <Badge variant={aiConfidence > 0.8 ? 'default' : 'secondary'}>
                 {Math.round(aiConfidence * 100)}% confidence
               </Badge>
-              <div className="text-xs text-gray-500 mt-1">
-                Classified as: {classification.woundType}
-              </div>
             </div>
           </div>
 

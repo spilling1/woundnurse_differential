@@ -198,6 +198,11 @@ function enhanceClassificationWithDetection(classification: any, detectionResult
       'surgical_wound': 'Surgical Wound'
     };
     
+    // Store the original YOLO detected type for transparency
+    if (primaryWound.wound_class && woundTypeMapping[primaryWound.wound_class]) {
+      enhancedClassification.yoloDetectedType = woundTypeMapping[primaryWound.wound_class];
+    }
+    
     // Override AI classification if YOLO found something
     if (primaryWound.wound_class && woundTypeMapping[primaryWound.wound_class]) {
       enhancedClassification.woundType = woundTypeMapping[primaryWound.wound_class];
