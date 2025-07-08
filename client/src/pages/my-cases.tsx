@@ -377,24 +377,41 @@ export default function MyCases() {
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <Card className="bg-white/95 backdrop-blur-sm">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      {/* Search Input */}
-                      <div className="flex-1">
-                        <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                          <Input
-                            placeholder="Search cases by name, ID, wound type, or audience..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10"
-                          />
-                        </div>
+                <div className="space-y-4">
+                  {/* Search Card */}
+                  <Card className="bg-white/95 backdrop-blur-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-gray-700">Search Cases</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                          placeholder="Search cases by name, ID, wound type, or audience..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-10"
+                        />
                       </div>
+                      
+                      {/* Search Results Summary */}
+                      {searchTerm && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm text-gray-600">
+                            Showing {filteredAndSortedCaseIds.length} of {Object.keys(groupedCases).length} cases
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
 
-                      {/* Sort Controls */}
-                      <div className="flex gap-2 items-center">
+                  {/* Sort Card */}
+                  <Card className="bg-white/95 backdrop-blur-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-gray-700">Sort Cases</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex flex-wrap gap-2 items-center">
                         <span className="text-sm text-gray-600 whitespace-nowrap">Sort by:</span>
                         <Button
                           variant={sortBy === 'name' ? 'default' : 'outline'}
@@ -430,19 +447,18 @@ export default function MyCases() {
                           {sortOrder === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />}
                         </Button>
                       </div>
-                    </div>
-
-                    {/* Results Summary */}
-                    {(searchTerm || sortBy !== 'date') && (
-                      <div className="mt-3 pt-3 border-t border-gray-200">
-                        <p className="text-sm text-gray-600">
-                          {searchTerm ? `Showing ${filteredAndSortedCaseIds.length} of ${Object.keys(groupedCases).length} cases` : 
-                           `Sorted by ${sortBy === 'name' ? 'case name' : sortBy === 'date' ? 'date' : 'wound type'} (${sortOrder === 'asc' ? 'ascending' : 'descending'})`}
-                        </p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                      
+                      {/* Sort Status */}
+                      {sortBy !== 'date' && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm text-gray-600">
+                            Sorted by {sortBy === 'name' ? 'case name' : sortBy === 'date' ? 'date' : 'wound type'} ({sortOrder === 'asc' ? 'ascending' : 'descending'})
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
               </CollapsibleContent>
             </Collapsible>
           </div>
