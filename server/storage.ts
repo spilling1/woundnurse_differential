@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, userProfiles, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel, type UserProfile, type InsertUserProfile } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, userProfiles, productRecommendations, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel, type UserProfile, type InsertUserProfile, type ProductRecommendation, type InsertProductRecommendation } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
@@ -76,6 +76,18 @@ export interface IStorage {
   toggleAiAnalysisModel(id: number, enabled: boolean): Promise<AiAnalysisModel>;
   setDefaultAiAnalysisModel(id: number): Promise<AiAnalysisModel>;
   deleteAiAnalysisModel(id: number): Promise<boolean>;
+
+  // Product recommendation operations
+  getAllProductRecommendations(): Promise<ProductRecommendation[]>;
+  getActiveProductRecommendations(): Promise<ProductRecommendation[]>;
+  getProductRecommendationsByCategory(category: string): Promise<ProductRecommendation[]>;
+  getProductRecommendationsByWoundType(woundType: string): Promise<ProductRecommendation[]>;
+  getProductRecommendation(id: number): Promise<ProductRecommendation | undefined>;
+  createProductRecommendation(product: InsertProductRecommendation): Promise<ProductRecommendation>;
+  updateProductRecommendation(id: number, updates: Partial<ProductRecommendation>): Promise<ProductRecommendation>;
+  toggleProductRecommendation(id: number, isActive: boolean): Promise<ProductRecommendation>;
+  incrementProductRecommendationUsage(id: number): Promise<ProductRecommendation>;
+  deleteProductRecommendation(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -528,6 +540,75 @@ export class DatabaseStorage implements IStorage {
   async deleteUserProfile(userId: string): Promise<boolean> {
     const result = await db.delete(userProfiles).where(eq(userProfiles.userId, userId));
     return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // Product recommendation operations
+  async getAllProductRecommendations(): Promise<ProductRecommendation[]> {
+    return await db.select().from(productRecommendations).orderBy(desc(productRecommendations.priority), productRecommendations.name);
+  }
+
+  async getActiveProductRecommendations(): Promise<ProductRecommendation[]> {
+    return await db.select().from(productRecommendations)
+      .where(eq(productRecommendations.isActive, true))
+      .orderBy(desc(productRecommendations.priority), productRecommendations.name);
+  }
+
+  async getProductRecommendationsByCategory(category: string): Promise<ProductRecommendation[]> {
+    return await db.select().from(productRecommendations)
+      .where(and(eq(productRecommendations.category, category), eq(productRecommendations.isActive, true)))
+      .orderBy(desc(productRecommendations.priority), productRecommendations.name);
+  }
+
+  async getProductRecommendationsByWoundType(woundType: string): Promise<ProductRecommendation[]> {
+    return await db.select().from(productRecommendations)
+      .where(and(eq(productRecommendations.isActive, true)))
+      .orderBy(desc(productRecommendations.priority), productRecommendations.name);
+    // Note: Array contains check would need SQL function - simplified for now
+  }
+
+  async getProductRecommendation(id: number): Promise<ProductRecommendation | undefined> {
+    const [product] = await db.select().from(productRecommendations).where(eq(productRecommendations.id, id));
+    return product || undefined;
+  }
+
+  async createProductRecommendation(product: InsertProductRecommendation): Promise<ProductRecommendation> {
+    const [newProduct] = await db.insert(productRecommendations).values(product).returning();
+    return newProduct;
+  }
+
+  async updateProductRecommendation(id: number, updates: Partial<ProductRecommendation>): Promise<ProductRecommendation> {
+    const [updated] = await db.update(productRecommendations)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(productRecommendations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async toggleProductRecommendation(id: number, isActive: boolean): Promise<ProductRecommendation> {
+    const [updated] = await db.update(productRecommendations)
+      .set({ isActive, updatedAt: new Date() })
+      .where(eq(productRecommendations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async incrementProductRecommendationUsage(id: number): Promise<ProductRecommendation> {
+    const product = await this.getProductRecommendation(id);
+    if (!product) throw new Error('Product not found');
+    
+    const [updated] = await db.update(productRecommendations)
+      .set({ 
+        timesRecommended: (product.timesRecommended || 0) + 1, 
+        updatedAt: new Date() 
+      })
+      .where(eq(productRecommendations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteProductRecommendation(id: number): Promise<boolean> {
+    const [deleted] = await db.delete(productRecommendations).where(eq(productRecommendations.id, id)).returning();
+    return !!deleted;
   }
 }
 

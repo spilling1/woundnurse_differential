@@ -207,6 +207,24 @@ export const aiAnalysisModels = pgTable("ai_analysis_models", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Product recommendations table
+export const productRecommendations = pgTable("product_recommendations", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(), // e.g., "Hydrocolloid Dressings"
+  category: varchar("category").notNull(), // e.g., "wound_dressing", "cleansing", "moisturizing", "compression", "protection"
+  description: text("description"),
+  amazonSearchUrl: text("amazon_search_url"), // Full Amazon search URL
+  searchKeywords: text("search_keywords"), // Keywords for Amazon search
+  woundTypes: text("wound_types").array(), // e.g., ["venous_ulcer", "diabetic_ulcer", "pressure_ulcer"]
+  audiences: text("audiences").array(), // e.g., ["family", "patient", "professional"]
+  priority: integer("priority").default(50), // 1-100, higher numbers = higher priority
+  isActive: boolean("is_active").notNull().default(true),
+  timesRecommended: integer("times_recommended").default(0),
+  extractedFromCaseId: varchar("extracted_from_case_id"), // Track which case this was first extracted from
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertWoundAssessmentSchema = createInsertSchema(woundAssessments).omit({
   id: true,
   createdAt: true,
@@ -253,6 +271,12 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles).omit({
   updatedAt: true,
 });
 
+export const insertProductRecommendationSchema = createInsertSchema(productRecommendations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertWoundAssessment = z.infer<typeof insertWoundAssessmentSchema>;
 export type WoundAssessment = typeof woundAssessments.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
@@ -271,6 +295,8 @@ export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertUserProfile = z.infer<typeof insertUserProfileSchema>;
 export type UserProfile = typeof userProfiles.$inferSelect;
+export type InsertProductRecommendation = z.infer<typeof insertProductRecommendationSchema>;
+export type ProductRecommendation = typeof productRecommendations.$inferSelect;
 
 // Validation schemas for API endpoints
 export const uploadRequestSchema = z.object({

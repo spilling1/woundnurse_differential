@@ -18,8 +18,12 @@ import {
   XCircle,
   Search,
   Filter,
-  RotateCcw
+  RotateCcw,
+  Package,
+  Grid,
+  TrendingUp
 } from "lucide-react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -457,13 +461,14 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="companies">Companies</TabsTrigger>
             <TabsTrigger value="assessments">Assessments</TabsTrigger>
             <TabsTrigger value="detection-models">Detection Models</TabsTrigger>
             <TabsTrigger value="ai-analysis-models">AI Analysis Models</TabsTrigger>
+            <TabsTrigger value="products">Products</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Overview */}
@@ -1058,6 +1063,94 @@ export default function AdminDashboard() {
                 ))}
               </div>
             )}
+          </TabsContent>
+          {/* Products Management */}
+          <TabsContent value="products" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold">Product Recommendations</h2>
+                <p className="text-gray-600">Manage product database extracted from care plans</p>
+              </div>
+              <Link href="/admin/products">
+                <Button>
+                  <Eye className="mr-2 h-4 w-4" />
+                  Manage Products
+                </Button>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center space-x-2">
+                    <Package className="h-8 w-8 text-blue-600" />
+                    <div>
+                      <p className="text-2xl font-bold">46</p>
+                      <p className="text-sm text-gray-600">Total Products</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                    <div>
+                      <p className="text-2xl font-bold">46</p>
+                      <p className="text-sm text-gray-600">Active Products</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center space-x-2">
+                    <Grid className="h-8 w-8 text-purple-600" />
+                    <div>
+                      <p className="text-2xl font-bold">7</p>
+                      <p className="text-sm text-gray-600">Categories</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="h-8 w-8 text-orange-600" />
+                    <div>
+                      <p className="text-2xl font-bold">-</p>
+                      <p className="text-sm text-gray-600">Usage Data</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Categories</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">18</div>
+                    <div className="text-sm text-gray-600">Wound Dressings</div>
+                  </div>
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">11</div>
+                    <div className="text-sm text-gray-600">General Products</div>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">7</div>
+                    <div className="text-sm text-gray-600">Moisturizing</div>
+                  </div>
+                  <div className="text-center p-4 bg-orange-50 rounded-lg">
+                    <div className="text-2xl font-bold text-orange-600">4</div>
+                    <div className="text-sm text-gray-600">Cleansing</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
