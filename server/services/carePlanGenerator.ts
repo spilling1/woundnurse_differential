@@ -21,7 +21,10 @@ export async function generateCarePlan(
     
     const systemPrompt = agentInstructions.systemPrompts;
     
-    const prompt = await getPromptTemplate(audience, classification, contextData);
+    // Get relevant products from database for this wound type
+    const relevantProducts = await getRelevantProducts(classification.woundType);
+    
+    const prompt = await getPromptTemplate(audience, classification, contextData, relevantProducts);
     
     let carePlan;
     
@@ -121,6 +124,17 @@ export async function generateCarePlan(
     // Add safety disclaimer
     const disclaimer = "**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.";
     
+    // Update product usage counts for recommended products
+    if (relevantProducts && relevantProducts.length > 0) {
+      for (const product of relevantProducts) {
+        try {
+          await storage.incrementProductRecommendationUsage(product.id);
+        } catch (error) {
+          console.error(`Failed to increment usage for product ${product.id}:`, error);
+        }
+      }
+    }
+    
     // Add detection system information if available
     let detectionSystemInfo = "";
     if (detectionInfo) {
@@ -167,5 +181,39 @@ ${hasDetections ? `
   } catch (error: any) {
     console.error('Care plan generation error:', error);
     throw new Error(`Care plan generation failed: ${error.message}`);
+  }
+}
+
+async function getRelevantProducts(woundType: string): Promise<any[]> {
+  try {
+    // Get active products from database
+    const allProducts = await storage.getActiveProductRecommendations();
+    
+    // Filter products based on wound type match
+    const relevantProducts = allProducts.filter(product => {
+      // Check if wound type matches any of the product's wound types
+      return product.woundTypes.some(type => 
+        type.toLowerCase().includes(woundType.toLowerCase()) || 
+        woundType.toLowerCase().includes(type.toLowerCase())
+      );
+    });
+    
+    // If no specific matches, get general products
+    if (relevantProducts.length === 0) {
+      const generalProducts = allProducts.filter(product => 
+        product.category === 'general' || 
+        product.category === 'wound_dressing'
+      );
+      return generalProducts.slice(0, 5); // Limit to 5 products
+    }
+    
+    // Sort by usage count (most used first) and limit
+    return relevantProducts
+      .sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0))
+      .slice(0, 6); // Limit to 6 products
+      
+  } catch (error) {
+    console.error('Error fetching relevant products:', error);
+    return []; // Return empty array if database fails
   }
 }

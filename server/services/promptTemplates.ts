@@ -1,6 +1,6 @@
 import { storage } from "../storage";
 
-export async function getPromptTemplate(audience: string, classification: any, contextData?: any): Promise<string> {
+export async function getPromptTemplate(audience: string, classification: any, contextData?: any, relevantProducts?: any[]): Promise<string> {
   // Get agent instructions from database
   const agentInstructions = await storage.getActiveAgentInstructions();
   
@@ -221,15 +221,26 @@ FOLLOW-UP ASSESSMENT: This is a follow-up assessment. Please compare current sta
 - Use proper spacing and indentation for sub-items
 
 **ITEMS TO PURCHASE REQUIREMENTS:**
-You MUST include a specific "ITEMS TO PURCHASE" section with:
-- Contextual product recommendations based on wound type: ${classification.woundType}
+You MUST include a specific "ITEMS TO PURCHASE" section with products from our database:
+${relevantProducts && relevantProducts.length > 0 ? `
+**RECOMMENDED PRODUCTS (from our database):**
+${relevantProducts.map(product => `
+* [${product.name}](${product.amazonUrl}) - ${product.description}
+  - Category: ${product.category}
+  - Suitable for: ${product.woundTypes.join(', ')}
+  - Target audience: ${product.audiences.join(', ')}
+`).join('')}
+` : `
+**GENERAL PRODUCT RECOMMENDATIONS:**
 - Working Amazon search links using format: https://www.amazon.com/s?k=product+search+terms
-- At least 3-4 specific products relevant to this wound type
-- Examples for ${classification.woundType}:
+- At least 3-4 specific products relevant to wound type: ${classification.woundType}
+- Examples:
   * [Hydrocolloid Dressings](https://www.amazon.com/s?k=hydrocolloid+dressings+wound+care)
   * [Medical Tape](https://www.amazon.com/s?k=medical+tape+hypoallergenic)
   * [Wound Cleansing Solution](https://www.amazon.com/s?k=wound+cleansing+solution+sterile)
   * [Antibacterial Ointment](https://www.amazon.com/s?k=antibacterial+ointment+wounds)
+`}
+IMPORTANT: Use the exact product names and Amazon URLs provided above. These are verified products from our database.
 
 Generate a well-formatted care plan that follows the structure guidelines above.`;
 
