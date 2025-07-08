@@ -264,6 +264,12 @@ Changelog:
   - **Comprehensive Analysis Interface**: Created detailed case analysis page showing AI model performance, YOLO detection results, questions asked, and their impact categories
   - **Database API Enhancement**: Added questions endpoint for retrieving historical question data
   - **Detection Data Transparency**: Fixed missing detection data storage and display issues
+- July 8, 2025. **TRANSPARENCY CARD FEATURE**: Added real-time detection transparency card in assessment step 3 showing:
+  - **YOLO Detection Results**: Shows detection confidence, processing time, and number of detections found
+  - **AI Classification Results**: Displays AI model used, confidence level, and classification method
+  - **Combined Assessment**: Shows how detection data influences final assessment (percentage breakdown)
+  - **Process Visibility**: Users can now see exactly what happened during each detection step
+  - **Future Settings Toggle**: Prepared for optional on/off toggle in system settings
 ```
 
 ## User Preferences

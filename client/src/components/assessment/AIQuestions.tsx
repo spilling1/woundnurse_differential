@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
+import DetectionTransparencyCard from "./DetectionTransparencyCard";
 
 
 
@@ -405,6 +406,11 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
             )}
           </CardContent>
         </Card>
+      )}
+
+      {/* Detection Transparency Card - TODO: Add settings toggle */}
+      {state.woundClassification && (
+        <DetectionTransparencyCard classification={state.woundClassification} />
       )}
 
       {state.aiQuestions.map((question) => (
