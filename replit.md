@@ -257,7 +257,7 @@ Changelog:
 - July 8, 2025. **IMPROVED SEARCH INTERFACE**: Replaced dropdown-based search with intuitive button-based sort controls and unified search across all fields (case name, ID, wound classification, audience type) without requiring field selection
 - July 8, 2025. **SEPARATED SEARCH AND SORT UI**: Split search and sort functionality into separate cards with clear headers and distinct purposes for better user experience and visual clarity
 - July 8, 2025. **SIDE-BY-SIDE LAYOUT**: Arranged search and sort cards in responsive side-by-side layout with gray background for better visual separation and more efficient use of screen space
-- July 8, 2025. **OPTIMIZED CARD PROPORTIONS**: Adjusted search and sort card layout to 3/4 and 1/4 width respectively, giving more space to search functionality while keeping sort controls compact
+- July 8, 2025. **OPTIMIZED CARD PROPORTIONS**: Adjusted search and sort card layout to 2/3 and 1/3 width respectively, providing optimal balance between search space and sort control visibility
 ```
 
 ## User Preferences
