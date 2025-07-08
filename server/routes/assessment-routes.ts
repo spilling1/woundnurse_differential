@@ -467,10 +467,20 @@ export function registerAssessmentRoutes(app: Express): void {
       };
       
       // Use the agent question service to determine if more questions are needed
-      const sessionId = `follow-up-${Date.now()}`;
+      const sessionId = parsedClassification.sessionId || `follow-up-${Date.now()}`;
       let newQuestions = [];
       
       try {
+        console.log('Calling analyzeAssessmentForQuestions with:', {
+          sessionId,
+          audience,
+          model,
+          previousQuestionsLength: parsedQuestions.length,
+          round: parseInt(round),
+          confidence: revisedConfidence,
+          hasInstructions: !!instructions
+        });
+        
         newQuestions = await analyzeAssessmentForQuestions(sessionId, {
           imageAnalysis: updatedClassification,
           audience,
@@ -479,9 +489,15 @@ export function registerAssessmentRoutes(app: Express): void {
           round: parseInt(round),
           instructions
         });
+        
+        console.log('Generated questions:', newQuestions?.length || 0);
       } catch (questionError: any) {
         console.error('Error in analyzeAssessmentForQuestions:', questionError);
-        throw new Error(`Question generation failed: ${questionError.message}`);
+        console.error('Full error details:', questionError);
+        
+        // Return empty questions array if there's an error generating questions
+        console.log('Returning empty questions array due to error');
+        newQuestions = [];
       }
       
       // Only proceed to care plan if confidence is 80% or higher AND no more questions needed
