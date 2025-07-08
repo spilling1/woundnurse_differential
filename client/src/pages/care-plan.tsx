@@ -1,15 +1,15 @@
 import { useLocation, useParams, useSearch } from "wouter";
-import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Plus, LogOut, Settings } from "lucide-react";
+import { ArrowLeft, ClipboardList, AlertTriangle, ThumbsUp, ThumbsDown, Download, Printer, UserCheck, Calendar, MapPin, User, FileText, Plus, LogOut, Settings, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { WoundAssessment } from "@shared/schema";
 import WoundVisualization from "@/components/WoundVisualization";
 import AdminNavigation from "@/components/shared/AdminNavigation";
@@ -22,6 +22,7 @@ export default function CarePlan() {
   const { isAuthenticated, user } = useAuth();
   const [feedbackText, setFeedbackText] = useState("");
   const printRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
   // Extract case ID from URL params with multiple fallback methods
   let caseId = params.caseId;
@@ -56,10 +57,17 @@ export default function CarePlan() {
   const urlParams = new URLSearchParams(search);
   const requestedVersion = urlParams.get('version');
 
-  const { data: assessmentData, isLoading, error } = useQuery<WoundAssessment>({
+  const { data: assessmentData, isLoading, error, refetch } = useQuery<WoundAssessment>({
     queryKey: requestedVersion ? [`/api/assessment/${caseId}?version=${requestedVersion}`] : [`/api/assessment/${caseId}`],
     enabled: !!caseId,
   });
+
+  // Refresh data when page loads
+  useEffect(() => {
+    if (caseId) {
+      refetch();
+    }
+  }, [caseId, refetch]);
 
   const feedbackMutation = useMutation({
     mutationFn: async ({ feedbackType, comments }: { feedbackType: string; comments?: string }) => {
@@ -666,6 +674,15 @@ export default function CarePlan() {
             <div className="flex items-center space-x-3">
               {/* Care Plan Actions */}
               <div className="flex items-center space-x-2 border-r border-gray-200 pr-3">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => refetch()}
+                  disabled={isLoading}
+                >
+                  <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
                 <Button 
                   variant="outline" 
                   size="sm"

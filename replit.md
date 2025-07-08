@@ -247,6 +247,8 @@ Changelog:
 - July 8, 2025. **MANDATORY AUTHENTICATION**: Changed assessment creation from optional to mandatory authentication - all new assessments now require user login and properly store user information
 - July 8, 2025. **DATABASE MIGRATION**: Added updateWoundAssessment method to storage interface for programmatic assessment updates and user assignment
 - July 8, 2025. **USER EXPERIENCE IMPROVEMENT**: Restored proper authentication flow in My Cases page - users are now redirected to login page when not authenticated
+- July 8, 2025. **ANONYMOUS ASSESSMENTS FIXED**: Verified no anonymous assessments remain in database - automatic repair system working correctly
+- July 8, 2025. **CARE PLAN REFRESH**: Added automatic data refresh when care plan page loads plus manual refresh button with spinning icon
 ```
 
 ## User Preferences
