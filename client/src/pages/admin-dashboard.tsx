@@ -434,6 +434,16 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setLocation("/my-cases")}
+                className="flex items-center"
+                title="Back to My Cases"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Back to My Cases
+              </Button>
+              <Button 
                 variant="ghost"
                 size="sm"
                 onClick={() => setLocation("/settings")}
