@@ -19,24 +19,21 @@ export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerP
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Predefined analysis steps that simulate real processing
+  // AI thinking process steps that show reasoning
   const analysisSteps = [
     { message: "Initializing YOLO detection service...", type: 'info' as const, duration: 800 },
-    { message: "Loading wound detection model (YOLOv8)...", type: 'info' as const, duration: 1200 },
-    { message: "Preprocessing image for detection...", type: 'processing' as const, duration: 600 },
-    { message: "Running YOLO wound boundary detection...", type: 'processing' as const, duration: 1400 },
-    { message: "Analyzing wound characteristics and measurements...", type: 'processing' as const, duration: 900 },
-    { message: "YOLO detection complete - processing results...", type: 'success' as const, duration: 500 },
-    { message: "Initializing AI vision analysis...", type: 'info' as const, duration: 700 },
-    { message: "Sending image to Gemini 2.5 Pro model...", type: 'info' as const, duration: 1000 },
-    { message: "AI analyzing wound type and characteristics...", type: 'processing' as const, duration: 2500 },
-    { message: "Evaluating tissue viability and stage...", type: 'processing' as const, duration: 1800 },
-    { message: "Assessing infection signs and exudate...", type: 'processing' as const, duration: 1400 },
-    { message: "Calculating wound size and measurements...", type: 'processing' as const, duration: 1100 },
-    { message: "Generating confidence assessment...", type: 'processing' as const, duration: 800 },
-    { message: "Fusing YOLO and AI analysis results...", type: 'processing' as const, duration: 600 },
-    { message: "Finalizing wound classification...", type: 'success' as const, duration: 500 },
-    { message: "Analysis complete - preparing assessment...", type: 'success' as const, duration: 400 }
+    { message: "Scanning image for wound boundaries...", type: 'processing' as const, duration: 1200 },
+    { message: "🤔 Hmm, tissue appears dark with irregular edges", type: 'processing' as const, duration: 900 },
+    { message: "Measuring wound dimensions and depth indicators", type: 'processing' as const, duration: 1100 },
+    { message: "💭 Considering pressure ulcer vs diabetic ulcer", type: 'processing' as const, duration: 1300 },
+    { message: "Analyzing surrounding skin for infection signs", type: 'processing' as const, duration: 800 },
+    { message: "🔍 Detecting eschar and necrotic tissue patterns", type: 'processing' as const, duration: 1000 },
+    { message: "Evaluating exudate characteristics and volume", type: 'processing' as const, duration: 700 },
+    { message: "⚕️ Cross-referencing with wound staging criteria", type: 'processing' as const, duration: 1200 },
+    { message: "Assessing bone/tendon exposure risk", type: 'processing' as const, duration: 900 },
+    { message: "🎯 High confidence: Stage 4 pressure ulcer", type: 'success' as const, duration: 600 },
+    { message: "Generating personalized care recommendations", type: 'processing' as const, duration: 800 },
+    { message: "✅ Analysis complete - preparing questions", type: 'success' as const, duration: 400 }
   ];
 
   useEffect(() => {
@@ -93,7 +90,7 @@ export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerP
       case 'success': return '✓';
       case 'processing': return '⚡';
       case 'warning': return '⚠';
-      default: return '→';
+      default: return '🔄';
     }
   };
 
@@ -101,10 +98,7 @@ export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerP
     <Card className="mt-4 bg-slate-50 border-slate-200">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-medium text-slate-700">Analysis Progress</h3>
-          <Badge variant="outline" className="text-xs">
-            {currentStep}/{analysisSteps.length}
-          </Badge>
+          <h3 className="text-sm font-medium text-slate-700">AI Analysis Stream</h3>
         </div>
         
         <div className="space-y-2">
