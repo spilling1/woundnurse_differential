@@ -88,7 +88,7 @@ export function registerAssessmentRoutes(app: Express): void {
         imageMimeType: req.file.mimetype,
         imageSize: req.file.size,
         classification,
-        detectionData: classification.detectionMetadata || null,
+        detectionData: classification.detection || classification.detectionMetadata || null,
         carePlan,
         woundOrigin: contextData.woundOrigin || null,
         medicalHistory: contextData.medicalHistory || null,
@@ -314,12 +314,16 @@ export function registerAssessmentRoutes(app: Express): void {
           mimeType: file.mimetype
         }));
         
+        // For multiple images, still need to run YOLO detection on primary image
+        const primaryImage = images[0];
+        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType);
+        
         if (model.includes('gemini')) {
           // Use Gemini multiple image analysis
           const { analyzeMultipleWoundImagesWithGemini } = await import('../services/gemini');
           const result = await analyzeMultipleWoundImagesWithGemini(images, model, instructions);
           
-          // Convert to expected format
+          // Convert to expected format and preserve detection data
           classification = {
             woundType: result.woundType,
             stage: result.stage,
@@ -332,14 +336,16 @@ export function registerAssessmentRoutes(app: Express): void {
             confidence: result.confidence || 0.5,
             imageAnalysis: result.imageAnalysis,
             multipleWounds: result.multipleWounds,
-            classificationMethod: 'Multiple Image AI Analysis'
+            classificationMethod: 'Multiple Image AI Analysis',
+            detection: singleImageClassification.detection,
+            detectionMetadata: singleImageClassification.detectionMetadata
           };
         } else {
           // Use OpenAI multiple image analysis
           const { analyzeMultipleWoundImages } = await import('../services/openai');
           const result = await analyzeMultipleWoundImages(images, model, instructions);
           
-          // Convert to expected format
+          // Convert to expected format and preserve detection data
           classification = {
             woundType: result.woundType,
             stage: result.stage,
@@ -352,7 +358,9 @@ export function registerAssessmentRoutes(app: Express): void {
             confidence: result.confidence || 0.5,
             imageAnalysis: result.imageAnalysis,
             multipleWounds: result.multipleWounds,
-            classificationMethod: 'Multiple Image AI Analysis'
+            classificationMethod: 'Multiple Image AI Analysis',
+            detection: singleImageClassification.detection,
+            detectionMetadata: singleImageClassification.detectionMetadata
           };
         }
       }

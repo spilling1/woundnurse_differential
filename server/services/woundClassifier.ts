@@ -35,7 +35,10 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
     */
     
     // Step 2: Perform YOLO-based wound detection for measurements (regardless of classification method)
+    console.log('WoundClassifier: Starting YOLO detection...');
     const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
+    console.log('WoundClassifier: YOLO detection complete. Detections found:', detectionResult.detections?.length || 0);
+    console.log('WoundClassifier: Detection result model:', detectionResult.model);
     
     // Step 3: Smart fallback logic - If CNN says "background" but YOLO detects wounds, override CNN
     const shouldOverrideCNN = usedCNN && 
@@ -123,10 +126,13 @@ IMPORTANT: Use this YOLO detection data to inform your analysis confidence. If Y
     };
 
     // Step 4: Enhance classification with detection data
+    console.log('WoundClassifier: Enhancing classification with detection data...');
     const enhancedClassification = enhanceClassificationWithDetection(
       normalizedClassification, 
       detectionResult
     );
+    console.log('WoundClassifier: Enhanced classification has detection data:', !!enhancedClassification.detection);
+    console.log('WoundClassifier: Enhanced classification has detectionMetadata:', !!enhancedClassification.detectionMetadata);
 
     // Add classification method metadata
     enhancedClassification.classificationMethod = usedCNN ? 'CNN' : 'AI Vision';
