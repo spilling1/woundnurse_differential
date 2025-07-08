@@ -34,25 +34,10 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
     }
     */
     
-    // Step 2: Perform YOLO-based wound detection for measurements (regardless of classification method)
-    console.log('WoundClassifier: Starting YOLO detection...');
-    const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
-    console.log('WoundClassifier: YOLO detection complete. Detections found:', detectionResult.detections?.length || 0);
-    console.log('WoundClassifier: Detection result model:', detectionResult.model);
-    
-    // Step 3: Smart fallback logic - If CNN says "background" but YOLO detects wounds, override CNN
-    const shouldOverrideCNN = usedCNN && 
-      classification.woundType === 'No wound detected' && 
-      detectionResult.detections.length > 0 && 
-      detectionResult.detections[0].confidence > 0.3;
-    
-    if (shouldOverrideCNN) {
-      console.log(`CNN said no wound, but YOLO detected ${detectionResult.detections.length} wounds. Using AI vision for classification.`);
-      usedCNN = false;
-    }
-    
-    // Step 4: If CNN failed or was overridden, use AI vision models as fallback
+    // Step 2: First run AI classification INDEPENDENTLY (no YOLO context)
     if (!usedCNN) {
+      console.log('WoundClassifier: Starting independent AI classification...');
+      
       // Initialize classification to prevent undefined errors
       classification = {
         woundType: "Unspecified",
@@ -65,50 +50,91 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         additionalObservations: "",
         confidence: 0.4
       };
-      // Get agent instructions from database to include in analysis
+      
+      // Get agent instructions from database (WITHOUT YOLO context)
       const agentInstructions = await storage.getActiveAgentInstructions();
       const instructions = agentInstructions ? 
         `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
       
-      // Enhance AI analysis with detection data
-      const enhancedInstructions = `${instructions}
-
-CRITICAL WOUND DETECTION DATA FROM YOLO ANALYSIS:
-- Detection Method: ${detectionResult.model || 'YOLO v8'}
-- Processing Time: ${detectionResult.processingTime || 'N/A'}ms
-- Image Dimensions: ${detectionResult.imageWidth}x${detectionResult.imageHeight}px
-- Number of wounds detected: ${detectionResult.detections.length}
-- Primary wound detection confidence: ${detectionResult.detections[0]?.confidence || 0} (0.0-1.0 scale)
-${detectionResult.detections.length > 0 ? `
-- Wound bounding box: [${detectionResult.detections[0].boundingBox.x}, ${detectionResult.detections[0].boundingBox.y}, ${detectionResult.detections[0].boundingBox.width}, ${detectionResult.detections[0].boundingBox.height}]
-- Wound measurements: ${detectionResult.detections[0].measurements.lengthMm.toFixed(1)}mm x ${detectionResult.detections[0].measurements.widthMm.toFixed(1)}mm
-- Wound area: ${detectionResult.detections[0].measurements.areaMm2.toFixed(1)}mm²
-- Wound perimeter: ${detectionResult.detections[0].perimeter.toFixed(1)}px
-- Scale calibrated: ${detectionResult.detections[0].scaleCalibrated ? 'Yes' : 'No'}
-- Reference object detected: ${detectionResult.detections[0].referenceObjectDetected ? 'Yes' : 'No'}
-${detectionResult.detections.length > 1 ? `- Additional wounds detected: ${detectionResult.detections.length - 1}` : ''}
-` : '- No wounds detected by YOLO system'}
-
-IMPORTANT: Use this YOLO detection data to inform your analysis confidence. If YOLO shows high confidence (>0.7) and precise measurements, increase your classification confidence. If YOLO shows low confidence (<0.3) or no detections, be more cautious in your assessment. Always consider both visual analysis and YOLO detection results together.`;
-      
+      // Independent AI classification first
       if (model.startsWith('gemini-')) {
         try {
-          classification = await analyzeWoundImageWithGemini(imageBase64, model, enhancedInstructions);
+          classification = await analyzeWoundImageWithGemini(imageBase64, model, instructions);
         } catch (geminiError: any) {
-          // Check if this is a quota error
           if (geminiError.message?.includes('quota') || geminiError.message?.includes('RESOURCE_EXHAUSTED')) {
             console.log('WoundClassifier: Gemini service temporarily unavailable, automatically switching to GPT-4o');
-            // Automatically switch to GPT-4o when Gemini service is unavailable
-            classification = await analyzeWoundImage(imageBase64, 'gpt-4o', mimeType, enhancedInstructions);
+            classification = await analyzeWoundImage(imageBase64, 'gpt-4o', mimeType, instructions);
           } else {
-            // Re-throw non-quota errors
             throw geminiError;
           }
         }
       } else {
-        classification = await analyzeWoundImage(imageBase64, model, mimeType, enhancedInstructions);
+        classification = await analyzeWoundImage(imageBase64, model, mimeType, instructions);
       }
+      
+      console.log(`WoundClassifier: Independent AI classification complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
     }
+    
+    // Step 3: Now perform YOLO detection for additional context
+    console.log('WoundClassifier: Starting YOLO detection...');
+    const detectionResult = await woundDetectionService.detectWounds(imageBase64, mimeType);
+    console.log('WoundClassifier: YOLO detection complete. Detections found:', detectionResult.detections?.length || 0);
+    console.log('WoundClassifier: Detection result model:', detectionResult.model);
+    
+    // Step 4: Store the independent AI classification for transparency
+    const independentClassification = { ...classification };
+    
+    // Step 5: If YOLO found something, ask AI to reconsider with YOLO context
+    if (detectionResult.detections && detectionResult.detections.length > 0) {
+      const primaryWound = detectionResult.detections[0];
+      const yoloConfidence = (primaryWound.confidence * 100).toFixed(1);
+      
+      console.log(`WoundClassifier: YOLO detected wound with ${yoloConfidence}% confidence. Asking AI to reconsider...`);
+      
+      // Map YOLO wound class to readable name
+      const woundTypeMapping = {
+        'neuropathic_ulcer': 'Neuropathic Ulcer',
+        'diabetic_ulcer': 'Diabetic Ulcer',
+        'pressure_ulcer': 'Pressure Ulcer',
+        'venous_ulcer': 'Venous Ulcer',
+        'surgical_wound': 'Surgical Wound'
+      };
+      
+      const yoloWoundType = woundTypeMapping[primaryWound.wound_class] || primaryWound.wound_class;
+      
+      // Ask AI to reconsider with YOLO context
+      const reconsiderPrompt = `You previously classified this wound as: ${independentClassification.woundType} with ${(independentClassification.confidence * 100).toFixed(1)}% confidence.
+
+I now have additional information from a YOLO detection model that was trained on wound images:
+- YOLO confidence: ${yoloConfidence}% that this is a ${yoloWoundType}
+- YOLO measurements: ${primaryWound.measurements.lengthMm.toFixed(1)}mm x ${primaryWound.measurements.widthMm.toFixed(1)}mm
+- YOLO area: ${primaryWound.measurements.areaMm2.toFixed(1)}mm²
+
+Please reconsider your original assessment in light of this additional information. Does this change your classification or confidence? Explain your reasoning like in the example provided.
+
+Provide your updated assessment in the same JSON format, considering both your visual analysis and the YOLO detection results.`;
+
+      // Get updated classification with YOLO context
+      if (model.startsWith('gemini-')) {
+        try {
+          classification = await analyzeWoundImageWithGemini(imageBase64, model, reconsiderPrompt);
+        } catch (geminiError: any) {
+          if (geminiError.message?.includes('quota') || geminiError.message?.includes('RESOURCE_EXHAUSTED')) {
+            console.log('WoundClassifier: Gemini service temporarily unavailable for reconsideration, keeping original classification');
+            // Keep the original classification if Gemini fails
+          } else {
+            throw geminiError;
+          }
+        }
+      } else {
+        classification = await analyzeWoundImage(imageBase64, model, mimeType, reconsiderPrompt);
+      }
+      
+      console.log(`WoundClassifier: AI reconsideration complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
+    }
+    
+    // Store both classifications for transparency
+    classification.independentClassification = independentClassification;
     
     // Step 3: Validate and normalize the classification
     const normalizedClassification = {

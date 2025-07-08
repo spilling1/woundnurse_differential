@@ -22,6 +22,10 @@ interface DetectionTransparencyCardProps {
     yoloDetectedType?: string;
     size?: string;
     preciseMeasurements?: any;
+    independentClassification?: {
+      woundType: string;
+      confidence: number;
+    };
   };
 }
 
@@ -110,9 +114,19 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
                 <div className="text-sm text-gray-600">
                   {classification.classificationMethod || 'AI Vision'}
                 </div>
+                
+                {/* Show independent classification if available */}
+                {classification.independentClassification && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    Initial: {classification.independentClassification.woundType} ({Math.round(classification.independentClassification.confidence * 100)}%)
+                  </div>
+                )}
+                
                 <div className="text-sm text-purple-600 font-medium mt-1">
-                  Classified as: {classification.woundType}
+                  {classification.independentClassification ? 'Final: ' : 'Classified as: '}
+                  {classification.woundType}
                 </div>
+                
                 {classification.size && (
                   <div className="text-xs text-gray-500 mt-1">
                     Stage/Size: {classification.size}
@@ -124,6 +138,11 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
               <Badge variant={aiConfidence > 0.8 ? 'default' : 'secondary'}>
                 {Math.round(aiConfidence * 100)}% confidence
               </Badge>
+              {classification.independentClassification && (
+                <div className="text-xs text-gray-500 mt-1">
+                  {classification.independentClassification.confidence < aiConfidence ? 'Increased' : 'Decreased'} by YOLO
+                </div>
+              )}
             </div>
           </div>
 
