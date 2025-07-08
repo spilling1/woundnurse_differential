@@ -110,7 +110,31 @@ I now have additional information from a YOLO detection model that was trained o
 - YOLO measurements: ${primaryWound.measurements.lengthMm.toFixed(1)}mm x ${primaryWound.measurements.widthMm.toFixed(1)}mm
 - YOLO area: ${primaryWound.measurements.areaMm2.toFixed(1)}mm²
 
-Please reconsider your original assessment in light of this additional information. Does this change your classification or confidence? Explain your reasoning like in the example provided.
+Please reconsider your original assessment in light of this additional information. Follow this decision framework:
+
+**If YOLO has high confidence (≥85%):**
+- This creates a significant discrepancy that requires critical evaluation
+- Consider if this represents a potential misclassification in your visual assessment
+- Evaluate whether the YOLO model's training data might be more specialized for this wound type
+- If there's substantial disagreement, recommend additional steps like:
+  - Requesting more photographs from different angles
+  - Suggesting expert medical review
+  - Recommending specialized wound care consultation
+
+**If YOLO has moderate confidence (40-84%):**
+- Use YOLO findings to refine your assessment
+- The model provides helpful supplementary information
+- Adjust your confidence based on agreement/disagreement with YOLO findings
+
+**If YOLO has low confidence (<40%):**
+- YOLO findings are less reliable
+- Maintain primary reliance on your visual assessment
+- Use YOLO measurements for sizing information only
+
+**For all cases:**
+- Explain your reasoning process clearly
+- State whether your confidence increased, decreased, or remained the same
+- If recommending additional steps, be specific about what information would be most helpful
 
 Provide your updated assessment in the same JSON format, considering both your visual analysis and the YOLO detection results.`;
 
@@ -229,11 +253,9 @@ function enhanceClassificationWithDetection(classification: any, detectionResult
       enhancedClassification.yoloDetectedType = woundTypeMapping[primaryWound.wound_class];
     }
     
-    // Override AI classification if YOLO found something
-    if (primaryWound.wound_class && woundTypeMapping[primaryWound.wound_class]) {
-      enhancedClassification.woundType = woundTypeMapping[primaryWound.wound_class];
-      console.log(`WoundClassifier: Overriding AI classification to ${enhancedClassification.woundType} based on YOLO detection`);
-    }
+    // AI has already considered YOLO findings in its reconsideration, so don't override
+    console.log(`WoundClassifier: YOLO detected ${primaryWound.wound_class} - AI has already considered this in its final decision`);
+    
   }
   
   // Add detection data only if wounds were found
@@ -251,11 +273,8 @@ function enhanceClassificationWithDetection(classification: any, detectionResult
     enhancedClassification.preciseMeasurements = primaryWound.measurements;
     enhancedClassification.detectionMetadata.multipleWounds = detectionResult.detections.length > 1;
     
-    // Enhance confidence if YOLO found something
-    const originalConfidence = enhancedClassification.confidence || 0;
-    const yoloBoost = Math.min(primaryWound.confidence * 0.3, 0.2); // Max 20% boost
-    enhancedClassification.confidence = Math.min(originalConfidence + yoloBoost, 1.0);
-    console.log(`WoundClassifier: Confidence boosted from ${originalConfidence} to ${enhancedClassification.confidence} due to YOLO detection`);
+    // AI has already adjusted confidence based on YOLO findings during reconsideration
+    console.log(`WoundClassifier: AI confidence after YOLO reconsideration: ${enhancedClassification.confidence}`);
   }
   
   console.log('WoundClassifier: Enhanced classification result:', {
