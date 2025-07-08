@@ -82,7 +82,7 @@ class SmartYOLODetector:
             "yolo_threshold": 0.6,
             "color_threshold": 0.5,
             "performance_weight": 0.3,
-            "model_path": "yolov8n.pt",
+            "model_path": "models/yolov8n.pt",
             "custom_model_path": "models/wound_yolo.pt",
             "training_enabled": False
         }
@@ -129,8 +129,8 @@ class SmartYOLODetector:
                 return
             
             # Force load yolov8n.pt directly
-            logger.info("Forcing load of yolov8n.pt...")
-            self.yolo_model = YOLO("yolov8n.pt")
+            logger.info("Forcing load of models/yolov8n.pt...")
+            self.yolo_model = YOLO("models/yolov8n.pt")
             self.config["model_type"] = "downloaded"
             logger.info("YOLOv8n model loaded successfully!")
             
