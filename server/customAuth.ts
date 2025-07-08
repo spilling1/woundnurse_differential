@@ -117,6 +117,40 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   }
 };
 
+// Optional authentication middleware - doesn't require auth but extracts user if present
+export const optionalAuth: RequestHandler = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
+
+    if (token) {
+      const decoded = verifyToken(token);
+      if (decoded) {
+        // Get fresh user data from database
+        const user = await storage.getUser(decoded.id);
+        if (user && user.status === 'active') {
+          // Check if user is a permanent admin
+          const isPermanentAdmin = PERMANENT_ADMINS.includes(user.email || '');
+          const userRole = isPermanentAdmin ? 'admin' : user.role;
+
+          req.customUser = {
+            id: user.id,
+            email: user.email!,
+            role: userRole,
+            mustChangePassword: user.mustChangePassword || false,
+          };
+        }
+      }
+    }
+
+    next();
+  } catch (error) {
+    // Don't fail the request if optional auth fails
+    console.error('Optional authentication error:', error);
+    next();
+  }
+};
+
 // Admin middleware
 export const isAdmin: RequestHandler = async (req, res, next) => {
   if (!req.customUser || req.customUser.role !== 'admin') {

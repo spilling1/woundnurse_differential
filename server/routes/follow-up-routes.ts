@@ -5,7 +5,7 @@ import { followUpRequestSchema } from "@shared/schema";
 import { validateImage } from "../services/imageProcessor";
 import { classifyWound } from "../services/woundClassifier";
 import { generateCarePlan } from "../services/carePlanGenerator";
-import { isAuthenticated } from "../replitAuth";
+import { isAuthenticated, optionalAuth } from "../customAuth";
 
 // Separate upload configuration for follow-up that accepts multiple file types
 const followUpUpload = multer({
@@ -34,7 +34,7 @@ const followUpUpload = multer({
 
 export function registerFollowUpRoutes(app: Express): void {
   // Follow-up assessment endpoint
-  app.post("/api/follow-up/:caseId", isAuthenticated, followUpUpload.fields([
+  app.post("/api/follow-up/:caseId", optionalAuth, followUpUpload.fields([
     { name: 'images', maxCount: 10 },
     { name: 'additionalFiles', maxCount: 10 }
   ]), async (req, res) => {
@@ -132,9 +132,10 @@ export function registerFollowUpRoutes(app: Express): void {
       );
 
       // Get user ID if authenticated
+      // Get user ID if authenticated (optional for follow-ups)
       let userId = null;
-      if (req.isAuthenticated && req.isAuthenticated() && req.user) {
-        userId = (req.user as any).claims?.sub;
+      if ((req as any).customUser?.id) {
+        userId = (req as any).customUser.id;
       }
 
       // Store the follow-up assessment

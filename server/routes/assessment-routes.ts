@@ -6,7 +6,7 @@ import { validateImage } from "../services/imageProcessor";
 import { classifyWound } from "../services/woundClassifier";
 import { generateCarePlan } from "../services/carePlanGenerator";
 import { generateCaseId } from "../services/utils";
-import { isAuthenticated } from "../customAuth";
+import { isAuthenticated, optionalAuth } from "../customAuth";
 import { analyzeAssessmentForQuestions } from "../services/agentQuestionService";
 import { callOpenAI } from "../services/openai";
 import { callGemini } from "../services/gemini";
@@ -29,7 +29,7 @@ const upload = multer({
 
 export function registerAssessmentRoutes(app: Express): void {
   // Upload and analyze wound image
-  app.post("/api/upload", upload.single('image'), async (req, res) => {
+  app.post("/api/upload", optionalAuth, upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({
@@ -260,7 +260,7 @@ export function registerAssessmentRoutes(app: Express): void {
   // New Assessment Flow Routes
 
   // Step 1: Initial image analysis with AI-generated questions
-  app.post("/api/assessment/initial-analysis", isAuthenticated, upload.array('images', 5), async (req, res) => {
+  app.post("/api/assessment/initial-analysis", optionalAuth, upload.array('images', 5), async (req, res) => {
     try {
       const files = req.files as Express.Multer.File[];
       
