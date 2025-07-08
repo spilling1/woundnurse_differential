@@ -36,11 +36,34 @@ export async function generateCarePlan(
     if (cleanModel.startsWith('gemini-')) {
       console.log('CarePlanGenerator: Routing to Gemini');
       const fullPrompt = `${systemPrompt}\n\n${prompt}`;
+      const startTime = Date.now();
+      
       try {
         if (imageData) {
           carePlan = await callGemini(cleanModel, fullPrompt, imageData);
         } else {
           carePlan = await callGemini(cleanModel, fullPrompt);
+        }
+        
+        const processingTime = Date.now() - startTime;
+        
+        // Log the successful care plan generation
+        if (classification.sessionId) {
+          try {
+            await storage.createAiInteraction({
+              caseId: classification.sessionId,
+              stepType: 'care_plan_generation',
+              modelUsed: cleanModel,
+              promptSent: fullPrompt + (imageData ? `\n\n[IMAGE PROVIDED: ${imageMimeType || 'image/jpeg'}]` : ''),
+              responseReceived: carePlan,
+              parsedResult: { audience, detectionInfo, model: cleanModel },
+              processingTimeMs: processingTime,
+              confidenceScore: Math.round((classification.confidence || 0) * 100),
+              errorOccurred: false,
+            });
+          } catch (logError) {
+            console.error('Error logging care plan generation:', logError);
+          }
         }
       } catch (geminiError: any) {
         // Check if this is a quota error
@@ -78,9 +101,32 @@ export async function generateCarePlan(
             } as any;
           }
           
+          const fallbackStartTime = Date.now();
           carePlan = await callOpenAI('gpt-4o', messages);
+          const fallbackProcessingTime = Date.now() - fallbackStartTime;
+          
           // Add a notice about the service switch
           carePlan = `**⚠️ SYSTEM NOTICE:** The Gemini AI service is temporarily unavailable. This analysis was automatically completed using GPT-4o to ensure uninterrupted service.\n\n${carePlan}`;
+          
+          // Log the fallback care plan generation
+          if (classification.sessionId) {
+            try {
+              const fullPrompt = `System: ${systemPrompt}\n\nUser: ${prompt}${imageData ? `\n\n[IMAGE PROVIDED: ${imageMimeType || 'image/jpeg'}]` : ''}`;
+              await storage.createAiInteraction({
+                caseId: classification.sessionId,
+                stepType: 'care_plan_generation_fallback',
+                modelUsed: 'gpt-4o',
+                promptSent: fullPrompt,
+                responseReceived: carePlan,
+                parsedResult: { audience, detectionInfo, model: 'gpt-4o (fallback)', originalModel: cleanModel },
+                processingTimeMs: fallbackProcessingTime,
+                confidenceScore: Math.round((classification.confidence || 0) * 100),
+                errorOccurred: false,
+              });
+            } catch (logError) {
+              console.error('Error logging fallback care plan generation:', logError);
+            }
+          }
         } else {
           // Re-throw non-quota errors
           throw geminiError;
@@ -118,7 +164,29 @@ export async function generateCarePlan(
         } as any;
       }
       
+      const startTime = Date.now();
       carePlan = await callOpenAI(cleanModel, messages);
+      const processingTime = Date.now() - startTime;
+      
+      // Log the successful care plan generation
+      if (classification.sessionId) {
+        try {
+          const fullPrompt = `System: ${systemPrompt}\n\nUser: ${prompt}${imageData ? `\n\n[IMAGE PROVIDED: ${imageMimeType || 'image/jpeg'}]` : ''}`;
+          await storage.createAiInteraction({
+            caseId: classification.sessionId,
+            stepType: 'care_plan_generation',
+            modelUsed: cleanModel,
+            promptSent: fullPrompt,
+            responseReceived: carePlan,
+            parsedResult: { audience, detectionInfo, model: cleanModel },
+            processingTimeMs: processingTime,
+            confidenceScore: Math.round((classification.confidence || 0) * 100),
+            errorOccurred: false,
+          });
+        } catch (logError) {
+          console.error('Error logging care plan generation:', logError);
+        }
+      }
     }
     
     // Add safety disclaimer

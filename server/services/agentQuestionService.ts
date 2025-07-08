@@ -283,9 +283,48 @@ Use appropriate categories: location, patient_info, symptoms, medical_history, w
       
     try {
       const questions = JSON.parse(cleanedResponse);
+      
+      // Log the question generation AI interaction
+      if (sessionId) {
+        try {
+          await storage.createAiInteraction({
+            caseId: sessionId,
+            stepType: 'question_generation',
+            modelUsed: model || 'gpt-4o',
+            promptSent: analysisPrompt,
+            responseReceived: cleanedResponse,
+            parsedResult: questions,
+            confidenceScore: Math.round(confidence * 100),
+            errorOccurred: false,
+          });
+        } catch (logError) {
+          console.error('Error logging question generation AI interaction:', logError);
+        }
+      }
+      
       return Array.isArray(questions) ? questions : [];
     } catch (parseError: any) {
       console.error('Failed to parse AI questions response:', cleanedResponse);
+      
+      // Log the error
+      if (sessionId) {
+        try {
+          await storage.createAiInteraction({
+            caseId: sessionId,
+            stepType: 'question_generation',
+            modelUsed: model || 'gpt-4o',
+            promptSent: analysisPrompt,
+            responseReceived: cleanedResponse,
+            parsedResult: null,
+            confidenceScore: Math.round(confidence * 100),
+            errorOccurred: true,
+            errorMessage: `JSON parsing failed: ${parseError.message}`,
+          });
+        } catch (logError) {
+          console.error('Error logging question generation error:', logError);
+        }
+      }
+      
       throw new Error(`Invalid JSON response from AI model: ${parseError.message}`);
     }
     

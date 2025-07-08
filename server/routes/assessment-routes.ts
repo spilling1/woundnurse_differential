@@ -587,6 +587,29 @@ export function registerAssessmentRoutes(app: Express): void {
         return acc;
       }, {});
 
+      // Log user's answers to questions
+      if (questions.length > 0) {
+        try {
+          const answeredQuestions = questions.filter((q: any) => q.answer && q.answer.trim() !== '');
+          const questionSummary = answeredQuestions.map((q: any) => 
+            `Q: ${q.question}\nA: ${q.answer}\nCategory: ${q.category}`
+          ).join('\n\n');
+          
+          await storage.createAiInteraction({
+            caseId: caseId,
+            stepType: 'user_question_responses',
+            modelUsed: 'user_input',
+            promptSent: `User provided answers to ${answeredQuestions.length} follow-up questions:\n\n${questionSummary}`,
+            responseReceived: `Context data prepared for care plan generation: ${JSON.stringify(contextData)}`,
+            parsedResult: { questions: answeredQuestions, contextData },
+            confidenceScore: Math.round(classification.confidence * 100),
+            errorOccurred: false,
+          });
+        } catch (logError) {
+          console.error('Error logging user question responses:', logError);
+        }
+      }
+
       // Log care plan generation
       try {
         await storage.createAiInteraction({
