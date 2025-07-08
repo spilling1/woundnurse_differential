@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw, Shield, Edit3, Save, X } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Calendar, FileText, User, MapPin, Stethoscope, Circle, Plus, Settings, MoreVertical, Trash2, Download, ExternalLink, RefreshCw, Shield, Edit3, Save, X, Search, ChevronDown, ChevronUp, SortAsc, SortDesc } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import ImageDetectionStatus from "@/components/ImageDetectionStatus";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -27,6 +29,12 @@ export default function MyCases() {
   const [isEditingCaseName, setIsEditingCaseName] = React.useState(false);
   const [editedCaseName, setEditedCaseName] = React.useState("");
   const [editingCaseId, setEditingCaseId] = React.useState("");
+  
+  // Search and sort state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"name" | "date" | "woundType">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Refresh data when component mounts or when user navigates back
   useEffect(() => {
@@ -75,6 +83,63 @@ export default function MyCases() {
     
     return grouped;
   }, [cases]);
+
+  // Filter and sort case IDs based on search and sort criteria
+  const filteredAndSortedCaseIds = useMemo(() => {
+    let caseIds = Object.keys(groupedCases);
+
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      caseIds = caseIds.filter(caseId => {
+        const latestAssessment = groupedCases[caseId][0]; // First item is the latest
+        const caseName = latestAssessment.caseName?.toLowerCase() || '';
+        const caseIdLower = caseId.toLowerCase();
+        const woundType = latestAssessment.woundClassification?.toLowerCase() || '';
+        
+        return caseName.includes(term) || 
+               caseIdLower.includes(term) || 
+               woundType.includes(term);
+      });
+    }
+
+    // Apply sorting
+    caseIds.sort((a, b) => {
+      const aLatest = groupedCases[a][0];
+      const bLatest = groupedCases[b][0];
+      
+      let aValue: string | Date;
+      let bValue: string | Date;
+
+      switch (sortBy) {
+        case 'name':
+          aValue = aLatest.caseName || a;
+          bValue = bLatest.caseName || b;
+          break;
+        case 'date':
+          aValue = new Date(aLatest.createdAt);
+          bValue = new Date(bLatest.createdAt);
+          break;
+        case 'woundType':
+          aValue = aLatest.woundClassification || '';
+          bValue = bLatest.woundClassification || '';
+          break;
+        default:
+          aValue = new Date(aLatest.createdAt);
+          bValue = new Date(bLatest.createdAt);
+      }
+
+      if (sortBy === 'date') {
+        const result = (aValue as Date).getTime() - (bValue as Date).getTime();
+        return sortOrder === 'asc' ? result : -result;
+      } else {
+        const result = (aValue as string).localeCompare(bValue as string);
+        return sortOrder === 'asc' ? result : -result;
+      }
+    });
+
+    return caseIds;
+  }, [groupedCases, searchTerm, sortBy, sortOrder]);
 
   // Delete mutation
   const deleteAssessmentMutation = useMutation({
@@ -274,6 +339,76 @@ export default function MyCases() {
           <p className="text-gray-600 text-lg">Manage and review your Care Plans</p>
         </div>
 
+        {/* Search and Sort Controls - Only show if more than 9 cases */}
+        {Object.keys(groupedCases).length > 9 && (
+          <div className="max-w-6xl mx-auto mb-6">
+            <Collapsible open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+              <CollapsibleTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full bg-white/95 backdrop-blur-sm hover:bg-white border-gray-300 mb-4"
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  Search & Sort Cases ({Object.keys(groupedCases).length} total)
+                  {isSearchOpen ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <Card className="bg-white/95 backdrop-blur-sm">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      {/* Search Input */}
+                      <div className="flex-1">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <Input
+                            placeholder="Search by case name, ID, or wound type..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Sort Controls */}
+                      <div className="flex gap-2">
+                        <Select value={sortBy} onValueChange={(value: "name" | "date" | "woundType") => setSortBy(value)}>
+                          <SelectTrigger className="w-[140px]">
+                            <SelectValue placeholder="Sort by" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="name">Case Name</SelectItem>
+                            <SelectItem value="date">Date</SelectItem>
+                            <SelectItem value="woundType">Wound Type</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                          className="px-3"
+                        >
+                          {sortOrder === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Results Summary */}
+                    {searchTerm && (
+                      <div className="mt-3 pt-3 border-t border-gray-200">
+                        <p className="text-sm text-gray-600">
+                          Showing {filteredAndSortedCaseIds.length} of {Object.keys(groupedCases).length} cases
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        )}
+
         {/* Cases Grid */}
         <div className="max-w-6xl mx-auto">
           {isLoading ? (
@@ -296,9 +431,33 @@ export default function MyCases() {
                 </Link>
               </CardContent>
             </Card>
+          ) : filteredAndSortedCaseIds.length === 0 && searchTerm ? (
+            <Card className="bg-white/95 backdrop-blur-sm">
+              <CardContent className="text-center py-12">
+                <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No Cases Found</h3>
+                <p className="text-gray-600 mb-4">
+                  No cases match your search for "{searchTerm}". Try adjusting your search terms.
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setSearchTerm("")}
+                  className="mr-2"
+                >
+                  Clear Search
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsSearchOpen(false)}
+                >
+                  Close Search
+                </Button>
+              </CardContent>
+            </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Object.entries(groupedCases).map(([caseId, assessments]: [string, any]) => {
+              {filteredAndSortedCaseIds.map((caseId) => {
+                const assessments = groupedCases[caseId];
                 const latestAssessment = assessments[0]; // Most recent version
                 const originalAssessment = assessments[assessments.length - 1]; // Original version
                 
