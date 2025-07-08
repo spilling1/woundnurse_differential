@@ -439,14 +439,21 @@ export function registerAssessmentRoutes(app: Express): void {
       
       // Use the agent question service to determine if more questions are needed
       const sessionId = `follow-up-${Date.now()}`;
-      const newQuestions = await analyzeAssessmentForQuestions(sessionId, {
-        imageAnalysis: updatedClassification,
-        audience,
-        model,
-        previousQuestions: parsedQuestions,
-        round: parseInt(round),
-        instructions
-      });
+      let newQuestions = [];
+      
+      try {
+        newQuestions = await analyzeAssessmentForQuestions(sessionId, {
+          imageAnalysis: updatedClassification,
+          audience,
+          model,
+          previousQuestions: parsedQuestions,
+          round: parseInt(round),
+          instructions
+        });
+      } catch (questionError: any) {
+        console.error('Error in analyzeAssessmentForQuestions:', questionError);
+        throw new Error(`Question generation failed: ${questionError.message}`);
+      }
       
       // Only proceed to care plan if confidence is 80% or higher AND no more questions needed
       const shouldProceedToPlan = revisedConfidence >= 0.80 && newQuestions.length === 0;
@@ -462,9 +469,19 @@ export function registerAssessmentRoutes(app: Express): void {
       
     } catch (error: any) {
       console.error('Follow-up questions error:', error);
+      
+      // Ensure we have a proper error message
+      let errorMessage = "Failed to generate follow-up questions";
+      if (error && error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
       res.status(500).json({
         code: "FOLLOWUP_ERROR",
-        message: error.message || "Failed to generate follow-up questions"
+        message: errorMessage,
+        details: error?.stack || error
       });
     }
   });

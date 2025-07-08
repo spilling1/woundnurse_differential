@@ -281,12 +281,18 @@ Use appropriate categories: location, patient_info, symptoms, medical_history, w
       .replace(/```/g, '')
       .trim();
       
-    const questions = JSON.parse(cleanedResponse);
-    return Array.isArray(questions) ? questions : [];
+    try {
+      const questions = JSON.parse(cleanedResponse);
+      return Array.isArray(questions) ? questions : [];
+    } catch (parseError: any) {
+      console.error('Failed to parse AI questions response:', cleanedResponse);
+      throw new Error(`Invalid JSON response from AI model: ${parseError.message}`);
+    }
     
   } catch (error) {
     console.error('Error generating AI questions:', error);
-    return [];
+    // Re-throw the error so it can be handled by the calling code
+    throw new Error(`Failed to generate AI questions: ${error.message || error}`);
   }
 }
 

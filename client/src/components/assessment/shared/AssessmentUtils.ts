@@ -135,7 +135,8 @@ export const assessmentApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to generate follow-up questions');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Failed to generate follow-up questions (${response.status})`);
     }
 
     return await response.json();
