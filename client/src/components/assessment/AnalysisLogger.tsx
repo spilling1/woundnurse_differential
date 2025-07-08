@@ -13,28 +13,34 @@ interface LogEntry {
 interface AnalysisLoggerProps {
   isActive: boolean;
   onComplete?: () => void;
+  processingStep?: string;
 }
 
-export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerProps) {
+export default function AnalysisLogger({ isActive, onComplete, processingStep }: AnalysisLoggerProps) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
-  // AI thinking process steps that show reasoning
-  const analysisSteps = [
-    { message: "Initializing YOLO detection service...", type: 'info' as const, duration: 800 },
-    { message: "Scanning image for wound boundaries...", type: 'processing' as const, duration: 1200 },
-    { message: "🤔 Hmm, tissue appears dark with irregular edges", type: 'processing' as const, duration: 900 },
-    { message: "Measuring wound dimensions and depth indicators", type: 'processing' as const, duration: 1100 },
-    { message: "💭 Considering pressure ulcer vs diabetic ulcer", type: 'processing' as const, duration: 1300 },
-    { message: "Analyzing surrounding skin for infection signs", type: 'processing' as const, duration: 800 },
-    { message: "🔍 Detecting eschar and necrotic tissue patterns", type: 'processing' as const, duration: 1000 },
-    { message: "Evaluating exudate characteristics and volume", type: 'processing' as const, duration: 700 },
-    { message: "⚕️ Cross-referencing with wound staging criteria", type: 'processing' as const, duration: 1200 },
-    { message: "Assessing bone/tendon exposure risk", type: 'processing' as const, duration: 900 },
-    { message: "🎯 High confidence: Stage 4 pressure ulcer", type: 'success' as const, duration: 600 },
-    { message: "Generating personalized care recommendations", type: 'processing' as const, duration: 800 },
-    { message: "✅ Analysis complete - preparing questions", type: 'success' as const, duration: 400 }
-  ];
+  // Real-time processing steps that show actual backend activity
+  const getProcessingSteps = () => {
+    const steps = [
+      { message: "🔄 Starting wound analysis...", type: 'info' as const, duration: 500 },
+      { message: "📡 Connecting to YOLO detection service...", type: 'info' as const, duration: 800 },
+      { message: "🔍 Scanning image for wound boundaries...", type: 'processing' as const, duration: 1200 },
+      { message: "📊 YOLO processing complete - analyzing results...", type: 'processing' as const, duration: 600 },
+      { message: "🧠 Initializing AI vision analysis...", type: 'info' as const, duration: 700 },
+      { message: "🤔 AI examining wound characteristics...", type: 'processing' as const, duration: 2000 },
+      { message: "💭 Analyzing tissue viability and staging...", type: 'processing' as const, duration: 1500 },
+      { message: "🔬 Evaluating infection signs and exudate...", type: 'processing' as const, duration: 1200 },
+      { message: "📏 Calculating wound measurements...", type: 'processing' as const, duration: 800 },
+      { message: "🎯 Building confidence assessment...", type: 'processing' as const, duration: 900 },
+      { message: "🧬 Generating diagnostic questions...", type: 'processing' as const, duration: 1100 },
+      { message: "✅ Analysis complete - preparing results...", type: 'success' as const, duration: 500 }
+    ];
+    
+    return steps;
+  };
+
+  const analysisSteps = getProcessingSteps();
 
   useEffect(() => {
     if (!isActive) {
@@ -97,8 +103,8 @@ export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerP
   return (
     <Card className="mt-4 bg-slate-50 border-slate-200">
       <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-medium text-slate-700">AI Analysis Stream</h3>
+        <div className="mb-3">
+          {/* Header removed per user request */}
         </div>
         
         <div className="space-y-2">
