@@ -169,13 +169,15 @@ export class WoundDetectionService {
           areaMm2: det.measurements?.area_mm2 || 0
         },
         referenceObjectDetected: det.reference_object_detected || false,
-        scaleCalibrated: det.scale_calibrated || false
+        scaleCalibrated: det.scale_calibrated || false,
+        wound_class: det.wound_class || 'wound' // Include wound class from YOLO
       })),
       imageWidth: width,
       imageHeight: height,
-      processingTime: 0,
+      processingTime: yoloData.processing_time ? Math.round(yoloData.processing_time * 1000) : 0, // Convert to ms
       model: yoloData.model || 'yolo9',
-      version: yoloData.version || '1.0'
+      version: yoloData.version || '1.0',
+      method_used: yoloData.method_used || 'yolo'
     };
   }
 

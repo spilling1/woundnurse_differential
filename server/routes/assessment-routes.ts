@@ -376,6 +376,13 @@ export function registerAssessmentRoutes(app: Express): void {
         }
       );
 
+      // Log the detection data to verify it's being passed through
+      console.log('API Response - Detection Data:', {
+        hasDetection: !!classification.detection,
+        hasDetectionMetadata: !!classification.detectionMetadata,
+        detectionCount: classification.detectionMetadata?.detectionCount || 0
+      });
+
       res.json({
         classification,
         questions: questions || [],

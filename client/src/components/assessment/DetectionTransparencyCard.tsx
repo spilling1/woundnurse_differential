@@ -16,6 +16,8 @@ interface DetectionTransparencyCardProps {
       model: string;
       processingTime: number;
       multipleWounds: boolean;
+      detectionCount?: number;
+      methodUsed?: string;
     };
   };
 }
@@ -25,6 +27,15 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
   const detectionFound = classification.detection?.confidence > 0;
   const aiConfidence = classification.confidence || 0;
   const detectionCount = classification.detectionMetadata?.detectionCount || 0;
+  
+  // Debug log to track what data is being received
+  console.log('DetectionTransparencyCard - Data received:', {
+    hasDetectionData,
+    detectionFound,
+    detectionCount,
+    detectionModel: classification.detectionMetadata?.model,
+    detectionConfidence: classification.detection?.confidence
+  });
   
   // Calculate influence percentages
   const detectionInfluence = hasDetectionData && detectionFound ? 40 : 0;
