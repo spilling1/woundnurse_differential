@@ -40,8 +40,8 @@ export function registerAssessmentRoutes(app: Express): void {
 
       // Get user ID if authenticated (optional)
       let userId = null;
-      if (req.user && (req.user as any).sub) {
-        userId = (req.user as any).sub;
+      if ((req as any).customUser?.id) {
+        userId = (req as any).customUser.id;
       }
 
       // Validate request body

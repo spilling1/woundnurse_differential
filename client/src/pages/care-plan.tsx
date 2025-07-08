@@ -597,7 +597,10 @@ export default function CarePlan() {
   const renderDetectionAnalysis = (plan: string) => {
     if (!plan) return null;
     
-    // Show detection analysis to all users for transparency
+    // Only show to admin users
+    if (!user || user.role !== 'admin') {
+      return null;
+    }
     
     const detectionAnalysisMatch = plan.match(/\*\*DETECTION SYSTEM ANALYSIS:\*\*[\s\S]*$/);
     if (!detectionAnalysisMatch) return null;
