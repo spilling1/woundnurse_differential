@@ -546,12 +546,7 @@ export default function MyCases() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <Link href={`/care-plan/${caseId}`} className="flex items-center cursor-pointer">
-                                  <ExternalLink className="h-4 w-4 mr-2" />
-                                  View Care Plan
-                                </Link>
-                              </DropdownMenuItem>
+
                               <DropdownMenuItem asChild>
                                 <Link href={`/case-analysis/${caseId}`} className="flex items-center cursor-pointer">
                                   <BarChart3 className="h-4 w-4 mr-2" />
@@ -565,12 +560,7 @@ export default function MyCases() {
                                 <Edit3 className="h-4 w-4 mr-2" />
                                 Edit Case Name
                               </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={`/follow-up/${caseId}`} className="flex items-center cursor-pointer">
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Add Follow-up
-                                </Link>
-                              </DropdownMenuItem>
+
                               {user?.role === 'admin' && (
                                 <DropdownMenuItem asChild>
                                   <Link href={`/admin/analysis/${caseId}`} className="flex items-center cursor-pointer">
