@@ -47,7 +47,7 @@ export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerP
       for (let i = 0; i < analysisSteps.length; i++) {
         const step = analysisSteps[i];
         const logEntry: LogEntry = {
-          id: `log-${Date.now()}-${i}`,
+          id: `log-${Date.now()}-${i}-${Math.random()}`,
           timestamp: new Date().toLocaleTimeString(),
           message: step.message,
           type: step.type
@@ -102,12 +102,11 @@ export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerP
         </div>
         
         <div className="space-y-2">
-          {logs.map((log, index) => (
+          {/* Show only the last 3 logs */}
+          {logs.slice(-3).map((log, index) => (
             <div 
               key={log.id}
-              className={`flex items-center space-x-3 p-2 rounded-md transition-all duration-300 ${
-                index === logs.length - 1 ? 'animate-pulse' : ''
-              }`}
+              className="flex items-center space-x-3 p-2 rounded-md transition-all duration-300"
             >
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${getTypeColor(log.type)}`}>
                 {getTypeIcon(log.type)}
@@ -121,8 +120,20 @@ export default function AnalysisLogger({ isActive, onComplete }: AnalysisLoggerP
             </div>
           ))}
           
-          {/* Empty slots to maintain consistent height */}
-          {Array.from({ length: 3 - logs.length }).map((_, index) => (
+          {/* Processing indicator when analysis is active and we have logs */}
+          {isActive && logs.length > 0 && (
+            <div key="processing-indicator" className="flex items-center space-x-3 p-2 rounded-md">
+              <div className="w-6 h-6 rounded-full bg-blue-100 border border-blue-300 flex items-center justify-center">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm text-slate-600 animate-pulse">...Processing...</div>
+              </div>
+            </div>
+          )}
+          
+          {/* Empty slots to maintain consistent height (only if we have fewer than 3 items total) */}
+          {Array.from({ length: Math.max(0, 3 - Math.min(logs.length, 3) - (isActive && logs.length > 0 ? 1 : 0)) }).map((_, index) => (
             <div key={`empty-${index}`} className="h-10 opacity-0" />
           ))}
         </div>
