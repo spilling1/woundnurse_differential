@@ -50,11 +50,11 @@ export function registerAssessmentRoutes(app: Express): void {
       // Generate case ID
       const caseId = generateCaseId();
       
-      // Classify wound using AI
-      const classification = await classifyWound(imageBase64, model, req.file.mimetype);
-      
       // Analyze if agent needs to ask questions before generating care plan
       const sessionId = caseId; // Use case ID as session ID for question tracking
+      
+      // Classify wound using AI with sessionId for proper logging
+      const classification = await classifyWound(imageBase64, model, req.file.mimetype, sessionId);
       const questionAnalysis = await analyzeAssessmentForQuestions(
         sessionId,
         {
@@ -67,10 +67,16 @@ export function registerAssessmentRoutes(app: Express): void {
         }
       );
       
+      // Ensure sessionId is set for proper logging in care plan generation
+      const classificationWithSessionId = {
+        ...classification,
+        sessionId: sessionId
+      };
+
       // Generate care plan with detection information
       const carePlan = await generateCarePlan(
         audience, 
-        classification, 
+        classificationWithSessionId, 
         contextData, 
         model,
         undefined, // imageData not needed for non-vision models here
@@ -626,26 +632,19 @@ export function registerAssessmentRoutes(app: Express): void {
         }
       }
 
-      // Log care plan generation
-      try {
-        await storage.createAiInteraction({
-          caseId: caseId,
-          stepType: 'care_plan_generation',
-          modelUsed: model,
-          promptSent: `Care plan generation for ${classification.woundType} with context: ${JSON.stringify(contextData)}`,
-          responseReceived: 'Care plan generated successfully',
-          parsedResult: { caseId, audience, model },
-          confidenceScore: Math.round(classification.confidence * 100),
-          errorOccurred: false,
-        });
-      } catch (logError) {
-        console.error('Error logging care plan generation:', logError);
-      }
+      // Note: Detailed AI interaction logging happens inside the carePlanGenerator service
+      // This route only handles the case creation and response formatting
+
+      // Ensure sessionId is set for proper logging
+      const classificationWithSessionId = {
+        ...classification,
+        sessionId: caseId // Ensure sessionId is properly set for logging
+      };
 
       // Generate final care plan with detection information
       const carePlan = await generateCarePlan(
         audience,
-        classification,
+        classificationWithSessionId,
         { ...contextData, userFeedback },
         model,
         undefined, // imageData
