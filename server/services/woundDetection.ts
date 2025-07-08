@@ -137,7 +137,7 @@ export class WoundDetectionService {
     
     const response = await axios.post(this.yoloEndpoint, {
       image: imageBuffer.toString('base64'),
-      confidence_threshold: 0.5,
+      confidence_threshold: 0.1,
       include_measurements: true,
       detect_reference_objects: true
     }, {
