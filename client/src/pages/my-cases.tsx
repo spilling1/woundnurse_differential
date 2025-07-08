@@ -377,9 +377,9 @@ export default function MyCases() {
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Search Card */}
-                  <Card className="bg-white/95 backdrop-blur-sm">
+                  <Card className="bg-gray-100 border-gray-200 shadow-sm">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-gray-700">Search Cases</CardTitle>
                     </CardHeader>
@@ -390,13 +390,13 @@ export default function MyCases() {
                           placeholder="Search cases by name, ID, wound type, or audience..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 bg-white"
                         />
                       </div>
                       
                       {/* Search Results Summary */}
                       {searchTerm && (
-                        <div className="mt-3 pt-3 border-t border-gray-200">
+                        <div className="mt-3 pt-3 border-t border-gray-300">
                           <p className="text-sm text-gray-600">
                             Showing {filteredAndSortedCaseIds.length} of {Object.keys(groupedCases).length} cases
                           </p>
@@ -406,7 +406,7 @@ export default function MyCases() {
                   </Card>
 
                   {/* Sort Card */}
-                  <Card className="bg-white/95 backdrop-blur-sm">
+                  <Card className="bg-gray-100 border-gray-200 shadow-sm">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-gray-700">Sort Cases</CardTitle>
                     </CardHeader>
@@ -450,7 +450,7 @@ export default function MyCases() {
                       
                       {/* Sort Status */}
                       {sortBy !== 'date' && (
-                        <div className="mt-3 pt-3 border-t border-gray-200">
+                        <div className="mt-3 pt-3 border-t border-gray-300">
                           <p className="text-sm text-gray-600">
                             Sorted by {sortBy === 'name' ? 'case name' : sortBy === 'date' ? 'date' : 'wound type'} ({sortOrder === 'asc' ? 'ascending' : 'descending'})
                           </p>

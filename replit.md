@@ -256,6 +256,7 @@ Changelog:
 - July 8, 2025. **SEARCH AND SORT FUNCTIONALITY**: Added comprehensive search and sort controls to My Cases page - only appears when there are more than 9 cases, includes collapsible search bar with filtering by case name/ID/wound type and sorting by name/date/wound type with ascending/descending order
 - July 8, 2025. **IMPROVED SEARCH INTERFACE**: Replaced dropdown-based search with intuitive button-based sort controls and unified search across all fields (case name, ID, wound classification, audience type) without requiring field selection
 - July 8, 2025. **SEPARATED SEARCH AND SORT UI**: Split search and sort functionality into separate cards with clear headers and distinct purposes for better user experience and visual clarity
+- July 8, 2025. **SIDE-BY-SIDE LAYOUT**: Arranged search and sort cards in responsive side-by-side layout with gray background for better visual separation and more efficient use of screen space
 ```
 
 ## User Preferences
