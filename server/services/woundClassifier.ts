@@ -76,6 +76,7 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       
       // Log the independent classification
       try {
+        console.log(`WoundClassifier: Attempting to log independent classification for case: ${sessionId}`);
         await storage.createAiInteraction({
           caseId: sessionId || 'temp-session',
           stepType: 'independent_classification',
@@ -86,8 +87,9 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
           confidenceScore: Math.round(classification.confidence * 100),
           errorOccurred: false,
         });
+        console.log(`WoundClassifier: Successfully logged independent classification for case: ${sessionId}`);
       } catch (logError) {
-        console.error('Error logging AI interaction:', logError);
+        console.error('WoundClassifier: Error logging AI interaction:', logError);
       }
     }
     
@@ -183,6 +185,7 @@ Provide your updated assessment in the same JSON format, considering both your v
       
       // Log the YOLO reconsideration
       try {
+        console.log(`WoundClassifier: Attempting to log YOLO reconsideration for case: ${sessionId}`);
         await storage.createAiInteraction({
           caseId: sessionId || 'temp-session',
           stepType: 'yolo_reconsideration',
@@ -193,8 +196,9 @@ Provide your updated assessment in the same JSON format, considering both your v
           confidenceScore: Math.round(classification.confidence * 100),
           errorOccurred: false,
         });
+        console.log(`WoundClassifier: Successfully logged YOLO reconsideration for case: ${sessionId}`);
       } catch (logError) {
-        console.error('Error logging AI interaction:', logError);
+        console.error('WoundClassifier: Error logging YOLO reconsideration:', logError);
       }
     }
     
