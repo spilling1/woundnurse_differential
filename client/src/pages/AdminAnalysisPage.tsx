@@ -113,12 +113,16 @@ export default function AdminAnalysisPage() {
     );
   }
 
-  if (!assessment || !interactions) {
+  if (!assessment || !interactions || interactions.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <p className="text-gray-600">No analysis data found for this case.</p>
+          <p className="text-sm text-gray-500 mt-2">
+            Debug: Assessment {assessment ? 'found' : 'not found'}, 
+            Interactions {interactions ? `found (${interactions.length})` : 'not found'}
+          </p>
         </div>
       </div>
     );
