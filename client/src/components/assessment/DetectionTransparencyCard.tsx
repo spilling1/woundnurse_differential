@@ -53,7 +53,8 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
     detectionFound,
     detectionCount,
     detectionModel: classification.detectionMetadata?.model,
-    detectionConfidence: classification.detection?.confidence
+    detectionConfidence: classification.detection?.confidence,
+    independentClassification: classification.independentClassification
   });
   
   // Calculate influence percentages based on YOLO confidence

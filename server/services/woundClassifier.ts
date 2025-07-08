@@ -110,6 +110,15 @@ I now have additional information from a YOLO detection model that was trained o
 - YOLO measurements: ${primaryWound.measurements.lengthMm.toFixed(1)}mm x ${primaryWound.measurements.widthMm.toFixed(1)}mm
 - YOLO area: ${primaryWound.measurements.areaMm2.toFixed(1)}mm²
 
+IMPORTANT: You must explain your reasoning process clearly. Start your response with something like:
+"Given my initial assessment of ${independentClassification.woundType} at ${(independentClassification.confidence * 100).toFixed(1)}% confidence, and considering the YOLO model's ${yoloConfidence}% confidence that this is a ${yoloWoundType}, I need to reconsider..."
+
+Then explain whether you:
+- Maintain your original assessment (if YOLO confidence is low or contradicts strong visual evidence)
+- Adjust your confidence based on YOLO findings
+- Change your classification (if YOLO provides compelling evidence)
+- Recommend additional steps (if there's significant disagreement)
+
 Please reconsider your original assessment in light of this additional information. Follow this decision framework:
 
 **If YOLO has high confidence (≥85%):**
