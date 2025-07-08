@@ -183,6 +183,27 @@ function enhanceClassificationWithDetection(classification: any, detectionResult
       methodUsed: detectionResult.method_used || 'unknown'
     }
   };
+
+  // If YOLO found wounds, use them regardless of AI classification
+  if (detectionResult.detections && detectionResult.detections.length > 0) {
+    const primaryWound = detectionResult.detections[0];
+    console.log(`WoundClassifier: YOLO detected ${primaryWound.wound_class} with confidence ${primaryWound.confidence}`);
+    
+    // Map YOLO wound types to our classification system
+    const woundTypeMapping = {
+      'neuropathic_ulcer': 'Neuropathic Ulcer',
+      'diabetic_ulcer': 'Diabetic Ulcer',
+      'pressure_ulcer': 'Pressure Ulcer',
+      'venous_ulcer': 'Venous Ulcer',
+      'surgical_wound': 'Surgical Wound'
+    };
+    
+    // Override AI classification if YOLO found something
+    if (primaryWound.wound_class && woundTypeMapping[primaryWound.wound_class]) {
+      enhancedClassification.woundType = woundTypeMapping[primaryWound.wound_class];
+      console.log(`WoundClassifier: Overriding AI classification to ${enhancedClassification.woundType} based on YOLO detection`);
+    }
+  }
   
   // Add detection data only if wounds were found
   if (detectionResult.detections && detectionResult.detections.length > 0) {
@@ -198,6 +219,12 @@ function enhanceClassificationWithDetection(classification: any, detectionResult
     enhancedClassification.size = categorizeSizeFromMeasurements(primaryWound.measurements);
     enhancedClassification.preciseMeasurements = primaryWound.measurements;
     enhancedClassification.detectionMetadata.multipleWounds = detectionResult.detections.length > 1;
+    
+    // Enhance confidence if YOLO found something
+    const originalConfidence = enhancedClassification.confidence || 0;
+    const yoloBoost = Math.min(primaryWound.confidence * 0.3, 0.2); // Max 20% boost
+    enhancedClassification.confidence = Math.min(originalConfidence + yoloBoost, 1.0);
+    console.log(`WoundClassifier: Confidence boosted from ${originalConfidence} to ${enhancedClassification.confidence} due to YOLO detection`);
   }
   
   console.log('WoundClassifier: Enhanced classification result:', {

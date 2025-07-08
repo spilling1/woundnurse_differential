@@ -274,8 +274,14 @@ Changelog:
   - **Enhanced Detection Metadata**: Fixed detection data storage to always include YOLO processing time and detection count
   - **Improved Classification Enhancement**: Detection metadata now properly stored even when no wounds detected
   - **YOLO Model Configuration**: Confirmed custom YOLO model supports 5 wound types (diabetic, neuropathic, pressure, surgical, venous ulcers)
-  - **Threshold Optimization**: Lowered YOLO detection threshold from 0.6 to 0.1 for improved sensitivity
+  - **Threshold Optimization**: Lowered YOLO detection threshold from 0.6 to 0.05 for maximum sensitivity
   - **Wound Class Classification**: Updated YOLO service to properly classify detected wounds by type instead of generic "wound"
+- July 8, 2025. **YOLO CLASSIFICATION OVERRIDE SYSTEM**: Implemented intelligent YOLO-AI fusion for accurate wound typing:
+  - **Smart Wound Type Override**: YOLO detections now override AI classifications when wounds are found
+  - **Wound Type Mapping**: Created mapping system converting YOLO classes to standard wound types
+  - **Confidence Boosting**: AI confidence increased by up to 20% when YOLO confirms wound presence
+  - **Detection Priority**: YOLO findings take precedence over AI visual analysis for wound type classification
+  - **Ultra-Sensitive Detection**: Threshold set to 0.05 to catch even faint pressure ulcers and other wound types
 ```
 
 ## User Preferences

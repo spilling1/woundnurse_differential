@@ -1,7 +1,7 @@
 {
   "yolo_enabled": true,
   "auto_toggle": true,
-  "yolo_threshold": 0.1,
+  "yolo_threshold": 0.05,
   "color_threshold": 0.5,
   "performance_weight": 0.3,
   "model_path": "models/yolov8n.pt",
