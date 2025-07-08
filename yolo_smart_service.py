@@ -436,9 +436,13 @@ async def detect_wounds(request: DetectionRequest):
         
         logger.info(f"Detection complete - method: {method}, found: {len(detections)} wounds, time: {processing_time:.2f}s")
         
+        # Get model type for transparency
+        model_type = detector.config.get("model_type", "unknown")
+        model_display = f"smart-yolo-{method}-{model_type}"
+        
         return DetectionResponse(
             detections=detections,
-            model=f"smart-yolo-{method}",
+            model=model_display,
             method_used=method,
             processing_time=processing_time,
             recommendation=recommendation

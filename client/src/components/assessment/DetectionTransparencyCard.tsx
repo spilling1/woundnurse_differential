@@ -32,6 +32,17 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
   const detectionCount = classification.detectionMetadata?.detectionCount || 0;
   const yoloConfidence = classification.detection?.confidence || 0;
   
+  // Parse model type from detection metadata
+  const rawModel = classification.detectionMetadata?.model || '';
+  const getModelDisplayName = (model: string) => {
+    if (model.includes('yolo-custom')) return 'Custom Wound Model';
+    if (model.includes('yolo-general')) return 'YOLOv8n General';
+    if (model.includes('yolo-downloaded')) return 'YOLOv8n Downloaded';
+    if (model.includes('yolo')) return 'YOLO Detection';
+    if (model.includes('color')) return 'Color Detection';
+    return 'Image Analysis';
+  };
+  
   // Debug log to track what data is being received
   console.log('DetectionTransparencyCard - Data received:', {
     hasDetectionData,
@@ -63,7 +74,7 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
               <div>
                 <div className="font-medium">YOLO Detection Model</div>
                 <div className="text-sm text-gray-600">
-                  {classification.detectionMetadata?.model || 'smart-yolo-detection'}
+                  {getModelDisplayName(rawModel)}
                 </div>
                 {detectionFound && classification.yoloDetectedType && (
                   <div className="text-sm text-blue-600 font-medium mt-1">
