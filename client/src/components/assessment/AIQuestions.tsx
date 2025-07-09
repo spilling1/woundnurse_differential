@@ -536,7 +536,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
           
           {state.aiQuestions.length > 0 ? (
             <div className="space-y-2 mt-4">
-              {state.questionRound < 3 && (
+              {state.questionRound < 3 ? (
                 <Button 
                   onClick={handleFollowUpQuestions}
                   disabled={followUpMutation.isPending}
@@ -554,9 +554,15 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                     </>
                   )}
                 </Button>
+              ) : (
+                <Button 
+                  onClick={handleProceedToPlan}
+                  className="w-full bg-medical-blue hover:bg-medical-blue/90"
+                >
+                  Generate Care Plan with Current Information
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               )}
-              
-
             </div>
           ) : (
             <Button 
