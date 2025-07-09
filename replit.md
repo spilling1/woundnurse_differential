@@ -365,6 +365,14 @@ Changelog:
   - **Assessment Integration**: Updated `CarePlanGeneration` component to use `answeredQuestions` instead of `aiQuestions` for proper data flow
   - **Mental Health Safety Restored**: AI now properly addresses suicide mentions, dangerous treatments, and other critical patient responses
   - **Complete Question Processing**: All patient answers (whiskey soaking, chainsaw threats, etc.) now successfully reach AI analysis
+- July 9, 2025. **COMPREHENSIVE LOGGING SYSTEM**: Implemented complete Q&A and product recommendation logging to markdown files:
+  - **Q&A.md File**: All question-answer interactions automatically logged with case details, user info, confidence levels, and AI reassessments
+  - **RecProducts.md File**: All product recommendations from care plans automatically extracted and logged with categories, Amazon links, and reasoning
+  - **Analysis Logger Enhancement**: Fixed analysis logger to show ALL processing steps instead of just last 3 for complete transparency
+  - **Automatic Appending**: Each new assessment appends to existing log files without overwriting previous entries
+  - **Product Extraction**: Intelligent parsing of care plan HTML to extract Amazon product links with categorization and context-based reasoning
+  - **Admin API Endpoints**: Added /api/admin/qa-log and /api/admin/products-log endpoints for programmatic access to log data
+  - **Structured Data Format**: Logs include timestamps, user emails, wound types, AI models used, and detailed interaction metadata
 - July 9, 2025. **PDF DOWNLOAD FEATURE**: Added comprehensive PDF export functionality to care plan page:
   - **PDF Generation**: Implemented html2canvas and jsPDF integration for high-quality PDF export
   - **Professional Layout**: PDF includes title page, case information, assessment date, and proper formatting

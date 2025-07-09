@@ -8,6 +8,7 @@ import { generateCarePlan } from "../services/carePlanGenerator";
 import { generateCaseId } from "../services/utils";
 import { isAuthenticated, optionalAuth } from "../customAuth";
 import { analyzeAssessmentForQuestions } from "../services/agentQuestionService";
+import { LoggerService } from "../services/loggerService";
 import { callOpenAI } from "../services/openai";
 import { callGemini } from "../services/gemini";
 import { cnnWoundClassifier } from "../services/cnnWoundClassifier";
@@ -26,6 +27,78 @@ const upload = multer({
     }
   },
 });
+
+/**
+ * Extract product recommendations from care plan HTML/text
+ */
+function extractProductsFromCarePlan(carePlan: string): Array<{
+  category: string;
+  productName: string;
+  amazonLink: string;
+  reason: string;
+}> {
+  const products: Array<{
+    category: string;
+    productName: string;
+    amazonLink: string;
+    reason: string;
+  }> = [];
+  
+  try {
+    // Look for Amazon links in the care plan
+    const amazonLinkRegex = /\[([^\]]+)\]\(https:\/\/www\.amazon\.com\/s\?k=([^)]+)\)/g;
+    let match;
+    
+    while ((match = amazonLinkRegex.exec(carePlan)) !== null) {
+      const productName = match[1];
+      const amazonLink = match[0].match(/\(([^)]+)\)/)?.[1] || '';
+      
+      // Try to determine category based on context
+      let category = 'General';
+      const lowerName = productName.toLowerCase();
+      
+      if (lowerName.includes('dressing') || lowerName.includes('bandage')) {
+        category = 'Wound Dressing';
+      } else if (lowerName.includes('cleanser') || lowerName.includes('saline')) {
+        category = 'Wound Cleanser';
+      } else if (lowerName.includes('moisturizer') || lowerName.includes('barrier')) {
+        category = 'Skin Care';
+      } else if (lowerName.includes('gloves') || lowerName.includes('gauze')) {
+        category = 'Supplies';
+      } else if (lowerName.includes('compression') || lowerName.includes('sock')) {
+        category = 'Compression';
+      }
+      
+      // Extract context/reason from surrounding text
+      const contextStart = Math.max(0, match.index - 100);
+      const contextEnd = Math.min(carePlan.length, match.index + match[0].length + 100);
+      const context = carePlan.substring(contextStart, contextEnd);
+      
+      let reason = 'Recommended for wound care';
+      if (context.includes('infection')) {
+        reason = 'Helps prevent infection';
+      } else if (context.includes('moist') || context.includes('hydrat')) {
+        reason = 'Maintains moist healing environment';
+      } else if (context.includes('protect')) {
+        reason = 'Provides protection';
+      } else if (context.includes('clean')) {
+        reason = 'For wound cleaning';
+      }
+      
+      products.push({
+        category,
+        productName,
+        amazonLink,
+        reason
+      });
+    }
+    
+    return products;
+  } catch (error) {
+    console.error('Error extracting products from care plan:', error);
+    return [];
+  }
+}
 
 export function registerAssessmentRoutes(app: Express): void {
   // Upload and analyze wound image
@@ -83,6 +156,21 @@ export function registerAssessmentRoutes(app: Express): void {
         undefined, // imageMimeType
         classification.detectionMetadata // Pass detection info
       );
+
+      // Log product recommendations from care plan
+      try {
+        await LoggerService.logProductRecommendations({
+          caseId,
+          userEmail: (req as any).customUser?.email || 'unknown',
+          timestamp: new Date(),
+          woundType: classification.woundType || 'unknown',
+          audience,
+          aiModel: model,
+          products: extractProductsFromCarePlan(carePlan)
+        });
+      } catch (logError) {
+        console.error('Error logging product recommendations:', logError);
+      }
       
       // Store assessment with image data, context, and detection data
       const assessment = await storage.createWoundAssessment({
@@ -658,6 +746,48 @@ export function registerAssessmentRoutes(app: Express): void {
         classification.detectionMetadata // Pass detection info
       );
 
+      // Log Q&A interactions if questions were answered
+      if (questions.length > 0) {
+        try {
+          const answeredQuestions = questions.filter((q: any) => q.answer && q.answer.trim() !== '');
+          if (answeredQuestions.length > 0) {
+            await LoggerService.logQAInteraction({
+              caseId,
+              userEmail: (req as any).customUser?.email || 'unknown',
+              timestamp: new Date(),
+              woundType: classification.woundType || 'unknown',
+              audience,
+              aiModel: model,
+              questions: answeredQuestions.map((q: any) => ({
+                question: q.question,
+                answer: q.answer,
+                category: q.category,
+                confidenceImpact: q.confidenceImpact || 'unknown'
+              })),
+              finalConfidence: Math.round(classification.confidence * 100),
+              reassessment: contextData.reassessment || undefined
+            });
+          }
+        } catch (logError) {
+          console.error('Error logging Q&A interaction:', logError);
+        }
+      }
+
+      // Log product recommendations from care plan
+      try {
+        await LoggerService.logProductRecommendations({
+          caseId,
+          userEmail: (req as any).customUser?.email || 'unknown',
+          timestamp: new Date(),
+          woundType: classification.woundType || 'unknown',
+          audience,
+          aiModel: model,
+          products: extractProductsFromCarePlan(carePlan)
+        });
+      } catch (logError) {
+        console.error('Error logging product recommendations:', logError);
+      }
+
       // Process image data
       let imageBase64 = '';
       let imageMimeType = 'image/jpeg';
@@ -811,6 +941,40 @@ export function registerAssessmentRoutes(app: Express): void {
     } catch (error) {
       console.error('Error fetching all AI interactions:', error);
       res.status(500).json({ error: 'Failed to fetch AI interactions' });
+    }
+  });
+
+  // Get Q&A log (admin only)
+  app.get('/api/admin/qa-log', isAuthenticated, async (req, res) => {
+    try {
+      const user = (req as any).customUser;
+      if (user.role !== 'admin') {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+
+      const limit = parseInt(req.query.limit as string) || 10;
+      const qaLog = await LoggerService.getRecentQAEntries(limit);
+      res.json({ content: qaLog });
+    } catch (error) {
+      console.error('Error fetching Q&A log:', error);
+      res.status(500).json({ error: 'Failed to fetch Q&A log' });
+    }
+  });
+
+  // Get product recommendations log (admin only)
+  app.get('/api/admin/products-log', isAuthenticated, async (req, res) => {
+    try {
+      const user = (req as any).customUser;
+      if (user.role !== 'admin') {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+
+      const limit = parseInt(req.query.limit as string) || 10;
+      const productsLog = await LoggerService.getRecentProductEntries(limit);
+      res.json({ content: productsLog });
+    } catch (error) {
+      console.error('Error fetching products log:', error);
+      res.status(500).json({ error: 'Failed to fetch products log' });
     }
   });
 } 
