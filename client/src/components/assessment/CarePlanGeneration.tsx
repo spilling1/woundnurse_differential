@@ -94,6 +94,82 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
     }
   };
 
+  // Handlers for duplicate detection
+  const handleCreateFollowUp = async () => {
+    setShowDuplicateDialog(false);
+    setResolvingDuplicate(true);
+    
+    try {
+      // Create follow-up assessment with existing case ID
+      const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
+      const followUpResponse = await assessmentApi.finalPlan(
+        state.selectedImage,
+        state.audience,
+        modelToUse,
+        state.aiQuestions,
+        state.woundClassification,
+        state.userFeedback,
+        duplicateInfo.existingCase.caseId // Pass existing case ID
+      );
+      
+      setGeneratedPlan(followUpResponse);
+      onStateChange({
+        finalCaseId: followUpResponse.caseId
+      });
+      
+      toast({
+        title: "Follow-Up Assessment Created",
+        description: `Added as version ${followUpResponse.versionNumber} to case ${followUpResponse.caseId}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error Creating Follow-Up",
+        description: "Failed to create follow-up assessment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setResolvingDuplicate(false);
+    }
+  };
+
+  const handleCreateNewCase = async () => {
+    setShowDuplicateDialog(false);
+    setResolvingDuplicate(true);
+    
+    try {
+      // Force create new case (backend will ignore duplicate detection)
+      const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
+      const newCaseResponse = await assessmentApi.finalPlan(
+        state.selectedImage,
+        state.audience,
+        modelToUse,
+        state.aiQuestions,
+        state.woundClassification,
+        state.userFeedback,
+        null, // No existing case ID - force new case
+        true  // forceNew flag
+      );
+      
+      setGeneratedPlan(newCaseResponse);
+      onStateChange({
+        finalCaseId: newCaseResponse.caseId
+      });
+      
+      toast({
+        title: "New Case Created",
+        description: "Created new assessment case with the same image.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error Creating New Case",
+        description: "Failed to create new assessment case. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setResolvingDuplicate(false);
+    }
+  };
+
   if (finalPlanMutation.isPending) {
     return (
       <div className="space-y-6">
@@ -279,82 +355,6 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
       </div>
     );
   }
-
-  // Handlers for duplicate detection
-  const handleCreateFollowUp = async () => {
-    setShowDuplicateDialog(false);
-    setResolvingDuplicate(true);
-    
-    try {
-      // Create follow-up assessment with existing case ID
-      const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
-      const followUpResponse = await assessmentApi.finalPlan(
-        state.selectedImage,
-        state.audience,
-        modelToUse,
-        state.aiQuestions,
-        state.woundClassification,
-        state.userFeedback,
-        duplicateInfo.existingCase.caseId // Pass existing case ID
-      );
-      
-      setGeneratedPlan(followUpResponse);
-      onStateChange({
-        finalCaseId: followUpResponse.caseId
-      });
-      
-      toast({
-        title: "Follow-Up Assessment Created",
-        description: `Added as version ${followUpResponse.versionNumber} to case ${followUpResponse.caseId}`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error Creating Follow-Up",
-        description: "Failed to create follow-up assessment. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setResolvingDuplicate(false);
-    }
-  };
-
-  const handleCreateNewCase = async () => {
-    setShowDuplicateDialog(false);
-    setResolvingDuplicate(true);
-    
-    try {
-      // Force create new case (backend will ignore duplicate detection)
-      const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
-      const newCaseResponse = await assessmentApi.finalPlan(
-        state.selectedImage,
-        state.audience,
-        modelToUse,
-        state.aiQuestions,
-        state.woundClassification,
-        state.userFeedback,
-        null, // No existing case ID - force new case
-        true  // forceNew flag
-      );
-      
-      setGeneratedPlan(newCaseResponse);
-      onStateChange({
-        finalCaseId: newCaseResponse.caseId
-      });
-      
-      toast({
-        title: "New Case Created",
-        description: "Created new assessment case with the same image.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error Creating New Case",
-        description: "Failed to create new assessment case. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setResolvingDuplicate(false);
-    }
-  };
 
   // Default loading state - this shouldn't normally be reached
   return (

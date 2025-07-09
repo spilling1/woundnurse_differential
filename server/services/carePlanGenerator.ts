@@ -3,6 +3,47 @@ import { callGemini } from "./gemini";
 import { getPromptTemplate } from "./promptTemplates";
 import { storage } from "../storage";
 
+// Function to clean up care plan response from AI artifacts
+function cleanCarePlanResponse(carePlan: string): string {
+  if (!carePlan) return carePlan;
+  
+  let cleanPlan = carePlan.trim();
+  
+  // Remove JSON objects that start with { and include target_audience, wound_assessment, etc.
+  cleanPlan = cleanPlan.replace(/^\s*\{[\s\S]*?\}\s*(?:\n|$)/, '');
+  
+  // Remove any remaining JSON-like structures or artifacts
+  cleanPlan = cleanPlan.replace(/^json\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
+  cleanPlan = cleanPlan.replace(/^```json[\s\S]*?```\s*(?:\n|$)/i, '');
+  cleanPlan = cleanPlan.replace(/^```[\s\S]*?```\s*(?:\n|$)/i, '');
+  
+  // Remove any leading quotes or artifacts
+  cleanPlan = cleanPlan.replace(/^["'][\s\S]*?["']\s*(?:\n|$)/, '');
+  
+  // Remove any lines that look like JSON properties
+  cleanPlan = cleanPlan.replace(/^[\s\S]*?"request"\s*:\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
+  
+  // Remove any remaining JSON-like content that starts with property names
+  cleanPlan = cleanPlan.replace(/^[\s\S]*?(?:"target_audience"|"wound_assessment"|"type"|"stage"|"size")[\s\S]*?\}\s*(?:\n|$)/i, '');
+  
+  // Remove any text that starts with "json {" (case insensitive)
+  cleanPlan = cleanPlan.replace(/^[\s\S]*?json\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
+  
+  // Remove any remaining curly braces at the start if they appear to be JSON remnants
+  cleanPlan = cleanPlan.replace(/^\s*\{[^}]*\}\s*(?:\n|$)/, '');
+  
+  // Remove any lines that contain typical JSON property patterns
+  cleanPlan = cleanPlan.replace(/^[\s\S]*?("[\w_]+"\s*:\s*"[^"]*"[\s\S]*?)+\s*(?:\n|$)/i, '');
+  
+  // Clean up any remaining text that looks like debug messages
+  cleanPlan = cleanPlan.replace(/^[\s\S]*?"?\s*I\s+READ\s+YOUR\s+STUPID\s+INSTRUCTIONS[\s\S]*?(?:\n|$)/i, '');
+  
+  // Remove any remaining quotes and brackets at the start
+  cleanPlan = cleanPlan.replace(/^["'\}\]\s]*/, '');
+  
+  return cleanPlan.trim();
+}
+
 export async function generateCarePlan(
   audience: string,
   classification: any, 
@@ -44,6 +85,9 @@ export async function generateCarePlan(
         } else {
           carePlan = await callGemini(cleanModel, fullPrompt);
         }
+        
+        // Clean up any JSON artifacts from the care plan response
+        carePlan = cleanCarePlanResponse(carePlan);
         
         const processingTime = Date.now() - startTime;
         
@@ -103,6 +147,10 @@ export async function generateCarePlan(
           
           const fallbackStartTime = Date.now();
           carePlan = await callOpenAI('gpt-4o', messages);
+          
+          // Clean up any JSON artifacts from the care plan response
+          carePlan = cleanCarePlanResponse(carePlan);
+          
           const fallbackProcessingTime = Date.now() - fallbackStartTime;
           
           // Add a notice about the service switch
@@ -166,6 +214,10 @@ export async function generateCarePlan(
       
       const startTime = Date.now();
       carePlan = await callOpenAI(cleanModel, messages);
+      
+      // Clean up any JSON artifacts from the care plan response
+      carePlan = cleanCarePlanResponse(carePlan);
+      
       const processingTime = Date.now() - startTime;
       
       // Log the successful care plan generation

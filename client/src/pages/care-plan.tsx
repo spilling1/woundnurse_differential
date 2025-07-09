@@ -486,8 +486,46 @@ export default function CarePlan() {
   const formatCarePlan = (plan: string) => {
     if (!plan) return null;
     
+    // Remove any JSON structure that appears at the beginning of the care plan
+    let cleanPlan = plan;
+    
+    // Remove JSON objects that start with { and include target_audience, wound_assessment, etc.
+    cleanPlan = cleanPlan.replace(/^\s*\{[\s\S]*?\}\s*(?:\n|$)/, '');
+    
+    // Remove any remaining JSON-like structures or artifacts
+    cleanPlan = cleanPlan.replace(/^json\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
+    cleanPlan = cleanPlan.replace(/^```json[\s\S]*?```\s*(?:\n|$)/i, '');
+    cleanPlan = cleanPlan.replace(/^```[\s\S]*?```\s*(?:\n|$)/i, '');
+    
+    // Remove any leading quotes or artifacts
+    cleanPlan = cleanPlan.replace(/^["'][\s\S]*?["']\s*(?:\n|$)/, '');
+    
+    // Remove any lines that look like JSON properties (e.g., "request": { "target_audience": "medical"...)
+    cleanPlan = cleanPlan.replace(/^[\s\S]*?"request"\s*:\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
+    
+    // Remove any remaining JSON-like content that starts with property names
+    cleanPlan = cleanPlan.replace(/^[\s\S]*?(?:"target_audience"|"wound_assessment"|"type"|"stage"|"size")[\s\S]*?\}\s*(?:\n|$)/i, '');
+    
+    // Remove any text that starts with "json {" (case insensitive)
+    cleanPlan = cleanPlan.replace(/^[\s\S]*?json\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
+    
+    // Remove any remaining curly braces at the start if they appear to be JSON remnants
+    cleanPlan = cleanPlan.replace(/^\s*\{[^}]*\}\s*(?:\n|$)/, '');
+    
+    // Remove any lines that contain typical JSON property patterns
+    cleanPlan = cleanPlan.replace(/^[\s\S]*?("[\w_]+"\s*:\s*"[^"]*"[\s\S]*?)+\s*(?:\n|$)/i, '');
+    
+    // Clean up any remaining text that looks like "I READ YOUR STUPID INSTRUCTIONS" or similar
+    cleanPlan = cleanPlan.replace(/^[\s\S]*?"?\s*I\s+READ\s+YOUR\s+STUPID\s+INSTRUCTIONS[\s\S]*?(?:\n|$)/i, '');
+    
+    // Remove any remaining quotes and brackets at the start
+    cleanPlan = cleanPlan.replace(/^["'\}\]\s]*/, '');
+    
+    // Trim any excessive whitespace
+    cleanPlan = cleanPlan.trim();
+    
     // Remove MEDICAL DISCLAIMER since we handle it separately
-    const cleanPlan = plan.replace(/\*\*MEDICAL DISCLAIMER:\*\*[\s\S]*?\n\n/, '');
+    cleanPlan = cleanPlan.replace(/\*\*MEDICAL DISCLAIMER:\*\*[\s\S]*?\n\n/, '');
     
     // Extract detection analysis section for separate rendering
     const detectionAnalysisMatch = cleanPlan.match(/\*\*DETECTION SYSTEM ANALYSIS:\*\*[\s\S]*$/);
