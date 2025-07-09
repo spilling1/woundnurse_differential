@@ -61,8 +61,8 @@ export default function AnalysisLogger({ isActive, onComplete, processingStep }:
 
         setLogs(prev => {
           const newLogs = [...prev, logEntry];
-          // Keep only the last 3 entries
-          return newLogs.slice(-3);
+          // Show all entries (removed limit)
+          return newLogs;
         });
 
         setCurrentStep(i + 1);
@@ -108,8 +108,8 @@ export default function AnalysisLogger({ isActive, onComplete, processingStep }:
         </div>
         
         <div className="space-y-2">
-          {/* Show only the last 3 logs */}
-          {logs.slice(-3).map((log, index) => (
+          {/* Show all logs */}
+          {logs.map((log, index) => (
             <div 
               key={log.id}
               className="flex items-center space-x-3 p-2 rounded-md transition-all duration-300"
@@ -138,10 +138,7 @@ export default function AnalysisLogger({ isActive, onComplete, processingStep }:
             </div>
           )}
           
-          {/* Empty slots to maintain consistent height (only if we have fewer than 3 items total) */}
-          {Array.from({ length: Math.max(0, 3 - Math.min(logs.length, 3) - (isActive && logs.length > 0 ? 1 : 0)) }).map((_, index) => (
-            <div key={`empty-${index}`} className="h-10 opacity-0" />
-          ))}
+          {/* Empty slots removed - now showing all logs dynamically */}
         </div>
       </CardContent>
     </Card>
