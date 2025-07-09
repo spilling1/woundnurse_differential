@@ -389,6 +389,13 @@ Changelog:
   - **Selective Content**: Only wound image uses image format, all text content uses native PDF text
   - **Smart Formatting**: Preserved HTML formatting (headers, lists, urgent messages) in native PDF text
   - **Professional Quality**: Maintained visual quality while achieving massive file size reduction
+- July 9, 2025. **ENHANCED PDF FORMATTING**: Improved PDF formatting preservation while maintaining small file size:
+  - **Section Recognition**: Added detection for major care plan sections (URGENT, MEDICAL EMERGENCY, etc.)
+  - **Proper Spacing**: Implemented appropriate spacing between sections and paragraphs
+  - **Header Hierarchy**: Preserved header levels with appropriate font sizes (H1=14pt, H2=13pt, H3=12pt)
+  - **List Formatting**: Maintained bullet points and numbered lists with proper indentation
+  - **Urgency Highlighting**: Preserved red color formatting for urgent medical messages
+  - **Professional Layout**: Clean, readable formatting matching original care plan structure
 - July 9, 2025. **ENHANCED CONTRADICTORY RESPONSE SYSTEM**: Improved AI handling of patient responses that contradict medical evidence:
   - **Medical Disagreement Protocol**: AI can now respectfully disagree with patient explanations while providing clear medical reasoning
   - **Dangerous Treatment Detection**: Automatic flagging of harmful treatments (whiskey soaking, bleach, hot water, etc.) with strong safety warnings

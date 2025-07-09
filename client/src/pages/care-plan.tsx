@@ -263,51 +263,98 @@ export default function CarePlan() {
         pdf.setTextColor(0, 0, 0); // Reset to black
       };
       
-      // Process the care plan content
-      const processElement = (element: Element) => {
-        if (element.tagName === 'H1') {
-          addTextWithWrapping(element.textContent || '', 16, true);
-          currentY += 0.1; // Extra spacing after headers
-        } else if (element.tagName === 'H2') {
-          addTextWithWrapping(element.textContent || '', 14, true);
-          currentY += 0.1;
-        } else if (element.tagName === 'H3') {
-          addTextWithWrapping(element.textContent || '', 12, true);
-          currentY += 0.1;
-        } else if (element.tagName === 'P') {
-          const isUrgent = element.innerHTML.includes('URGENT') || element.innerHTML.includes('MEDICAL EMERGENCY');
-          addTextWithWrapping(element.textContent || '', 11, false, isUrgent);
-          currentY += 0.1; // Extra spacing after paragraphs
-        } else if (element.tagName === 'UL' || element.tagName === 'OL') {
-          Array.from(element.children).forEach((li, index) => {
-            const bullet = element.tagName === 'UL' ? '• ' : `${index + 1}. `;
-            addTextWithWrapping(bullet + (li.textContent || ''), 11);
-          });
-          currentY += 0.1;
-        } else if (element.tagName === 'DIV') {
-          const isUrgent = element.innerHTML.includes('URGENT') || element.innerHTML.includes('MEDICAL EMERGENCY');
-          if (element.textContent?.trim()) {
-            addTextWithWrapping(element.textContent, 11, false, isUrgent);
-          }
-        }
+      // Enhanced HTML parsing to preserve formatting and sections
+      const parseHTMLContent = (html: string) => {
+        // First, look for major sections and add proper section breaks
+        const majorSections = [
+          'URGENT:', 'MEDICAL EMERGENCY:', 'Your Specific Concerns Addressed',
+          'Initial Assessment', 'Immediate Actions', 'Treatment Plan', 
+          'Follow-up Care', 'When to Seek Help', 'Product Recommendations'
+        ];
         
-        // Process child elements
-        Array.from(element.children).forEach(child => {
-          if (!['UL', 'OL', 'LI'].includes(child.tagName)) {
-            processElement(child);
+        // Split content by major sections to add proper spacing
+        let processedHtml = html;
+        majorSections.forEach(section => {
+          processedHtml = processedHtml.replace(
+            new RegExp(`(${section})`, 'gi'),
+            `\n\n<h3>${section}</h3>\n`
+          );
+        });
+        
+        // Split by common HTML patterns to preserve structure
+        const sections = processedHtml.split(/(<h[1-6][^>]*>.*?<\/h[1-6]>|<p[^>]*>.*?<\/p>|<ul[^>]*>.*?<\/ul>|<ol[^>]*>.*?<\/ol>|<div[^>]*>.*?<\/div>)/gi);
+        
+        sections.forEach(section => {
+          if (!section.trim()) return;
+          
+          // Handle headers with proper spacing
+          if (section.match(/<h[1-6]/i)) {
+            const headerMatch = section.match(/<h([1-6])[^>]*>(.*?)<\/h[1-6]>/i);
+            if (headerMatch) {
+              const level = parseInt(headerMatch[1]);
+              const text = headerMatch[2].replace(/<[^>]*>/g, '').trim();
+              const fontSize = level === 1 ? 14 : level === 2 ? 13 : 12;
+              
+              // Add extra spacing before major sections
+              if (level <= 3) {
+                currentY += 0.3;
+              }
+              
+              addTextWithWrapping(text, fontSize, true);
+              currentY += 0.2; // Extra spacing after headers
+            }
+          }
+          // Handle paragraphs with urgency detection
+          else if (section.match(/<p/i)) {
+            const text = section.replace(/<[^>]*>/g, '').trim();
+            const isUrgent = section.includes('URGENT') || section.includes('MEDICAL EMERGENCY') || 
+                           section.includes('style="color:red') || section.includes('color: red') ||
+                           text.includes('URGENT') || text.includes('MEDICAL EMERGENCY');
+            if (text) {
+              addTextWithWrapping(text, 11, false, isUrgent);
+              currentY += 0.15; // Spacing after paragraphs
+            }
+          }
+          // Handle lists with proper indentation
+          else if (section.match(/<[uo]l/i)) {
+            const listItems = section.match(/<li[^>]*>(.*?)<\/li>/gi);
+            if (listItems) {
+              listItems.forEach((item, index) => {
+                const text = item.replace(/<[^>]*>/g, '').trim();
+                const bullet = section.match(/<ul/i) ? '  • ' : `  ${index + 1}. `;
+                addTextWithWrapping(bullet + text, 11);
+              });
+              currentY += 0.15;
+            }
+          }
+          // Handle divs and other content
+          else if (section.match(/<div/i) || section.includes('<')) {
+            const text = section.replace(/<[^>]*>/g, '').trim();
+            const isUrgent = section.includes('URGENT') || section.includes('MEDICAL EMERGENCY') || 
+                           section.includes('style="color:red') || section.includes('color: red') ||
+                           text.includes('URGENT') || text.includes('MEDICAL EMERGENCY');
+            if (text) {
+              addTextWithWrapping(text, 11, false, isUrgent);
+              currentY += 0.1;
+            }
+          }
+          // Handle plain text with urgency detection
+          else {
+            const text = section.trim();
+            if (text) {
+              const isUrgent = text.includes('URGENT') || text.includes('MEDICAL EMERGENCY');
+              addTextWithWrapping(text, 11, false, isUrgent);
+              currentY += 0.1;
+            }
           }
         });
       };
       
-      // Process all elements in the care plan
-      Array.from(tempDiv.children).forEach(element => {
-        processElement(element);
-      });
-      
-      // If no structured content, fall back to plain text
-      if (currentY <= 1.5) {
-        const plainText = tempDiv.textContent || carePlanHtml;
-        addTextWithWrapping(plainText, 11);
+      // Process the care plan content
+      if (carePlanHtml) {
+        parseHTMLContent(carePlanHtml);
+      } else {
+        addTextWithWrapping('Care plan content not available', 11);
       }
       
       // Add footer to all pages
