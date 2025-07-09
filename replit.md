@@ -359,6 +359,18 @@ Changelog:
   - **React Rendering Error Fix**: Resolved "Objects are not valid as a React child" error in care plan page by filtering complex objects from contextData display
   - **Structured AI Response Format**: AI now provides reassessment analysis before generating questions, explaining reasoning for classification changes
   - **Confidence-Based Processing**: Enhanced logic to process significant user answers even when confidence is high, ensuring proper medical assessment
+- July 9, 2025. **CRITICAL BUG FIX**: Fixed major issue preventing AI questions from being included in care plan generation:
+  - **Root Cause Identified**: `handleProceedToPlan` function was clearing `aiQuestions` array instead of preserving answered questions
+  - **Data Flow Fix**: Modified component to preserve answered questions in `answeredQuestions` array during care plan generation
+  - **Assessment Integration**: Updated `CarePlanGeneration` component to use `answeredQuestions` instead of `aiQuestions` for proper data flow
+  - **Mental Health Safety Restored**: AI now properly addresses suicide mentions, dangerous treatments, and other critical patient responses
+  - **Complete Question Processing**: All patient answers (whiskey soaking, chainsaw threats, etc.) now successfully reach AI analysis
+- July 9, 2025. **PDF DOWNLOAD FEATURE**: Added comprehensive PDF export functionality to care plan page:
+  - **PDF Generation**: Implemented html2canvas and jsPDF integration for high-quality PDF export
+  - **Professional Layout**: PDF includes title page, case information, assessment date, and proper formatting
+  - **Download Button**: Added prominent "Download PDF" button in care plan header alongside other actions
+  - **Error Handling**: Comprehensive error handling with user-friendly toast notifications for PDF generation failures
+  - **File Naming**: Automatic filename generation with case ID and date for easy organization
 - July 9, 2025. **ENHANCED CONTRADICTORY RESPONSE SYSTEM**: Improved AI handling of patient responses that contradict medical evidence:
   - **Medical Disagreement Protocol**: AI can now respectfully disagree with patient explanations while providing clear medical reasoning
   - **Dangerous Treatment Detection**: Automatic flagging of harmful treatments (whiskey soaking, bleach, hot water, etc.) with strong safety warnings
