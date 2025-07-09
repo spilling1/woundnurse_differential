@@ -359,6 +359,12 @@ Changelog:
   - **React Rendering Error Fix**: Resolved "Objects are not valid as a React child" error in care plan page by filtering complex objects from contextData display
   - **Structured AI Response Format**: AI now provides reassessment analysis before generating questions, explaining reasoning for classification changes
   - **Confidence-Based Processing**: Enhanced logic to process significant user answers even when confidence is high, ensuring proper medical assessment
+- July 9, 2025. **ENHANCED CONTRADICTORY RESPONSE SYSTEM**: Improved AI handling of patient responses that contradict medical evidence:
+  - **Medical Disagreement Protocol**: AI can now respectfully disagree with patient explanations while providing clear medical reasoning
+  - **Dangerous Treatment Detection**: Automatic flagging of harmful treatments (whiskey soaking, bleach, hot water, etc.) with strong safety warnings
+  - **Educational Response Format**: AI acknowledges patient responses first, then explains professional assessment with medical evidence
+  - **Safety-First Approach**: Enhanced instructions requiring AI to be firm but respectful when addressing dangerous practices
+  - **Comprehensive Safety Alerts**: Added automatic detection for alcohol, bleach, peroxide, essential oils, and other harmful wound treatments
 - July 8, 2025. **TWO-STEP AI CLASSIFICATION SYSTEM**: Implemented independent AI assessment followed by YOLO-informed reconsideration:
   - **Independent Analysis First**: AI runs initial classification without any YOLO influence for unbiased assessment
   - **YOLO Detection Second**: YOLO wound detection provides additional context with confidence scores and measurements

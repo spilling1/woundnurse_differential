@@ -262,8 +262,9 @@ For example:
 - If user mentions "suicidal thoughts" or "amputation fears" → flag for mental health protocols
 - If user reports "numbness" or "can't walk" → consider neurological involvement
 - If user gives contradictory explanations (e.g., "hot metal" vs typical neuropathic ulcer patterns) → question the explanation and note the contradiction
-- If user mentions unusual treatments (e.g., "soaking in whiskey") → address safety concerns and provide proper wound care guidance
+- If user mentions dangerous treatments (e.g., "soaking in whiskey") → STRONGLY address safety concerns, explain why harmful, and provide proper wound care guidance
 - If user claims wound is from trauma but image shows characteristics of systemic disease → address the discrepancy
+- If user denies diabetes but wound shows classic diabetic ulcer characteristics → explain the medical evidence and recommend screening
 
 MANDATORY REASSESSMENT RESPONSE FORMAT:
 First provide a reassessment section like this:

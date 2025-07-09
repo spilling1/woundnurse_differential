@@ -129,8 +129,9 @@ C) MEDICAL REFERRAL PREPARATION ANSWERS (Impact urgency/referral need):
       });
     }
     
-    // Check for mental health concerns in question answers
+    // Check for mental health concerns and dangerous treatments in question answers
     let mentalHealthConcerns = '';
+    let dangerousTreatments = '';
     contextData.aiQuestions.forEach((qa: any) => {
       if (qa.answer && qa.answer.trim() !== '') {
         const answer = qa.answer.toLowerCase();
@@ -144,6 +145,15 @@ C) MEDICAL REFERRAL PREPARATION ANSWERS (Impact urgency/referral need):
                    answer.includes('hopeless') || answer.includes('overwhelmed') ||
                    answer.includes('giving up') || answer.includes('can\'t cope')) {
           mentalHealthConcerns += `MENTAL HEALTH CONCERN: Depression indicators detected in answer: "${qa.answer}"\n`;
+        }
+        
+        // Check for dangerous treatments
+        if (answer.includes('whiskey') || answer.includes('alcohol') || 
+            answer.includes('bleach') || answer.includes('peroxide') ||
+            answer.includes('hot water') || answer.includes('ice') ||
+            answer.includes('salt water') || answer.includes('vinegar') ||
+            answer.includes('baking soda') || answer.includes('essential oil')) {
+          dangerousTreatments += `DANGEROUS TREATMENT ALERT: Harmful treatment mentioned in answer: "${qa.answer}"\n`;
         }
       }
     });
@@ -163,6 +173,21 @@ ${mentalHealthConcerns}
 `;
     }
 
+    if (dangerousTreatments) {
+      baseInfo += `
+
+**DANGEROUS TREATMENT SAFETY ALERT:**
+${dangerousTreatments}
+**MANDATORY ACTIONS:**
+- Address each dangerous treatment mentioned directly in the care plan
+- Explain why these treatments are harmful (e.g., "soaking in whiskey can damage tissue and delay healing")
+- Provide safe alternatives for wound care
+- Include strong warnings in the care plan about avoiding these treatments
+- Educate patient about proper wound care practices
+
+`;
+    }
+
     baseInfo += `
 
 **IMPORTANT DIAGNOSTIC INSTRUCTION:** 
@@ -174,11 +199,14 @@ Category C answers should influence urgency level and medical referral recommend
 Always explain your reasoning when patient answers contradict initial visual assessment.
 
 **CONTRADICTORY RESPONSE HANDLING:**
-When patient answers contradict medical evidence or seem unusual, you MUST address them directly:
-- If wound patterns suggest neuropathic/diabetic ulcer but patient claims "hot metal" injury → note the contradiction and explain why wound characteristics suggest otherwise
-- If patient mentions dangerous treatments (e.g., "soaking in whiskey") → address safety concerns and provide proper guidance
-- If patient provides inconsistent explanations → clarify the discrepancy and provide education
-- Never ignore contradictory or concerning responses - address them professionally and educationally
+When patient answers contradict medical evidence or seem unusual, you MUST address them directly while explaining your medical reasoning:
+- If wound patterns suggest neuropathic/diabetic ulcer but patient claims "hot metal" injury → respectfully disagree and explain why wound characteristics (bilateral location, punched-out appearance, lack of thermal injury signs) suggest neuropathic rather than thermal injury
+- If patient mentions dangerous treatments (e.g., "soaking in whiskey") → STRONGLY advise against this practice, explain why alcohol can damage tissue and delay healing, and provide proper wound care alternatives
+- If patient denies diabetes but shows classic diabetic ulcer signs → explain the medical evidence and recommend diabetes screening
+- If patient provides inconsistent explanations → clarify the discrepancy and provide educational explanation
+- Always acknowledge their response first, then explain your professional assessment with clear medical reasoning
+- Use phrases like "I understand you mentioned X, however the wound characteristics suggest Y because..."
+- Be respectful but firm when addressing dangerous practices - patient safety is paramount
 
 **QUESTION ANSWER INTEGRATION REQUIREMENTS:**
 - Address all medically relevant question answers directly within the appropriate sections of the care plan
