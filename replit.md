@@ -373,10 +373,11 @@ Changelog:
   - **File Naming**: Automatic filename generation with case ID and date for easy organization
 - July 9, 2025. **PDF IMAGE INTEGRATION**: Enhanced PDF download to properly include wound images:
   - **Wound Image Display**: Added wound image display to care plan page with click-to-zoom modal functionality
-  - **PDF Image Inclusion**: Modified PDF generation to include wound images from assessment data as separate page
+  - **Title Page Integration**: Modified PDF generation to include wound images on title page for better space utilization
   - **Image Handling**: Added proper base64 image processing with fallback handling for different image formats
-  - **Professional Layout**: PDF now contains title page, wound image page, and care plan content in structured format
+  - **Professional Layout**: PDF now contains title page with wound image and care plan content without duplication
   - **Error Handling**: Added comprehensive error handling for image processing in PDF generation
+  - **Content Optimization**: Implemented duplicate image removal from care plan content to prevent redundancy in PDF
 - July 9, 2025. **ENHANCED CONTRADICTORY RESPONSE SYSTEM**: Improved AI handling of patient responses that contradict medical evidence:
   - **Medical Disagreement Protocol**: AI can now respectfully disagree with patient explanations while providing clear medical reasoning
   - **Dangerous Treatment Detection**: Automatic flagging of harmful treatments (whiskey soaking, bleach, hot water, etc.) with strong safety warnings

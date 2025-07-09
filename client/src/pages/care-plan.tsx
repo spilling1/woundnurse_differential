@@ -143,7 +143,7 @@ export default function CarePlan() {
         format: 'letter'
       });
       
-      // Add title page
+      // Add title page with wound image
       pdf.setFontSize(20);
       pdf.text('Wound Care Assessment Report', 4.25, 1.5, { align: 'center' });
       
@@ -152,49 +152,20 @@ export default function CarePlan() {
       pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 4.25, 2.5, { align: 'center' });
       pdf.text(`Assessment Date: ${new Date(assessmentData.createdAt).toLocaleDateString()}`, 4.25, 2.8, { align: 'center' });
       
-      // Add wound image if available
+      // Add wound image to title page if available
       if (assessmentData.imageData) {
-        pdf.addPage();
-        pdf.setFontSize(16);
-        pdf.text('Wound Image', 4.25, 1, { align: 'center' });
-        
-        // Add the wound image
         const imgData = assessmentData.imageData.startsWith('data:') 
           ? assessmentData.imageData 
           : `data:image/jpeg;base64,${assessmentData.imageData}`;
         
-        // Calculate image dimensions to fit on page
-        const maxWidth = 7; // inches
-        const maxHeight = 9; // inches
-        
-        // Create a temporary image to get dimensions
-        const img = new Image();
-        img.onload = function() {
-          const aspectRatio = img.width / img.height;
-          let imgWidth = maxWidth;
-          let imgHeight = maxWidth / aspectRatio;
-          
-          if (imgHeight > maxHeight) {
-            imgHeight = maxHeight;
-            imgWidth = maxHeight * aspectRatio;
-          }
-          
-          const x = (8.5 - imgWidth) / 2; // Center horizontally
-          const y = 1.5; // Position below title
-          
-          try {
-            pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
-          } catch (imgError) {
-            console.warn('Could not add image to PDF:', imgError);
-          }
-        };
-        img.src = imgData;
-        
-        // Add image synchronously for now
+        // Add image below the title information
         try {
-          const x = (8.5 - 6) / 2; // Center 6-inch wide image
-          const y = 1.5;
-          pdf.addImage(imgData, 'JPEG', x, y, 6, 4); // 6x4 inch image
+          const imgWidth = 5; // 5-inch wide image
+          const imgHeight = 3.5; // 3.5-inch tall image
+          const x = (8.5 - imgWidth) / 2; // Center horizontally
+          const y = 3.5; // Position below title info
+          
+          pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
         } catch (imgError) {
           console.warn('Could not add image to PDF:', imgError);
         }
@@ -205,8 +176,14 @@ export default function CarePlan() {
       pdf.setFontSize(16);
       pdf.text('Care Plan', 0.5, 1);
       
-      // Create a clone of the care plan content for PDF
+      // Create a clone of the care plan content for PDF (excluding wound image)
       const elementToCapture = printRef.current.cloneNode(true) as HTMLElement;
+      
+      // Remove the wound image card from the PDF content to avoid duplication
+      const woundImageCard = elementToCapture.querySelector('[data-wound-image]');
+      if (woundImageCard) {
+        woundImageCard.remove();
+      }
       
       // Apply PDF-specific styles
       elementToCapture.style.width = '7.5in';
@@ -444,7 +421,7 @@ export default function CarePlan() {
 
         {/* Wound Image */}
         {assessmentData.imageData && (
-          <Card>
+          <Card data-wound-image>
             <CardHeader>
               <CardTitle>Wound Image</CardTitle>
             </CardHeader>
