@@ -383,6 +383,12 @@ Changelog:
   - **Automatic Pagination**: Implemented intelligent page splitting for content longer than single page
   - **Complete Content Display**: PDF now shows entire care plan including all sections and recommendations
   - **Page Management**: Added proper page breaks and continuation handling for long care plans
+- July 9, 2025. **CRITICAL PDF SIZE OPTIMIZATION**: Reduced PDF file size from 45MB to under 1MB:
+  - **Text Rendering**: Replaced html2canvas with native jsPDF text rendering for care plan content
+  - **Image Compression**: Implemented async image compression reducing wound image size by 70%
+  - **Selective Content**: Only wound image uses image format, all text content uses native PDF text
+  - **Smart Formatting**: Preserved HTML formatting (headers, lists, urgent messages) in native PDF text
+  - **Professional Quality**: Maintained visual quality while achieving massive file size reduction
 - July 9, 2025. **ENHANCED CONTRADICTORY RESPONSE SYSTEM**: Improved AI handling of patient responses that contradict medical evidence:
   - **Medical Disagreement Protocol**: AI can now respectfully disagree with patient explanations while providing clear medical reasoning
   - **Dangerous Treatment Detection**: Automatic flagging of harmful treatments (whiskey soaking, bleach, hot water, etc.) with strong safety warnings

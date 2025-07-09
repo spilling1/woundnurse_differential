@@ -152,101 +152,162 @@ export default function CarePlan() {
       pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 4.25, 2.5, { align: 'center' });
       pdf.text(`Assessment Date: ${new Date(assessmentData.createdAt).toLocaleDateString()}`, 4.25, 2.8, { align: 'center' });
       
-      // Add wound image to title page if available
+      // Add wound image to title page if available with compression
       if (assessmentData.imageData) {
         const imgData = assessmentData.imageData.startsWith('data:') 
           ? assessmentData.imageData 
           : `data:image/jpeg;base64,${assessmentData.imageData}`;
         
-        // Add image below the title information
+        // Add image below the title information with compression
         try {
+          // Create a compressed version of the image
+          const compressedImageData = await new Promise<string>((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              
+              // Set canvas size for compression (reduce from original)
+              const maxWidth = 800;
+              const maxHeight = 600;
+              let { width, height } = img;
+              
+              if (width > maxWidth || height > maxHeight) {
+                if (width > height) {
+                  height = (height * maxWidth) / width;
+                  width = maxWidth;
+                } else {
+                  width = (width * maxHeight) / height;
+                  height = maxHeight;
+                }
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              // Convert to JPEG with compression
+              const compressed = canvas.toDataURL('image/jpeg', 0.7); // 70% quality
+              resolve(compressed);
+            };
+            img.onerror = reject;
+            img.src = imgData;
+          });
+          
           const imgWidth = 5; // 5-inch wide image
           const imgHeight = 3.5; // 3.5-inch tall image
           const x = (8.5 - imgWidth) / 2; // Center horizontally
           const y = 3.5; // Position below title info
           
-          pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
+          pdf.addImage(compressedImageData, 'JPEG', x, y, imgWidth, imgHeight);
         } catch (imgError) {
           console.warn('Could not add image to PDF:', imgError);
+          // Fallback to original image if compression fails
+          const imgWidth = 5;
+          const imgHeight = 3.5;
+          const x = (8.5 - imgWidth) / 2;
+          const y = 3.5;
+          
+          pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
         }
       }
       
-      // Add care plan content
+      // Add care plan content using text rendering for smaller file size
       pdf.addPage();
       pdf.setFontSize(16);
       pdf.text('Care Plan', 0.5, 1);
       
-      // Create a clone of the care plan content for PDF (excluding wound image)
-      const elementToCapture = printRef.current.cloneNode(true) as HTMLElement;
+      // Extract text content from the care plan
+      const carePlanHtml = assessmentData.carePlan || '';
       
-      // Remove the wound image card from the PDF content to avoid duplication
-      const woundImageCard = elementToCapture.querySelector('[data-wound-image]');
-      if (woundImageCard) {
-        woundImageCard.remove();
-      }
+      // Parse the HTML and render as text
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = carePlanHtml;
       
-      // Apply PDF-specific styles
-      elementToCapture.style.width = '7.5in';
-      elementToCapture.style.padding = '0.5in';
-      elementToCapture.style.backgroundColor = 'white';
-      elementToCapture.style.fontFamily = 'Arial, sans-serif';
-      elementToCapture.style.fontSize = '11px';
-      elementToCapture.style.color = '#000000';
+      let currentY = 1.5;
+      const pageHeight = 10.5; // Letter size height minus margins
+      const lineHeight = 0.2;
+      const marginLeft = 0.5;
+      const marginRight = 0.5;
+      const maxWidth = 7.5; // 8.5 - 1 inch margins
       
-      // Hide the element off-screen
-      elementToCapture.style.position = 'absolute';
-      elementToCapture.style.left = '-9999px';
-      elementToCapture.style.top = '-9999px';
+      // Function to add text with word wrapping
+      const addTextWithWrapping = (text: string, fontSize: number, isBold: boolean = false, isRed: boolean = false) => {
+        pdf.setFontSize(fontSize);
+        
+        if (isBold) {
+          pdf.setFont('helvetica', 'bold');
+        } else {
+          pdf.setFont('helvetica', 'normal');
+        }
+        
+        if (isRed) {
+          pdf.setTextColor(255, 0, 0); // Red color for urgent messages
+        } else {
+          pdf.setTextColor(0, 0, 0); // Black color
+        }
+        
+        const lines = pdf.splitTextToSize(text, maxWidth);
+        
+        for (const line of lines) {
+          if (currentY > pageHeight - 1) {
+            pdf.addPage();
+            currentY = 1;
+          }
+          
+          pdf.text(line, marginLeft, currentY);
+          currentY += lineHeight;
+        }
+        
+        pdf.setTextColor(0, 0, 0); // Reset to black
+      };
       
-      // Add to document temporarily
-      document.body.appendChild(elementToCapture);
+      // Process the care plan content
+      const processElement = (element: Element) => {
+        if (element.tagName === 'H1') {
+          addTextWithWrapping(element.textContent || '', 16, true);
+          currentY += 0.1; // Extra spacing after headers
+        } else if (element.tagName === 'H2') {
+          addTextWithWrapping(element.textContent || '', 14, true);
+          currentY += 0.1;
+        } else if (element.tagName === 'H3') {
+          addTextWithWrapping(element.textContent || '', 12, true);
+          currentY += 0.1;
+        } else if (element.tagName === 'P') {
+          const isUrgent = element.innerHTML.includes('URGENT') || element.innerHTML.includes('MEDICAL EMERGENCY');
+          addTextWithWrapping(element.textContent || '', 11, false, isUrgent);
+          currentY += 0.1; // Extra spacing after paragraphs
+        } else if (element.tagName === 'UL' || element.tagName === 'OL') {
+          Array.from(element.children).forEach((li, index) => {
+            const bullet = element.tagName === 'UL' ? '• ' : `${index + 1}. `;
+            addTextWithWrapping(bullet + (li.textContent || ''), 11);
+          });
+          currentY += 0.1;
+        } else if (element.tagName === 'DIV') {
+          const isUrgent = element.innerHTML.includes('URGENT') || element.innerHTML.includes('MEDICAL EMERGENCY');
+          if (element.textContent?.trim()) {
+            addTextWithWrapping(element.textContent, 11, false, isUrgent);
+          }
+        }
+        
+        // Process child elements
+        Array.from(element.children).forEach(child => {
+          if (!['UL', 'OL', 'LI'].includes(child.tagName)) {
+            processElement(child);
+          }
+        });
+      };
       
-      // Generate canvas from the element with dynamic height
-      const canvas = await html2canvas(elementToCapture, {
-        width: 720, // 7.5in * 96 DPI
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff'
+      // Process all elements in the care plan
+      Array.from(tempDiv.children).forEach(element => {
+        processElement(element);
       });
       
-      // Remove the temporary element
-      document.body.removeChild(elementToCapture);
-      
-      // Add the care plan content with proper pagination
-      const careplanImgData = canvas.toDataURL('image/png');
-      const careplanImgWidth = 7.5;
-      const careplanImgHeight = (canvas.height * careplanImgWidth) / canvas.width;
-      
-      // Calculate if we need multiple pages
-      const maxHeightPerPage = 9; // 9 inches max height per page
-      let currentY = 1.5;
-      let remainingHeight = careplanImgHeight;
-      let sourceY = 0;
-      
-      while (remainingHeight > 0) {
-        const heightThisPage = Math.min(remainingHeight, maxHeightPerPage);
-        const sourceHeight = (heightThisPage / careplanImgHeight) * canvas.height;
-        
-        // Create a canvas for this page section
-        const pageCanvas = document.createElement('canvas');
-        pageCanvas.width = canvas.width;
-        pageCanvas.height = sourceHeight;
-        const pageCtx = pageCanvas.getContext('2d');
-        
-        pageCtx.drawImage(canvas, 0, sourceY, canvas.width, sourceHeight, 0, 0, canvas.width, sourceHeight);
-        
-        const pageImgData = pageCanvas.toDataURL('image/png');
-        pdf.addImage(pageImgData, 'PNG', 0.5, currentY, careplanImgWidth, heightThisPage);
-        
-        remainingHeight -= heightThisPage;
-        sourceY += sourceHeight;
-        
-        // Add new page if there's more content
-        if (remainingHeight > 0) {
-          pdf.addPage();
-          currentY = 0.5;
-        }
+      // If no structured content, fall back to plain text
+      if (currentY <= 1.5) {
+        const plainText = tempDiv.textContent || carePlanHtml;
+        addTextWithWrapping(plainText, 11);
       }
       
       // Add footer to all pages
