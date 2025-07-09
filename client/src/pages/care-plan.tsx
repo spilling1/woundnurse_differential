@@ -282,8 +282,14 @@ export default function CarePlan() {
     );
   }
 
-  const classification = JSON.parse(assessmentData.classification);
-  const contextData = JSON.parse(assessmentData.contextData || '{}');
+  // Safely parse JSON data - handle both string and object cases
+  const classification = typeof assessmentData.classification === 'string' 
+    ? JSON.parse(assessmentData.classification) 
+    : assessmentData.classification;
+  
+  const contextData = typeof assessmentData.contextData === 'string'
+    ? JSON.parse(assessmentData.contextData || '{}')
+    : assessmentData.contextData || {};
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
