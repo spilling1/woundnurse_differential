@@ -136,38 +136,6 @@ export default function CarePlan() {
     if (!printRef.current || !assessmentData) return;
     
     try {
-      // Create a clone of the element to avoid modifying the original
-      const elementToCapture = printRef.current.cloneNode(true) as HTMLElement;
-      
-      // Apply PDF-specific styles
-      elementToCapture.style.width = '8.5in';
-      elementToCapture.style.padding = '0.5in';
-      elementToCapture.style.backgroundColor = 'white';
-      elementToCapture.style.fontFamily = 'Arial, sans-serif';
-      elementToCapture.style.fontSize = '12px';
-      elementToCapture.style.color = '#000000';
-      
-      // Hide the element off-screen
-      elementToCapture.style.position = 'absolute';
-      elementToCapture.style.left = '-9999px';
-      elementToCapture.style.top = '-9999px';
-      
-      // Add to document temporarily
-      document.body.appendChild(elementToCapture);
-      
-      // Generate canvas from the element
-      const canvas = await html2canvas(elementToCapture, {
-        width: 816, // 8.5in * 96 DPI
-        height: 1056, // 11in * 96 DPI
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff'
-      });
-      
-      // Remove the temporary element
-      document.body.removeChild(elementToCapture);
-      
       // Create PDF
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -184,15 +152,99 @@ export default function CarePlan() {
       pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 4.25, 2.5, { align: 'center' });
       pdf.text(`Assessment Date: ${new Date(assessmentData.createdAt).toLocaleDateString()}`, 4.25, 2.8, { align: 'center' });
       
-      // Add the image content
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = 8;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Add wound image if available
+      if (assessmentData.imageData) {
+        pdf.addPage();
+        pdf.setFontSize(16);
+        pdf.text('Wound Image', 4.25, 1, { align: 'center' });
+        
+        // Add the wound image
+        const imgData = assessmentData.imageData.startsWith('data:') 
+          ? assessmentData.imageData 
+          : `data:image/jpeg;base64,${assessmentData.imageData}`;
+        
+        // Calculate image dimensions to fit on page
+        const maxWidth = 7; // inches
+        const maxHeight = 9; // inches
+        
+        // Create a temporary image to get dimensions
+        const img = new Image();
+        img.onload = function() {
+          const aspectRatio = img.width / img.height;
+          let imgWidth = maxWidth;
+          let imgHeight = maxWidth / aspectRatio;
+          
+          if (imgHeight > maxHeight) {
+            imgHeight = maxHeight;
+            imgWidth = maxHeight * aspectRatio;
+          }
+          
+          const x = (8.5 - imgWidth) / 2; // Center horizontally
+          const y = 1.5; // Position below title
+          
+          try {
+            pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
+          } catch (imgError) {
+            console.warn('Could not add image to PDF:', imgError);
+          }
+        };
+        img.src = imgData;
+        
+        // Add image synchronously for now
+        try {
+          const x = (8.5 - 6) / 2; // Center 6-inch wide image
+          const y = 1.5;
+          pdf.addImage(imgData, 'JPEG', x, y, 6, 4); // 6x4 inch image
+        } catch (imgError) {
+          console.warn('Could not add image to PDF:', imgError);
+        }
+      }
       
+      // Add care plan content
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0.5, 0.5, imgWidth, imgHeight);
+      pdf.setFontSize(16);
+      pdf.text('Care Plan', 0.5, 1);
       
-      // Add footer
+      // Create a clone of the care plan content for PDF
+      const elementToCapture = printRef.current.cloneNode(true) as HTMLElement;
+      
+      // Apply PDF-specific styles
+      elementToCapture.style.width = '7.5in';
+      elementToCapture.style.padding = '0.5in';
+      elementToCapture.style.backgroundColor = 'white';
+      elementToCapture.style.fontFamily = 'Arial, sans-serif';
+      elementToCapture.style.fontSize = '11px';
+      elementToCapture.style.color = '#000000';
+      
+      // Hide the element off-screen
+      elementToCapture.style.position = 'absolute';
+      elementToCapture.style.left = '-9999px';
+      elementToCapture.style.top = '-9999px';
+      
+      // Add to document temporarily
+      document.body.appendChild(elementToCapture);
+      
+      // Generate canvas from the element
+      const canvas = await html2canvas(elementToCapture, {
+        width: 720, // 7.5in * 96 DPI
+        height: 960, // 10in * 96 DPI
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      
+      // Remove the temporary element
+      document.body.removeChild(elementToCapture);
+      
+      // Add the care plan content
+      const careplanImgData = canvas.toDataURL('image/png');
+      const careplanImgWidth = 7.5;
+      const careplanImgHeight = (canvas.height * careplanImgWidth) / canvas.width;
+      
+      pdf.addImage(careplanImgData, 'PNG', 0.5, 1.5, careplanImgWidth, careplanImgHeight);
+      
+      // Add footer to all pages
       const pageCount = pdf.internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         pdf.setPage(i);
@@ -390,7 +442,49 @@ export default function CarePlan() {
           </CardHeader>
         </Card>
 
-        {/* Rest of the component content would go here */}
+        {/* Wound Image */}
+        {assessmentData.imageData && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Wound Image</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <img 
+                  src={assessmentData.imageData.startsWith('data:') 
+                    ? assessmentData.imageData 
+                    : `data:image/jpeg;base64,${assessmentData.imageData}`}
+                  alt="Wound assessment"
+                  className="max-w-2xl max-h-96 object-contain rounded-lg shadow-lg cursor-pointer"
+                  onClick={() => {
+                    const modal = document.createElement('div');
+                    modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+                    modal.innerHTML = `
+                      <div class="relative max-w-4xl max-h-full p-4">
+                        <img src="${assessmentData.imageData.startsWith('data:') ? assessmentData.imageData : `data:image/jpeg;base64,${assessmentData.imageData}`}" 
+                             alt="Wound assessment" 
+                             class="max-w-full max-h-full object-contain rounded-lg" />
+                        <button class="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75">
+                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    `;
+                    modal.onclick = (e) => {
+                      if (e.target === modal || e.target.closest('button')) {
+                        document.body.removeChild(modal);
+                      }
+                    };
+                    document.body.appendChild(modal);
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Care Plan */}
         {assessmentData.carePlan && (
           <Card>
             <CardHeader>

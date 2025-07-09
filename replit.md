@@ -371,6 +371,12 @@ Changelog:
   - **Download Button**: Added prominent "Download PDF" button in care plan header alongside other actions
   - **Error Handling**: Comprehensive error handling with user-friendly toast notifications for PDF generation failures
   - **File Naming**: Automatic filename generation with case ID and date for easy organization
+- July 9, 2025. **PDF IMAGE INTEGRATION**: Enhanced PDF download to properly include wound images:
+  - **Wound Image Display**: Added wound image display to care plan page with click-to-zoom modal functionality
+  - **PDF Image Inclusion**: Modified PDF generation to include wound images from assessment data as separate page
+  - **Image Handling**: Added proper base64 image processing with fallback handling for different image formats
+  - **Professional Layout**: PDF now contains title page, wound image page, and care plan content in structured format
+  - **Error Handling**: Added comprehensive error handling for image processing in PDF generation
 - July 9, 2025. **ENHANCED CONTRADICTORY RESPONSE SYSTEM**: Improved AI handling of patient responses that contradict medical evidence:
   - **Medical Disagreement Protocol**: AI can now respectfully disagree with patient explanations while providing clear medical reasoning
   - **Dangerous Treatment Detection**: Automatic flagging of harmful treatments (whiskey soaking, bleach, hot water, etc.) with strong safety warnings
