@@ -608,6 +608,12 @@ export function registerAssessmentRoutes(app: Express): void {
         acc[key] = q.answer;
         return acc;
       }, {});
+      
+      // CRITICAL: Include the aiQuestions array for the prompt template to process
+      if (questions.length > 0) {
+        contextData.aiQuestions = questions.filter((q: any) => q.answer && q.answer.trim() !== '');
+        console.log(`Including ${contextData.aiQuestions.length} answered questions in contextData for AI processing`);
+      }
 
       // Log user's answers to questions
       if (questions.length > 0) {
