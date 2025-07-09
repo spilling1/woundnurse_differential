@@ -610,9 +610,13 @@ export function registerAssessmentRoutes(app: Express): void {
       }, {});
       
       // CRITICAL: Include the aiQuestions array for the prompt template to process
+      console.log('DEBUG: Raw questions array:', JSON.stringify(questions, null, 2));
       if (questions.length > 0) {
         contextData.aiQuestions = questions.filter((q: any) => q.answer && q.answer.trim() !== '');
         console.log(`Including ${contextData.aiQuestions.length} answered questions in contextData for AI processing`);
+        console.log('DEBUG: Final contextData.aiQuestions:', JSON.stringify(contextData.aiQuestions, null, 2));
+      } else {
+        console.log('DEBUG: No questions provided to final-plan endpoint');
       }
 
       // Log user's answers to questions

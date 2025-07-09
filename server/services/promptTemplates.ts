@@ -58,6 +58,7 @@ ${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionSta
 `;
 
   // Process AI Questions and Answers by Category
+  console.log('DEBUG: promptTemplates - contextData.aiQuestions:', JSON.stringify(contextData?.aiQuestions, null, 2));
   if (contextData?.aiQuestions && Array.isArray(contextData.aiQuestions)) {
     const categorizedQuestions: {
       confidenceImprovement: any[];
