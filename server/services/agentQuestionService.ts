@@ -251,13 +251,20 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not 
     
     if (model && model.startsWith('gemini')) {
       try {
-        response = await callGemini(model, analysisPrompt);
+        // Add system instruction for Gemini to ensure JSON response
+        const systemInstruction = "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON.";
+        const fullPrompt = `${systemInstruction}\n\n${analysisPrompt}`;
+        response = await callGemini(model, fullPrompt);
       } catch (geminiError: any) {
         // Check if this is a quota error
         if (geminiError.message?.includes('quota') || geminiError.message?.includes('RESOURCE_EXHAUSTED')) {
           console.log('AgentQuestionService: Gemini service temporarily unavailable, automatically switching to GPT-4o');
           // Automatically switch to GPT-4o when Gemini service is unavailable
           const messages = [
+            {
+              role: "system",
+              content: "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
+            },
             {
               role: "user",
               content: analysisPrompt
@@ -271,6 +278,10 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not 
       }
     } else {
       const messages = [
+        {
+          role: "system",
+          content: "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
+        },
         {
           role: "user",
           content: analysisPrompt
