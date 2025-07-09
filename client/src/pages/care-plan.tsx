@@ -463,11 +463,11 @@ export default function CarePlan() {
         <div className="flex items-center justify-between mb-6">
           <Button
             variant="outline"
-            onClick={() => setLocation('/cases')}
+            onClick={() => setLocation('/my-cases')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Cases
+            Back to My Cases
           </Button>
           
           <div className="flex items-center gap-2">
