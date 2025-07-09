@@ -1036,7 +1036,11 @@ export default function CarePlan() {
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {Object.entries(contextData as Record<string, any>).map(([key, value]) => {
+                    // Skip complex objects (like question objects) and only show simple values
                     if (!value || value === 'Not provided' || value === 'not provided' || value === '') return null;
+                    if (typeof value === 'object' && value !== null) return null; // Skip objects/arrays
+                    if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean') return null;
+                    
                     const labels: Record<string, string> = {
                       age: 'Age',
                       woundSite: 'Wound Site',
@@ -1057,7 +1061,7 @@ export default function CarePlan() {
                     return (
                       <div key={key} className="bg-gray-50 border border-gray-200 rounded-lg p-4 border-l-4 border-l-medical-blue">
                         <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{labels[key] || key}</div>
-                        <div className="text-gray-900 text-sm leading-relaxed">{value}</div>
+                        <div className="text-gray-900 text-sm leading-relaxed">{String(value)}</div>
                       </div>
                     );
                   })}
