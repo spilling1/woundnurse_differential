@@ -129,6 +129,40 @@ C) MEDICAL REFERRAL PREPARATION ANSWERS (Impact urgency/referral need):
       });
     }
     
+    // Check for mental health concerns in question answers
+    let mentalHealthConcerns = '';
+    contextData.aiQuestions.forEach((qa: any) => {
+      if (qa.answer && qa.answer.trim() !== '') {
+        const answer = qa.answer.toLowerCase();
+        
+        // Check for depression/suicide indicators
+        if (answer.includes('suicide') || answer.includes('kill myself') || 
+            answer.includes('end it all') || answer.includes('not worth living') ||
+            answer.includes('want to die') || answer.includes('better off dead')) {
+          mentalHealthConcerns += `CRITICAL MENTAL HEALTH ALERT: Suicide risk detected in answer: "${qa.answer}"\n`;
+        } else if (answer.includes('depression') || answer.includes('depressed') ||
+                   answer.includes('hopeless') || answer.includes('overwhelmed') ||
+                   answer.includes('giving up') || answer.includes('can\'t cope')) {
+          mentalHealthConcerns += `MENTAL HEALTH CONCERN: Depression indicators detected in answer: "${qa.answer}"\n`;
+        }
+      }
+    });
+    
+    if (mentalHealthConcerns) {
+      baseInfo += `
+
+**CRITICAL MENTAL HEALTH SAFETY ALERT:**
+${mentalHealthConcerns}
+**MANDATORY ACTIONS:**
+- Include suicide/mental health resources in care plan
+- Recommend immediate professional mental health support
+- For suicide risk: Include National Suicide Prevention Lifeline: 988 or 1-800-273-8255 in critical section
+- For depression: Recommend contacting doctor or therapist
+- Take all mental health concerns seriously regardless of wound severity
+
+`;
+    }
+
     baseInfo += `
 
 **IMPORTANT DIAGNOSTIC INSTRUCTION:** 
@@ -138,6 +172,13 @@ then reclassify as a different wound type (pressure ulcer, venous ulcer, etc.) b
 Category B answers should enhance treatment recommendations and symptom management.
 Category C answers should influence urgency level and medical referral recommendations.
 Always explain your reasoning when patient answers contradict initial visual assessment.
+
+**QUESTION ANSWER INTEGRATION REQUIREMENTS:**
+- Address all medically relevant question answers directly within the appropriate sections of the care plan
+- Integrate answers naturally into treatment recommendations, wound assessment, and care instructions
+- For unrelated comments or non-medical questions, create a separate "Additional Questions Addressed" section at the bottom
+- Always acknowledge that you have reviewed and considered their specific answers in your assessment
+- Include phrase "I have taken into account your specific answers" in the care plan
 `;
   }
 
@@ -241,6 +282,19 @@ ${relevantProducts.map(product => `
   * [Antibacterial Ointment](https://www.amazon.com/s?k=antibacterial+ointment+wounds)
 `}
 IMPORTANT: Use the exact product names and Amazon URLs provided above. These are verified products from our database.
+
+**QUESTION ANSWER HANDLING:**
+- Always address medically relevant question answers directly within the appropriate sections of the care plan
+- Integrate patient answers naturally into wound assessment, treatment recommendations, and care instructions
+- For unrelated comments or non-medical questions, create a separate section at the bottom called "Additional Questions Addressed"
+- Always include the phrase "I have taken into account your specific answers" somewhere in the care plan
+- Take any mental health concerns (depression, suicide) extremely seriously - include appropriate resources and urgent referrals
+
+**MENTAL HEALTH SAFETY PROTOCOL:**
+- If patient mentions suicide, depression, or mental health struggles: Include National Suicide Prevention Lifeline: 988 or 1-800-273-8255
+- For overt suicide references: Place hotline number in critical/urgent section with red styling
+- For depression indicators: Recommend contacting doctor or therapist immediately
+- Never minimize mental health concerns - treat them as seriously as physical wound care
 
 Generate a well-formatted care plan that follows the structure guidelines above.`;
 
