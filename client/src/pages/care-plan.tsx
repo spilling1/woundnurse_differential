@@ -201,10 +201,9 @@ export default function CarePlan() {
       // Add to document temporarily
       document.body.appendChild(elementToCapture);
       
-      // Generate canvas from the element
+      // Generate canvas from the element with dynamic height
       const canvas = await html2canvas(elementToCapture, {
         width: 720, // 7.5in * 96 DPI
-        height: 960, // 10in * 96 DPI
         scale: 2,
         useCORS: true,
         allowTaint: true,
@@ -214,12 +213,41 @@ export default function CarePlan() {
       // Remove the temporary element
       document.body.removeChild(elementToCapture);
       
-      // Add the care plan content
+      // Add the care plan content with proper pagination
       const careplanImgData = canvas.toDataURL('image/png');
       const careplanImgWidth = 7.5;
       const careplanImgHeight = (canvas.height * careplanImgWidth) / canvas.width;
       
-      pdf.addImage(careplanImgData, 'PNG', 0.5, 1.5, careplanImgWidth, careplanImgHeight);
+      // Calculate if we need multiple pages
+      const maxHeightPerPage = 9; // 9 inches max height per page
+      let currentY = 1.5;
+      let remainingHeight = careplanImgHeight;
+      let sourceY = 0;
+      
+      while (remainingHeight > 0) {
+        const heightThisPage = Math.min(remainingHeight, maxHeightPerPage);
+        const sourceHeight = (heightThisPage / careplanImgHeight) * canvas.height;
+        
+        // Create a canvas for this page section
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sourceHeight;
+        const pageCtx = pageCanvas.getContext('2d');
+        
+        pageCtx.drawImage(canvas, 0, sourceY, canvas.width, sourceHeight, 0, 0, canvas.width, sourceHeight);
+        
+        const pageImgData = pageCanvas.toDataURL('image/png');
+        pdf.addImage(pageImgData, 'PNG', 0.5, currentY, careplanImgWidth, heightThisPage);
+        
+        remainingHeight -= heightThisPage;
+        sourceY += sourceHeight;
+        
+        // Add new page if there's more content
+        if (remainingHeight > 0) {
+          pdf.addPage();
+          currentY = 0.5;
+        }
+      }
       
       // Add footer to all pages
       const pageCount = pdf.internal.getNumberOfPages();

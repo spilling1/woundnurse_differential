@@ -378,6 +378,11 @@ Changelog:
   - **Professional Layout**: PDF now contains title page with wound image and care plan content without duplication
   - **Error Handling**: Added comprehensive error handling for image processing in PDF generation
   - **Content Optimization**: Implemented duplicate image removal from care plan content to prevent redundancy in PDF
+- July 9, 2025. **PDF PAGINATION FIX**: Fixed PDF generation to include complete care plan content across multiple pages:
+  - **Dynamic Height Handling**: Removed fixed height constraints allowing full content capture
+  - **Automatic Pagination**: Implemented intelligent page splitting for content longer than single page
+  - **Complete Content Display**: PDF now shows entire care plan including all sections and recommendations
+  - **Page Management**: Added proper page breaks and continuation handling for long care plans
 - July 9, 2025. **ENHANCED CONTRADICTORY RESPONSE SYSTEM**: Improved AI handling of patient responses that contradict medical evidence:
   - **Medical Disagreement Protocol**: AI can now respectfully disagree with patient explanations while providing clear medical reasoning
   - **Dangerous Treatment Detection**: Automatic flagging of harmful treatments (whiskey soaking, bleach, hot water, etc.) with strong safety warnings
