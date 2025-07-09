@@ -278,7 +278,13 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
   };
 
   const handleProceedToPlan = () => {
-    onStateChange({ currentStep: 'generating-plan' });
+    // Preserve the answered questions for the care plan generation
+    const answeredQuestions = state.aiQuestions.filter(q => q.answer && q.answer.trim() !== '');
+    
+    onStateChange({ 
+      currentStep: 'generating-plan',
+      answeredQuestions: answeredQuestions
+    });
     onNextStep();
   };
 

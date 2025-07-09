@@ -33,7 +33,7 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
         state.selectedImage,
         state.audience,
         modelToUse,
-        state.aiQuestions,
+        state.answeredQuestions || [],
         state.woundClassification,
         state.userFeedback
       );
