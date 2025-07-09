@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import type { StepProps, ModelType } from "./shared/AssessmentTypes";
+import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi } from "./shared/AssessmentUtils";
 
 export default function CarePlanGeneration({ state, onStateChange, onNextStep }: StepProps) {
@@ -26,7 +26,7 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
       console.log('CarePlanGeneration: state.audience =', state.audience);
       
       // Ensure we have a valid model, fallback to gemini-2.5-pro if needed
-      const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
+      const modelToUse = state.model || 'gemini-2.5-pro';
       console.log('CarePlanGeneration: Using model =', modelToUse);
       
       return await assessmentApi.finalPlan(

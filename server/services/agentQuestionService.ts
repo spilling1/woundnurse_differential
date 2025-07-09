@@ -126,9 +126,23 @@ ${agentInstructions.productRecommendations || ''}
   const currentRound = round || 1;
   
   if (isFollowUp && currentRound > 1) {
-    // For follow-up questions, be much more selective
-    if (confidence > 0.80) {
-      console.log(`Follow-up round ${currentRound}: High confidence (${confidence}) - skipping additional questions`);
+    // For follow-up questions, check if the answers provided require reassessment
+    const hasSignificantAnswers = previousQuestions.some((q: any) => 
+      q.answer && q.answer.trim().length > 0 && 
+      (q.answer.toLowerCase().includes('diabetes') || 
+       q.answer.toLowerCase().includes('suicide') || 
+       q.answer.toLowerCase().includes('amputation') ||
+       q.answer.toLowerCase().includes('numbness') ||
+       q.answer.toLowerCase().includes('infection') ||
+       q.answer.toLowerCase().includes('pain') ||
+       q.answer.toLowerCase().includes('yes') ||
+       q.answer.toLowerCase().includes('no'))
+    );
+    
+    if (hasSignificantAnswers) {
+      console.log(`Follow-up round ${currentRound}: Processing user answers for reassessment - confidence: ${confidence}`);
+    } else if (confidence > 0.80) {
+      console.log(`Follow-up round ${currentRound}: High confidence (${confidence}) and no significant answers - skipping additional questions`);
       return [];
     } else {
       console.log(`Follow-up round ${currentRound}: Low confidence (${confidence}) - checking if more questions needed`);
@@ -163,11 +177,20 @@ ${confidence < 0.50 ? 'Very low confidence - additional photos and detailed info
 ${isFollowUp ? `PREVIOUS QUESTIONS AND ANSWERS (Round ${currentRound - 1}):
 ${JSON.stringify(previousQuestions, null, 2)}
 
-FOLLOW-UP ASSESSMENT:
-- Review the previous answers to see if they provide sufficient information
-- Check if Agent Instructions require additional specific questions
-- Only generate NEW questions if there are gaps that need clarification
-- Maximum 3 rounds total, this is round ${currentRound}
+CRITICAL FOLLOW-UP ASSESSMENT STEPS:
+1. REASSESS WOUND CLASSIFICATION: Carefully review user answers for information that contradicts or significantly changes the initial wound assessment
+2. IDENTIFY CONTRADICTIONS: Check if user answers contradict the visual assessment (e.g., "I don't have diabetes" vs "diabetic ulcer" classification)
+3. DETECT CRITICAL INFORMATION: Look for serious medical concerns like diabetes, suicide risk, infection signs, numbness, or mobility issues
+4. DETERMINE NEED FOR RECLASSIFICATION: If answers provide significant new information, consider whether wound type or urgency level should change
+5. GENERATE TARGETED QUESTIONS: Only ask NEW questions if critical information is missing or contradictory
+6. MAXIMUM 3 ROUNDS: This is round ${currentRound} - be increasingly selective
+
+REASSESSMENT TRIGGERS:
+- User confirms or denies diabetes (impacts diabetic ulcer classification)
+- User mentions suicide, depression, or amputation fears (requires mental health protocols)
+- User reports numbness, inability to walk (suggests neurological involvement)
+- User confirms/denies infection signs (impacts urgency and treatment)
+- User provides contradictory location or wound origin information
 ` : ''}
 
 TARGET AUDIENCE: ${audience}
@@ -225,10 +248,36 @@ Generate 2-4 strategically selected questions based on:
 3. Information gaps that would most improve the assessment
 4. Whether referral to medical professional is likely needed
 
-${isFollowUp ? 'This is a follow-up round of questions. Only ask additional questions if the Agent Instructions require them or if confidence is still below 80%.' : 'Generate initial questions based strictly on what the Agent Instructions specify, plus photo suggestions if confidence is low.'}
+${isFollowUp ? `
+CRITICAL FOLLOW-UP REQUIREMENT:
+Before generating any new questions, you MUST first reassess the wound classification based on the user's answers. If the user's answers contradict the initial visual assessment or provide significant new information, you should:
+
+1. Note the contradiction or new information
+2. Suggest a revised wound classification if appropriate
+3. Only then determine if additional questions are needed
+
+For example:
+- If image suggested "diabetic ulcer" but user says "I don't have diabetes" → reassess as pressure ulcer or venous ulcer
+- If user mentions "suicidal thoughts" or "amputation fears" → flag for mental health protocols
+- If user reports "numbness" or "can't walk" → consider neurological involvement
+
+MANDATORY REASSESSMENT RESPONSE FORMAT:
+First provide a reassessment section like this:
+REASSESSMENT: [Explain how the user's answers impact the wound classification and care plan - this is critical]
+
+Then provide questions (if needed) in JSON format.
+
+This is a follow-up round of questions. Only ask additional questions if the Agent Instructions require them or if confidence is still below 80%.
+` : 'Generate initial questions based strictly on what the Agent Instructions specify, plus photo suggestions if confidence is low.'}
 
 CRITICAL RESPONSE FORMAT REQUIREMENTS:
-You MUST respond with ONLY a valid JSON array. Do NOT include any other text, explanations, or formatting.
+${isFollowUp ? `
+You MUST respond with a reassessment section followed by a JSON array:
+
+REASSESSMENT: [Your analysis of how the user's answers impact the wound classification and care plan]
+
+Then provide the JSON array format below.
+` : 'You MUST respond with ONLY a valid JSON array. Do NOT include any other text, explanations, or formatting.'}
 
 REQUIRED JSON FORMAT:
 [
@@ -243,7 +292,7 @@ REQUIRED JSON FORMAT:
 
 VALID CATEGORIES: location, patient_info, symptoms, medical_history, wound_assessment, photo_request, other
 
-IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not include any text before or after the JSON array.
+IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFollowUp ? 'Include the reassessment section before the JSON array.' : 'Do not include any text before or after the JSON array.'}
 `;
 
   try {
@@ -251,8 +300,10 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not 
     
     if (model && model.startsWith('gemini')) {
       try {
-        // Add system instruction for Gemini to ensure JSON response
-        const systemInstruction = "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON.";
+        // Add system instruction for Gemini to ensure proper response format
+        const systemInstruction = isFollowUp ? 
+          "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
+          "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON.";
         const fullPrompt = `${systemInstruction}\n\n${analysisPrompt}`;
         response = await callGemini(model, fullPrompt);
       } catch (geminiError: any) {
@@ -263,7 +314,9 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not 
           const messages = [
             {
               role: "system",
-              content: "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
+              content: isFollowUp ? 
+                "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
+                "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
             },
             {
               role: "user",
@@ -280,7 +333,9 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not 
       const messages = [
         {
           role: "system",
-          content: "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
+          content: isFollowUp ? 
+            "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
+            "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
         },
         {
           role: "user",
@@ -296,6 +351,16 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not 
       .replace(/```/g, '')
       .trim();
       
+    // For follow-up responses, extract reassessment information
+    let reassessmentText = '';
+    if (isFollowUp) {
+      const reassessmentMatch = cleanedResponse.match(/REASSESSMENT:\s*(.*?)(?=\[)/s);
+      if (reassessmentMatch) {
+        reassessmentText = reassessmentMatch[1].trim();
+        console.log('Reassessment extracted:', reassessmentText);
+      }
+    }
+    
     // Try to extract JSON array from the response if it contains other text
     const jsonMatch = cleanedResponse.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
@@ -323,8 +388,8 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not 
             stepType: 'question_generation',
             modelUsed: model || 'gpt-4o',
             promptSent: analysisPrompt,
-            responseReceived: cleanedResponse,
-            parsedResult: questions,
+            responseReceived: reassessmentText ? `REASSESSMENT: ${reassessmentText}\n\n${cleanedResponse}` : cleanedResponse,
+            parsedResult: { questions, reassessment: reassessmentText },
             confidenceScore: Math.round(confidence * 100),
             errorOccurred: false,
           });
