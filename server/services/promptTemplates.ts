@@ -163,12 +163,14 @@ C) MEDICAL REFERRAL PREPARATION ANSWERS (Impact urgency/referral need):
 
 **CRITICAL MENTAL HEALTH SAFETY ALERT:**
 ${mentalHealthConcerns}
-**MANDATORY ACTIONS:**
-- Include suicide/mental health resources in care plan
+**MANDATORY ACTIONS FOR CARE PLAN:**
+- Include suicide/mental health resources in URGENT MEDICAL ATTENTION section
 - Recommend immediate professional mental health support
 - For suicide risk: Include National Suicide Prevention Lifeline: 988 or 1-800-273-8255 in critical section
 - For depression: Recommend contacting doctor or therapist
 - Take all mental health concerns seriously regardless of wound severity
+- QUOTE THE PATIENT'S SPECIFIC WORDS in "Your Specific Concerns Addressed" section
+- Address their mental health crisis with empathy and urgency
 
 `;
     }
@@ -178,12 +180,14 @@ ${mentalHealthConcerns}
 
 **DANGEROUS TREATMENT SAFETY ALERT:**
 ${dangerousTreatments}
-**MANDATORY ACTIONS:**
-- Address each dangerous treatment mentioned directly in the care plan
+**MANDATORY ACTIONS FOR CARE PLAN:**
+- Address each dangerous treatment mentioned directly in "Your Specific Concerns Addressed" section
+- QUOTE THE PATIENT'S SPECIFIC WORDS about treatments they mentioned
 - Explain why these treatments are harmful (e.g., "soaking in whiskey can damage tissue and delay healing")
 - Provide safe alternatives for wound care
 - Include strong warnings in the care plan about avoiding these treatments
 - Educate patient about proper wound care practices
+- Include this in URGENT MEDICAL ATTENTION section if treatment is very dangerous
 
 `;
     }
@@ -221,12 +225,18 @@ Examples of REQUIRED integration:
 - If user says "I don't think so?" about diabetes → "You mentioned you don't think you have diabetes, however the wound characteristics strongly suggest diabetic neuropathic ulcers..."
 - If user describes impact on life → "You mentioned you can't walk and this is ruining your life as a dancer. I understand this is devastating..."
 - If user mentions timeline → "You said these wounds have been present for about 2 months, which is concerning for..."
+- If user mentions whiskey soaking → "You mentioned soaking your feet in whiskey every night. This is extremely dangerous and must be stopped immediately..."
+- If user mentions suicide → "You mentioned you might commit suicide. This is a mental health emergency that requires immediate professional help..."
 
 **MANDATORY SECTIONS TO INCLUDE:**
 - Create a "Your Specific Concerns Addressed" section that directly responds to each answer
+- For dangerous treatments or mental health concerns, include in urgent medical attention section
 - For unrelated comments (like political questions), acknowledge but redirect: "You asked about political matters, but let's focus on your urgent medical needs..."
 - Include phrase "I have taken into account your specific answers" in the care plan
 - Never ignore or skip addressing any answer, even if it seems unrelated
+
+**CRITICAL SAFETY REQUIREMENT:**
+If mental health alerts or dangerous treatments are detected, they MUST be prominently featured in the care plan with specific quotes from patient answers.
 `;
   }
 
