@@ -254,16 +254,20 @@ Before generating any new questions, you MUST first reassess the wound classific
 
 1. Note the contradiction or new information
 2. Suggest a revised wound classification if appropriate
-3. Only then determine if additional questions are needed
+3. Address any unusual, contradictory, or concerning responses
+4. Only then determine if additional questions are needed
 
 For example:
 - If image suggested "diabetic ulcer" but user says "I don't have diabetes" → reassess as pressure ulcer or venous ulcer
 - If user mentions "suicidal thoughts" or "amputation fears" → flag for mental health protocols
 - If user reports "numbness" or "can't walk" → consider neurological involvement
+- If user gives contradictory explanations (e.g., "hot metal" vs typical neuropathic ulcer patterns) → question the explanation and note the contradiction
+- If user mentions unusual treatments (e.g., "soaking in whiskey") → address safety concerns and provide proper wound care guidance
+- If user claims wound is from trauma but image shows characteristics of systemic disease → address the discrepancy
 
 MANDATORY REASSESSMENT RESPONSE FORMAT:
 First provide a reassessment section like this:
-REASSESSMENT: [Explain how the user's answers impact the wound classification and care plan - this is critical]
+REASSESSMENT: [Explain how the user's answers impact the wound classification and care plan - this is critical. Address any contradictory, unusual, or concerning responses directly.]
 
 Then provide questions (if needed) in JSON format.
 
@@ -302,7 +306,7 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
       try {
         // Add system instruction for Gemini to ensure proper response format
         const systemInstruction = isFollowUp ? 
-          "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
+          "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. In your reassessment, address ANY contradictory, unusual, or medically concerning responses directly. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
           "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON.";
         const fullPrompt = `${systemInstruction}\n\n${analysisPrompt}`;
         response = await callGemini(model, fullPrompt);
@@ -315,7 +319,7 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
             {
               role: "system",
               content: isFollowUp ? 
-                "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
+                "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. In your reassessment, address ANY contradictory, unusual, or medically concerning responses directly. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
                 "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
             },
             {
@@ -334,7 +338,7 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
         {
           role: "system",
           content: isFollowUp ? 
-            "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
+            "You are a medical AI assistant that MUST respond with a reassessment section followed by valid JSON arrays. In your reassessment, address ANY contradictory, unusual, or medically concerning responses directly. Format: REASSESSMENT: [your analysis] then JSON array. Your response must be parseable JSON." :
             "You are a medical AI assistant that MUST respond with valid JSON arrays only. Never include explanatory text, conversation, or any content outside the JSON format. Your response must be parseable JSON."
         },
         {
