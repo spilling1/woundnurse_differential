@@ -344,6 +344,12 @@ Changelog:
   - **Unrelated Comments Handling**: Non-medical questions and unrelated comments addressed in separate "Additional Questions Addressed" section at bottom of care plan
   - **Acknowledgment Requirement**: All care plans must include phrase "I have taken into account your specific answers" to confirm patient input consideration
   - **Safety Priority**: Mental health concerns treated with same urgency as physical wound care, never minimized regardless of wound severity
+- July 9, 2025. **DUPLICATE IMAGE RESOLUTION STATUS**: Added comprehensive status indicators for duplicate image detection process:
+  - **Duplicate Detection Status**: Clear amber-colored warning card when duplicate image is detected with existing case information
+  - **Resolution Processing Status**: Blue progress indicator showing "Processing Your Choice" during follow-up or new case creation
+  - **Error Handling**: Comprehensive error handling with user-friendly messages for failed duplicate resolution attempts
+  - **Visual Continuity**: Maintains consistent UI flow without dialog interruptions during duplicate detection resolution
+  - **Progress Feedback**: Users now see clear status updates throughout the entire duplicate detection and resolution process
 - July 8, 2025. **TWO-STEP AI CLASSIFICATION SYSTEM**: Implemented independent AI assessment followed by YOLO-informed reconsideration:
   - **Independent Analysis First**: AI runs initial classification without any YOLO influence for unbiased assessment
   - **YOLO Detection Second**: YOLO wound detection provides additional context with confidence scores and measurements

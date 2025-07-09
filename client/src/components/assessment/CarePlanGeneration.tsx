@@ -3,7 +3,7 @@ import { RefreshCw, CheckCircle, ArrowRight, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
@@ -17,6 +17,7 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
   const [generatedPlan, setGeneratedPlan] = useState<any>(null);
   const [duplicateInfo, setDuplicateInfo] = useState<any>(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+  const [resolvingDuplicate, setResolvingDuplicate] = useState(false);
 
   // Generate final care plan mutation
   const finalPlanMutation = useMutation({
@@ -41,6 +42,7 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
       if (data.duplicateDetected) {
         setDuplicateInfo(data);
         setShowDuplicateDialog(true);
+        setProgress(100); // Complete the progress bar
       } else {
         setGeneratedPlan(data);
         onStateChange({
@@ -154,6 +156,85 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
     );
   }
 
+  // Show duplicate resolution status
+  if (showDuplicateDialog && !resolvingDuplicate) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="flex items-center justify-center gap-2 text-amber-600">
+              <AlertTriangle className="h-5 w-5" />
+              Duplicate Image Detected
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">
+                We found an identical image in your previous assessments. Please choose how to proceed:
+              </p>
+              
+              <div className="bg-amber-50 rounded-lg p-4 mb-4">
+                <div className="text-sm text-gray-700">
+                  <strong>Existing Case:</strong> {duplicateInfo?.existingCase?.caseId}
+                  <br />
+                  <strong>Created:</strong> {duplicateInfo?.existingCase?.createdAt 
+                    ? new Date(duplicateInfo.existingCase.createdAt).toLocaleDateString() 
+                    : 'Unknown'}
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                <Button 
+                  onClick={handleCreateFollowUp}
+                  className="w-full bg-medical-blue hover:bg-medical-blue/90"
+                >
+                  Create Follow-Up Assessment
+                </Button>
+                <Button 
+                  onClick={handleCreateNewCase}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Create New Case Anyway
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show resolving duplicate status
+  if (resolvingDuplicate) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="flex items-center justify-center gap-2 text-medical-blue">
+              <RefreshCw className="h-5 w-5 animate-spin" />
+              Processing Your Choice
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">
+                Processing your duplicate image resolution choice...
+              </p>
+              
+              <div className="space-y-2">
+                <Progress value={80} className="w-full" />
+                <p className="text-sm text-gray-500">
+                  Creating your assessment case
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (finalPlanMutation.isSuccess && generatedPlan) {
     return (
       <div className="space-y-6">
@@ -202,97 +283,95 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
   // Handlers for duplicate detection
   const handleCreateFollowUp = async () => {
     setShowDuplicateDialog(false);
+    setResolvingDuplicate(true);
     
-    // Create follow-up assessment with existing case ID
-    const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
-    const followUpResponse = await assessmentApi.finalPlan(
-      state.selectedImage,
-      state.audience,
-      modelToUse,
-      state.aiQuestions,
-      state.woundClassification,
-      state.userFeedback,
-      duplicateInfo.existingCase.caseId // Pass existing case ID
-    );
-    
-    setGeneratedPlan(followUpResponse);
-    onStateChange({
-      finalCaseId: followUpResponse.caseId
-    });
-    
-    toast({
-      title: "Follow-Up Assessment Created",
-      description: `Added as version ${followUpResponse.versionNumber} to case ${followUpResponse.caseId}`,
-    });
+    try {
+      // Create follow-up assessment with existing case ID
+      const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
+      const followUpResponse = await assessmentApi.finalPlan(
+        state.selectedImage,
+        state.audience,
+        modelToUse,
+        state.aiQuestions,
+        state.woundClassification,
+        state.userFeedback,
+        duplicateInfo.existingCase.caseId // Pass existing case ID
+      );
+      
+      setGeneratedPlan(followUpResponse);
+      onStateChange({
+        finalCaseId: followUpResponse.caseId
+      });
+      
+      toast({
+        title: "Follow-Up Assessment Created",
+        description: `Added as version ${followUpResponse.versionNumber} to case ${followUpResponse.caseId}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error Creating Follow-Up",
+        description: "Failed to create follow-up assessment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setResolvingDuplicate(false);
+    }
   };
 
   const handleCreateNewCase = async () => {
     setShowDuplicateDialog(false);
+    setResolvingDuplicate(true);
     
-    // Force create new case (backend will ignore duplicate detection)
-    const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
-    const newCaseResponse = await assessmentApi.finalPlan(
-      state.selectedImage,
-      state.audience,
-      modelToUse,
-      state.aiQuestions,
-      state.woundClassification,
-      state.userFeedback,
-      null, // No existing case ID - force new case
-      true  // forceNew flag
-    );
-    
-    setGeneratedPlan(newCaseResponse);
-    onStateChange({
-      finalCaseId: newCaseResponse.caseId
-    });
-    
-    toast({
-      title: "New Case Created",
-      description: "Created new assessment case with the same image.",
-    });
+    try {
+      // Force create new case (backend will ignore duplicate detection)
+      const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
+      const newCaseResponse = await assessmentApi.finalPlan(
+        state.selectedImage,
+        state.audience,
+        modelToUse,
+        state.aiQuestions,
+        state.woundClassification,
+        state.userFeedback,
+        null, // No existing case ID - force new case
+        true  // forceNew flag
+      );
+      
+      setGeneratedPlan(newCaseResponse);
+      onStateChange({
+        finalCaseId: newCaseResponse.caseId
+      });
+      
+      toast({
+        title: "New Case Created",
+        description: "Created new assessment case with the same image.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error Creating New Case",
+        description: "Failed to create new assessment case. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setResolvingDuplicate(false);
+    }
   };
 
+  // Default loading state - this shouldn't normally be reached
   return (
-    <>
-      {/* Duplicate Detection Dialog */}
-      <Dialog open={showDuplicateDialog} onOpenChange={setShowDuplicateDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              Duplicate Image Detected
-            </DialogTitle>
-            <DialogDescription>
-              {duplicateInfo?.message}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <div className="text-sm text-gray-600">
-              <strong>Existing Case:</strong> {duplicateInfo?.existingCase?.caseId}
-              <br />
-              <strong>Created:</strong> {duplicateInfo?.existingCase?.createdAt ? new Date(duplicateInfo.existingCase.createdAt).toLocaleDateString() : 'Unknown'}
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              <Button 
-                onClick={handleCreateFollowUp}
-                className="w-full bg-medical-blue hover:bg-medical-blue/90"
-              >
-                Create Follow-Up Assessment
-              </Button>
-              <Button 
-                onClick={handleCreateNewCase}
-                variant="outline"
-                className="w-full"
-              >
-                Create New Case Anyway
-              </Button>
-            </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2">
+            <RefreshCw className="h-5 w-5 animate-spin text-medical-blue" />
+            Processing Assessment
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-gray-600">
+            <p>Processing your wound assessment...</p>
           </div>
-        </DialogContent>
-      </Dialog>
-    </>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
