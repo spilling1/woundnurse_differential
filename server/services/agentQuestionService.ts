@@ -227,8 +227,10 @@ Generate 2-4 strategically selected questions based on:
 
 ${isFollowUp ? 'This is a follow-up round of questions. Only ask additional questions if the Agent Instructions require them or if confidence is still below 80%.' : 'Generate initial questions based strictly on what the Agent Instructions specify, plus photo suggestions if confidence is low.'}
 
-RESPONSE FORMAT:
-Return a JSON array of objects with this structure:
+CRITICAL RESPONSE FORMAT REQUIREMENTS:
+You MUST respond with ONLY a valid JSON array. Do NOT include any other text, explanations, or formatting.
+
+REQUIRED JSON FORMAT:
 [
   {
     "id": "q1",
@@ -239,7 +241,9 @@ Return a JSON array of objects with this structure:
   }
 ]
 
-Use appropriate categories: location, patient_info, symptoms, medical_history, wound_assessment, photo_request, other
+VALID CATEGORIES: location, patient_info, symptoms, medical_history, wound_assessment, photo_request, other
+
+IMPORTANT: Your response must be valid JSON that can be parsed directly. Do not include any text before or after the JSON array.
 `;
 
   try {
@@ -275,11 +279,27 @@ Use appropriate categories: location, patient_info, symptoms, medical_history, w
       response = await callOpenAI(model || 'gpt-4o', messages);
     }
 
-    // Clean the response to remove any markdown formatting
-    const cleanedResponse = response
+    // Clean the response to remove any markdown formatting and extract JSON
+    let cleanedResponse = response
       .replace(/```json/g, '')
       .replace(/```/g, '')
       .trim();
+      
+    // Try to extract JSON array from the response if it contains other text
+    const jsonMatch = cleanedResponse.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      cleanedResponse = jsonMatch[0];
+    }
+    
+    // Remove any leading/trailing text that's not part of the JSON
+    cleanedResponse = cleanedResponse.replace(/^[^[]*/, '').replace(/[^\]]*$/, '');
+    
+    // Ensure we have a valid JSON array structure
+    if (!cleanedResponse.startsWith('[') || !cleanedResponse.endsWith(']')) {
+      console.error('AI response does not contain valid JSON array:', response);
+      // Return empty array instead of throwing error to prevent analysis failure
+      return [];
+    }
       
     try {
       const questions = JSON.parse(cleanedResponse);
