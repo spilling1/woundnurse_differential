@@ -535,6 +535,12 @@ Changelog:
   - **Specialist Guidelines**: Added wound-type-specific referral guidance (Wound Care Specialist, Podiatrist, Vascular Surgeon, etc.)
   - **Discussion Points**: Restored bullet-point format showing specific topics to discuss with medical professionals
   - **Professional Integration**: Enhanced care plans to include comprehensive medical referral information for seamless healthcare coordination
+- July 10, 2025. **CARE PLAN FORMATTING RESTORATION**: Fixed critical HTML formatting issue where care plans were displaying as plain text instead of formatted content:
+  - **HTML Structure Guidelines**: Updated Care Plan Structure instructions with comprehensive HTML formatting requirements
+  - **Color-Coded Sections**: Implemented proper color coding (red for urgent, green for treatment, purple for products, orange for referrals, blue for ongoing care)
+  - **Professional Styling**: Added bordered boxes, proper spacing, inline styles, and responsive design elements
+  - **Visual Enhancement**: Restored emojis in headers, proper typography, and structured layout for better readability
+  - **Consistent Formatting**: Ensured all care plans follow standardized HTML structure with proper semantic elements
 ```
 
 ## User Preferences
