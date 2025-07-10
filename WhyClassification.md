@@ -1060,3 +1060,49 @@ The wound presents as a cluster of puncture marks, which is highly characteristi
 
 ---
 
+
+---
+## Case: 2025-07-10-128
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 9:12:42 PM  
+**Wound Type:** Animal Bite  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The pattern of multiple punctures is highly characteristic of an animal bite. Bite wounds carry a significant risk of deep tissue infection from bacteria in the animal's mouth. Immediate medical evaluation is strongly recommended.
+
+### Classification Process:
+
+**Independent Classification:** Animal Bite (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Animal Bite with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-244
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 9:13:50 PM  
+**Wound Type:** Animal Bite  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound pattern consists of several distinct punctures in a cluster, which is highly characteristic of an animal bite. Due to the nature of puncture wounds from a bite, there is a significant risk for deep tissue infection.
+
+### Classification Process:
+
+**Independent Classification:** Animal Bite (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Animal Bite with 95% confidence
+
+---
+
