@@ -82,11 +82,19 @@ export default function UnsupportedWound() {
             {/* Main Message */}
             <div className="space-y-4 text-gray-700">
               <p className="text-lg leading-relaxed">
-                Our AI analysis indicates this appears to be a <strong>{woundType.toLowerCase()}</strong> with {confidence}% confidence.
+                Our AI identified this as a <strong>{woundType.toLowerCase()}</strong> with {confidence}% confidence.
               </p>
               <p className="leading-relaxed">
-                The Wound Nurses system does not currently support analysis and treatment recommendations for this type of wound.
+                While our system doesn't currently provide treatment recommendations for this wound type, we're continuously expanding our capabilities to support more conditions.
               </p>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800">
+                <p className="font-medium">What you can do:</p>
+                <ul className="mt-2 space-y-1 text-sm">
+                  <li>• Try uploading different images with better lighting or angles</li>
+                  <li>• Consult with a healthcare professional for proper diagnosis</li>
+                  <li>• Check back later as we add support for more wound types</li>
+                </ul>
+              </div>
             </div>
 
             {/* Supported Types */}
@@ -104,24 +112,7 @@ export default function UnsupportedWound() {
               </div>
             </div>
 
-            {/* What to do next */}
-            <div className="bg-green-50 rounded-lg p-6 space-y-3">
-              <h4 className="font-semibold text-green-900">What You Can Do:</h4>
-              <div className="text-left space-y-2 text-green-800">
-                <div className="flex items-start space-x-2">
-                  <Camera className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <span>Try uploading additional images from different angles for better analysis</span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <AlertTriangle className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <span>Consult with a healthcare professional for proper assessment</span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <RefreshCw className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <span>Contact your wound care specialist or primary care provider</span>
-                </div>
-              </div>
-            </div>
+
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6">

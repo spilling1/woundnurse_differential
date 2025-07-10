@@ -518,6 +518,12 @@ Changelog:
     - Fallback when questions complete without confidence threshold
   - **Enhanced Logging**: Added comprehensive logging to track exactly how many questions are preserved and their content
   - **AI Analysis Restoration**: AI now receives ALL patient answers from all question rounds for accurate mental health screening and medical assessment
+- July 10, 2025. **ENHANCED UNSUPPORTED WOUND TYPE HANDLING**: Completely redesigned error handling for unsupported wound types to provide professional user experience:
+  - **Structured Error Responses**: Backend now returns proper JSON error responses with wound type, confidence, and supported types list instead of raw error messages
+  - **Clean Frontend Redirect**: Users are automatically redirected to a professional unsupported wound page instead of seeing JSON error messages
+  - **User-Friendly Messaging**: Enhanced unsupported wound page with helpful guidance, action items, and clear next steps
+  - **Improved Error Parsing**: Updated API client to properly handle structured error responses and pass error properties to frontend components
+  - **Professional UI**: Users now see a polished experience with clear explanations, supported wound types list, and actionable recommendations
 - July 10, 2025. **CRITICAL DUPLICATE DETECTION WORKFLOW RESTRUCTURE**: Completely reorganized duplicate detection to occur at the very beginning of assessment:
   - **Initial Analysis Integration**: Duplicate detection now happens in `/api/assessment/initial-analysis` immediately after image validation
   - **Frontend Flow Update**: Modified ImageUpload component to handle duplicate detection response and skip directly to CarePlanGeneration

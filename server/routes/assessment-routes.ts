@@ -545,6 +545,35 @@ export function registerAssessmentRoutes(app: Express): void {
 
     } catch (error: any) {
       console.error('Initial analysis error:', error);
+      
+      // Check if this is an invalid wound type error
+      if (error.message && error.message.includes('INVALID_WOUND_TYPE:')) {
+        // Extract wound type from error message
+        const woundTypeMatch = error.message.match(/The detected wound type "(.*?)"/);
+        const woundType = woundTypeMatch ? woundTypeMatch[1] : 'Unknown';
+        
+        // Return structured error for frontend to handle gracefully
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE",
+          message: `The detected wound type "${woundType}" is not currently supported by our system.`,
+          woundType,
+          confidence: 85, // Default confidence for unsupported types
+          redirect: "/unsupported-wound",
+          supportedTypes: [
+            "Pressure Injury",
+            "Venous Ulcer", 
+            "Arterial Insufficiency Ulcer",
+            "Diabetic Ulcer",
+            "Surgical Wound",
+            "Traumatic Wound",
+            "Ischemic Wound",
+            "Radiation Wound",
+            "Infectious Wound"
+          ]
+        });
+      }
+      
+      // Handle other errors normally
       res.status(500).json({
         code: "ANALYSIS_ERROR",
         message: error.message || "Failed to analyze images"

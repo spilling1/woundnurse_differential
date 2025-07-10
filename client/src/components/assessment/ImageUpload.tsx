@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Camera, Upload, ArrowRight, RefreshCw, X, Plus, Info } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -13,6 +14,7 @@ import type { WoundClassification } from "@/../../shared/schema";
 
 export default function ImageUpload({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [progress, setProgress] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -135,6 +137,18 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
       }
     },
     onError: (error: any) => {
+      // Check if this is an invalid wound type error
+      if (error.code === "INVALID_WOUND_TYPE") {
+        // Redirect to unsupported wound page with details
+        const params = new URLSearchParams({
+          woundType: error.woundType || 'Unknown',
+          confidence: error.confidence?.toString() || '85'
+        });
+        setLocation(`/unsupported-wound?${params.toString()}`);
+        return;
+      }
+      
+      // Handle other errors normally
       toast({
         title: "Analysis Failed",
         description: error.message,
