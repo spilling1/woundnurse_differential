@@ -15,8 +15,7 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
   const [, setLocation] = useLocation();
   const [progress, setProgress] = useState(0);
   const [generatedPlan, setGeneratedPlan] = useState<any>(null);
-  const [duplicateInfo, setDuplicateInfo] = useState<any>(null);
-  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(!!state.duplicateInfo);
   const [resolvingDuplicate, setResolvingDuplicate] = useState(false);
 
   // Generate final care plan mutation
@@ -39,21 +38,15 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
       );
     },
     onSuccess: (data: any) => {
-      if (data.duplicateDetected) {
-        setDuplicateInfo(data);
-        setShowDuplicateDialog(true);
-        setProgress(100); // Complete the progress bar
-      } else {
-        setGeneratedPlan(data);
-        onStateChange({
-          finalCaseId: data.caseId
-        });
-        
-        toast({
-          title: "Care Plan Generated",
-          description: "Your personalized care plan is ready for review.",
-        });
-      }
+      setGeneratedPlan(data);
+      onStateChange({
+        finalCaseId: data.caseId
+      });
+      
+      toast({
+        title: "Care Plan Generated",
+        description: "Your personalized care plan is ready for review.",
+      });
     },
     onError: (error: any) => {
       toast({
@@ -80,12 +73,12 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
     }
   }, [finalPlanMutation.isPending, finalPlanMutation.isSuccess]);
 
-  // Auto-start plan generation when component mounts
+  // Auto-start plan generation when component mounts (only if no duplicate detected)
   useEffect(() => {
-    if (!finalPlanMutation.isPending && !finalPlanMutation.isSuccess && !finalPlanMutation.isError) {
+    if (!state.duplicateInfo && !finalPlanMutation.isPending && !finalPlanMutation.isSuccess && !finalPlanMutation.isError) {
       finalPlanMutation.mutate();
     }
-  }, []);
+  }, [state.duplicateInfo]);
 
   const handleViewCarePlan = () => {
     if (generatedPlan?.caseId) {
@@ -109,7 +102,7 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
         state.aiQuestions,
         state.woundClassification,
         state.userFeedback,
-        duplicateInfo.existingCase.caseId // Pass existing case ID
+        state.duplicateInfo?.existingCase?.caseId // Pass existing case ID
       );
       
       setGeneratedPlan(followUpResponse);
@@ -251,10 +244,10 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
               
               <div className="bg-amber-50 rounded-lg p-4 mb-4">
                 <div className="text-sm text-gray-700">
-                  <strong>Existing Case:</strong> {duplicateInfo?.existingCase?.caseId}
+                  <strong>Existing Case:</strong> {state.duplicateInfo?.existingCase?.caseId}
                   <br />
-                  <strong>Created:</strong> {duplicateInfo?.existingCase?.createdAt 
-                    ? new Date(duplicateInfo.existingCase.createdAt).toLocaleDateString() 
+                  <strong>Created:</strong> {state.duplicateInfo?.existingCase?.createdAt 
+                    ? new Date(state.duplicateInfo.existingCase.createdAt).toLocaleDateString() 
                     : 'Unknown'}
                 </div>
               </div>

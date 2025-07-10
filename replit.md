@@ -456,6 +456,12 @@ Changelog:
   - **Processing Optimization**: Prevents unnecessary YOLO detection and AI classification when duplicate images are found
   - **User Experience**: Users get immediate feedback about duplicates without waiting for full analysis to complete
   - **Resource Efficiency**: Saves computational resources by avoiding redundant analysis of identical images
+- July 10, 2025. **CRITICAL DUPLICATE DETECTION WORKFLOW RESTRUCTURE**: Completely reorganized duplicate detection to occur at the very beginning of assessment:
+  - **Initial Analysis Integration**: Duplicate detection now happens in `/api/assessment/initial-analysis` immediately after image validation
+  - **Frontend Flow Update**: Modified ImageUpload component to handle duplicate detection response and skip directly to CarePlanGeneration
+  - **Removed Late Detection**: Eliminated duplicate detection from final plan generation route to prevent redundant processing
+  - **State Management**: Added duplicateInfo to AssessmentFlowState and updated CarePlanGeneration to use state-based duplicate handling
+  - **Resource Optimization**: Prevents all AI analysis, YOLO detection, and question generation for duplicate images, saving significant processing time
 ```
 
 ## User Preferences

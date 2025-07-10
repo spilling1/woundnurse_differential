@@ -407,6 +407,26 @@ export function registerAssessmentRoutes(app: Express): void {
         await validateImage(file);
       }
       
+      // Check for duplicate images IMMEDIATELY after validation, before any AI analysis
+      const primaryImage = files[0];
+      const imageBase64 = primaryImage.buffer.toString('base64');
+      
+      if (req.customUser?.id && primaryImage.size > 0) {
+        const duplicateAssessment = await storage.findAssessmentByImageData(req.customUser.id, imageBase64, primaryImage.size);
+        if (duplicateAssessment) {
+          // Return information about the duplicate so frontend can ask user
+          return res.json({
+            duplicateDetected: true,
+            existingCase: {
+              caseId: duplicateAssessment.caseId,
+              createdAt: duplicateAssessment.createdAt,
+              classification: duplicateAssessment.classification
+            },
+            message: "We found an identical image in your previous assessments. Would you like to create a follow-up assessment or start a new case?"
+          });
+        }
+      }
+      
       // Get agent instructions
       const agentInstructions = await storage.getActiveAgentInstructions();
       const instructions = agentInstructions ? 

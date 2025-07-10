@@ -43,6 +43,7 @@ export interface AssessmentFlowState {
   selectedAlternative: string | null;
   questionRound: number;
   answeredQuestions: AIGeneratedQuestion[];
+  duplicateInfo?: any;
 }
 
 export interface StepProps {

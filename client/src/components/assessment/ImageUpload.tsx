@@ -117,12 +117,22 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
       );
     },
     onSuccess: (data: any) => {
-      onStateChange({
-        aiQuestions: data.questions || [],
-        woundClassification: data.classification,
-        currentStep: 'ai-questions'
-      });
-      onNextStep();
+      if (data.duplicateDetected) {
+        // Handle duplicate detection at the beginning of the process
+        onStateChange({
+          duplicateInfo: data,
+          currentStep: 'generating-plan' // Skip to plan generation to handle duplicate
+        });
+        onNextStep();
+      } else {
+        // Normal flow - proceed with questions
+        onStateChange({
+          aiQuestions: data.questions || [],
+          woundClassification: data.classification,
+          currentStep: 'ai-questions'
+        });
+        onNextStep();
+      }
     },
     onError: (error: any) => {
       toast({
