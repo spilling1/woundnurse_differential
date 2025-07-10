@@ -853,3 +853,26 @@ Multiple deep puncture wounds, highly consistent with bite marks, are present ov
 
 ---
 
+
+---
+## Case: 2025-07-10-694
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:56:46 PM  
+**Wound Type:** diabetic foot ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound presents as a deep, full-thickness ulcer with well-defined, 'punched-out' edges. There is significant hyperkeratosis (callus) surrounding the wound perimeter. The wound bed is predominantly red, indicating granulation tissue, with a small amount of white, stringy slough or potentially exposed tendon. The surrounding skin appears dry.
+
+### Classification Process:
+
+**Independent Classification:** diabetic foot ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as diabetic foot ulcer with 95% confidence
+
+---
+

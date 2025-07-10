@@ -726,26 +726,57 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getWoundTypeByName(name: string): Promise<WoundType | undefined> {
-    // First try exact match
-    let [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, name));
+    const normalizedName = name.toLowerCase().trim();
+    
+    // First try exact match on name
+    let [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, normalizedName));
     
     if (woundType) {
       return woundType;
     }
     
-    // If no exact match, try with spaces converted to underscores
-    const nameWithUnderscores = name.replace(/\s+/g, '_').toLowerCase();
+    // Try with spaces converted to underscores
+    const nameWithUnderscores = normalizedName.replace(/\s+/g, '_');
     [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, nameWithUnderscores));
     
     if (woundType) {
       return woundType;
     }
     
-    // If still no match, try with underscores converted to spaces
-    const nameWithSpaces = name.replace(/_/g, ' ').toLowerCase();
+    // Try with underscores converted to spaces
+    const nameWithSpaces = normalizedName.replace(/_/g, ' ');
     [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, nameWithSpaces));
     
-    return woundType || undefined;
+    if (woundType) {
+      return woundType;
+    }
+    
+    // Check display names
+    const allWoundTypes = await db.select().from(woundTypes);
+    
+    // Try exact match on display name
+    const displayNameMatch = allWoundTypes.find(type => 
+      type.displayName.toLowerCase() === normalizedName
+    );
+    
+    if (displayNameMatch) {
+      return displayNameMatch;
+    }
+    
+    // Finally, check synonyms
+    const synonymMatch = allWoundTypes.find(type => {
+      if (type.synonyms && type.synonyms.length > 0) {
+        return type.synonyms.some(synonym => {
+          const normalizedSynonym = synonym.toLowerCase().trim();
+          return normalizedSynonym === normalizedName || 
+                 normalizedName.includes(normalizedSynonym) ||
+                 normalizedSynonym.includes(normalizedName);
+        });
+      }
+      return false;
+    });
+    
+    return synonymMatch || undefined;
   }
 
   async createWoundType(woundType: InsertWoundType): Promise<WoundType> {

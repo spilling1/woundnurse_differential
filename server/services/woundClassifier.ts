@@ -49,7 +49,13 @@ async function validateWoundType(detectedWoundType: string): Promise<{
     for (const woundType of enabledWoundTypes) {
       if (woundType.synonyms && woundType.synonyms.length > 0) {
         const synonyms = woundType.synonyms;
-        if (synonyms.some(synonym => normalizedDetected.includes(synonym.toLowerCase()))) {
+        // Check for exact matches and partial matches in synonyms
+        if (synonyms.some(synonym => {
+          const normalizedSynonym = synonym.toLowerCase().trim();
+          return normalizedDetected === normalizedSynonym || 
+                 normalizedDetected.includes(normalizedSynonym) ||
+                 normalizedSynonym.includes(normalizedDetected);
+        })) {
           return { isValid: true, validTypes, closestMatch: woundType.displayName };
         }
       }

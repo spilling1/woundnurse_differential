@@ -76,27 +76,66 @@ export async function generateCarePlan(
     
     console.log(`CarePlanGenerator: Confidence level: ${confidencePercent}%`);
     
-    // Check if wound type is supported
-    const supportedWoundTypes = [
-      'pressure injury', 'pressure ulcer', 'venous ulcer', 'arterial insufficiency ulcer',
-      'diabetic ulcer', 'surgical wound', 'traumatic wound', 'ischemic wound',
-      'radiation wound', 'infectious wound'
-    ];
-    
-    const woundTypeSupported = supportedWoundTypes.some(type => 
-      classification.woundType?.toLowerCase().includes(type.toLowerCase()) ||
-      type.toLowerCase().includes(classification.woundType?.toLowerCase())
-    );
-    
-    if (!woundTypeSupported) {
-      // Refuse upfront for unsupported wound types
-      return `**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.
+    // Check if wound type is supported using database wound types
+    try {
+      const enabledWoundTypes = await storage.getEnabledWoundTypes();
+      const normalizedWoundType = classification.woundType?.toLowerCase().trim() || '';
+      
+      let woundTypeSupported = false;
+      
+      // Check for exact matches, partial matches, and synonyms
+      for (const type of enabledWoundTypes) {
+        // Check display name and internal name
+        if (type.displayName.toLowerCase() === normalizedWoundType ||
+            type.name.toLowerCase() === normalizedWoundType) {
+          woundTypeSupported = true;
+          break;
+        }
+        
+        // Check partial matches
+        if (normalizedWoundType.includes(type.displayName.toLowerCase()) ||
+            normalizedWoundType.includes(type.name.toLowerCase()) ||
+            type.displayName.toLowerCase().includes(normalizedWoundType) ||
+            type.name.toLowerCase().includes(normalizedWoundType)) {
+          woundTypeSupported = true;
+          break;
+        }
+        
+        // Check synonyms
+        if (type.synonyms && type.synonyms.length > 0) {
+          for (const synonym of type.synonyms) {
+            const normalizedSynonym = synonym.toLowerCase().trim();
+            if (normalizedSynonym === normalizedWoundType || 
+                normalizedWoundType.includes(normalizedSynonym) ||
+                normalizedSynonym.includes(normalizedWoundType)) {
+              woundTypeSupported = true;
+              break;
+            }
+          }
+        }
+        
+        if (woundTypeSupported) break;
+      }
+      
+      if (!woundTypeSupported) {
+        const supportedTypesList = enabledWoundTypes.map(type => type.displayName).join(', ');
+        console.log(`CarePlanGenerator: Wound type "${classification.woundType}" not supported. Enabled types: ${supportedTypesList}`);
+        
+        // Refuse upfront for unsupported wound types
+        return `**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.
 
 <div style="background-color:#fee2e2; border:2px solid #dc2626; padding:20px; border-radius:8px; margin:16px 0; text-align:center;">
 <h2 style="color:#dc2626; margin:0 0 12px 0;">Unsupported Wound Type</h2>
 <p style="color:#dc2626; margin:0 0 12px 0;">This wound type (${classification.woundType}) is not supported by our analysis system.</p>
+<p style="color:#dc2626; margin:0 0 12px 0;">Our AI is configured to assess: ${supportedTypesList}</p>
 <p style="color:#dc2626; margin:0;">Please consult a healthcare professional for proper assessment and treatment. If you believe this is incorrect, please upload additional pictures from different angles.</p>
 </div>`;
+      }
+      
+      console.log(`CarePlanGenerator: Wound type "${classification.woundType}" is supported`);
+    } catch (error) {
+      console.error('CarePlanGenerator: Error checking wound type support:', error);
+      // In case of error, allow the care plan to proceed
     }
     
     // Confidence-based response logic

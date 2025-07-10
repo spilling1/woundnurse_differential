@@ -495,6 +495,13 @@ Changelog:
   - **UI Status Indicators**: Toggle shows clear enabled/disabled status with visual indicators (Eye/EyeOff icons)
   - **Backend Integration**: Complete API support for persisting and retrieving toggle state
   - **User Request**: Duplicate detection disabled per user request - system now allows duplicate image uploads without detection
+- July 10, 2025. **CRITICAL WOUND TYPE SUPPORT FIXES**: Fixed multiple issues preventing proper support for all enabled wound types:
+  - **Enhanced Synonym Matching**: Improved validateWoundType function to properly check exact matches, partial matches, and synonyms
+  - **Database-Driven Validation**: Replaced hard-coded supportedWoundTypes array with dynamic database validation using actual enabled wound types
+  - **Comprehensive getWoundTypeByName**: Enhanced storage function to check display names, internal names, and synonyms with flexible matching
+  - **Question Generation Fix**: Fixed issue where AI question service couldn't find "diabetic foot ulcer" wound type instructions
+  - **Synonym Recognition**: All database-stored synonyms (e.g., "diabetic foot ulcer" → "diabetic_ulcer") now properly recognized throughout system
+  - **Care Plan Generation**: Fixed unsupported wound type error by using real-time database validation instead of static arrays
 - July 10, 2025. **CRITICAL DATA FLOW BUG FIX**: Fixed major issue where patient answers from multiple question rounds were lost during care plan generation:
   - **Root Cause**: `handleProceedToPlan` function was only preserving current round's questions instead of ALL accumulated answered questions across rounds
   - **Lost Critical Data**: System was ignoring first round answers including suicide ideation ("I might kill myself") and injury cause ("cat bite")
