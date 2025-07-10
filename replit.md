@@ -462,6 +462,11 @@ Changelog:
   - **Removed Late Detection**: Eliminated duplicate detection from final plan generation route to prevent redundant processing
   - **State Management**: Added duplicateInfo to AssessmentFlowState and updated CarePlanGeneration to use state-based duplicate handling
   - **Resource Optimization**: Prevents all AI analysis, YOLO detection, and question generation for duplicate images, saving significant processing time
+- July 10, 2025. **BOXED PRODUCT RECOMMENDATIONS RESTORED**: Enhanced product recommendations to use bordered boxes as preferred:
+  - **Visual Enhancement**: Updated AI instructions to generate bordered product boxes instead of simple text links
+  - **Consistent Formatting**: Each product recommendation now appears in a bordered box with gray background
+  - **Improved Layout**: Product boxes include product name, description, and Amazon link with professional styling
+  - **User Experience**: Restored the preferred visual format for "Items to Purchase" section with clear product boundaries
 ```
 
 ## User Preferences
