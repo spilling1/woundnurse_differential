@@ -761,3 +761,26 @@ Multiple deep puncture wounds and small lacerations consistent with a bite injur
 
 ---
 
+
+---
+## Case: 2025-07-10-214
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:13:34 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds and lacerations are present, consistent with an animal bite. The surrounding skin is swollen and red, indicating a significant inflammatory response or early infection. The depth of the wounds suggests potential injury to underlying structures like tendons or bones.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+

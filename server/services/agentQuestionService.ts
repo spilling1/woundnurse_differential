@@ -264,24 +264,29 @@ CRITICAL WOUND TYPE REQUIREMENTS:
 ${hasWoundTypeRequirements ? `
 🚨 MANDATORY WOUND TYPE REQUIREMENTS DETECTED 🚨
 
-CRITICAL INSTRUCTION SCAN REQUIREMENT:
-Before generating ANY questions, you MUST:
-1. Scan the Agent Instructions above for EVERY line containing "MUST ASK"
-2. Extract the exact requirement from each "MUST ASK" line
-3. Generate a specific question for EACH requirement found
-4. Count the total "MUST ASK" requirements and verify you generate that exact number of questions
+CRITICAL REQUIREMENT: EXTRACT EVERY "MUST ASK" LINE FROM DATABASE INSTRUCTIONS
 
-MANDATORY EXTRACTION PROCESS:
-- Find "MUST ASK - ORIGIN OF THE WOUND" → Generate origin question
-- Find "MUST ASK - TETANUS STATUS" → Generate tetanus question  
-- Find "MUST ASK - CONTAMINATION RISK" → Generate contamination question
-- Find any other "MUST ASK - [REQUIREMENT]" → Generate corresponding question
-- Look for test questions like "MUST ASK - ""WHY IS YOUR HAIR RED?""" → Include exactly as specified
+Step 1: LINE-BY-LINE SCAN
+Scan the Agent Instructions above and find these EXACT lines:
+- "MUST ASK - ORIGIN OF THE WOUND" 
+- "MUST ASK - TETANUS STATUS"
+- "MUST ASK - CONTAMINATION RISK" 
+- "MUST ASK - ""WHY IS YOUR HAIR RED?"""
 
-🚨 CRITICAL: You must generate a question for EVERY "MUST ASK" requirement found in the Agent Instructions. NO EXCEPTIONS. 🚨
+Step 2: MANDATORY QUESTION GENERATION
+For EACH "MUST ASK" line found, you MUST generate ONE question:
 
-VERIFICATION REQUIREMENT:
-After scanning the Agent Instructions, you should have found multiple "MUST ASK" requirements. Generate exactly one question for each requirement. Do NOT skip any based on confidence level or other factors.
+1. ORIGIN OF THE WOUND → Ask how/when the injury occurred
+2. TETANUS STATUS → Ask about tetanus vaccination status  
+3. CONTAMINATION RISK → Ask about environment where injury occurred and what contaminated it
+4. "WHY IS YOUR HAIR RED?" → Include this EXACT question as written in database
+
+🚨 VERIFICATION CHECKLIST 🚨
+Count the "MUST ASK" lines in the instructions. You MUST generate exactly that many questions.
+For traumatic wounds, you should find 4 "MUST ASK" requirements.
+If you generate fewer than 4 questions, you have FAILED to follow database instructions.
+
+CRITICAL: Generate questions for ALL "MUST ASK" requirements. Do NOT paraphrase, summarize, or skip any requirements.
 ` : ''}
 
 QUESTION STRATEGY FRAMEWORK:
