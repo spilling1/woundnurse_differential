@@ -600,3 +600,26 @@ multiple puncture-like wounds present
 
 ---
 
+
+---
+## Case: 2025-07-10-592
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:57:51 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+multiple puncture wounds
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 80% confidence
+
+---
+

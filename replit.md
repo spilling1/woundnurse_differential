@@ -469,6 +469,11 @@ Changelog:
   - **Emergency Fallback**: Replaced hardcoded emergency questions with proper error message "The image could not be processed, please try again"
   - **Zero Hardcoded Requirements**: All question generation requirements now flow through database-stored AI instructions only
   - **Pure Database Architecture**: System now relies entirely on AI Configuration and wound_types table for all requirements
+- July 10, 2025. **WOUND TYPE LOOKUP FIX**: Fixed critical issue where AI classification "traumatic wound" couldn't find database entry "traumatic_wound":
+  - **Flexible Name Matching**: Enhanced getWoundTypeByName function to handle both "traumatic wound" and "traumatic_wound" formats
+  - **Space/Underscore Conversion**: Automatic conversion between spaces and underscores for wound type name matching
+  - **Removed isTraumaticWound Error**: Fixed ReferenceError from removed hardcoded variable reference
+  - **Database Integration Working**: Traumatic wound instructions now properly retrieved from wound_types table
 - July 10, 2025. **CRITICAL CARE PLAN GENERATION FIXES**: Fixed three major issues preventing proper care plan generation:
   - **Fixed OpenAI Token Limit**: Increased from 1000 to 4000 tokens allowing comprehensive care plans instead of truncated responses
   - **Fixed Product Link URLs**: Corrected database field mapping from `product.amazonUrl` to `product.amazon_search_url` with fallback URL generation

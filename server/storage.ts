@@ -724,7 +724,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getWoundTypeByName(name: string): Promise<WoundType | undefined> {
-    const [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, name));
+    // First try exact match
+    let [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, name));
+    
+    if (woundType) {
+      return woundType;
+    }
+    
+    // If no exact match, try with spaces converted to underscores
+    const nameWithUnderscores = name.replace(/\s+/g, '_').toLowerCase();
+    [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, nameWithUnderscores));
+    
+    if (woundType) {
+      return woundType;
+    }
+    
+    // If still no match, try with underscores converted to spaces
+    const nameWithSpaces = name.replace(/_/g, ' ').toLowerCase();
+    [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, nameWithSpaces));
+    
     return woundType || undefined;
   }
 
