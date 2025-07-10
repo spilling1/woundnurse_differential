@@ -427,6 +427,15 @@ Changelog:
   - **Error Handling**: System rejects unsupported wound types (e.g., burns) with helpful error messages listing valid types
   - **Intelligent Validation**: Smart wound type matching with synonyms and partial matches for better classification accuracy
   - **Seeded Data**: Pre-populated with 10 standard wound types including pressure injuries, diabetic ulcers, venous ulcers, etc.
+- July 10, 2025. **AI CLASSIFICATION REASONING TRACKER**: Created comprehensive "Why Classification" logging system:
+  - **WhyClassification.md**: New document automatically tracking AI decision-making process for every wound assessment
+  - **Enhanced Reasoning Extraction**: Intelligent parsing of AI responses to capture medical reasoning, visual analysis, and decision rationale
+  - **YOLO Integration Analysis**: Detailed logging of how YOLO detection results influence AI confidence and classification decisions
+  - **Independent vs Final Classification**: Tracks both initial AI assessment and final decision after YOLO reconsideration
+  - **Admin API Endpoint**: /api/admin/classification-log provides programmatic access to classification reasoning logs
+  - **Comprehensive Metadata**: Logs include user info, timestamps, AI model used, confidence levels, detection methods, and decision reasoning
+  - **Automatic Logging**: Every AI classification automatically appends to WhyClassification.md with structured reasoning analysis
+  - **Transparency Enhancement**: Provides clear audit trail of AI decision-making process for medical review and system improvement
 ```
 
 ## User Preferences

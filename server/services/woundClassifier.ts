@@ -3,6 +3,7 @@ import { analyzeWoundImageWithGemini } from "./gemini";
 import { storage } from "../storage";
 import { woundDetectionService } from "./woundDetection";
 import { cnnWoundClassifier, convertCNNToStandardClassification } from "./cnnWoundClassifier";
+import { whyClassificationLogger } from "./whyClassificationLogger";
 
 // Helper function to validate wound type against configured wound types
 async function validateWoundType(detectedWoundType: string): Promise<{
@@ -72,7 +73,7 @@ async function validateWoundType(detectedWoundType: string): Promise<{
   }
 }
 
-export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg', sessionId?: string): Promise<any> {
+export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg', sessionId?: string, userInfo?: { userId: string; email: string }): Promise<any> {
   try {
     // Step 1: TEMPORARILY DISABLED CNN due to poor accuracy (hand classified as diabetic ulcer)
     // TODO: Retrain CNN models with better data quality and validation
@@ -344,6 +345,37 @@ Provide your updated assessment in the same JSON format, considering both your v
     enhancedClassification.modelInfo = usedCNN ? 
       { type: 'Trained CNN', accuracy: 'High', processingTime: classification.cnnData?.processingTime } :
       { type: model, accuracy: 'Variable', apiCall: true };
+
+    // Log the classification reasoning if user info is available
+    if (userInfo && sessionId) {
+      try {
+        // Get the AI response for reasoning extraction
+        const aiResponse = JSON.stringify(classification);
+        
+        await whyClassificationLogger.logClassification({
+          caseId: sessionId,
+          userId: userInfo.userId,
+          email: userInfo.email,
+          woundType: enhancedClassification.woundType,
+          confidence: enhancedClassification.confidence,
+          aiModel: model,
+          aiResponse,
+          detectionMethod: enhancedClassification.classificationMethod,
+          yoloData: yoloEnabled ? {
+            enabled: true,
+            detectionFound: detectionResult && detectionResult.detections && detectionResult.detections.length > 0,
+            yoloConfidence: detectionResult?.detections?.[0]?.confidence,
+            originalConfidence: independentClassification?.confidence
+          } : { enabled: false, detectionFound: false },
+          independentClassification: independentClassification ? {
+            woundType: independentClassification.woundType,
+            confidence: independentClassification.confidence
+          } : undefined
+        });
+      } catch (logError) {
+        console.error('Error logging classification reasoning:', logError);
+      }
+    }
 
     return enhancedClassification;
   } catch (error: any) {

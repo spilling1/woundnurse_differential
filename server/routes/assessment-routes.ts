@@ -12,6 +12,7 @@ import { LoggerService } from "../services/loggerService";
 import { callOpenAI } from "../services/openai";
 import { callGemini } from "../services/gemini";
 import { cnnWoundClassifier } from "../services/cnnWoundClassifier";
+import { whyClassificationLogger } from "../services/whyClassificationLogger";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -402,7 +403,14 @@ export function registerAssessmentRoutes(app: Express): void {
         const imageBase64 = primaryImage.buffer.toString('base64');
         // Generate a case ID for logging (will be used later)
         const caseId = generateCaseId();
-        classification = await classifyWound(imageBase64, model, primaryImage.mimetype, caseId);
+        
+        // Get user info for logging
+        const userInfo = req.customUser ? {
+          userId: req.customUser.id,
+          email: req.customUser.email
+        } : undefined;
+        
+        classification = await classifyWound(imageBase64, model, primaryImage.mimetype, caseId, userInfo);
       } else {
         // Multiple image analysis - use enhanced AI functions
         const images = files.map(file => ({
@@ -414,7 +422,14 @@ export function registerAssessmentRoutes(app: Express): void {
         const primaryImage = images[0];
         // Generate a case ID for logging (will be used later)
         const caseId = generateCaseId();
-        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType, caseId);
+        
+        // Get user info for logging
+        const userInfo = req.customUser ? {
+          userId: req.customUser.id,
+          email: req.customUser.email
+        } : undefined;
+        
+        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType, caseId, userInfo);
         
         if (model.includes('gemini')) {
           // Use Gemini multiple image analysis
@@ -975,6 +990,22 @@ export function registerAssessmentRoutes(app: Express): void {
     } catch (error) {
       console.error('Error fetching products log:', error);
       res.status(500).json({ error: 'Failed to fetch products log' });
+    }
+  });
+
+  // Admin endpoint to view classification reasoning logs
+  app.get('/api/admin/classification-log', isAuthenticated, async (req, res) => {
+    try {
+      // Check if user is admin
+      if (!req.customUser || req.customUser.role !== 'admin') {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+
+      const logs = await whyClassificationLogger.getRecentLogs(50);
+      res.json({ logs });
+    } catch (error) {
+      console.error('Error fetching classification logs:', error);
+      res.status(500).json({ error: 'Failed to fetch classification logs' });
     }
   });
 } 
