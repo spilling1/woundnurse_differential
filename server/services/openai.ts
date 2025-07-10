@@ -17,7 +17,7 @@ export async function callOpenAI(model: string, messages: any[], responseFormat:
     const params: any = {
       model: normalizedModel === "gpt-3.5-pro" ? "gpt-3.5-turbo" : normalizedModel,
       messages,
-      max_tokens: 1000,
+      max_tokens: 4000, // Increased for comprehensive care plans
     };
 
     if (responseFormat) {
