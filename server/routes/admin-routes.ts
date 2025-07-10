@@ -2,8 +2,8 @@ import type { Express } from "express";
 import { storage } from "../storage";
 import { isAuthenticated, isAdmin } from "../customAuth";
 import { generateCarePlan } from "../services/carePlanGenerator";
-import { userUpdateSchema, companyCreateSchema, companyUpdateSchema, insertDetectionModelSchema, insertAiAnalysisModelSchema } from "@shared/schema";
-import type { InsertDetectionModel, InsertAiAnalysisModel } from "@shared/schema";
+import { userUpdateSchema, companyCreateSchema, companyUpdateSchema, insertDetectionModelSchema, insertAiAnalysisModelSchema, insertWoundTypeSchema } from "@shared/schema";
+import type { InsertDetectionModel, InsertAiAnalysisModel, InsertWoundType } from "@shared/schema";
 
 export function registerAdminRoutes(app: Express): void {
   // Debug authentication
@@ -892,6 +892,178 @@ export function registerAdminRoutes(app: Express): void {
       res.status(500).json({
         code: "DELETE_AI_ANALYSIS_MODEL_ERROR",
         message: error.message || "Failed to delete AI analysis model"
+      });
+    }
+  });
+
+  // ===== WOUND TYPE MANAGEMENT ROUTES =====
+
+  // Get all wound types (admin only)
+  app.get("/api/admin/wound-types", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const woundTypes = await storage.getAllWoundTypes();
+      res.json(woundTypes);
+    } catch (error: any) {
+      console.error('Error fetching wound types:', error);
+      res.status(500).json({
+        code: "FETCH_WOUND_TYPES_ERROR",
+        message: error.message || "Failed to fetch wound types"
+      });
+    }
+  });
+
+  // Get enabled wound types (admin only)
+  app.get("/api/admin/wound-types/enabled", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const woundTypes = await storage.getEnabledWoundTypes();
+      res.json(woundTypes);
+    } catch (error: any) {
+      console.error('Error fetching enabled wound types:', error);
+      res.status(500).json({
+        code: "FETCH_ENABLED_WOUND_TYPES_ERROR",
+        message: error.message || "Failed to fetch enabled wound types"
+      });
+    }
+  });
+
+  // Get default wound type (admin only)
+  app.get("/api/admin/wound-types/default", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const woundType = await storage.getDefaultWoundType();
+      res.json(woundType);
+    } catch (error: any) {
+      console.error('Error fetching default wound type:', error);
+      res.status(500).json({
+        code: "FETCH_DEFAULT_WOUND_TYPE_ERROR",
+        message: error.message || "Failed to fetch default wound type"
+      });
+    }
+  });
+
+  // Create wound type (admin only)
+  app.post("/api/admin/wound-types", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const validation = insertWoundTypeSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE_DATA",
+          message: "Invalid wound type data",
+          errors: validation.error.errors
+        });
+      }
+
+      const woundType = await storage.createWoundType(validation.data);
+      res.json(woundType);
+    } catch (error: any) {
+      console.error('Error creating wound type:', error);
+      res.status(500).json({
+        code: "CREATE_WOUND_TYPE_ERROR",
+        message: error.message || "Failed to create wound type"
+      });
+    }
+  });
+
+  // Update wound type (admin only)
+  app.patch("/api/admin/wound-types/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE_ID",
+          message: "Invalid wound type ID"
+        });
+      }
+
+      const woundType = await storage.updateWoundType(id, req.body);
+      res.json(woundType);
+    } catch (error: any) {
+      console.error('Error updating wound type:', error);
+      res.status(500).json({
+        code: "UPDATE_WOUND_TYPE_ERROR",
+        message: error.message || "Failed to update wound type"
+      });
+    }
+  });
+
+  // Toggle wound type enabled/disabled (admin only)
+  app.patch("/api/admin/wound-types/:id/toggle", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE_ID",
+          message: "Invalid wound type ID"
+        });
+      }
+
+      const { enabled } = req.body;
+      if (typeof enabled !== 'boolean') {
+        return res.status(400).json({
+          code: "INVALID_ENABLED_VALUE",
+          message: "Enabled must be a boolean value"
+        });
+      }
+
+      const woundType = await storage.toggleWoundType(id, enabled);
+      res.json(woundType);
+    } catch (error: any) {
+      console.error('Error toggling wound type:', error);
+      res.status(500).json({
+        code: "TOGGLE_WOUND_TYPE_ERROR",
+        message: error.message || "Failed to toggle wound type"
+      });
+    }
+  });
+
+  // Set default wound type (admin only)
+  app.patch("/api/admin/wound-types/:id/default", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE_ID",
+          message: "Invalid wound type ID"
+        });
+      }
+
+      const woundType = await storage.setDefaultWoundType(id);
+      res.json(woundType);
+    } catch (error: any) {
+      console.error('Error setting default wound type:', error);
+      res.status(500).json({
+        code: "SET_DEFAULT_WOUND_TYPE_ERROR",
+        message: error.message || "Failed to set default wound type"
+      });
+    }
+  });
+
+  // Delete wound type (admin only)
+  app.delete("/api/admin/wound-types/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE_ID",
+          message: "Invalid wound type ID"
+        });
+      }
+
+      const success = await storage.deleteWoundType(id);
+      
+      if (!success) {
+        return res.status(404).json({
+          code: "WOUND_TYPE_NOT_FOUND",
+          message: "Wound type not found"
+        });
+      }
+
+      res.json({ success: true, message: "Wound type deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting wound type:', error);
+      res.status(500).json({
+        code: "DELETE_WOUND_TYPE_ERROR",
+        message: error.message || "Failed to delete wound type"
       });
     }
   });

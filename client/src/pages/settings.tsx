@@ -3,11 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Save, RefreshCw, ArrowLeft } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Settings, Save, RefreshCw, ArrowLeft, Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { apiRequest } from "@/lib/queryClient";
 
 function SettingsPage() {
   const [systemPrompts, setSystemPrompts] = useState("");
@@ -15,6 +21,21 @@ function SettingsPage() {
   const [specificWoundCare, setSpecificWoundCare] = useState("");
   const [questionsGuidelines, setQuestionsGuidelines] = useState("");
   const [productRecommendations, setProductRecommendations] = useState("");
+  
+  // Wound type management state
+  const [selectedWoundType, setSelectedWoundType] = useState("");
+  const [woundTypeInstructions, setWoundTypeInstructions] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingWoundType, setEditingWoundType] = useState<any>(null);
+  const [newWoundType, setNewWoundType] = useState({
+    name: "",
+    displayName: "",
+    description: "",
+    instructions: "",
+    isEnabled: true,
+    priority: 50
+  });
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -23,6 +44,12 @@ function SettingsPage() {
   // Query to fetch current AI instructions
   const { data: agentData, isLoading } = useQuery({
     queryKey: ["/api/agents"],
+  });
+
+  // Query to fetch wound types
+  const { data: woundTypes, isLoading: woundTypesLoading } = useQuery({
+    queryKey: ["/api/admin/wound-types"],
+    enabled: isAuthenticated && user?.role === 'admin',
   });
 
   // Update textareas when data is loaded
@@ -36,6 +63,16 @@ function SettingsPage() {
       setProductRecommendations(data.productRecommendations || "");
     }
   }, [agentData]);
+
+  // Update wound type instructions when selection changes
+  useEffect(() => {
+    if (selectedWoundType && woundTypes) {
+      const selectedType = (woundTypes as any[]).find(type => type.id.toString() === selectedWoundType);
+      if (selectedType) {
+        setWoundTypeInstructions(selectedType.instructions || "");
+      }
+    }
+  }, [selectedWoundType, woundTypes]);
 
   // Mutation to update AI instructions
   const updateMutation = useMutation({
@@ -74,6 +111,126 @@ function SettingsPage() {
     },
   });
 
+  // Wound type mutations
+  const createWoundTypeMutation = useMutation({
+    mutationFn: async (woundType: any) => {
+      const token = localStorage.getItem('token');
+      return await apiRequest(`/api/admin/wound-types`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(woundType),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Wound Type Created",
+        description: "New wound type has been successfully created.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/wound-types"] });
+      setDialogOpen(false);
+      setNewWoundType({
+        name: "",
+        displayName: "",
+        description: "",
+        instructions: "",
+        isEnabled: true,
+        priority: 50
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Creation Failed",
+        description: error.message || "Failed to create wound type.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateWoundTypeMutation = useMutation({
+    mutationFn: async ({ id, ...updates }: any) => {
+      const token = localStorage.getItem('token');
+      return await apiRequest(`/api/admin/wound-types/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Wound Type Updated",
+        description: "Wound type has been successfully updated.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/wound-types"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update wound type.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteWoundTypeMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const token = localStorage.getItem('token');
+      return await apiRequest(`/api/admin/wound-types/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Wound Type Deleted",
+        description: "Wound type has been successfully deleted.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/wound-types"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Deletion Failed",
+        description: error.message || "Failed to delete wound type.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const toggleWoundTypeMutation = useMutation({
+    mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) => {
+      const token = localStorage.getItem('token');
+      return await apiRequest(`/api/admin/wound-types/${id}/toggle`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ enabled }),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Wound Type Updated",
+        description: "Wound type status has been updated.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/wound-types"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update wound type status.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSave = () => {
     updateMutation.mutate({
       systemPrompts,
@@ -96,6 +253,47 @@ function SettingsPage() {
         title: "Reset Complete",
         description: "Settings have been reset to saved values.",
       });
+    }
+  };
+
+  // Wound type handler functions
+  const handleWoundTypeChange = (value: string) => {
+    setSelectedWoundType(value);
+  };
+
+  const handleWoundTypeInstructionsChange = (value: string) => {
+    setWoundTypeInstructions(value);
+  };
+
+  const handleSaveWoundType = () => {
+    if (selectedWoundType && woundTypeInstructions) {
+      updateWoundTypeMutation.mutate({
+        id: parseInt(selectedWoundType),
+        instructions: woundTypeInstructions
+      });
+    }
+  };
+
+  const handleCreateWoundType = () => {
+    if (newWoundType.name && newWoundType.displayName && newWoundType.instructions) {
+      createWoundTypeMutation.mutate({
+        name: newWoundType.name.toLowerCase().replace(/\s+/g, '_'),
+        displayName: newWoundType.displayName,
+        description: newWoundType.description,
+        instructions: newWoundType.instructions,
+        isEnabled: newWoundType.isEnabled,
+        priority: newWoundType.priority
+      });
+    }
+  };
+
+  const handleToggleWoundType = (id: number, enabled: boolean) => {
+    toggleWoundTypeMutation.mutate({ id, enabled });
+  };
+
+  const handleDeleteWoundType = (id: number) => {
+    if (confirm("Are you sure you want to delete this wound type? This action cannot be undone.")) {
+      deleteWoundTypeMutation.mutate(id);
     }
   };
 
@@ -178,7 +376,7 @@ function SettingsPage() {
               <TabsList className="grid w-full grid-cols-5 mb-6">
                 <TabsTrigger value="system">System Prompts</TabsTrigger>
                 <TabsTrigger value="structure">Care Plan Structure</TabsTrigger>
-                <TabsTrigger value="wound">Specific Wound Care</TabsTrigger>
+                <TabsTrigger value="wound">Wound Types</TabsTrigger>
                 <TabsTrigger value="questions">Questions Guidelines</TabsTrigger>
                 <TabsTrigger value="products">Product Recommendations</TabsTrigger>
               </TabsList>
@@ -217,17 +415,173 @@ function SettingsPage() {
 
               <TabsContent value="wound" className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Specific Wound Care Instructions</h3>
+                  <h3 className="text-lg font-semibold mb-2">Wound Type Management</h3>
                   <p className="text-gray-600 mb-4">
-                    Medical knowledge and guidelines for different wound types.
+                    Configure AI instructions for different wound types. Select a wound type to edit its specific assessment guidelines.
                   </p>
-                  <Textarea
-                    value={specificWoundCare}
-                    onChange={(e) => setSpecificWoundCare(e.target.value)}
-                    rows={20}
-                    className="font-mono text-sm"
-                    placeholder="Enter specific wound care instructions..."
-                  />
+                  
+                  {/* Wound Type Selector */}
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="woundType">Select Wound Type</Label>
+                      <Select value={selectedWoundType} onValueChange={handleWoundTypeChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose a wound type to edit..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {woundTypes && (woundTypes as any[]).map((type) => (
+                            <SelectItem key={type.id} value={type.id.toString()}>
+                              {type.displayName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {selectedWoundType && (
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="woundInstructions">AI Instructions for This Wound Type</Label>
+                          <Textarea
+                            id="woundInstructions"
+                            value={woundTypeInstructions}
+                            onChange={(e) => handleWoundTypeInstructionsChange(e.target.value)}
+                            rows={15}
+                            className="font-mono text-sm"
+                            placeholder="Enter specific AI instructions for this wound type..."
+                          />
+                        </div>
+                        
+                        <div className="flex justify-between">
+                          <Button
+                            onClick={handleSaveWoundType}
+                            disabled={updateWoundTypeMutation.isPending}
+                            className="bg-medical-blue hover:bg-medical-blue/90"
+                          >
+                            <Save className="h-4 w-4 mr-2" />
+                            {updateWoundTypeMutation.isPending ? 'Saving...' : 'Save Instructions'}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Wound Types List */}
+                    <div className="mt-8">
+                      <div className="flex justify-between items-center mb-4">
+                        <h4 className="text-md font-semibold">Manage Wound Types</h4>
+                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add New
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Add New Wound Type</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <Label htmlFor="newName">Name (Internal)</Label>
+                                <Input
+                                  id="newName"
+                                  value={newWoundType.name}
+                                  onChange={(e) => setNewWoundType({...newWoundType, name: e.target.value})}
+                                  placeholder="e.g., burn_wound"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="newDisplayName">Display Name</Label>
+                                <Input
+                                  id="newDisplayName"
+                                  value={newWoundType.displayName}
+                                  onChange={(e) => setNewWoundType({...newWoundType, displayName: e.target.value})}
+                                  placeholder="e.g., Burn Wound"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="newDescription">Description</Label>
+                                <Input
+                                  id="newDescription"
+                                  value={newWoundType.description}
+                                  onChange={(e) => setNewWoundType({...newWoundType, description: e.target.value})}
+                                  placeholder="Brief description of this wound type"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="newInstructions">AI Instructions</Label>
+                                <Textarea
+                                  id="newInstructions"
+                                  value={newWoundType.instructions}
+                                  onChange={(e) => setNewWoundType({...newWoundType, instructions: e.target.value})}
+                                  rows={8}
+                                  placeholder="Enter AI instructions for this wound type..."
+                                />
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Switch
+                                  id="newEnabled"
+                                  checked={newWoundType.isEnabled}
+                                  onCheckedChange={(checked) => setNewWoundType({...newWoundType, isEnabled: checked})}
+                                />
+                                <Label htmlFor="newEnabled">Enable this wound type</Label>
+                              </div>
+                              <div className="flex justify-end space-x-2">
+                                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                                  Cancel
+                                </Button>
+                                <Button 
+                                  onClick={handleCreateWoundType}
+                                  disabled={createWoundTypeMutation.isPending}
+                                >
+                                  {createWoundTypeMutation.isPending ? 'Creating...' : 'Create'}
+                                </Button>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      
+                      <div className="grid gap-2">
+                        {woundTypes && (woundTypes as any[]).map((type) => (
+                          <div key={type.id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-2">
+                                <Switch
+                                  checked={type.isEnabled}
+                                  onCheckedChange={(checked) => handleToggleWoundType(type.id, checked)}
+                                />
+                                {type.isEnabled ? <Eye className="h-4 w-4 text-green-600" /> : <EyeOff className="h-4 w-4 text-gray-400" />}
+                              </div>
+                              <div>
+                                <div className="font-medium">{type.displayName}</div>
+                                <div className="text-sm text-gray-600">{type.description}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedWoundType(type.id.toString())}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              {!type.isDefault && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteWoundType(type.id)}
+                                  className="text-red-600 hover:text-red-700"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabsContent>
 

@@ -1,4 +1,4 @@
-import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, userProfiles, productRecommendations, aiInteractions, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel, type UserProfile, type InsertUserProfile, type ProductRecommendation, type InsertProductRecommendation } from "@shared/schema";
+import { woundAssessments, feedbacks, agentInstructions, agentQuestions, users, companies, detectionModels, aiAnalysisModels, userProfiles, productRecommendations, aiInteractions, woundTypes, type WoundAssessment, type InsertWoundAssessment, type Feedback, type InsertFeedback, type AgentInstructions, type InsertAgentInstructions, type AgentQuestion, type InsertAgentQuestion, type User, type UpsertUser, type Company, type InsertCompany, type UserUpdate, type CompanyUpdate, type DetectionModel, type InsertDetectionModel, type AiAnalysisModel, type InsertAiAnalysisModel, type UserProfile, type InsertUserProfile, type ProductRecommendation, type InsertProductRecommendation, type WoundType, type InsertWoundType } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
@@ -106,6 +106,18 @@ export interface IStorage {
   }): Promise<void>;
   getAiInteractionsByCase(caseId: string): Promise<any[]>;
   getAllAiInteractions(): Promise<any[]>;
+  
+  // Wound type operations
+  getAllWoundTypes(): Promise<WoundType[]>;
+  getEnabledWoundTypes(): Promise<WoundType[]>;
+  getWoundType(id: number): Promise<WoundType | undefined>;
+  getWoundTypeByName(name: string): Promise<WoundType | undefined>;
+  createWoundType(woundType: InsertWoundType): Promise<WoundType>;
+  updateWoundType(id: number, updates: Partial<WoundType>): Promise<WoundType>;
+  toggleWoundType(id: number, enabled: boolean): Promise<WoundType>;
+  deleteWoundType(id: number): Promise<boolean>;
+  getDefaultWoundType(): Promise<WoundType | undefined>;
+  setDefaultWoundType(id: number): Promise<WoundType>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -688,6 +700,75 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(aiInteractions)
       .orderBy(desc(aiInteractions.createdAt));
+  }
+
+  // Wound type operations
+  async getAllWoundTypes(): Promise<WoundType[]> {
+    return await db
+      .select()
+      .from(woundTypes)
+      .orderBy(desc(woundTypes.priority), woundTypes.displayName);
+  }
+
+  async getEnabledWoundTypes(): Promise<WoundType[]> {
+    return await db
+      .select()
+      .from(woundTypes)
+      .where(eq(woundTypes.isEnabled, true))
+      .orderBy(desc(woundTypes.priority), woundTypes.displayName);
+  }
+
+  async getWoundType(id: number): Promise<WoundType | undefined> {
+    const [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.id, id));
+    return woundType || undefined;
+  }
+
+  async getWoundTypeByName(name: string): Promise<WoundType | undefined> {
+    const [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.name, name));
+    return woundType || undefined;
+  }
+
+  async createWoundType(woundType: InsertWoundType): Promise<WoundType> {
+    const [newWoundType] = await db.insert(woundTypes).values(woundType).returning();
+    return newWoundType;
+  }
+
+  async updateWoundType(id: number, updates: Partial<WoundType>): Promise<WoundType> {
+    const [updated] = await db.update(woundTypes)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(woundTypes.id, id))
+      .returning();
+    return updated;
+  }
+
+  async toggleWoundType(id: number, enabled: boolean): Promise<WoundType> {
+    const [updated] = await db.update(woundTypes)
+      .set({ isEnabled: enabled, updatedAt: new Date() })
+      .where(eq(woundTypes.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteWoundType(id: number): Promise<boolean> {
+    const [deleted] = await db.delete(woundTypes).where(eq(woundTypes.id, id)).returning();
+    return !!deleted;
+  }
+
+  async getDefaultWoundType(): Promise<WoundType | undefined> {
+    const [woundType] = await db.select().from(woundTypes).where(eq(woundTypes.isDefault, true));
+    return woundType || undefined;
+  }
+
+  async setDefaultWoundType(id: number): Promise<WoundType> {
+    // First, unset all existing defaults
+    await db.update(woundTypes).set({ isDefault: false });
+    
+    // Then set the new default
+    const [updated] = await db.update(woundTypes)
+      .set({ isDefault: true, updatedAt: new Date() })
+      .where(eq(woundTypes.id, id))
+      .returning();
+    return updated;
   }
 }
 

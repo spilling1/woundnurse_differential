@@ -4,6 +4,74 @@ import { storage } from "../storage";
 import { woundDetectionService } from "./woundDetection";
 import { cnnWoundClassifier, convertCNNToStandardClassification } from "./cnnWoundClassifier";
 
+// Helper function to validate wound type against configured wound types
+async function validateWoundType(detectedWoundType: string): Promise<{
+  isValid: boolean;
+  validTypes: string[];
+  closestMatch?: string;
+}> {
+  try {
+    // Get enabled wound types from database
+    const enabledWoundTypes = await storage.getEnabledWoundTypes();
+    const validTypes = enabledWoundTypes.map(type => type.displayName);
+    
+    // Normalize wound type for comparison (case-insensitive, handle variations)
+    const normalizedDetected = detectedWoundType.toLowerCase().trim();
+    
+    // Check for exact matches first
+    const exactMatch = enabledWoundTypes.find(type => 
+      type.displayName.toLowerCase() === normalizedDetected ||
+      type.name.toLowerCase() === normalizedDetected
+    );
+    
+    if (exactMatch) {
+      return { isValid: true, validTypes };
+    }
+    
+    // Check for partial matches or common variations
+    const partialMatch = enabledWoundTypes.find(type => {
+      const typeName = type.displayName.toLowerCase();
+      const typeKey = type.name.toLowerCase();
+      
+      // Check if detected type contains any of the configured type names
+      return normalizedDetected.includes(typeName) || 
+             normalizedDetected.includes(typeKey) ||
+             typeName.includes(normalizedDetected) ||
+             typeKey.includes(normalizedDetected);
+    });
+    
+    if (partialMatch) {
+      return { isValid: true, validTypes, closestMatch: partialMatch.displayName };
+    }
+    
+    // Check for common wound type synonyms
+    const synonymMap: Record<string, string[]> = {
+      'pressure_injury': ['pressure ulcer', 'bedsore', 'pressure sore', 'decubitus ulcer'],
+      'diabetic_ulcer': ['diabetic foot ulcer', 'neuropathic ulcer', 'diabetic wound'],
+      'venous_ulcer': ['venous insufficiency ulcer', 'stasis ulcer', 'venous wound'],
+      'arterial_ulcer': ['arterial insufficiency ulcer', 'ischemic ulcer', 'arterial wound'],
+      'surgical_wound': ['surgical site', 'post-operative wound', 'surgical incision'],
+      'traumatic_wound': ['laceration', 'cut', 'trauma wound', 'injury'],
+      'infectious_wound': ['infected wound', 'septic wound'],
+      'radiation_wound': ['radiation dermatitis', 'radiation injury'],
+      'ischemic_wound': ['ischemic ulcer', 'tissue necrosis']
+    };
+    
+    for (const [woundTypeKey, synonyms] of Object.entries(synonymMap)) {
+      const matchingType = enabledWoundTypes.find(type => type.name === woundTypeKey);
+      if (matchingType && synonyms.some(synonym => normalizedDetected.includes(synonym.toLowerCase()))) {
+        return { isValid: true, validTypes, closestMatch: matchingType.displayName };
+      }
+    }
+    
+    return { isValid: false, validTypes };
+  } catch (error) {
+    console.error('Error validating wound type:', error);
+    // In case of error, be permissive and allow the classification to proceed
+    return { isValid: true, validTypes: ['General Instructions'] };
+  }
+}
+
 export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg', sessionId?: string): Promise<any> {
   try {
     // Step 1: TEMPORARILY DISABLED CNN due to poor accuracy (hand classified as diabetic ulcer)
@@ -73,6 +141,33 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       }
       
       console.log(`WoundClassifier: Independent AI classification complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
+      
+      // Step 2.5: Validate wound type against configured wound types
+      const validationResult = await validateWoundType(classification.woundType);
+      if (!validationResult.isValid) {
+        console.log(`WoundClassifier: Invalid wound type detected: ${classification.woundType}`);
+        
+        // Log the invalid wound type attempt
+        try {
+          await storage.createAiInteraction({
+            caseId: sessionId || 'temp-session',
+            stepType: 'wound_type_validation',
+            modelUsed: model,
+            promptSent: `Validating wound type: ${classification.woundType}`,
+            responseReceived: JSON.stringify(validationResult),
+            parsedResult: validationResult,
+            errorOccurred: true,
+            errorMessage: `Invalid wound type: ${classification.woundType}. Configured types: ${validationResult.validTypes.join(', ')}`
+          });
+        } catch (logError) {
+          console.error('WoundClassifier: Error logging validation failure:', logError);
+        }
+        
+        // Throw specific error for invalid wound types
+        throw new Error(`INVALID_WOUND_TYPE: The detected wound type "${classification.woundType}" is not supported by this system. Our AI is configured to assess the following wound types: ${validationResult.validTypes.join(', ')}. Please ensure the image shows one of these supported wound types, or contact an administrator to add support for this wound type.`);
+      }
+      
+      console.log(`WoundClassifier: Wound type validation passed: ${classification.woundType}`);
       
       // Log the independent classification
       try {

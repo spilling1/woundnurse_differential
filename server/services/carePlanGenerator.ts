@@ -3,6 +3,35 @@ import { callGemini } from "./gemini";
 import { getPromptTemplate } from "./promptTemplates";
 import { storage } from "../storage";
 
+// Helper function to get wound type specific instructions
+async function getWoundTypeInstructions(woundType: string): Promise<string> {
+  try {
+    // Get wound type by name (try both display name and internal name)
+    let woundTypeRecord = await storage.getWoundTypeByName(woundType);
+    
+    if (!woundTypeRecord) {
+      // Try to find by display name
+      const allWoundTypes = await storage.getEnabledWoundTypes();
+      woundTypeRecord = allWoundTypes.find(type => 
+        type.displayName.toLowerCase() === woundType.toLowerCase()
+      );
+    }
+    
+    if (woundTypeRecord && woundTypeRecord.instructions) {
+      console.log(`CarePlanGenerator: Using specific instructions for wound type: ${woundType}`);
+      return woundTypeRecord.instructions;
+    }
+    
+    // Fall back to general instructions
+    console.log(`CarePlanGenerator: No specific instructions found for wound type: ${woundType}, using general instructions`);
+    const generalType = await storage.getDefaultWoundType();
+    return generalType?.instructions || '';
+  } catch (error) {
+    console.error('Error fetching wound type instructions:', error);
+    return '';
+  }
+}
+
 // Function to clean up care plan response from AI artifacts
 function cleanCarePlanResponse(carePlan: string): string {
   if (!carePlan) return carePlan;
@@ -60,7 +89,11 @@ export async function generateCarePlan(
       throw new Error('AI Configuration not found. Please configure AI system prompts in Settings before generating care plans.');
     }
     
-    const systemPrompt = agentInstructions.systemPrompts;
+    // Get wound type specific instructions
+    const woundTypeInstructions = await getWoundTypeInstructions(classification.woundType);
+    
+    // Build comprehensive system prompt with wound type specific instructions
+    const systemPrompt = `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${woundTypeInstructions}\n\n${agentInstructions.questionsGuidelines || ''}`;
     
     // Get relevant products from database for this wound type
     const relevantProducts = await getRelevantProducts(classification.woundType);

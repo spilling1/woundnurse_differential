@@ -294,9 +294,29 @@ export const insertProductRecommendationSchema = createInsertSchema(productRecom
   updatedAt: true,
 });
 
+// Wound Types Configuration
+export const woundTypes = pgTable("wound_types", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(), // 'pressure_injury', 'venous_ulcer', 'arterial_insufficiency_ulcer', etc.
+  displayName: varchar("display_name").notNull(), // 'Pressure Injury (Ulcer)', 'Venous Ulcer', etc.
+  description: text("description"),
+  instructions: text("instructions").notNull(), // AI instructions for this wound type
+  isEnabled: boolean("is_enabled").notNull().default(true),
+  isDefault: boolean("is_default").notNull().default(false), // For "General Instructions"
+  priority: integer("priority").notNull().default(0), // Higher priority = tried first
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertAiInteractionSchema = createInsertSchema(aiInteractions).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertWoundTypeSchema = createInsertSchema(woundTypes).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export type InsertWoundAssessment = z.infer<typeof insertWoundAssessmentSchema>;
@@ -319,6 +339,8 @@ export type InsertUserProfile = z.infer<typeof insertUserProfileSchema>;
 export type UserProfile = typeof userProfiles.$inferSelect;
 export type InsertProductRecommendation = z.infer<typeof insertProductRecommendationSchema>;
 export type ProductRecommendation = typeof productRecommendations.$inferSelect;
+export type InsertWoundType = z.infer<typeof insertWoundTypeSchema>;
+export type WoundType = typeof woundTypes.$inferSelect;
 
 // Validation schemas for API endpoints
 export const uploadRequestSchema = z.object({
