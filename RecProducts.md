@@ -1641,3 +1641,99 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-371
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:21:20 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** family  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+**1. Wound Cleanser**  
+Product: Saline Wound Cleanser  
+Link: https://www.amazon.com/s?k=saline+wound+cleanser+sterile  
+Reason: For wound cleaning  
+
+
+**2. Wound Dressing**  
+Product: Adhesive Foam Dressings  
+Link: https://www.amazon.com/s?k=bordered+foam+dressing+4x4  
+Reason: For wound cleaning  
+
+
+**3. General**  
+Product: Antimicrobial Packing Ribbon (PHMB or Iodoform)  
+Link: PHMB or Iodoform  
+Reason: Recommended for wound care  
+
+
+**4. Supplies**  
+Product: Disposable Medical Gloves  
+Link: https://www.amazon.com/s?k=disposable+medical+gloves  
+Reason: Recommended for wound care  
+
+
+---
+
+
+---
+## Case: 2025-07-10-371
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:24:42 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** patient  
+**AI Model:** gpt-4o  
+
+### Product Recommendations:
+
+
+---
+
+
+---
+## Case: 2025-07-10-851
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:32:20 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** patient  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+**1. Wound Cleanser**  
+Product: Sterile Saline Wound Wash  
+Link: https://www.amazon.com/s?k=sterile+saline+wound+wash  
+Reason: For wound cleaning  
+
+
+**2. General**  
+Product: Telfa Non-Stick Pads  
+Link: https://www.amazon.com/s?k=telfa+non+stick+pads  
+Reason: Recommended for wound care  
+
+
+**3. General**  
+Product: Paper Medical Tape  
+Link: https://www.amazon.com/s?k=paper+medical+tape  
+Reason: Recommended for wound care  
+
+
+---
+
+
+---
+## Case: 2025-07-10-053
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:35:20 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** patient  
+**AI Model:** gpt-4o  
+
+### Product Recommendations:
+
+
+---
+

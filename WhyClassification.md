@@ -278,3 +278,49 @@ Multiple small puncture wounds and abrasions, with some areas of active bleeding
 
 ---
 
+
+---
+## Case: 2025-07-10-724
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:17:18 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds are present, consistent with a bite injury. Significant inflammation and swelling surround the wounds, indicating a strong inflammatory response and high likelihood of infection. The wounds appear to be open and are not sutured.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-841
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:29:11 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds consistent with an animal or human bite. Significant inflammation (redness and swelling) is present, indicating a high risk of infection. The location over the knuckles raises concern for potential joint or tendon involvement.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
