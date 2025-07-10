@@ -263,27 +263,25 @@ TARGET AUDIENCE: ${audience}
 CRITICAL WOUND TYPE REQUIREMENTS:
 ${hasWoundTypeRequirements ? `
 🚨 MANDATORY WOUND TYPE REQUIREMENTS DETECTED 🚨
-The Agent Instructions contain SPECIFIC requirements for this wound type that MUST be followed:
-- Look for "MUST ASK" requirements in the instructions
-- Look for "Clarifying Questions" sections in the instructions  
-- Follow ALL wound-type-specific question requirements regardless of confidence level
-- These requirements override general confidence-based question strategies
 
-CRITICAL REQUIREMENT: EXTRACT ALL "MUST ASK" QUESTIONS
-You MUST scan the Agent Instructions for ALL instances of "MUST ASK" and generate a question for EACH ONE:
+CRITICAL INSTRUCTION SCAN REQUIREMENT:
+Before generating ANY questions, you MUST:
+1. Scan the Agent Instructions above for EVERY line containing "MUST ASK"
+2. Extract the exact requirement from each "MUST ASK" line
+3. Generate a specific question for EACH requirement found
+4. Count the total "MUST ASK" requirements and verify you generate that exact number of questions
 
-1. Search for "MUST ASK - ORIGIN OF THE WOUND"
-2. Search for "MUST ASK - TETANUS STATUS"  
-3. Search for "MUST ASK - CONTAMINATION RISK"
-4. Search for "MUST ASK - " followed by any other requirements
-5. Look in "Clarifying Questions:" section for additional required questions
-6. Generate questions for EVERY "MUST ASK" requirement found
+MANDATORY EXTRACTION PROCESS:
+- Find "MUST ASK - ORIGIN OF THE WOUND" → Generate origin question
+- Find "MUST ASK - TETANUS STATUS" → Generate tetanus question  
+- Find "MUST ASK - CONTAMINATION RISK" → Generate contamination question
+- Find any other "MUST ASK - [REQUIREMENT]" → Generate corresponding question
+- Look for test questions like "MUST ASK - ""WHY IS YOUR HAIR RED?""" → Include exactly as specified
 
-REQUIRED ACTIONS:
-1. IMMEDIATELY generate ALL wound-type-specific questions found in the Agent Instructions
-2. Do NOT skip any "MUST ASK" requirements due to high confidence
-3. Count the total "MUST ASK" items and ensure you generate that many questions minimum
-4. THEN add additional questions as needed for confidence/care plan optimization
+🚨 CRITICAL: You must generate a question for EVERY "MUST ASK" requirement found in the Agent Instructions. NO EXCEPTIONS. 🚨
+
+VERIFICATION REQUIREMENT:
+After scanning the Agent Instructions, you should have found multiple "MUST ASK" requirements. Generate exactly one question for each requirement. Do NOT skip any based on confidence level or other factors.
 ` : ''}
 
 QUESTION STRATEGY FRAMEWORK:
@@ -338,8 +336,7 @@ ${hasWoundTypeRequirements ? `
 For this specific wound type, look for and include:
 - Questions marked as "MUST ASK" in the Agent Instructions
 - Questions listed under "Clarifying Questions:" sections
-- Origin/mechanism questions for traumatic wounds
-- Timing and contamination questions
+- Extract ALL requirements directly from the database instructions provided above
 
 ` : `
 Standard confidence-based strategy:

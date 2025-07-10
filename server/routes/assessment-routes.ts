@@ -566,8 +566,8 @@ export function registerAssessmentRoutes(app: Express): void {
           console.log(`Follow-up questions: Looking up wound type "${parsedClassification.woundType}"`);
           const woundType = await storage.getWoundTypeByName(parsedClassification.woundType);
           if (woundType && woundType.instructions) {
-            woundTypeInstructions = `\n\nWOUND TYPE SPECIFIC INSTRUCTIONS FOR ${woundType.display_name.toUpperCase()}:\n${woundType.instructions}`;
-            console.log(`Follow-up questions: Found wound type instructions for ${woundType.display_name}`);
+            woundTypeInstructions = `\n\nWOUND TYPE SPECIFIC INSTRUCTIONS FOR ${woundType.displayName.toUpperCase()}:\n${woundType.instructions}`;
+            console.log(`Follow-up questions: Found wound type instructions for ${woundType.displayName}`);
             console.log(`Follow-up questions: Instructions contain "MUST ASK":`, woundType.instructions.includes('MUST ASK'));
           } else {
             console.log(`Follow-up questions: No wound type found or no instructions for "${parsedClassification.woundType}"`);
