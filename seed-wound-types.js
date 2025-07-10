@@ -1,4 +1,4 @@
-import { storage } from "./server/storage.js";
+import { storage } from "./server/storage.ts";
 
 const defaultWoundTypes = [
   {
@@ -15,6 +15,7 @@ const defaultWoundTypes = [
     displayName: 'Pressure Injury (Ulcer)',
     description: 'Pressure ulcers and bedsores',
     instructions: 'Assess for pressure injury staging (Stage 1-4, unstageable, suspected deep tissue injury). Consider pressure relief, positioning, support surfaces, and nutrition.',
+    synonyms: ['pressure ulcer', 'bedsore', 'pressure sore', 'decubitus ulcer'],
     isEnabled: true,
     isDefault: false,
     priority: 90
@@ -24,6 +25,7 @@ const defaultWoundTypes = [
     displayName: 'Venous Ulcer',
     description: 'Chronic venous insufficiency wounds',
     instructions: 'Assess for venous insufficiency signs, edema, and hemosiderin staining. Recommend compression therapy and elevation.',
+    synonyms: ['venous insufficiency ulcer', 'stasis ulcer', 'venous wound'],
     isEnabled: true,
     isDefault: false,
     priority: 80
@@ -33,6 +35,7 @@ const defaultWoundTypes = [
     displayName: 'Arterial Insufficiency Ulcer',
     description: 'Arterial insufficiency and ischemic wounds',
     instructions: 'Assess for arterial insufficiency, pale wound bed, and poor perfusion. Urgent vascular evaluation may be needed.',
+    synonyms: ['arterial insufficiency ulcer', 'ischemic ulcer', 'arterial wound'],
     isEnabled: true,
     isDefault: false,
     priority: 70
@@ -42,6 +45,7 @@ const defaultWoundTypes = [
     displayName: 'Diabetic Ulcer',
     description: 'Diabetic foot ulcers and neuropathic wounds',
     instructions: 'Assess for neuropathy, infection, and vascular compromise. Recommend glucose control, offloading, and diabetic foot care.',
+    synonyms: ['diabetic foot ulcer', 'neuropathic ulcer', 'diabetic wound'],
     isEnabled: true,
     isDefault: false,
     priority: 60
@@ -51,6 +55,7 @@ const defaultWoundTypes = [
     displayName: 'Surgical Wound',
     description: 'Post-operative and surgical site wounds',
     instructions: 'Assess healing progress, signs of infection, and dehiscence. Follow post-operative care protocols.',
+    synonyms: ['surgical site', 'post-operative wound', 'surgical incision'],
     isEnabled: true,
     isDefault: false,
     priority: 50
@@ -59,7 +64,8 @@ const defaultWoundTypes = [
     name: 'traumatic_wound',
     displayName: 'Traumatic Wound',
     description: 'Acute traumatic injuries and lacerations',
-    instructions: 'Assess for foreign bodies, contamination, and tissue damage. Consider tetanus prophylaxis and wound irrigation.',
+    instructions: 'MUST ASK - ORIGIN OF THE WOUND: How did this wound occur? Was it from an animal bite, fall, accident, or other cause? Assess for foreign bodies, contamination, and tissue damage. Consider tetanus prophylaxis and wound irrigation.',
+    synonyms: ['laceration', 'cut', 'trauma wound', 'injury'],
     isEnabled: true,
     isDefault: false,
     priority: 40
@@ -69,6 +75,7 @@ const defaultWoundTypes = [
     displayName: 'Ischemic Wound',
     description: 'Wounds caused by insufficient blood flow',
     instructions: 'Assess for ischemia, tissue necrosis, and vascular compromise. Urgent vascular evaluation required.',
+    synonyms: ['ischemic ulcer', 'tissue necrosis'],
     isEnabled: true,
     isDefault: false,
     priority: 30
@@ -78,6 +85,7 @@ const defaultWoundTypes = [
     displayName: 'Radiation Wound',
     description: 'Radiation therapy-related skin damage',
     instructions: 'Assess for radiation dermatitis and delayed healing. Gentle care and moisture management recommended.',
+    synonyms: ['radiation dermatitis', 'radiation injury'],
     isEnabled: true,
     isDefault: false,
     priority: 20
@@ -87,6 +95,7 @@ const defaultWoundTypes = [
     displayName: 'Infectious Wound',
     description: 'Wounds with active infection',
     instructions: 'Assess for signs of infection, purulence, and systemic symptoms. Consider antibiotic therapy and wound culture.',
+    synonyms: ['infected wound', 'septic wound'],
     isEnabled: true,
     isDefault: false,
     priority: 10

@@ -126,8 +126,8 @@ export async function analyzeAssessmentForQuestions(
       console.log(`AgentQuestionService: Looking up wound type "${imageAnalysis.woundType}"`);
       const woundType = await storage.getWoundTypeByName(imageAnalysis.woundType);
       if (woundType && woundType.instructions) {
-        woundTypeInstructions = `\n\nWOUND TYPE SPECIFIC INSTRUCTIONS FOR ${woundType.display_name.toUpperCase()}:\n${woundType.instructions}`;
-        console.log(`AgentQuestionService: Found wound type instructions for ${woundType.display_name}`);
+        woundTypeInstructions = `\n\nWOUND TYPE SPECIFIC INSTRUCTIONS FOR ${woundType.displayName.toUpperCase()}:\n${woundType.instructions}`;
+        console.log(`AgentQuestionService: Found wound type instructions for ${woundType.displayName}`);
         console.log(`AgentQuestionService: Instructions contain "MUST ASK":`, woundType.instructions.includes('MUST ASK'));
       } else {
         console.log(`AgentQuestionService: No wound type found or no instructions for "${imageAnalysis.woundType}"`);
@@ -214,13 +214,13 @@ ${woundTypeInstructions}
       console.log(`Follow-up round ${currentRound}: Low confidence (${confidence}) - checking if more questions needed`);
     }
   } else {
-    // Initial questions - ALWAYS generate questions regardless of confidence
-    console.log(`ALWAYS GENERATE QUESTIONS - minimum 2 questions + any required questions (confidence: ${confidence})`);
+    // Initial questions - follow database instructions for question requirements
+    console.log(`GENERATE QUESTIONS PER DATABASE INSTRUCTIONS (confidence: ${confidence})`);
     if (hasWoundTypeRequirements) {
       console.log(`WOUND TYPE REQUIREMENTS DETECTED - MUST ask specific questions regardless of confidence`);
     }
     if (hasQuestionRequirements) {
-      console.log(`Agent instructions require additional questions beyond minimum`);
+      console.log(`Agent instructions contain question requirements from database`);
     }
   }
 
@@ -269,17 +269,21 @@ The Agent Instructions contain SPECIFIC requirements for this wound type that MU
 - Follow ALL wound-type-specific question requirements regardless of confidence level
 - These requirements override general confidence-based question strategies
 
-REQUIRED ACTIONS:
-1. IMMEDIATELY generate the wound-type-specific questions found in the Agent Instructions
-2. Do NOT skip questions due to high confidence
-3. Look for sections marked "MUST ASK" or "Clarifying Questions:"
-4. For traumatic wounds: MUST ask about origin/mechanism of injury
+CRITICAL REQUIREMENT: EXTRACT ALL "MUST ASK" QUESTIONS
+You MUST scan the Agent Instructions for ALL instances of "MUST ASK" and generate a question for EACH ONE:
 
-EXAMPLE REQUIRED QUESTIONS for traumatic wounds:
-- "What specifically caused this injury?" (origin)
-- "When did this injury occur?" (timing)
-- "Was there any foreign material involved?" (contamination)
-- "Is your tetanus vaccination up to date?" (prevention)
+1. Search for "MUST ASK - ORIGIN OF THE WOUND"
+2. Search for "MUST ASK - TETANUS STATUS"  
+3. Search for "MUST ASK - CONTAMINATION RISK"
+4. Search for "MUST ASK - " followed by any other requirements
+5. Look in "Clarifying Questions:" section for additional required questions
+6. Generate questions for EVERY "MUST ASK" requirement found
+
+REQUIRED ACTIONS:
+1. IMMEDIATELY generate ALL wound-type-specific questions found in the Agent Instructions
+2. Do NOT skip any "MUST ASK" requirements due to high confidence
+3. Count the total "MUST ASK" items and ensure you generate that many questions minimum
+4. THEN add additional questions as needed for confidence/care plan optimization
 ` : ''}
 
 QUESTION STRATEGY FRAMEWORK:
@@ -345,16 +349,16 @@ Standard confidence-based strategy:
 - If confidence < 70%: Include photo suggestions
 `}
 
-🚨 MANDATORY REQUIREMENT: Generate AT LEAST 2 questions PLUS any wound-type specific required questions 🚨
+🚨 FOLLOW DATABASE INSTRUCTIONS: Follow all requirements specified in Agent Instructions 🚨
 
-REQUIRED MINIMUMS:
-- ALWAYS generate at least 2 questions regardless of confidence level
-- PLUS any wound-type specific "MUST ASK" or "Clarifying Questions" from Agent Instructions
-- PLUS any other requirements specified in Agent Instructions
+REQUIREMENTS FROM DATABASE:
+- Follow ALL requirements specified in the Agent Instructions (configured in Settings)
+- Follow wound-type specific "MUST ASK" or "Clarifying Questions" from Wound Type Instructions
+- Follow any other requirements specified in the database-stored Agent Instructions
 
 Generate questions based on:
 1. ${hasWoundTypeRequirements ? 'FIRST: Required wound-type specific questions from Agent Instructions (these are MANDATORY)' : 'Wound-type specific requirements if any'}
-2. AT LEAST 2 questions minimum regardless of confidence
+2. ALL requirements specified in Agent Instructions database
 3. Information gaps that would most improve the assessment
 4. Whether referral to medical professional is likely needed
 

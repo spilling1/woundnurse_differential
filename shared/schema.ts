@@ -301,6 +301,7 @@ export const woundTypes = pgTable("wound_types", {
   displayName: varchar("display_name").notNull(), // 'Pressure Injury (Ulcer)', 'Venous Ulcer', etc.
   description: text("description"),
   instructions: text("instructions").notNull(), // AI instructions for this wound type
+  synonyms: text("synonyms").array(), // Alternative names/synonyms for this wound type
   isEnabled: boolean("is_enabled").notNull().default(true),
   isDefault: boolean("is_default").notNull().default(false), // For "General Instructions"
   priority: integer("priority").notNull().default(0), // Higher priority = tried first

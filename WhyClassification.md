@@ -623,3 +623,118 @@ multiple puncture wounds
 
 ---
 
+
+---
+## Case: 2025-07-10-734
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:00:56 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+multiple puncture wounds, some swelling
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 80% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-626
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:01:41 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture and laceration wounds, consistent with an animal bite. Significant swelling and redness are present, indicating a strong inflammatory response and high risk of infection.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-318
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:02:01 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple puncture wounds with surrounding erythema and edema, consistent with bite wounds. The location over the knuckles raises concern for potential joint or tendon involvement.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-514
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:04:19 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture and laceration wounds consistent with animal or human bite marks. Surrounding tissue is erythematous and edematous, indicating an inflammatory response or potential early infection. The wounds appear to have been left open to drain, which is common practice for bite wounds to prevent abscess formation.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-350
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:05:13 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The presence of multiple, deep puncture wounds is highly consistent with bite wounds (e.g., animal or human). The location over the joints is a high-risk factor for complications such as septic arthritis or tenosynovitis.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+

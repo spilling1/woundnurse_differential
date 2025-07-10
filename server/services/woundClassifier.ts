@@ -45,23 +45,13 @@ async function validateWoundType(detectedWoundType: string): Promise<{
       return { isValid: true, validTypes, closestMatch: partialMatch.displayName };
     }
     
-    // Check for common wound type synonyms
-    const synonymMap: Record<string, string[]> = {
-      'pressure_injury': ['pressure ulcer', 'bedsore', 'pressure sore', 'decubitus ulcer'],
-      'diabetic_ulcer': ['diabetic foot ulcer', 'neuropathic ulcer', 'diabetic wound'],
-      'venous_ulcer': ['venous insufficiency ulcer', 'stasis ulcer', 'venous wound'],
-      'arterial_ulcer': ['arterial insufficiency ulcer', 'ischemic ulcer', 'arterial wound'],
-      'surgical_wound': ['surgical site', 'post-operative wound', 'surgical incision'],
-      'traumatic_wound': ['laceration', 'cut', 'trauma wound', 'injury'],
-      'infectious_wound': ['infected wound', 'septic wound'],
-      'radiation_wound': ['radiation dermatitis', 'radiation injury'],
-      'ischemic_wound': ['ischemic ulcer', 'tissue necrosis']
-    };
-    
-    for (const [woundTypeKey, synonyms] of Object.entries(synonymMap)) {
-      const matchingType = enabledWoundTypes.find(type => type.name === woundTypeKey);
-      if (matchingType && synonyms.some(synonym => normalizedDetected.includes(synonym.toLowerCase()))) {
-        return { isValid: true, validTypes, closestMatch: matchingType.displayName };
+    // Check for database-stored synonyms
+    for (const woundType of enabledWoundTypes) {
+      if (woundType.synonyms && woundType.synonyms.length > 0) {
+        const synonyms = woundType.synonyms;
+        if (synonyms.some(synonym => normalizedDetected.includes(synonym.toLowerCase()))) {
+          return { isValid: true, validTypes, closestMatch: woundType.displayName };
+        }
       }
     }
     
