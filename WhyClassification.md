@@ -1175,3 +1175,72 @@ Circular, open ulcer with well-defined, erythematous borders. The wound appears 
 
 ---
 
+
+---
+## Case: 2025-07-10-256
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 10:54:04 PM  
+**Wound Type:** Venous Leg Ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The image shows significant signs of chronic venous insufficiency, including brawny discoloration (hemosiderin staining), edema (swelling), and visible varicose veins. There may be associated lipodermatosclerosis. The surrounding redness could be stasis dermatitis or a sign of superimposed cellulitis, which requires in-person medical evaluation.
+
+### Classification Process:
+
+**Independent Classification:** Venous Leg Ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Leg Ulcer with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-756
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 11:10:40 PM  
+**Wound Type:** Pressure Ulcer/Injury  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The full depth of the wound is obscured by yellow slough and dark eschar, preventing staging. The wound is located in a deep tissue fold. Periwound skin shows erythema (purplish discoloration).
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer/Injury (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer/Injury with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-615
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 11:11:07 PM  
+**Wound Type:** Pressure Ulcer / Injury  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound appears to be a deep pressure injury located in the intergluteal cleft or sacral region. The base of the wound is obscured by a combination of yellow slough and dark, non-viable necrotic tissue, making it unstageable. There is significant erythema (redness) and purplish discoloration in the periwound skin, which is a sign of concern. The wound edges appear defined and possibly rolled (epibole).
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer / Injury (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer / Injury with 95% confidence
+
+---
+
