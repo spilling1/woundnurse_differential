@@ -138,6 +138,9 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
     },
     onError: (error: any) => {
       console.log('ImageUpload error:', error);
+      console.log('Error code:', error.code);
+      console.log('Error message:', error.message);
+      console.log('Error properties:', Object.keys(error));
       
       // Check if this is an invalid wound type error
       if (error.code === "INVALID_WOUND_TYPE") {
