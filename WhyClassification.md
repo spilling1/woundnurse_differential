@@ -94,3 +94,49 @@ presence of dried blood, surrounding inflammation
 
 ---
 
+
+---
+## Case: 2025-07-10-009
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:17:05 AM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound appears to be a healing skin graft or a complex repaired laceration. There are remnants of sutures visible. The wound bed has a mixed appearance with areas of both healthy healing tissue (epithelialization) and non-viable tissue (necrosis/scab), which may indicate a component of delayed healing.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 90% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-525
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:17:11 AM  
+**Wound Type:** traumatic wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+presence of surrounding skin damage and potential signs of infection
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 80% confidence
+
+---
+

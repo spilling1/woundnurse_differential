@@ -45,6 +45,16 @@ Current Wound Assessment:
 - Location: ${classification.location}
 - Infection Signs: ${classification.infectionSigns?.join(', ') || 'None observed'}
 - Additional Observations: ${classification.additionalObservations}
+- **ASSESSMENT CONFIDENCE: ${Math.round((classification.confidence || 0) * 100)}%**
+
+**CONFIDENCE-BASED INSTRUCTIONS FOR THIS ASSESSMENT:**
+${Math.round((classification.confidence || 0) * 100)}% confidence means:
+${(classification.confidence || 0) < 0.8 ? 
+  '- GENERATE DISCLAIMER ONLY - Do not provide specific care plan' :
+  (classification.confidence || 0) < 0.9 ? 
+    '- GENERATE FULL CARE PLAN with confidence warning' :
+    '- GENERATE FULL CARE PLAN normally'
+}
 
 Patient Context:
 ${contextData?.woundOrigin ? `- How/when wound occurred: ${contextData.woundOrigin}` : ''}
