@@ -26,6 +26,7 @@ function SettingsPage() {
   // Wound type management state
   const [selectedWoundType, setSelectedWoundType] = useState("");
   const [woundTypeInstructions, setWoundTypeInstructions] = useState("");
+  const [woundTypeSynonyms, setWoundTypeSynonyms] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingWoundType, setEditingWoundType] = useState<any>(null);
   const [newWoundType, setNewWoundType] = useState({
@@ -72,6 +73,9 @@ function SettingsPage() {
       const selectedType = (woundTypes as any[]).find(type => type.id.toString() === selectedWoundType);
       if (selectedType) {
         setWoundTypeInstructions(selectedType.instructions || "");
+        // Convert synonyms array to comma-separated string for editing
+        const synonymsString = (selectedType.synonyms || []).join(", ");
+        setWoundTypeSynonyms(synonymsString);
       }
     }
   }, [selectedWoundType, woundTypes]);
@@ -246,9 +250,16 @@ function SettingsPage() {
 
   const handleSaveWoundType = () => {
     if (selectedWoundType && woundTypeInstructions) {
+      // Convert comma-separated synonyms back to array
+      const synonymsArray = woundTypeSynonyms
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+      
       updateWoundTypeMutation.mutate({
         id: parseInt(selectedWoundType),
-        instructions: woundTypeInstructions
+        instructions: woundTypeInstructions,
+        synonyms: synonymsArray
       });
     }
   };
@@ -427,10 +438,28 @@ function SettingsPage() {
                             id="woundInstructions"
                             value={woundTypeInstructions}
                             onChange={(e) => handleWoundTypeInstructionsChange(e.target.value)}
-                            rows={15}
+                            rows={12}
                             className="font-mono text-sm"
                             placeholder="Enter specific AI instructions for this wound type..."
                           />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="woundSynonyms">Synonyms (Alternative Names)</Label>
+                          <p className="text-sm text-gray-600 mb-2">
+                            Enter alternative names for this wound type, separated by commas. These help the AI recognize different ways the same wound type might be classified.
+                          </p>
+                          <Textarea
+                            id="woundSynonyms"
+                            value={woundTypeSynonyms}
+                            onChange={(e) => setWoundTypeSynonyms(e.target.value)}
+                            rows={3}
+                            className="text-sm"
+                            placeholder="e.g., animal bite, human bite, puncture wound, laceration"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Example: For "Traumatic Wound" you might add: bite wound, animal bite, puncture wound, laceration, cut
+                          </p>
                         </div>
                         
                         <div className="flex justify-between">
@@ -440,7 +469,7 @@ function SettingsPage() {
                             className="bg-medical-blue hover:bg-medical-blue/90"
                           >
                             <Save className="h-4 w-4 mr-2" />
-                            {updateWoundTypeMutation.isPending ? 'Saving...' : 'Save Instructions'}
+                            {updateWoundTypeMutation.isPending ? 'Saving...' : 'Save Instructions & Synonyms'}
                           </Button>
                         </div>
                       </div>
