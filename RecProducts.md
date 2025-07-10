@@ -1487,3 +1487,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-09-010
+**User:** sampilling@higharc.com  
+**Date:** 7/9/2025, 11:34:51 PM  
+**Wound Type:** Venous Leg Ulcer  
+**Audience:** patient  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+
