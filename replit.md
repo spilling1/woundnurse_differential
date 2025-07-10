@@ -436,6 +436,12 @@ Changelog:
   - **Comprehensive Metadata**: Logs include user info, timestamps, AI model used, confidence levels, detection methods, and decision reasoning
   - **Automatic Logging**: Every AI classification automatically appends to WhyClassification.md with structured reasoning analysis
   - **Transparency Enhancement**: Provides clear audit trail of AI decision-making process for medical review and system improvement
+- July 10, 2025. **CONFIDENCE-BASED CARE PLAN SYSTEM**: Implemented comprehensive confidence-based care plan generation:
+  - **80% threshold requirement**: Only generate care plans if confidence reaches 80%+ after questions
+  - **80-90% confidence warning**: Include prominent amber warning that assessment may be incorrect
+  - **<80% confidence disclaimer**: Return disclaimer only instead of care plan, directing to healthcare professional
+  - **Unsupported wound type rejection**: Refuse upfront for wound types not in allowed list, ask for additional pictures
+  - **Supported wound types**: Pressure injury, venous ulcer, arterial insufficiency ulcer, diabetic ulcer, surgical wound, traumatic wound, ischemic wound, radiation wound, infectious wound
 ```
 
 ## User Preferences

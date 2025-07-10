@@ -72,6 +72,47 @@ export async function generateCarePlan(
       throw new Error('AI Configuration not found. Please configure AI system prompts in Settings before generating care plans.');
     }
     
+    // Check confidence level and implement confidence-based responses
+    const confidence = classification.confidence || 0;
+    const confidencePercent = Math.round(confidence * 100);
+    
+    console.log(`CarePlanGenerator: Confidence level: ${confidencePercent}%`);
+    
+    // Check if wound type is supported
+    const supportedWoundTypes = [
+      'pressure injury', 'pressure ulcer', 'venous ulcer', 'arterial insufficiency ulcer',
+      'diabetic ulcer', 'surgical wound', 'traumatic wound', 'ischemic wound',
+      'radiation wound', 'infectious wound'
+    ];
+    
+    const woundTypeSupported = supportedWoundTypes.some(type => 
+      classification.woundType?.toLowerCase().includes(type.toLowerCase()) ||
+      type.toLowerCase().includes(classification.woundType?.toLowerCase())
+    );
+    
+    if (!woundTypeSupported) {
+      // Refuse upfront for unsupported wound types
+      return `**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.
+
+<div style="background-color:#fee2e2; border:2px solid #dc2626; padding:20px; border-radius:8px; margin:16px 0; text-align:center;">
+<h2 style="color:#dc2626; margin:0 0 12px 0;">Unsupported Wound Type</h2>
+<p style="color:#dc2626; margin:0 0 12px 0;">This wound type (${classification.woundType}) is not supported by our analysis system.</p>
+<p style="color:#dc2626; margin:0;">Please consult a healthcare professional for proper assessment and treatment. If you believe this is incorrect, please upload additional pictures from different angles.</p>
+</div>`;
+    }
+    
+    // Confidence-based response logic
+    if (confidencePercent < 80) {
+      // Below 80% confidence - return disclaimer only
+      return `**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.
+
+<div style="background-color:#fee2e2; border:2px solid #dc2626; padding:20px; border-radius:8px; margin:16px 0; text-align:center;">
+<h2 style="color:#dc2626; margin:0 0 12px 0;">Assessment Confidence Too Low</h2>
+<p style="color:#dc2626; margin:0;">I cannot provide a specific care plan with sufficient confidence (${confidencePercent}%). Please consult a healthcare professional for proper wound assessment and treatment.</p>
+</div>`;
+    }
+    
+    // Continue with normal care plan generation for confidence >= 80%
     // Get wound type specific instructions
     const woundTypeInstructions = await getWoundTypeInstructions(classification.woundType);
     
@@ -260,6 +301,16 @@ export async function generateCarePlan(
     // Add safety disclaimer
     const disclaimer = "**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.";
     
+    // Add confidence warning for 80-90% confidence
+    let confidenceWarning = "";
+    if (confidencePercent >= 80 && confidencePercent < 90) {
+      confidenceWarning = `
+<div style="background-color:#fef3c7; border:2px solid #f59e0b; padding:16px; border-radius:8px; margin:16px 0;">
+<h3 style="color:#92400e; margin:0 0 8px 0;">⚠️ ASSESSMENT CONFIDENCE NOTICE</h3>
+<p style="color:#92400e; margin:0;">Assessment confidence: ${confidencePercent}%. There is a possibility this assessment may be incorrect. Please verify with a healthcare professional.</p>
+</div>`;
+    }
+    
     // Update product usage counts for recommended products
     if (relevantProducts && relevantProducts.length > 0) {
       for (const product of relevantProducts) {
@@ -312,7 +363,7 @@ ${hasDetections ? `
 **Multiple Wounds:** ${detectionInfo.multipleWounds ? 'Yes' : 'No'}`;
     }
     
-    return `${disclaimer}\n\n${carePlan}${detectionSystemInfo}`;
+    return `${disclaimer}${confidenceWarning}\n\n${carePlan}${detectionSystemInfo}`;
     
   } catch (error: any) {
     console.error('Care plan generation error:', error);
