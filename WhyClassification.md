@@ -1037,3 +1037,26 @@ Full-thickness skin loss on a bony prominence, consistent with a pressure ulcer.
 
 ---
 
+
+---
+## Case: 2025-07-10-606
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 9:02:26 PM  
+**Wound Type:** Animal bite  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound presents as a cluster of puncture marks, which is highly characteristic of an animal bite. There is significant bruising around the injury site. Bite wounds carry a very high risk of deep tissue infection from bacteria in the animal's mouth.
+
+### Classification Process:
+
+**Independent Classification:** Animal bite (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Animal bite with 95% confidence
+
+---
+
