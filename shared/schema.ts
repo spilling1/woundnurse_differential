@@ -151,6 +151,8 @@ export const agentInstructions = pgTable("agent_instructions", {
   specificWoundCare: text("specific_wound_care").notNull(),
   questionsGuidelines: text("questions_guidelines"),
   productRecommendations: text("product_recommendations"),
+  // System feature toggles
+  duplicateDetectionEnabled: boolean("duplicate_detection_enabled").notNull().default(true),
   version: integer("version").notNull().default(1),
   isActive: boolean("is_active").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),

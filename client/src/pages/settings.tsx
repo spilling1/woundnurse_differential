@@ -21,6 +21,7 @@ function SettingsPage() {
   const [specificWoundCare, setSpecificWoundCare] = useState("");
   const [questionsGuidelines, setQuestionsGuidelines] = useState("");
   const [productRecommendations, setProductRecommendations] = useState("");
+  const [duplicateDetectionEnabled, setDuplicateDetectionEnabled] = useState(true);
   
   // Wound type management state
   const [selectedWoundType, setSelectedWoundType] = useState("");
@@ -61,6 +62,7 @@ function SettingsPage() {
       setSpecificWoundCare(data.specificWoundCare || "");
       setQuestionsGuidelines(data.questionsGuidelines || "");
       setProductRecommendations(data.productRecommendations || "");
+      setDuplicateDetectionEnabled(data.duplicateDetectionEnabled !== undefined ? data.duplicateDetectionEnabled : true);
     }
   }, [agentData]);
 
@@ -82,6 +84,7 @@ function SettingsPage() {
       specificWoundCare: string;
       questionsGuidelines: string;
       productRecommendations: string;
+      duplicateDetectionEnabled: boolean;
     }) => {
       const response = await fetch('/api/agents', {
         method: 'POST',
@@ -211,7 +214,8 @@ function SettingsPage() {
       carePlanStructure,
       specificWoundCare,
       questionsGuidelines,
-      productRecommendations
+      productRecommendations,
+      duplicateDetectionEnabled
     });
   };
 
@@ -223,6 +227,7 @@ function SettingsPage() {
       setSpecificWoundCare(data.specificWoundCare || "");
       setQuestionsGuidelines(data.questionsGuidelines || "");
       setProductRecommendations(data.productRecommendations || "");
+      setDuplicateDetectionEnabled(data.duplicateDetectionEnabled !== undefined ? data.duplicateDetectionEnabled : true);
       toast({
         title: "Reset Complete",
         description: "Settings have been reset to saved values.",
@@ -279,7 +284,8 @@ function SettingsPage() {
       carePlanStructure !== (data.carePlanStructure || "") ||
       specificWoundCare !== (data.specificWoundCare || "") ||
       questionsGuidelines !== (data.questionsGuidelines || "") ||
-      productRecommendations !== (data.productRecommendations || "")
+      productRecommendations !== (data.productRecommendations || "") ||
+      duplicateDetectionEnabled !== (data.duplicateDetectionEnabled !== undefined ? data.duplicateDetectionEnabled : true)
     );
   };
 
@@ -347,12 +353,13 @@ function SettingsPage() {
           </CardHeader>
           <CardContent className="p-6">
             <Tabs defaultValue="system" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 mb-6">
+              <TabsList className="grid w-full grid-cols-6 mb-6">
                 <TabsTrigger value="system">System Prompts</TabsTrigger>
                 <TabsTrigger value="structure">Care Plan Structure</TabsTrigger>
                 <TabsTrigger value="wound">Wound Types</TabsTrigger>
                 <TabsTrigger value="questions">Questions Guidelines</TabsTrigger>
                 <TabsTrigger value="products">Product Recommendations</TabsTrigger>
+                <TabsTrigger value="features">System Features</TabsTrigger>
               </TabsList>
 
               <TabsContent value="system" className="space-y-4">
@@ -615,6 +622,63 @@ For Diabetic Ulcers:
                     className="font-mono text-sm"
                     placeholder="Enter product recommendation guidelines by wound type, severity, and care stage..."
                   />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="features" className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">System Features</h3>
+                  <p className="text-gray-600 mb-6">
+                    Configure system-wide features and behaviors that affect how the wound assessment system operates.
+                  </p>
+                  
+                  {/* Duplicate Detection Feature */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h4 className="text-md font-semibold text-gray-900 mb-2">Duplicate Image Detection</h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                          When enabled, the system automatically detects if a user uploads an image they've already assessed. 
+                          Users will be prompted to either create a follow-up assessment or start a new case.
+                        </p>
+                        <div className="text-xs text-gray-500 space-y-1">
+                          <p>• <strong>Enabled:</strong> Checks for duplicate images and prompts users for action</p>
+                          <p>• <strong>Disabled:</strong> Allows duplicate image uploads without detection</p>
+                        </div>
+                      </div>
+                      <div className="ml-6">
+                        <Switch
+                          id="duplicateDetection"
+                          checked={duplicateDetectionEnabled}
+                          onCheckedChange={setDuplicateDetectionEnabled}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className={`rounded-md p-3 ${duplicateDetectionEnabled ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-200'}`}>
+                      <div className="flex items-center">
+                        {duplicateDetectionEnabled ? (
+                          <>
+                            <div className="flex-shrink-0">
+                              <Eye className="h-4 w-4 text-green-600" />
+                            </div>
+                            <p className="ml-2 text-sm text-green-700">
+                              Duplicate detection is <strong>enabled</strong> - system will check for identical images
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex-shrink-0">
+                              <EyeOff className="h-4 w-4 text-gray-500" />
+                            </div>
+                            <p className="ml-2 text-sm text-gray-600">
+                              Duplicate detection is <strong>disabled</strong> - users can upload any images without checks
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>

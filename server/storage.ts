@@ -35,6 +35,7 @@ export interface IStorage {
     specificWoundCare?: string;
     questionsGuidelines?: string | null;
     productRecommendations?: string | null;
+    duplicateDetectionEnabled?: boolean;
   }): Promise<AgentInstructions>;
   
   // Agent question operations
@@ -299,6 +300,7 @@ export class DatabaseStorage implements IStorage {
     specificWoundCare?: string;
     questionsGuidelines?: string | null;
     productRecommendations?: string | null;
+    duplicateDetectionEnabled?: boolean;
   }): Promise<AgentInstructions> {
     const [result] = await db
       .update(agentInstructions)

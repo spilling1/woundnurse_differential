@@ -408,10 +408,15 @@ export function registerAssessmentRoutes(app: Express): void {
       }
       
       // Check for duplicate images IMMEDIATELY after validation, before any AI analysis
+      // But only if duplicate detection is enabled
       const primaryImage = files[0];
       const imageBase64 = primaryImage.buffer.toString('base64');
       
-      if (req.customUser?.id && primaryImage.size > 0) {
+      // Get agent instructions to check if duplicate detection is enabled
+      const agentInstructions = await storage.getActiveAgentInstructions();
+      const duplicateDetectionEnabled = agentInstructions?.duplicateDetectionEnabled !== false; // Default to true if undefined
+      
+      if (duplicateDetectionEnabled && req.customUser?.id && primaryImage.size > 0) {
         const duplicateAssessment = await storage.findAssessmentByImageData(req.customUser.id, imageBase64, primaryImage.size);
         if (duplicateAssessment) {
           // Return information about the duplicate so frontend can ask user
@@ -427,8 +432,7 @@ export function registerAssessmentRoutes(app: Express): void {
         }
       }
       
-      // Get agent instructions
-      const agentInstructions = await storage.getActiveAgentInstructions();
+      // We already fetched agent instructions above for duplicate detection check
       const instructions = agentInstructions ? 
         `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
       

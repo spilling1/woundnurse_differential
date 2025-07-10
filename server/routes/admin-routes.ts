@@ -117,7 +117,7 @@ export function registerAdminRoutes(app: Express): void {
   // Update Agent Instructions
   app.post("/api/agents", async (req, res) => {
     try {
-      const { systemPrompts, carePlanStructure, specificWoundCare, questionsGuidelines, productRecommendations } = req.body;
+      const { systemPrompts, carePlanStructure, specificWoundCare, questionsGuidelines, productRecommendations, duplicateDetectionEnabled } = req.body;
       
       if (!systemPrompts || !carePlanStructure || !specificWoundCare) {
         return res.status(400).json({
@@ -136,7 +136,8 @@ export function registerAdminRoutes(app: Express): void {
           carePlanStructure,
           specificWoundCare,
           questionsGuidelines,
-          productRecommendations
+          productRecommendations,
+          duplicateDetectionEnabled: duplicateDetectionEnabled !== undefined ? duplicateDetectionEnabled : true
         });
       } else {
         // Create new instructions
@@ -146,6 +147,7 @@ export function registerAdminRoutes(app: Express): void {
           specificWoundCare,
           questionsGuidelines,
           productRecommendations,
+          duplicateDetectionEnabled: duplicateDetectionEnabled !== undefined ? duplicateDetectionEnabled : true,
           version: 1
         });
       }
