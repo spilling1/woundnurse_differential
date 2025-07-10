@@ -94,14 +94,17 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
     
     try {
       // Create follow-up assessment with existing case ID
+      // Use classification from existing case since we detected duplicate early
       const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
+      const classificationToUse = state.woundClassification || state.duplicateInfo?.existingCase?.classification;
+      
       const followUpResponse = await assessmentApi.finalPlan(
         state.selectedImage,
         state.audience,
         modelToUse,
-        state.aiQuestions,
-        state.woundClassification,
-        state.userFeedback,
+        state.aiQuestions || [],
+        classificationToUse,
+        state.userFeedback || '',
         state.duplicateInfo?.existingCase?.caseId // Pass existing case ID
       );
       
@@ -131,14 +134,17 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
     
     try {
       // Force create new case (backend will ignore duplicate detection)
+      // Use classification from existing case since we detected duplicate early
       const modelToUse: ModelType = state.model || 'gemini-2.5-pro';
+      const classificationToUse = state.woundClassification || state.duplicateInfo?.existingCase?.classification;
+      
       const newCaseResponse = await assessmentApi.finalPlan(
         state.selectedImage,
         state.audience,
         modelToUse,
-        state.aiQuestions,
-        state.woundClassification,
-        state.userFeedback,
+        state.aiQuestions || [],
+        classificationToUse,
+        state.userFeedback || '',
         null, // No existing case ID - force new case
         true  // forceNew flag
       );
