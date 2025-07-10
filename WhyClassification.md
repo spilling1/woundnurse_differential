@@ -830,3 +830,26 @@ Multiple deep puncture wounds consistent with an animal bite. Significant locali
 
 ---
 
+
+---
+## Case: 2025-07-10-774
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:32:08 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds, highly consistent with bite marks, are present over the metacarpophalangeal joints (knuckles). The location over the joints raises concern for potential tendon or joint capsule involvement. Surrounding redness and swelling are indicative of an inflammatory response and possible early infection.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
