@@ -123,7 +123,7 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
           duplicateInfo: data,
           currentStep: 'generating-plan' // Skip to plan generation to handle duplicate
         });
-        onNextStep();
+        // Don't call onNextStep() here since we're setting the step directly
       } else {
         // Normal flow - proceed with questions
         onStateChange({
