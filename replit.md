@@ -451,6 +451,11 @@ Changelog:
   - **Removed Advisory Language**: Eliminated "Please avoid..." and instructional text within questions, keeping questions pure and focused
   - **Post-Processing Validation**: Added automatic question cleaning to remove advisory language and split combined statements
   - **Question Quality Control**: Enhanced validation to ensure each question is standalone, properly formatted, and actually asks one thing
+- July 10, 2025. **DUPLICATE DETECTION OPTIMIZATION**: Moved duplicate image detection to occur before image analysis for improved efficiency:
+  - **Early Detection**: Duplicate image checking now happens immediately after image validation, before AI analysis
+  - **Processing Optimization**: Prevents unnecessary YOLO detection and AI classification when duplicate images are found
+  - **User Experience**: Users get immediate feedback about duplicates without waiting for full analysis to complete
+  - **Resource Efficiency**: Saves computational resources by avoiding redundant analysis of identical images
 ```
 
 ## User Preferences

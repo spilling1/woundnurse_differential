@@ -121,6 +121,23 @@ export function registerAssessmentRoutes(app: Express): void {
       // Validate image
       const imageBase64 = await validateImage(req.file);
       
+      // Check for duplicate images BEFORE analysis to avoid unnecessary processing
+      if (userId && req.file.size > 0) {
+        const duplicateAssessment = await storage.findAssessmentByImageData(userId, imageBase64, req.file.size);
+        if (duplicateAssessment) {
+          // Return information about the duplicate so frontend can ask user
+          return res.json({
+            duplicateDetected: true,
+            existingCase: {
+              caseId: duplicateAssessment.caseId,
+              createdAt: duplicateAssessment.createdAt,
+              classification: duplicateAssessment.classification
+            },
+            message: "We found an identical image in your previous assessments. Would you like to create a follow-up assessment or start a new case?"
+          });
+        }
+      }
+      
       // Generate case ID
       const caseId = generateCaseId();
       
@@ -814,23 +831,7 @@ export function registerAssessmentRoutes(app: Express): void {
         imageMimeType = req.file.mimetype;
         imageSize = req.file.size;
         
-        // Check for duplicate images to inform user about potential follow-up
-        const userId = (req as any).customUser?.id;
-        if (userId && imageSize > 0 && !forceNew) {
-          const duplicateAssessment = await storage.findAssessmentByImageData(userId, imageBase64, imageSize);
-          if (duplicateAssessment && !existingCaseId) {
-            // Return information about the duplicate so frontend can ask user
-            return res.json({
-              duplicateDetected: true,
-              existingCase: {
-                caseId: duplicateAssessment.caseId,
-                createdAt: duplicateAssessment.createdAt,
-                classification: duplicateAssessment.classification
-              },
-              message: "We found an identical image in your previous assessments. Would you like to create a follow-up assessment or start a new case?"
-            });
-          }
-        }
+        // Note: Duplicate image detection now happens at upload time, not here
       }
       
       // Create wound assessment record
