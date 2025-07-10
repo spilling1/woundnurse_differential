@@ -784,3 +784,49 @@ Multiple deep puncture wounds and lacerations are present, consistent with an an
 
 ---
 
+
+---
+## Case: 2025-07-10-542
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:20:28 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 98%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds and lacerations are present across the knuckles and dorsum of the hand, consistent with a bite injury. There is significant localized edema (swelling) and erythema (redness) surrounding the wounds, indicating a strong inflammatory response and a high risk for infection.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (98% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 98% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-596
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:21:53 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds consistent with an animal bite. Significant localized edema (swelling) and erythema (redness) are present, raising high suspicion for infection (cellulitis), a common complication of such injuries.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
