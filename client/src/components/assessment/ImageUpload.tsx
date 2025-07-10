@@ -141,11 +141,19 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
       
       // Check if this is an invalid wound type error
       if (error.code === "INVALID_WOUND_TYPE") {
-        // Redirect to unsupported wound page with details
+        // Redirect to unsupported wound page with enhanced details
         const params = new URLSearchParams({
           woundType: error.woundType || 'Unknown',
-          confidence: error.confidence?.toString() || '85'
+          confidence: error.confidence?.toString() || '85',
+          reasoning: error.reasoning || 'Visual analysis performed by AI',
+          message: error.message || 'This wound type is not currently supported'
         });
+        
+        // Add supported types if available
+        if (error.supportedTypes && Array.isArray(error.supportedTypes)) {
+          params.set('supportedTypes', error.supportedTypes.join('|'));
+        }
+        
         setLocation(`/unsupported-wound?${params.toString()}`);
         return;
       }
@@ -158,7 +166,9 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
         
         const params = new URLSearchParams({
           woundType: woundType,
-          confidence: '90'
+          confidence: '90',
+          reasoning: 'Visual analysis performed by AI',
+          message: error.message
         });
         setLocation(`/unsupported-wound?${params.toString()}`);
         return;

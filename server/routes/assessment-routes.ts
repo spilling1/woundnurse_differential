@@ -243,6 +243,19 @@ export function registerAssessmentRoutes(app: Express): void {
         });
       }
       
+      // Handle unsupported wound type errors from care plan generation
+      if (error.name === 'ANALYSIS_ERROR' && error.message.includes('INVALID_WOUND_TYPE')) {
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE",
+          message: `This wound appears to be a ${error.woundType} which is not currently supported by the Wound Nurse.`,
+          woundType: error.woundType,
+          confidence: error.confidence,
+          reasoning: `We have ${error.confidence}% confidence in this assessment based on visual analysis and classification algorithms.`,
+          supportedTypes: error.supportedTypes ? error.supportedTypes.split(', ') : [],
+          redirect: "/unsupported-wound"
+        });
+      }
+      
       res.status(500).json({
         code: "PROCESSING_ERROR",
         message: error.message || "Failed to process image"
@@ -935,6 +948,20 @@ export function registerAssessmentRoutes(app: Express): void {
 
     } catch (error: any) {
       console.error('Final plan error:', error);
+      
+      // Handle unsupported wound type errors from care plan generation
+      if (error.name === 'ANALYSIS_ERROR' && error.message.includes('INVALID_WOUND_TYPE')) {
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE",
+          message: `This wound appears to be a ${error.woundType} which is not currently supported by the Wound Nurse.`,
+          woundType: error.woundType,
+          confidence: error.confidence,
+          reasoning: `We have ${error.confidence}% confidence in this assessment based on visual analysis and classification algorithms.`,
+          supportedTypes: error.supportedTypes ? error.supportedTypes.split(', ') : [],
+          redirect: "/unsupported-wound"
+        });
+      }
+      
       res.status(500).json({
         code: "FINAL_PLAN_ERROR",
         message: error.message || "Failed to generate final care plan"

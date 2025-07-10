@@ -13,31 +13,20 @@ export default function UnsupportedWound() {
   const urlParams = new URLSearchParams(window.location.search);
   const woundType = urlParams.get('woundType') || params.woundType || 'Unknown';
   const confidence = urlParams.get('confidence') || '85';
+  const reasoning = urlParams.get('reasoning') || 'Visual analysis performed by AI';
+  const message = urlParams.get('message') || 'This wound type is not currently supported';
+  const supportedTypesParam = urlParams.get('supportedTypes') || '';
+  const supportedTypes = supportedTypesParam ? supportedTypesParam.split('|') : [];
   const caseId = urlParams.get('caseId') || params.caseId;
 
-  const [countdown, setCountdown] = useState(30);
+  // Removed auto-redirect timer - users will use action buttons instead
 
-  // Countdown timer for auto-redirect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          setLocation('/');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [setLocation]);
-
-  const handleTryAgain = () => {
-    setLocation('/');
+  const handleResubmit = () => {
+    setLocation('/assessment');
   };
 
-  const handleGoHome = () => {
-    setLocation('/');
+  const handleClose = () => {
+    setLocation('/my-cases');
   };
 
   return (
@@ -81,34 +70,42 @@ export default function UnsupportedWound() {
 
             {/* Main Message */}
             <div className="space-y-4 text-gray-700">
-              <p className="text-lg leading-relaxed">
-                Our AI identified this as a <strong>{woundType.toLowerCase()}</strong> with {confidence}% confidence.
+              <p className="text-lg leading-relaxed font-medium">
+                {message}
               </p>
               <p className="leading-relaxed">
-                While our system doesn't currently provide treatment recommendations for this wound type, we're continuously expanding our capabilities to support more conditions.
+                We have <strong>{confidence}% confidence</strong> in this assessment because of {reasoning}.
               </p>
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800">
-                <p className="font-medium">What you can do:</p>
-                <ul className="mt-2 space-y-1 text-sm">
-                  <li>• Try uploading different images with better lighting or angles</li>
-                  <li>• Consult with a healthcare professional for proper diagnosis</li>
-                  <li>• Check back later as we add support for more wound types</li>
-                </ul>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800">
+                <p className="font-medium">If you disagree with this assessment:</p>
+                <p className="mt-2 text-sm">
+                  Please resubmit your request with additional pictures from different angles, with better lighting, or showing more detail of the wound area.
+                </p>
               </div>
             </div>
 
             {/* Supported Types */}
-            <div className="bg-blue-50 rounded-lg p-6 text-left">
-              <h4 className="font-semibold text-blue-900 mb-3 text-center">Currently Supported Wound Types:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-800">
-                <div>• Venous Ulcers</div>
-                <div>• Arterial Insufficiency Ulcers</div>
-                <div>• Diabetic Ulcers</div>
-                <div>• Surgical Wounds</div>
-                <div>• Traumatic Wounds</div>
-                <div>• Ischemic Wounds</div>
-                <div>• Radiation Wounds</div>
-                <div>• Infectious Wounds</div>
+            <div className="bg-gray-50 rounded-lg p-6 text-left">
+              <h4 className="font-semibold text-gray-900 mb-3 text-center">Currently Supported Wound Types:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
+                {supportedTypes.length > 0 ? (
+                  supportedTypes.map((type, index) => (
+                    <div key={index}>• {type}</div>
+                  ))
+                ) : (
+                  // Default supported types if none provided
+                  <>
+                    <div>• Pressure Injuries</div>
+                    <div>• Venous Ulcers</div>
+                    <div>• Arterial Insufficiency Ulcers</div>
+                    <div>• Diabetic Ulcers</div>
+                    <div>• Surgical Wounds</div>
+                    <div>• Traumatic Wounds</div>
+                    <div>• Ischemic Wounds</div>
+                    <div>• Radiation Wounds</div>
+                    <div>• Infectious Wounds</div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -117,28 +114,25 @@ export default function UnsupportedWound() {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <Button 
-                onClick={handleTryAgain}
+                onClick={handleResubmit}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3"
                 size="lg"
               >
-                <Camera className="mr-2 h-5 w-5" />
-                Try Again with Different Images
+                <RefreshCw className="mr-2 h-5 w-5" />
+                Resubmit
               </Button>
               <Button 
-                onClick={handleGoHome}
+                onClick={handleClose}
                 variant="outline"
                 className="flex-1 py-3"
                 size="lg"
               >
-                <Home className="mr-2 h-5 w-5" />
-                Go to Home Page
+                <ArrowLeft className="mr-2 h-5 w-5" />
+                Close
               </Button>
             </div>
 
-            {/* Auto-redirect notice */}
-            <div className="text-sm text-gray-500 mt-6">
-              You will be automatically redirected to the home page in {countdown} seconds
-            </div>
+
           </CardContent>
         </Card>
 
