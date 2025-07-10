@@ -467,6 +467,12 @@ Changelog:
   - **Consistent Formatting**: Each product recommendation now appears in a bordered box with gray background
   - **Improved Layout**: Product boxes include product name, description, and Amazon link with professional styling
   - **User Experience**: Restored the preferred visual format for "Items to Purchase" section with clear product boundaries
+- July 10, 2025. **MEDICAL REFERRAL SECTIONS RESTORED**: Restored comprehensive medical referral guidance functionality:
+  - **Recommended Follow-ups**: Added detailed scheduling guidance for medical appointments and specialist visits
+  - **Referral Specifics**: Restored specific guidance on what to tell doctors, including appropriate specialist types
+  - **Specialist Guidelines**: Added wound-type-specific referral guidance (Wound Care Specialist, Podiatrist, Vascular Surgeon, etc.)
+  - **Discussion Points**: Restored bullet-point format showing specific topics to discuss with medical professionals
+  - **Professional Integration**: Enhanced care plans to include comprehensive medical referral information for seamless healthcare coordination
 ```
 
 ## User Preferences
