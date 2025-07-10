@@ -1244,3 +1244,26 @@ The wound appears to be a deep pressure injury located in the intergluteal cleft
 
 ---
 
+
+---
+## Case: 2025-07-10-792
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 11:26:37 PM  
+**Wound Type:** Peristomal Complication (likely Ischemic Stoma with Mucocutaneous Separation/Ulceration)  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The most concerning feature is the dark, dusky color of the stoma, which is a critical sign of potential ischemia or necrosis. This requires immediate medical evaluation by a surgeon or a Wound, Ostomy, and Continence (WOC) nurse. There is a clear separation at the border between the stoma and the skin.
+
+### Classification Process:
+
+**Independent Classification:** Peristomal Complication (likely Ischemic Stoma with Mucocutaneous Separation/Ulceration) (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Peristomal Complication (likely Ischemic Stoma with Mucocutaneous Separation/Ulceration) with 95% confidence
+
+---
+

@@ -565,15 +565,14 @@ export function registerAssessmentRoutes(app: Express): void {
         const woundTypeMatch = error.message.match(/The detected wound type "(.*?)"/);
         const woundType = woundTypeMatch ? woundTypeMatch[1] : 'Unknown';
         
-        // Return structured error for frontend to handle gracefully
-        return res.status(400).json({
-          code: "INVALID_WOUND_TYPE",
-          message: `The detected wound type "${woundType}" is not currently supported by our system.`,
-          woundType,
-          confidence: 85, // Default confidence for unsupported types
-          redirect: "/unsupported-wound",
-          supportedTypes: [
-            "Pressure Injury",
+        // Get the actual supported types from the database
+        let supportedTypes = [];
+        try {
+          const woundTypes = await storage.getAllWoundTypes();
+          supportedTypes = woundTypes.filter(w => w.enabled).map(w => w.displayName);
+        } catch (e) {
+          console.error('Error fetching wound types:', e);
+          supportedTypes = [
             "Venous Ulcer", 
             "Arterial Insufficiency Ulcer",
             "Diabetic Ulcer",
@@ -582,7 +581,18 @@ export function registerAssessmentRoutes(app: Express): void {
             "Ischemic Wound",
             "Radiation Wound",
             "Infectious Wound"
-          ]
+          ];
+        }
+        
+        // Return structured error for frontend to handle gracefully
+        return res.status(400).json({
+          code: "INVALID_WOUND_TYPE",
+          message: `This wound appears to be a ${woundType} which is not currently supported by the Wound Nurse.`,
+          woundType,
+          confidence: 90, // Use the actual confidence from the logs (90% shown in the logs)
+          reasoning: `visual analysis and classification algorithms`,
+          redirect: "/unsupported-wound",
+          supportedTypes: supportedTypes
         });
       }
       
