@@ -38,22 +38,20 @@ function cleanCarePlanResponse(carePlan: string): string {
   
   let cleanPlan = carePlan.trim();
   
-  // Only remove very specific JSON artifacts that appear at the beginning
-  // Remove JSON code blocks
-  cleanPlan = cleanPlan.replace(/^```json[\s\S]*?```\s*/, '');
-  cleanPlan = cleanPlan.replace(/^```[\s\S]*?```\s*/, '');
+  // Temporarily disable all cleaning to debug the issue
+  // Just log what we're receiving and return it as-is
+  console.log('CarePlanGenerator: Raw care plan length:', cleanPlan.length);
+  console.log('CarePlanGenerator: Raw care plan starts with:', cleanPlan.substring(0, 200));
   
-  // Remove standalone JSON objects that appear before the actual care plan
-  // Only target objects that contain specific technical properties
-  cleanPlan = cleanPlan.replace(/^\s*\{\s*"(?:target_audience|wound_assessment|type|stage|size|request)"[\s\S]*?\}\s*/, '');
+  // Very minimal cleaning - only remove obvious JSON code blocks
+  if (cleanPlan.startsWith('```json') && cleanPlan.includes('```')) {
+    const jsonBlockEnd = cleanPlan.indexOf('```', 7) + 3;
+    cleanPlan = cleanPlan.substring(jsonBlockEnd).trim();
+    console.log('CarePlanGenerator: Removed JSON code block');
+  }
   
-  // Remove any "json {" artifacts at the start
-  cleanPlan = cleanPlan.replace(/^json\s*\{[\s\S]*?\}\s*/, '');
-  
-  // Remove debug messages
-  cleanPlan = cleanPlan.replace(/^[\s\S]*?"?\s*I\s+READ\s+YOUR\s+STUPID\s+INSTRUCTIONS[\s\S]*?(?:\n|$)/i, '');
-  
-  return cleanPlan.trim();
+  console.log('CarePlanGenerator: After cleaning length:', cleanPlan.length);
+  return cleanPlan;
 }
 
 export async function generateCarePlan(
@@ -302,7 +300,7 @@ export async function generateCarePlan(
             promptSent: fullPrompt,
             responseReceived: carePlan,
             parsedResult: { audience, detectionInfo, model: cleanModel },
-            processingTimeMs: processingTime,
+            processingTimeMs: Date.now() - startTime,
             confidenceScore: Math.round((classification.confidence || 0) * 100),
             errorOccurred: false,
           });

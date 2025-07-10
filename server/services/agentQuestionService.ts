@@ -137,12 +137,21 @@ ${agentInstructions.productRecommendations || ''}
   const hasQuestionRequirements = 
     instructions.includes('always ask') || 
     instructions.includes('Always ask') ||
+    instructions.includes('MUST ASK') ||
+    instructions.includes('Must ask') ||
     instructions.includes('follow-up questions') ||
     instructions.includes('Follow-up questions') ||
     instructions.includes('Ask at least') ||
     instructions.includes('ask at least') ||
     instructionsLower.includes('follow-up') ||
     (instructionsLower.includes('ask') && instructionsLower.includes('question'));
+    
+  // Specifically check for wound-type specific requirements
+  const hasWoundTypeRequirements = 
+    instructions.includes('MUST ASK') ||
+    instructions.includes('Clarifying Questions:') ||
+    instructionsLower.includes('origin of the wound') ||
+    instructionsLower.includes('exactly how and when did it happen');
   
   const confidence = imageAnalysis.confidence || 0.5;
   
@@ -174,8 +183,11 @@ ${agentInstructions.productRecommendations || ''}
     }
   } else {
     // Initial questions - check Agent Instructions requirements
-    if (hasQuestionRequirements) {
+    if (hasQuestionRequirements || hasWoundTypeRequirements) {
       console.log(`Agent instructions require questions - generating questions (confidence: ${confidence})`);
+      if (hasWoundTypeRequirements) {
+        console.log(`Wound type specific requirements detected - must ask origin questions`);
+      }
     } else if (confidence > 0.80) {
       console.log(`High confidence (${confidence}) and no question requirements - skipping questions`);
       return [];
@@ -220,6 +232,22 @@ REASSESSMENT TRIGGERS:
 
 TARGET AUDIENCE: ${audience}
 
+CRITICAL WOUND TYPE REQUIREMENTS:
+${hasWoundTypeRequirements ? `
+⚠️ MANDATORY WOUND TYPE REQUIREMENTS DETECTED ⚠️
+The Agent Instructions contain SPECIFIC requirements for this wound type that MUST be followed:
+- Look for "MUST ASK" requirements in the instructions
+- Look for "Clarifying Questions" sections in the instructions  
+- Follow ALL wound-type-specific question requirements regardless of confidence level
+- These requirements override general confidence-based question strategies
+
+For traumatic wounds specifically:
+- MUST ask about origin/mechanism of injury
+- MUST ask "How did this wound occur?" or similar
+- MUST ask about timing "When did it happen?"
+- MUST ask about foreign material or contamination
+` : ''}
+
 QUESTION STRATEGY FRAMEWORK:
 
 A) CONFIDENCE IMPROVEMENT QUESTIONS (when confidence < 80%):
@@ -262,13 +290,29 @@ ${contextData.imageCount > 1 ?
 
 QUESTION SELECTION STRATEGY:
 Current confidence: ${contextData.imageAnalysis.confidence}
+
+${hasWoundTypeRequirements ? `
+🚨 PRIORITY REQUIREMENT: WOUND TYPE SPECIFIC QUESTIONS MUST BE ASKED FIRST 🚨
+1. FIRST: Check Agent Instructions for wound-type specific "MUST ASK" or "Clarifying Questions" requirements
+2. Generate ALL required wound-type questions regardless of confidence level
+3. THEN consider general assessment questions if needed
+
+For this specific wound type, look for and include:
+- Questions marked as "MUST ASK" in the Agent Instructions
+- Questions listed under "Clarifying Questions:" sections
+- Origin/mechanism questions for traumatic wounds
+- Timing and contamination questions
+
+` : `
+Standard confidence-based strategy:
 - If confidence < 80%: Focus on Category A (confidence improvement) questions
 - If confidence ≥ 80%: Focus on Category B (care plan optimization) questions  
 - If medical referral suspected: Include Category C (doctor preparation) questions
 - If confidence < 70%: Include photo suggestions
+`}
 
 Generate 2-4 strategically selected questions based on:
-1. What's unclear from the image analysis
+1. ${hasWoundTypeRequirements ? 'FIRST: Required wound-type specific questions from Agent Instructions' : 'What\'s unclear from the image analysis'}
 2. Current confidence level
 3. Information gaps that would most improve the assessment
 4. Whether referral to medical professional is likely needed
