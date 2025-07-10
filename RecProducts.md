@@ -1515,3 +1515,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-795
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:06:19 AM  
+**Wound Type:** traumatic wound  
+**Audience:** medical  
+**AI Model:** gpt-4o  
+
+### Product Recommendations:
+
+
+---
+
