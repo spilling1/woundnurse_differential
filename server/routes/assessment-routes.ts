@@ -394,6 +394,50 @@ export function registerAssessmentRoutes(app: Express): void {
 
   // New Assessment Flow Routes
 
+  // Debug endpoint to test wound type validation
+  app.post('/api/debug/validate-wound-type', isAuthenticated, async (req, res) => {
+    try {
+      const { woundType } = req.body;
+      
+      // Import the function directly
+      const { classifyWound } = await import('../services/woundClassifier');
+      
+      // Test validation directly through storage
+      const enabledTypes = await storage.getEnabledWoundTypes();
+      
+      console.log('Debug: Testing wound type validation for:', woundType);
+      console.log('Debug: Enabled types:', enabledTypes.map(t => t.displayName));
+      
+      // Test the logic manually
+      const normalizedDetected = woundType.toLowerCase().trim();
+      const exactMatch = enabledTypes.find(type => 
+        type.displayName.toLowerCase() === normalizedDetected ||
+        type.name.toLowerCase() === normalizedDetected
+      );
+      
+      const partialMatch = enabledTypes.find(type => {
+        const typeName = type.displayName.toLowerCase();
+        const typeKey = type.name.toLowerCase();
+        
+        return normalizedDetected.includes(typeName) || 
+               normalizedDetected.includes(typeKey) ||
+               typeName.includes(normalizedDetected) ||
+               typeKey.includes(normalizedDetected);
+      });
+      
+      res.json({
+        input: woundType,
+        normalizedInput: normalizedDetected,
+        exactMatch: exactMatch ? exactMatch.displayName : null,
+        partialMatch: partialMatch ? partialMatch.displayName : null,
+        enabledTypes: enabledTypes.map(t => ({ name: t.name, displayName: t.displayName, enabled: t.isEnabled }))
+      });
+    } catch (error) {
+      console.error('Debug validation error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Step 1: Initial image analysis with AI-generated questions
   app.post("/api/assessment/initial-analysis", optionalAuth, upload.array('images', 5), async (req, res) => {
     try {

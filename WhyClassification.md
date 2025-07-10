@@ -1267,3 +1267,26 @@ The most concerning feature is the dark, dusky color of the stoma, which is a cr
 
 ---
 
+
+---
+## Case: 2025-07-10-724
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 11:38:18 PM  
+**Wound Type:** Pressure Injury (Pressure Ulcer)  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Significant periwound erythema suggests a potential spreading infection (cellulitis) that requires immediate medical evaluation. The wound is located on a bony prominence, which is a classic site for pressure injuries.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (Pressure Ulcer) (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury (Pressure Ulcer) with 90% confidence
+
+---
+

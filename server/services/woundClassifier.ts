@@ -14,16 +14,19 @@ async function validateWoundType(detectedWoundType: string): Promise<{
   try {
     // Get enabled wound types from database
     const enabledWoundTypes = await storage.getEnabledWoundTypes();
+    console.log('ValidateWoundType: Enabled wound types:', enabledWoundTypes.map(t => `${t.displayName} (enabled: ${t.isEnabled})`));
     const validTypes = enabledWoundTypes.map(type => type.displayName);
     
     // Normalize wound type for comparison (case-insensitive, handle variations)
     const normalizedDetected = detectedWoundType.toLowerCase().trim();
+    console.log('ValidateWoundType: Checking detected wound type:', detectedWoundType, 'normalized:', normalizedDetected);
     
     // Check for exact matches first
     const exactMatch = enabledWoundTypes.find(type => 
       type.displayName.toLowerCase() === normalizedDetected ||
       type.name.toLowerCase() === normalizedDetected
     );
+    console.log('ValidateWoundType: Exact match found:', exactMatch?.displayName || 'none');
     
     if (exactMatch) {
       return { isValid: true, validTypes };
@@ -34,28 +37,34 @@ async function validateWoundType(detectedWoundType: string): Promise<{
       const typeName = type.displayName.toLowerCase();
       const typeKey = type.name.toLowerCase();
       
-      // Check if detected type contains any of the configured type names
-      return normalizedDetected.includes(typeName) || 
-             normalizedDetected.includes(typeKey) ||
-             typeName.includes(normalizedDetected) ||
-             typeKey.includes(normalizedDetected);
+      const containsTypeName = normalizedDetected.includes(typeName);
+      const containsTypeKey = normalizedDetected.includes(typeKey);
+      const typeNameContainsDetected = typeName.includes(normalizedDetected);
+      const typeKeyContainsDetected = typeKey.includes(normalizedDetected);
+      
+      if (containsTypeName || containsTypeKey || typeNameContainsDetected || typeKeyContainsDetected) {
+        console.log('ValidateWoundType: Partial match found:', type.displayName, 'reasons:', {
+          containsTypeName, containsTypeKey, typeNameContainsDetected, typeKeyContainsDetected
+        });
+        return true;
+      }
+      return false;
     });
     
     if (partialMatch) {
       return { isValid: true, validTypes, closestMatch: partialMatch.displayName };
     }
     
-    // Check for database-stored synonyms
+    // Check for database-stored synonyms (exact matches only to avoid false positives)
     for (const woundType of enabledWoundTypes) {
       if (woundType.synonyms && woundType.synonyms.length > 0) {
         const synonyms = woundType.synonyms;
-        // Check for exact matches and partial matches in synonyms
+        // Check for exact matches in synonyms only (no partial matching to avoid false positives)
         if (synonyms.some(synonym => {
           const normalizedSynonym = synonym.toLowerCase().trim();
-          return normalizedDetected === normalizedSynonym || 
-                 normalizedDetected.includes(normalizedSynonym) ||
-                 normalizedSynonym.includes(normalizedDetected);
+          return normalizedDetected === normalizedSynonym;
         })) {
+          console.log('ValidateWoundType: Exact synonym match found:', woundType.displayName);
           return { isValid: true, validTypes, closestMatch: woundType.displayName };
         }
       }
@@ -64,8 +73,8 @@ async function validateWoundType(detectedWoundType: string): Promise<{
     return { isValid: false, validTypes };
   } catch (error) {
     console.error('Error validating wound type:', error);
-    // In case of error, be permissive and allow the classification to proceed
-    return { isValid: true, validTypes: ['General Instructions'] };
+    // In case of error, be strict and reject the classification
+    return { isValid: false, validTypes: ['Error: Could not validate wound type'] };
   }
 }
 
