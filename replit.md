@@ -442,6 +442,12 @@ Changelog:
   - **<80% confidence disclaimer**: Return disclaimer only instead of care plan, directing to healthcare professional
   - **Unsupported wound type rejection**: Refuse upfront for wound types not in allowed list, ask for additional pictures
   - **Supported wound types**: Pressure injury, venous ulcer, arterial insufficiency ulcer, diabetic ulcer, surgical wound, traumatic wound, ischemic wound, radiation wound, infectious wound
+- July 10, 2025. **OPENAI CONTENT POLICY LIMITATION IDENTIFIED**: Discovered that OpenAI models (GPT-4o, GPT-3.5) have stricter content policies that may refuse to process certain medical wound images with "I'm sorry, I can't help with that" while Gemini models process the same images successfully
+- July 10, 2025. **WOUND TYPE INSTRUCTION INTEGRATION FIXED**: Successfully implemented wound-type-specific instruction integration for both OpenAI and Gemini models:
+  - **Database-driven wound type instructions**: System now properly retrieves wound-type-specific instructions from wound_types table
+  - **Traumatic wound origin questions**: Both models now receive "MUST ASK - ORIGIN OF THE WOUND" requirements when processing traumatic wounds
+  - **Follow-up question enhancement**: Enhanced follow-up question routes to include wound-type-specific instructions alongside general AI instructions
+  - **Agent question service upgrade**: Updated question generation service to properly incorporate wound type requirements regardless of confidence level
 - July 10, 2025. **CRITICAL CARE PLAN GENERATION FIXES**: Fixed three major issues preventing proper care plan generation:
   - **Fixed OpenAI Token Limit**: Increased from 1000 to 4000 tokens allowing comprehensive care plans instead of truncated responses
   - **Fixed Product Link URLs**: Corrected database field mapping from `product.amazonUrl` to `product.amazon_search_url` with fallback URL generation

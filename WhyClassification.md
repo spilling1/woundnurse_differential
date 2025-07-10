@@ -439,3 +439,49 @@ multiple puncture wounds
 
 ---
 
+
+---
+## Case: 2025-07-10-561
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:31:06 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 98%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture and laceration-type wounds, consistent with a bite injury. The wounds are left open to heal by secondary intention, which is common for contaminated wounds like bites to prevent abscess formation. Swelling and redness are significant, indicating a strong inflammatory response and high risk of infection.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (98% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 98% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-838
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:31:30 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+multiple small punctures
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 80% confidence
+
+---
+

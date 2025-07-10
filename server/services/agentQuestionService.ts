@@ -123,13 +123,20 @@ export async function analyzeAssessmentForQuestions(
   let woundTypeInstructions = '';
   if (imageAnalysis.woundType) {
     try {
+      console.log(`AgentQuestionService: Looking up wound type "${imageAnalysis.woundType}"`);
       const woundType = await storage.getWoundTypeByName(imageAnalysis.woundType);
       if (woundType && woundType.instructions) {
         woundTypeInstructions = `\n\nWOUND TYPE SPECIFIC INSTRUCTIONS FOR ${woundType.display_name.toUpperCase()}:\n${woundType.instructions}`;
+        console.log(`AgentQuestionService: Found wound type instructions for ${woundType.display_name}`);
+        console.log(`AgentQuestionService: Instructions contain "MUST ASK":`, woundType.instructions.includes('MUST ASK'));
+      } else {
+        console.log(`AgentQuestionService: No wound type found or no instructions for "${imageAnalysis.woundType}"`);
       }
     } catch (error) {
       console.error('Error getting wound type instructions:', error);
     }
+  } else {
+    console.log('AgentQuestionService: No wound type in imageAnalysis');
   }
   
   // Build complete instructions from structured fields if not provided
