@@ -1964,3 +1964,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-215
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 9:28:20 PM  
+**Wound Type:** Venous Leg Ulcer  
+**Audience:** family  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+

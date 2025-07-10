@@ -1106,3 +1106,49 @@ The wound pattern consists of several distinct punctures in a cluster, which is 
 
 ---
 
+
+---
+## Case: 2025-07-10-841
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 9:24:18 PM  
+**Wound Type:** Venous Leg Ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Surrounding skin shows hyperpigmentation (hemosiderin staining) and scaling, consistent with chronic venous insufficiency. Wound has irregular margins and is surrounded by yellowish, crusty slough/dried exudate.
+
+### Classification Process:
+
+**Independent Classification:** Venous Leg Ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Leg Ulcer with 80% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-347
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 9:36:15 PM  
+**Wound Type:** Thermal Burn  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound appears consistent with a second-degree burn. The location on the hand is a significant concern due to high risk of infection, scarring causing contractures, and potential loss of function. Immediate medical evaluation is strongly recommended.
+
+### Classification Process:
+
+**Independent Classification:** Thermal Burn (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Thermal Burn with 95% confidence
+
+---
+
