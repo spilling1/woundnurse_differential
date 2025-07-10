@@ -114,15 +114,8 @@ function SettingsPage() {
   // Wound type mutations
   const createWoundTypeMutation = useMutation({
     mutationFn: async (woundType: any) => {
-      const token = localStorage.getItem('token');
-      return await apiRequest(`/api/admin/wound-types`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(woundType),
-      });
+      const response = await apiRequest('POST', '/api/admin/wound-types', woundType);
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -151,15 +144,8 @@ function SettingsPage() {
 
   const updateWoundTypeMutation = useMutation({
     mutationFn: async ({ id, ...updates }: any) => {
-      const token = localStorage.getItem('token');
-      return await apiRequest(`/api/admin/wound-types/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      });
+      const response = await apiRequest('PATCH', `/api/admin/wound-types/${id}`, updates);
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -179,13 +165,8 @@ function SettingsPage() {
 
   const deleteWoundTypeMutation = useMutation({
     mutationFn: async (id: number) => {
-      const token = localStorage.getItem('token');
-      return await apiRequest(`/api/admin/wound-types/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await apiRequest('DELETE', `/api/admin/wound-types/${id}`);
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -205,15 +186,8 @@ function SettingsPage() {
 
   const toggleWoundTypeMutation = useMutation({
     mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) => {
-      const token = localStorage.getItem('token');
-      return await apiRequest(`/api/admin/wound-types/${id}/toggle`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ enabled }),
-      });
+      const response = await apiRequest('PATCH', `/api/admin/wound-types/${id}/toggle`, { enabled });
+      return response.json();
     },
     onSuccess: () => {
       toast({

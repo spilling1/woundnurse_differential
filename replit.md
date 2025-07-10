@@ -417,6 +417,16 @@ Changelog:
   - **Transparency Display**: Detection card shows both independent and YOLO-influenced classifications side by side
   - **Confidence Tracking**: System tracks confidence changes and displays whether YOLO increased or decreased AI confidence
   - **Authentic AI Reasoning**: Mimics human expert workflow where specialist considers additional test results to refine diagnosis
+- July 10, 2025. **DYNAMIC WOUND TYPE MANAGEMENT SYSTEM**: Implemented comprehensive wound type configuration system:
+  - **Database Schema**: Added wound_types table with name, display_name, description, instructions, enabled status, and priority
+  - **Admin API**: Created full CRUD API endpoints for wound type management (/api/admin/wound-types)
+  - **Wound Type Validation**: Added validation in AI classification to restrict assessments to configured wound types only
+  - **Specific AI Instructions**: Each wound type now has dedicated AI instructions for targeted assessment guidance
+  - **Settings Interface**: Replaced "Specific Wound Care" tab with dynamic wound type management interface
+  - **Comprehensive Management**: Administrators can add, edit, delete, and toggle wound types through intuitive interface
+  - **Error Handling**: System rejects unsupported wound types (e.g., burns) with helpful error messages listing valid types
+  - **Intelligent Validation**: Smart wound type matching with synonyms and partial matches for better classification accuracy
+  - **Seeded Data**: Pre-populated with 10 standard wound types including pressure injuries, diabetic ulcers, venous ulcers, etc.
 ```
 
 ## User Preferences
