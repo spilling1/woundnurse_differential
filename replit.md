@@ -446,6 +446,11 @@ Changelog:
   - **Fixed OpenAI Token Limit**: Increased from 1000 to 4000 tokens allowing comprehensive care plans instead of truncated responses
   - **Fixed Product Link URLs**: Corrected database field mapping from `product.amazonUrl` to `product.amazon_search_url` with fallback URL generation
   - **Enhanced Question Answer Integration**: Added mandatory emphasis requiring AI to directly quote and address each patient answer in care plan with visual warnings and strict formatting requirements
+- July 10, 2025. **QUESTION GENERATION CLEANUP**: Fixed AI question generation producing inappropriate combined questions:
+  - **Separated Combined Questions**: Added strict formatting rules preventing AI from combining multiple questions into single confusing statements
+  - **Removed Advisory Language**: Eliminated "Please avoid..." and instructional text within questions, keeping questions pure and focused
+  - **Post-Processing Validation**: Added automatic question cleaning to remove advisory language and split combined statements
+  - **Question Quality Control**: Enhanced validation to ensure each question is standalone, properly formatted, and actually asks one thing
 ```
 
 ## User Preferences

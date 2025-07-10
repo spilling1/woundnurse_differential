@@ -284,11 +284,20 @@ REASSESSMENT: [Your analysis of how the user's answers impact the wound classifi
 Then provide the JSON array format below.
 ` : 'You MUST respond with ONLY a valid JSON array. Do NOT include any other text, explanations, or formatting.'}
 
+CRITICAL QUESTION FORMATTING RULES:
+1. Each question must be a SINGLE, STANDALONE question
+2. Do NOT combine multiple questions into one
+3. Do NOT add advice, instructions, or commentary within questions
+4. Do NOT use "Please avoid..." or similar advisory language in questions
+5. Each question should only ask ONE thing
+6. Questions must end with a question mark
+7. Keep questions simple and direct
+
 REQUIRED JSON FORMAT:
 [
   {
     "id": "q1",
-    "question": "Question as specified by Agent Instructions",
+    "question": "Single, standalone question only?",
     "answer": "",
     "category": "category_name",
     "confidence": 0.0
@@ -296,6 +305,16 @@ REQUIRED JSON FORMAT:
 ]
 
 VALID CATEGORIES: location, patient_info, symptoms, medical_history, wound_assessment, photo_request, other
+
+EXAMPLE OF CORRECT QUESTIONS:
+✓ "Do you have diabetes?"
+✓ "Have you noticed any changes in redness or swelling?"
+✓ "What treatments have you tried so far?"
+
+EXAMPLE OF INCORRECT QUESTIONS:
+✗ "Please avoid using urine or other non-medical substances on the wound. Have you noticed any changes in the redness or swelling?"
+✗ "Do you have diabetes? This is important for wound healing."
+✗ "What treatments have you tried? Please only use medical treatments."
 
 IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFollowUp ? 'Include the reassessment section before the JSON array.' : 'Do not include any text before or after the JSON array.'}
 `;
@@ -385,6 +404,53 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
     try {
       const questions = JSON.parse(cleanedResponse);
       
+      // Clean and validate questions to prevent combining or inappropriate content
+      const cleanedQuestions = Array.isArray(questions) ? questions.map((q, index) => {
+        let cleanQuestion = q.question;
+        
+        // Remove any advisory language or combined statements
+        cleanQuestion = cleanQuestion
+          // Remove "Please avoid..." type statements
+          .replace(/^Please avoid[^.]*\.\s*/i, '')
+          .replace(/^Avoid[^.]*\.\s*/i, '')
+          // Remove instructional prefixes
+          .replace(/^Note:[^.]*\.\s*/i, '')
+          .replace(/^Important:[^.]*\.\s*/i, '')
+          .replace(/^Remember:[^.]*\.\s*/i, '')
+          // Split on sentence boundaries and take only the question part
+          .split(/\.\s+(?=[A-Z])/)
+          .find(part => part.includes('?')) || cleanQuestion;
+        
+        // Ensure it ends with a question mark
+        if (!cleanQuestion.endsWith('?')) {
+          cleanQuestion += '?';
+        }
+        
+        // Validate that it's actually a question
+        const isValidQuestion = cleanQuestion.includes('?') && 
+          (cleanQuestion.toLowerCase().startsWith('do ') ||
+           cleanQuestion.toLowerCase().startsWith('have ') ||
+           cleanQuestion.toLowerCase().startsWith('what ') ||
+           cleanQuestion.toLowerCase().startsWith('where ') ||
+           cleanQuestion.toLowerCase().startsWith('when ') ||
+           cleanQuestion.toLowerCase().startsWith('how ') ||
+           cleanQuestion.toLowerCase().startsWith('why ') ||
+           cleanQuestion.toLowerCase().startsWith('is ') ||
+           cleanQuestion.toLowerCase().startsWith('are ') ||
+           cleanQuestion.toLowerCase().startsWith('can ') ||
+           cleanQuestion.toLowerCase().startsWith('could ') ||
+           cleanQuestion.toLowerCase().startsWith('would '));
+        
+        return {
+          ...q,
+          id: q.id || `q${index + 1}`,
+          question: isValidQuestion ? cleanQuestion.trim() : `Is this wound causing you any pain or discomfort?`,
+          answer: q.answer || '',
+          category: q.category || 'symptoms',
+          confidence: q.confidence || 0
+        };
+      }).filter(q => q.question && q.question.length > 5) : [];
+      
       // Log the question generation AI interaction
       if (sessionId) {
         try {
@@ -394,7 +460,7 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
             modelUsed: model || 'gpt-4o',
             promptSent: analysisPrompt,
             responseReceived: reassessmentText ? `REASSESSMENT: ${reassessmentText}\n\n${cleanedResponse}` : cleanedResponse,
-            parsedResult: { questions, reassessment: reassessmentText },
+            parsedResult: { questions: cleanedQuestions, reassessment: reassessmentText },
             confidenceScore: Math.round(confidence * 100),
             errorOccurred: false,
           });
@@ -403,7 +469,7 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
         }
       }
       
-      return Array.isArray(questions) ? questions : [];
+      return cleanedQuestions;
     } catch (parseError: any) {
       console.error('Failed to parse AI questions response:', cleanedResponse);
       

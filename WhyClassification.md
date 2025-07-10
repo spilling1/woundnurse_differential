@@ -186,3 +186,26 @@ The wound presents as a cluster of small, deep abrasions or puncture-like injuri
 
 ---
 
+
+---
+## Case: 2025-07-10-673
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 3:18:02 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Possible bite wound; surrounding area shows redness and swelling.
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 80% confidence
+
+---
+
