@@ -137,12 +137,28 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
       }
     },
     onError: (error: any) => {
+      console.log('ImageUpload error:', error);
+      
       // Check if this is an invalid wound type error
       if (error.code === "INVALID_WOUND_TYPE") {
         // Redirect to unsupported wound page with details
         const params = new URLSearchParams({
           woundType: error.woundType || 'Unknown',
           confidence: error.confidence?.toString() || '85'
+        });
+        setLocation(`/unsupported-wound?${params.toString()}`);
+        return;
+      }
+      
+      // Check if the error message contains wound type information
+      if (error.message && error.message.includes('INVALID_WOUND_TYPE')) {
+        // Parse the error message to extract wound type
+        const woundTypeMatch = error.message.match(/detected wound type "([^"]+)"/);
+        const woundType = woundTypeMatch ? woundTypeMatch[1] : 'Unknown';
+        
+        const params = new URLSearchParams({
+          woundType: woundType,
+          confidence: '90'
         });
         setLocation(`/unsupported-wound?${params.toString()}`);
         return;
