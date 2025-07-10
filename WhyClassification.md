@@ -48,3 +48,26 @@ The wound presents as a complex healing traumatic injury, possibly an abrasion o
 
 ---
 
+
+---
+## Case: 2025-07-10-874
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:03:41 AM  
+**Wound Type:** traumatic wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+presence of crusting and surrounding skin irritation
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 80% confidence
+
+---
+

@@ -38,37 +38,20 @@ function cleanCarePlanResponse(carePlan: string): string {
   
   let cleanPlan = carePlan.trim();
   
-  // Remove JSON objects that start with { and include target_audience, wound_assessment, etc.
-  cleanPlan = cleanPlan.replace(/^\s*\{[\s\S]*?\}\s*(?:\n|$)/, '');
+  // Only remove very specific JSON artifacts that appear at the beginning
+  // Remove JSON code blocks
+  cleanPlan = cleanPlan.replace(/^```json[\s\S]*?```\s*/, '');
+  cleanPlan = cleanPlan.replace(/^```[\s\S]*?```\s*/, '');
   
-  // Remove any remaining JSON-like structures or artifacts
-  cleanPlan = cleanPlan.replace(/^json\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
-  cleanPlan = cleanPlan.replace(/^```json[\s\S]*?```\s*(?:\n|$)/i, '');
-  cleanPlan = cleanPlan.replace(/^```[\s\S]*?```\s*(?:\n|$)/i, '');
+  // Remove standalone JSON objects that appear before the actual care plan
+  // Only target objects that contain specific technical properties
+  cleanPlan = cleanPlan.replace(/^\s*\{\s*"(?:target_audience|wound_assessment|type|stage|size|request)"[\s\S]*?\}\s*/, '');
   
-  // Remove any leading quotes or artifacts
-  cleanPlan = cleanPlan.replace(/^["'][\s\S]*?["']\s*(?:\n|$)/, '');
+  // Remove any "json {" artifacts at the start
+  cleanPlan = cleanPlan.replace(/^json\s*\{[\s\S]*?\}\s*/, '');
   
-  // Remove any lines that look like JSON properties
-  cleanPlan = cleanPlan.replace(/^[\s\S]*?"request"\s*:\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
-  
-  // Remove any remaining JSON-like content that starts with property names
-  cleanPlan = cleanPlan.replace(/^[\s\S]*?(?:"target_audience"|"wound_assessment"|"type"|"stage"|"size")[\s\S]*?\}\s*(?:\n|$)/i, '');
-  
-  // Remove any text that starts with "json {" (case insensitive)
-  cleanPlan = cleanPlan.replace(/^[\s\S]*?json\s*\{[\s\S]*?\}\s*(?:\n|$)/i, '');
-  
-  // Remove any remaining curly braces at the start if they appear to be JSON remnants
-  cleanPlan = cleanPlan.replace(/^\s*\{[^}]*\}\s*(?:\n|$)/, '');
-  
-  // Remove any lines that contain typical JSON property patterns
-  cleanPlan = cleanPlan.replace(/^[\s\S]*?("[\w_]+"\s*:\s*"[^"]*"[\s\S]*?)+\s*(?:\n|$)/i, '');
-  
-  // Clean up any remaining text that looks like debug messages
+  // Remove debug messages
   cleanPlan = cleanPlan.replace(/^[\s\S]*?"?\s*I\s+READ\s+YOUR\s+STUPID\s+INSTRUCTIONS[\s\S]*?(?:\n|$)/i, '');
-  
-  // Remove any remaining quotes and brackets at the start
-  cleanPlan = cleanPlan.replace(/^["'\}\]\s]*/, '');
   
   return cleanPlan.trim();
 }
