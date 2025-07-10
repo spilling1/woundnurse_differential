@@ -1821,3 +1821,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-226
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 6:25:06 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** family  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+

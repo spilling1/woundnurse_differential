@@ -225,9 +225,14 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
       
       if (data.shouldProceedToPlan) {
         // Confidence reached 80%+, proceed to care plan generation
+        // CRITICAL FIX: Preserve current round's answered questions before proceeding
+        const currentRoundAnswered = state.aiQuestions.filter(q => q.answer && q.answer.trim() !== '');
+        const allAnsweredQuestions = [...state.answeredQuestions, ...currentRoundAnswered];
+        
         onStateChange({ 
           aiQuestions: [],
-          currentStep: 'generating-plan'
+          currentStep: 'generating-plan',
+          answeredQuestions: allAnsweredQuestions
         });
         onNextStep();
         
@@ -244,9 +249,14 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         });
       } else {
         // Confidence reached but no more questions - proceed anyway
+        // CRITICAL FIX: Preserve current round's answered questions before proceeding
+        const currentRoundAnswered = state.aiQuestions.filter(q => q.answer && q.answer.trim() !== '');
+        const allAnsweredQuestions = [...state.answeredQuestions, ...currentRoundAnswered];
+        
         onStateChange({ 
           aiQuestions: [],
-          currentStep: 'generating-plan'
+          currentStep: 'generating-plan',
+          answeredQuestions: allAnsweredQuestions
         });
         onNextStep();
         
@@ -278,12 +288,16 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
   };
 
   const handleProceedToPlan = () => {
-    // Preserve the answered questions for the care plan generation
-    const answeredQuestions = state.aiQuestions.filter(q => q.answer && q.answer.trim() !== '');
+    // CRITICAL FIX: Preserve ALL answered questions from all rounds for the care plan generation
+    const currentRoundAnswered = state.aiQuestions.filter(q => q.answer && q.answer.trim() !== '');
+    const allAnsweredQuestions = [...state.answeredQuestions, ...currentRoundAnswered];
+    
+    console.log(`Preserving ${allAnsweredQuestions.length} total answered questions for care plan generation`);
+    console.log('All answered questions:', allAnsweredQuestions.map(q => ({ question: q.question, answer: q.answer })));
     
     onStateChange({ 
       currentStep: 'generating-plan',
-      answeredQuestions: answeredQuestions
+      answeredQuestions: allAnsweredQuestions
     });
     onNextStep();
   };

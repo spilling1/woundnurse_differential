@@ -488,6 +488,15 @@ Changelog:
   - **Processing Optimization**: Prevents unnecessary YOLO detection and AI classification when duplicate images are found
   - **User Experience**: Users get immediate feedback about duplicates without waiting for full analysis to complete
   - **Resource Efficiency**: Saves computational resources by avoiding redundant analysis of identical images
+- July 10, 2025. **CRITICAL DATA FLOW BUG FIX**: Fixed major issue where patient answers from multiple question rounds were lost during care plan generation:
+  - **Root Cause**: `handleProceedToPlan` function was only preserving current round's questions instead of ALL accumulated answered questions across rounds
+  - **Lost Critical Data**: System was ignoring first round answers including suicide ideation ("I might kill myself") and injury cause ("cat bite")
+  - **Complete Fix**: Updated all three flow paths to preserve accumulated answered questions:
+    - Manual "Generate Care Plan" button flow
+    - Automatic proceed when confidence reaches 80%+
+    - Fallback when questions complete without confidence threshold
+  - **Enhanced Logging**: Added comprehensive logging to track exactly how many questions are preserved and their content
+  - **AI Analysis Restoration**: AI now receives ALL patient answers from all question rounds for accurate mental health screening and medical assessment
 - July 10, 2025. **CRITICAL DUPLICATE DETECTION WORKFLOW RESTRUCTURE**: Completely reorganized duplicate detection to occur at the very beginning of assessment:
   - **Initial Analysis Integration**: Duplicate detection now happens in `/api/assessment/initial-analysis` immediately after image validation
   - **Frontend Flow Update**: Modified ImageUpload component to handle duplicate detection response and skip directly to CarePlanGeneration
