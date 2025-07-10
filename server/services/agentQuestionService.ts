@@ -3,6 +3,31 @@ import { callGemini } from './gemini';
 import { storage } from '../storage';
 import { InsertAgentQuestion } from '@shared/schema';
 
+// Helper function to calculate similarity between two questions
+function calculateQuestionSimilarity(question1: string, question2: string): number {
+  // Normalize questions by removing common words and focusing on key terms
+  const normalize = (q: string) => q
+    .toLowerCase()
+    .replace(/[^\w\s]/g, '')
+    .replace(/\b(do|you|have|are|is|any|the|a|an|this|that|your|what|where|when|how|why)\b/g, '')
+    .trim()
+    .split(/\s+/)
+    .filter(word => word.length > 2);
+  
+  const words1 = normalize(question1);
+  const words2 = normalize(question2);
+  
+  if (words1.length === 0 || words2.length === 0) return 0;
+  
+  // Calculate Jaccard similarity (intersection over union)
+  const set1 = new Set(words1);
+  const set2 = new Set(words2);
+  const intersection = new Set([...set1].filter(x => set2.has(x)));
+  const union = new Set([...set1, ...set2]);
+  
+  return intersection.size / union.size;
+}
+
 async function generateFeedbackBasedQuestions(
   classification: any,
   userFeedback: string,
@@ -141,8 +166,8 @@ ${agentInstructions.productRecommendations || ''}
     
     if (hasSignificantAnswers) {
       console.log(`Follow-up round ${currentRound}: Processing user answers for reassessment - confidence: ${confidence}`);
-    } else if (confidence > 0.80) {
-      console.log(`Follow-up round ${currentRound}: High confidence (${confidence}) and no significant answers - skipping additional questions`);
+    } else if (confidence >= 1.0 && currentRound > 2) {
+      console.log(`Follow-up round ${currentRound}: 100% confidence and round 3+ - skipping additional questions`);
       return [];
     } else {
       console.log(`Follow-up round ${currentRound}: Low confidence (${confidence}) - checking if more questions needed`);
@@ -292,6 +317,14 @@ CRITICAL QUESTION FORMATTING RULES:
 5. Each question should only ask ONE thing
 6. Questions must end with a question mark
 7. Keep questions simple and direct
+
+${isFollowUp ? `
+CRITICAL DUPLICATE PREVENTION:
+The following questions have ALREADY been asked in previous rounds:
+${previousQuestions.map((q: any) => `- ${q.question}`).join('\n')}
+
+YOU MUST NOT ask any of these questions again, even with different wording. Generate only NEW questions that have NOT been asked before.
+` : ''}
 
 REQUIRED JSON FORMAT:
 [
@@ -451,6 +484,36 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
         };
       }).filter(q => q.question && q.question.length > 5) : [];
       
+      // Remove duplicate questions by checking against previous questions
+      let filteredQuestions = cleanedQuestions;
+      if (isFollowUp && previousQuestions && previousQuestions.length > 0) {
+        const previousQuestionTexts = previousQuestions.map((pq: any) => pq.question.toLowerCase().trim());
+        
+        filteredQuestions = cleanedQuestions.filter(newQ => {
+          const newQuestionLower = newQ.question.toLowerCase().trim();
+          
+          // Check for exact matches
+          if (previousQuestionTexts.includes(newQuestionLower)) {
+            console.log(`Removing exact duplicate question: "${newQ.question}"`);
+            return false;
+          }
+          
+          // Check for semantic duplicates (similar meaning)
+          const isDuplicate = previousQuestionTexts.some(prevQ => {
+            const similarity = calculateQuestionSimilarity(prevQ, newQuestionLower);
+            if (similarity > 0.7) {
+              console.log(`Removing similar question: "${newQ.question}" (similarity: ${similarity})`);
+              return true;
+            }
+            return false;
+          });
+          
+          return !isDuplicate;
+        });
+        
+        console.log(`Filtered ${cleanedQuestions.length - filteredQuestions.length} duplicate questions`);
+      }
+      
       // Log the question generation AI interaction
       if (sessionId) {
         try {
@@ -469,7 +532,7 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
         }
       }
       
-      return cleanedQuestions;
+      return filteredQuestions;
     } catch (parseError: any) {
       console.error('Failed to parse AI questions response:', cleanedResponse);
       

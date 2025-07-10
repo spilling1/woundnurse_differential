@@ -324,3 +324,26 @@ Multiple deep puncture wounds consistent with an animal or human bite. Significa
 
 ---
 
+
+---
+## Case: 2025-07-10-428
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:44:38 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds, highly consistent with an animal bite. Significant inflammation is present. The location over the joints raises concern for potential tendon or joint capsule injury. Wounds appear to have been left open, which is common practice for bite wounds to prevent abscess formation.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
