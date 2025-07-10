@@ -9,13 +9,19 @@ export async function callOpenAI(model: string, messages: any[], responseFormat:
   // Normalize model name to lowercase
   const normalizedModel = model.toLowerCase();
   
+  console.log(`OpenAI callOpenAI: model="${model}", normalized="${normalizedModel}"`);
+  
   if (!["gpt-4o", "gpt-3.5", "gpt-3.5-pro"].includes(normalizedModel)) {
+    console.error(`OpenAI model validation failed: "${model}" (normalized: "${normalizedModel}") not in allowed list`);
     throw new Error(`Invalid OpenAI model selection: ${model}. Supported models: gpt-4o, gpt-3.5, gpt-3.5-pro`);
   }
 
   try {
+    const actualModel = normalizedModel === "gpt-3.5-pro" ? "gpt-3.5-turbo" : normalizedModel;
+    console.log(`OpenAI API call: using model "${actualModel}", max_tokens: 4000`);
+    
     const params: any = {
-      model: normalizedModel === "gpt-3.5-pro" ? "gpt-3.5-turbo" : normalizedModel,
+      model: actualModel,
       messages,
       max_tokens: 4000, // Increased for comprehensive care plans
     };
@@ -29,12 +35,15 @@ export async function callOpenAI(model: string, messages: any[], responseFormat:
     if (!response.choices[0]?.message?.content) {
       // Check if OpenAI refused the request
       if (response.choices[0]?.message?.refusal) {
+        console.error('OpenAI refused request:', response.choices[0].message.refusal);
         throw new Error(`OpenAI refusal: ${response.choices[0].message.refusal}`);
       }
       console.error('OpenAI response missing content:', response.choices[0]);
+      console.error('Full OpenAI response:', JSON.stringify(response, null, 2));
       throw new Error("No response from OpenAI");
     }
 
+    console.log(`OpenAI API success: received ${response.choices[0].message.content.length} characters`);
     return response.choices[0].message.content;
   } catch (error: any) {
     console.error('OpenAI API error:', error);

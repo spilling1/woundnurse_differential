@@ -239,6 +239,10 @@ export async function generateCarePlan(
       }
     } else {
       console.log('CarePlanGenerator: Routing to OpenAI');
+      console.log(`CarePlanGenerator: OpenAI model to use: "${cleanModel}"`);
+      console.log(`CarePlanGenerator: System prompt length: ${systemPrompt.length}`);
+      console.log(`CarePlanGenerator: User prompt length: ${prompt.length}`);
+      
       const messages = [
         {
           role: "system",
@@ -270,12 +274,22 @@ export async function generateCarePlan(
       }
       
       const startTime = Date.now();
-      carePlan = await callOpenAI(cleanModel, messages);
+      console.log(`CarePlanGenerator: About to call OpenAI with model "${cleanModel}"`);
       
-      // Clean up any JSON artifacts from the care plan response
-      carePlan = cleanCarePlanResponse(carePlan);
-      
-      const processingTime = Date.now() - startTime;
+      try {
+        carePlan = await callOpenAI(cleanModel, messages);
+        console.log(`CarePlanGenerator: OpenAI returned ${carePlan?.length || 0} characters`);
+        
+        // Clean up any JSON artifacts from the care plan response
+        carePlan = cleanCarePlanResponse(carePlan);
+        console.log(`CarePlanGenerator: After cleaning, care plan has ${carePlan?.length || 0} characters`);
+        
+        const processingTime = Date.now() - startTime;
+        console.log(`CarePlanGenerator: OpenAI processing completed in ${processingTime}ms`);
+      } catch (openaiError) {
+        console.error('CarePlanGenerator: OpenAI call failed:', openaiError);
+        throw openaiError;
+      }
       
       // Log the successful care plan generation
       if (classification.sessionId) {
