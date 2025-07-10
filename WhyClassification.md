@@ -255,3 +255,26 @@ There are two distinct wound sites. The surrounding skin appears thin and fragil
 
 ---
 
+
+---
+## Case: 2025-07-10-503
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 4:02:53 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple small puncture wounds and abrasions, with some areas of active bleeding and dried blood. The pattern is highly suggestive of an animal bite. A blue ink circle is drawn on the skin proximal to the wound, a common practice to monitor for spreading erythema (cellulitis).
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+

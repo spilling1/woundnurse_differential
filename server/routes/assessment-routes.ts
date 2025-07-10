@@ -781,7 +781,11 @@ export function registerAssessmentRoutes(app: Express): void {
       // Note: Detailed AI interaction logging happens inside the carePlanGenerator service
       // This route only handles the case creation and response formatting
 
-      // Ensure sessionId is set for proper logging
+      // Ensure sessionId is set for proper logging and handle null classification
+      if (!classification) {
+        throw new Error('Classification is required but was not provided');
+      }
+      
       const classificationWithSessionId = {
         ...classification,
         sessionId: caseId // Ensure sessionId is properly set for logging
@@ -795,7 +799,7 @@ export function registerAssessmentRoutes(app: Express): void {
         model,
         undefined, // imageData
         undefined, // imageMimeType
-        classification.detectionMetadata // Pass detection info
+        classification?.detectionMetadata || null // Pass detection info safely
       );
 
       // Log Q&A interactions if questions were answered
