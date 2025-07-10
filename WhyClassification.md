@@ -1152,3 +1152,26 @@ The wound appears consistent with a second-degree burn. The location on the hand
 
 ---
 
+
+---
+## Case: 2025-07-10-023
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 9:58:45 PM  
+**Wound Type:** Venous Leg Ulcer  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Circular, open ulcer with well-defined, erythematous borders. The wound appears to have developed from a ruptured bulla (blister). Surrounding skin shows significant inflammation.
+
+### Classification Process:
+
+**Independent Classification:** Venous Leg Ulcer (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Leg Ulcer with 75% confidence
+
+---
+
