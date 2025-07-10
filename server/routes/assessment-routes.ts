@@ -558,8 +558,22 @@ export function registerAssessmentRoutes(app: Express): void {
       
       // Get agent instructions to determine if more questions are needed
       const agentInstructions = await storage.getActiveAgentInstructions();
+      
+      // Get wound-type-specific instructions if we have a classification
+      let woundTypeInstructions = '';
+      if (parsedClassification.woundType) {
+        try {
+          const woundType = await storage.getWoundTypeByName(parsedClassification.woundType);
+          if (woundType && woundType.instructions) {
+            woundTypeInstructions = `\n\nWOUND TYPE SPECIFIC INSTRUCTIONS FOR ${woundType.display_name.toUpperCase()}:\n${woundType.instructions}`;
+          }
+        } catch (error) {
+          console.error('Error getting wound type instructions:', error);
+        }
+      }
+      
       const instructions = agentInstructions ? 
-        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
+        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}${woundTypeInstructions}` : woundTypeInstructions;
       
       const contextData = {
         previousQuestions: parsedQuestions,

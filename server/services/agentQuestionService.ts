@@ -118,6 +118,20 @@ export async function analyzeAssessmentForQuestions(
   
   // Get agent instructions to check for custom questions that should always be asked
   const agentInstructions = await storage.getActiveAgentInstructions();
+  
+  // Get wound-type-specific instructions if we have a classification
+  let woundTypeInstructions = '';
+  if (imageAnalysis.woundType) {
+    try {
+      const woundType = await storage.getWoundTypeByName(imageAnalysis.woundType);
+      if (woundType && woundType.instructions) {
+        woundTypeInstructions = `\n\nWOUND TYPE SPECIFIC INSTRUCTIONS FOR ${woundType.display_name.toUpperCase()}:\n${woundType.instructions}`;
+      }
+    } catch (error) {
+      console.error('Error getting wound type instructions:', error);
+    }
+  }
+  
   // Build complete instructions from structured fields if not provided
   let instructions = providedInstructions;
   if (!instructions && agentInstructions) {
@@ -127,9 +141,16 @@ ${agentInstructions.carePlanStructure || ''}
 ${agentInstructions.specificWoundCare || ''}
 ${agentInstructions.questionsGuidelines || ''}
 ${agentInstructions.productRecommendations || ''}
+${woundTypeInstructions}
 `.trim();
   } else if (!instructions) {
-    throw new Error('AI Configuration not found. Please configure AI instructions in Settings.');
+    instructions = woundTypeInstructions || '';
+    if (!instructions) {
+      throw new Error('AI Configuration not found. Please configure AI instructions in Settings.');
+    }
+  } else {
+    // Add wound type instructions to provided instructions
+    instructions = `${instructions}${woundTypeInstructions}`;
   }
   
   // Check if agent instructions contain question requirements
