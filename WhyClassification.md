@@ -347,3 +347,72 @@ Multiple deep puncture wounds, highly consistent with an animal bite. Significan
 
 ---
 
+
+---
+## Case: 2025-07-10-822
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:01:53 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 98%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds consistent with a bite injury. Significant localized swelling (edema) and redness (erythema) are present, indicating a strong inflammatory response and a high risk of infection. The wounds appear to be left open, likely to allow for drainage.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (98% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 98% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-003
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:11:10 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+multiple small lesions with potential for infection
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 80% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-325
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:11:53 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 80%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple puncture-like wounds
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 80% confidence
+
+---
+

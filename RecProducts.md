@@ -1751,3 +1751,45 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-194
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:03:40 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** patient  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+
+
+---
+## Case: 2025-07-10-553
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:05:31 PM  
+**Wound Type:** Pressure Injury  
+**Audience:** patient  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+
+
+---
+## Case: 2025-07-10-121
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:14:15 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** patient  
+**AI Model:** gpt-4o  
+
+### Product Recommendations:
+
+
+---
+
