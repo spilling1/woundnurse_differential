@@ -442,6 +442,10 @@ Changelog:
   - **<80% confidence disclaimer**: Return disclaimer only instead of care plan, directing to healthcare professional
   - **Unsupported wound type rejection**: Refuse upfront for wound types not in allowed list, ask for additional pictures
   - **Supported wound types**: Pressure injury, venous ulcer, arterial insufficiency ulcer, diabetic ulcer, surgical wound, traumatic wound, ischemic wound, radiation wound, infectious wound
+- July 10, 2025. **CRITICAL CARE PLAN GENERATION FIXES**: Fixed three major issues preventing proper care plan generation:
+  - **Fixed OpenAI Token Limit**: Increased from 1000 to 4000 tokens allowing comprehensive care plans instead of truncated responses
+  - **Fixed Product Link URLs**: Corrected database field mapping from `product.amazonUrl` to `product.amazon_search_url` with fallback URL generation
+  - **Enhanced Question Answer Integration**: Added mandatory emphasis requiring AI to directly quote and address each patient answer in care plan with visual warnings and strict formatting requirements
 ```
 
 ## User Preferences

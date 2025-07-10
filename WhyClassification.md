@@ -163,3 +163,26 @@ Multiple punctate lesions with surrounding redness.
 
 ---
 
+
+---
+## Case: 2025-07-10-547
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 2:38:33 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound presents as a cluster of small, deep abrasions or puncture-like injuries. There is noticeable bruising (ecchymosis) and redness (erythema) surrounding the breaks in the skin. The pattern could potentially be consistent with a bite wound.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 90% confidence
+
+---
+

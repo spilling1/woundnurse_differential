@@ -113,12 +113,16 @@ ${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionSta
 
     baseInfo += `
 
-CRITICAL: Patient Answers by Category (MUST OVERRIDE VISUAL CLASSIFICATION IF ANSWERS CONTRADICT):
+🚨🚨 CRITICAL: PATIENT PROVIDED SPECIFIC ANSWERS - MANDATORY TO ADDRESS EACH ONE 🚨🚨
+
+The patient took time to answer specific questions about their wound. YOU MUST DIRECTLY ADDRESS EACH ANSWER in your care plan.
+
+PATIENT ANSWERS BY CATEGORY (MUST OVERRIDE VISUAL CLASSIFICATION IF ANSWERS CONTRADICT):
 
 A) DIAGNOSTIC CONFIDENCE ANSWERS (Impact wound classification):
 `;
     categorizedQuestions.confidenceImprovement.forEach((qa: any) => {
-      baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+      baseInfo += `- QUESTION: ${qa.question}\n- PATIENT ANSWER: "${qa.answer}"\n- MUST ADDRESS: Quote this answer and explain medical significance\n\n`;
     });
 
     if (categorizedQuestions.carePlanOptimization.length > 0) {
@@ -126,7 +130,7 @@ A) DIAGNOSTIC CONFIDENCE ANSWERS (Impact wound classification):
 B) CARE PLAN OPTIMIZATION ANSWERS (Impact treatment recommendations):
 `;
       categorizedQuestions.carePlanOptimization.forEach((qa: any) => {
-        baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+        baseInfo += `- QUESTION: ${qa.question}\n- PATIENT ANSWER: "${qa.answer}"\n- MUST ADDRESS: Quote this answer and provide specific care recommendations\n\n`;
       });
     }
 
@@ -135,7 +139,7 @@ B) CARE PLAN OPTIMIZATION ANSWERS (Impact treatment recommendations):
 C) MEDICAL REFERRAL PREPARATION ANSWERS (Impact urgency/referral need):
 `;
       categorizedQuestions.medicalReferral.forEach((qa: any) => {
-        baseInfo += `- Q: ${qa.question}\n- A: ${qa.answer}\n`;
+        baseInfo += `- QUESTION: ${qa.question}\n- PATIENT ANSWER: "${qa.answer}"\n- MUST ADDRESS: Quote this answer and adjust urgency recommendations\n\n`;
       });
     }
     
@@ -222,14 +226,20 @@ When patient answers contradict medical evidence or seem unusual, you MUST addre
 - Use phrases like "I understand you mentioned X, however the wound characteristics suggest Y because..."
 - Be respectful but firm when addressing dangerous practices - patient safety is paramount
 
-**MANDATORY QUESTION ANSWER INTEGRATION:**
+**🚨 ABSOLUTELY MANDATORY QUESTION ANSWER INTEGRATION 🚨**
 YOU MUST ADDRESS EACH QUESTION ANSWER SPECIFICALLY AND DIRECTLY. This is not optional.
+
+**CRITICAL INSTRUCTION:** The user answered specific questions about their wound. You MUST create a detailed "YOUR SPECIFIC CONCERNS ADDRESSED" section that directly quotes and responds to each answer.
 
 For each answer provided by the user, you must:
 1. Quote or reference the specific answer they gave
-2. Explain how it impacts your assessment
+2. Explain how it impacts your assessment  
 3. Address any contradictions or concerns
 4. Provide medical reasoning for your conclusions
+
+**FAILURE TO ADDRESS PATIENT ANSWERS IS UNACCEPTABLE AND VIOLATES MEDICAL CARE STANDARDS.**
+
+**THE PATIENT PROVIDED THESE SPECIFIC ANSWERS - YOU MUST ADDRESS EACH ONE:**
 
 Examples of REQUIRED integration:
 - If user says "I don't think so?" about diabetes → "You mentioned you don't think you have diabetes, however the wound characteristics strongly suggest diabetic neuropathic ulcers..."
@@ -334,10 +344,10 @@ You MUST include a specific "ITEMS TO PURCHASE" section with products from our d
 ${relevantProducts && relevantProducts.length > 0 ? `
 **RECOMMENDED PRODUCTS (from our database):**
 ${relevantProducts.map(product => `
-* [${product.name}](${product.amazonUrl}) - ${product.description}
+* [${product.name}](${product.amazonSearchUrl || product.amazon_search_url || 'https://www.amazon.com/s?k=' + encodeURIComponent(product.name.replace(/ /g, '+'))}) - ${product.description}
   - Category: ${product.category}
-  - Suitable for: ${product.woundTypes.join(', ')}
-  - Target audience: ${product.audiences.join(', ')}
+  - Suitable for: ${product.woundTypes ? product.woundTypes.join(', ') : 'general_wound_care'}
+  - Target audience: ${product.audiences ? product.audiences.join(', ') : 'family, patient, professional'}
 `).join('')}
 ` : `
 **GENERAL PRODUCT RECOMMENDATIONS:**

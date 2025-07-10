@@ -1557,3 +1557,59 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-146
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 2:40:09 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** patient  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+**1. Wound Cleanser**  
+Product: Saline Wound Cleanser  
+Link: https://www.amazon.com/s?k=saline+wound+cleanser+sterile  
+Reason: For wound cleaning  
+
+
+**2. Wound Dressing**  
+Product: Adhesive Foam Dressings  
+Link: https://www.amazon.com/s?k=adhesive+foam+dressing+4x4  
+Reason: Provides protection  
+
+
+---
+
+
+---
+## Case: 2025-07-10-961
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 2:40:56 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** patient  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+**1. Wound Cleanser**  
+Product: Saline Wound Cleanser  
+Link: https://www.amazon.com/s?k=saline+wound+cleanser+sterile  
+Reason: For wound cleaning  
+
+
+**2. Wound Dressing**  
+Product: Adhesive Foam Dressings  
+Link: https://www.amazon.com/s?k=Adhesive+Foam+Dressings+4x4  
+Reason: Recommended for wound care  
+
+
+**3. Supplies**  
+Product: Sterile Gauze Pads  
+Link: https://www.amazon.com/s?k=sterile+gauze+pads  
+Reason: Recommended for wound care  
+
+
+---
+
