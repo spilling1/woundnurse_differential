@@ -531,3 +531,72 @@ multiple puncture wounds with surrounding redness
 
 ---
 
+
+---
+## Case: 2025-07-10-335
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:54:29 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 85%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+multiple puncture wounds
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 85% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-560
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:54:39 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 85%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+multiple puncture wounds, minimal erythema
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 85% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-279
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:55:11 PM  
+**Wound Type:** traumatic wound  
+**Confidence:** 85%  
+**AI Model:** gpt-4o  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+multiple puncture-like wounds present
+
+### Classification Process:
+
+**Independent Classification:** traumatic wound (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as traumatic wound with 85% confidence
+
+---
+

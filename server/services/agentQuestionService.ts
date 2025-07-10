@@ -189,39 +189,7 @@ ${woundTypeInstructions}
   const isFollowUp = previousQuestions && previousQuestions.length > 0;
   const currentRound = round || 1;
   
-  // Fallback for traumatic wounds - ensure origin questions are always asked
-  if (isTraumaticWound && !isFollowUp) {
-    console.log(`TRAUMATIC WOUND FALLBACK - ensuring origin questions are generated`);
-    const traumaticFallbackQuestions = [
-      {
-        id: 'trauma_origin',
-        question: 'What specifically caused this injury (e.g., animal bite, fall, cut, accident)?',
-        answer: '',
-        category: 'wound_assessment',
-        confidence: 0.9
-      },
-      {
-        id: 'trauma_timing',
-        question: 'When did this injury occur?',
-        answer: '',
-        category: 'wound_assessment', 
-        confidence: 0.9
-      },
-      {
-        id: 'trauma_tetanus',
-        question: 'When was your last tetanus vaccination?',
-        answer: '',
-        category: 'medical_history',
-        confidence: 0.9
-      }
-    ];
-    
-    // If no wound type requirements detected or AI failed to generate questions, use fallback
-    if (!hasWoundTypeRequirements) {
-      console.log(`TRAUMATIC WOUND FALLBACK - No wound type requirements detected, using hardcoded questions`);
-      return traumaticFallbackQuestions;
-    }
-  }
+  // All question requirements are now database-driven
   
   if (isFollowUp && currentRound > 1) {
     // For follow-up questions, check if the answers provided require reassessment
