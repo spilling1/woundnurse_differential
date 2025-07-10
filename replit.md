@@ -457,6 +457,21 @@ Changelog:
   - **Removed Advisory Language**: Eliminated "Please avoid..." and instructional text within questions, keeping questions pure and focused
   - **Post-Processing Validation**: Added automatic question cleaning to remove advisory language and split combined statements
   - **Question Quality Control**: Enhanced validation to ensure each question is standalone, properly formatted, and actually asks one thing
+- July 10, 2025. **MANDATORY MINIMUM QUESTION SYSTEM**: Implemented comprehensive question generation requirements regardless of confidence:
+  - **Always Generate Minimum 2 Questions**: System now generates at least 2 questions regardless of AI confidence level
+  - **Wound-Type Specific Requirements**: Traumatic wounds MUST ask origin questions regardless of confidence level
+  - **Emergency Fallback System**: Multiple fallback mechanisms ensure questions are generated even if AI completely fails
+  - **Database-Driven Requirements**: All wound-type specific "MUST ASK" requirements from database are enforced
+  - **Triple Fallback Protection**: AI generation → minimum enforcement → emergency fallback ensures questions are never skipped
+- July 10, 2025. **CRITICAL CARE PLAN GENERATION FIXES**: Fixed three major issues preventing proper care plan generation:
+  - **Fixed OpenAI Token Limit**: Increased from 1000 to 4000 tokens allowing comprehensive care plans instead of truncated responses
+  - **Fixed Product Link URLs**: Corrected database field mapping from `product.amazonUrl` to `product.amazon_search_url` with fallback URL generation
+  - **Enhanced Question Answer Integration**: Added mandatory emphasis requiring AI to directly quote and address each patient answer in care plan with visual warnings and strict formatting requirements
+- July 10, 2025. **QUESTION GENERATION CLEANUP**: Fixed AI question generation producing inappropriate combined questions:
+  - **Separated Combined Questions**: Added strict formatting rules preventing AI from combining multiple questions into single confusing statements
+  - **Removed Advisory Language**: Eliminated "Please avoid..." and instructional text within questions, keeping questions pure and focused
+  - **Post-Processing Validation**: Added automatic question cleaning to remove advisory language and split combined statements
+  - **Question Quality Control**: Enhanced validation to ensure each question is standalone, properly formatted, and actually asks one thing
 - July 10, 2025. **DUPLICATE DETECTION OPTIMIZATION**: Moved duplicate image detection to occur before image analysis for improved efficiency:
   - **Early Detection**: Duplicate image checking now happens immediately after image validation, before AI analysis
   - **Processing Optimization**: Prevents unnecessary YOLO detection and AI classification when duplicate images are found

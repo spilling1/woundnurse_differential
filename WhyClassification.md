@@ -485,3 +485,26 @@ multiple small punctures
 
 ---
 
+
+---
+## Case: 2025-07-10-794
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 5:33:02 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Multiple deep puncture wounds, consistent with bite marks. Significant localized inflammation and swelling are present. High risk for infection due to the nature and location of the injury.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
