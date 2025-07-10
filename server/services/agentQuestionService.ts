@@ -287,34 +287,32 @@ For traumatic wounds, you should find 4 "MUST ASK" requirements.
 If you generate fewer than 4 questions, you have FAILED to follow database instructions.
 
 CRITICAL: Generate questions for ALL "MUST ASK" requirements. Do NOT paraphrase, summarize, or skip any requirements.
+IMPORTANT: Filter out any test questions or non-medical questions (e.g., questions about hair color, personal appearance, etc.).
 ` : ''}
 
 QUESTION STRATEGY FRAMEWORK:
 
-A) CONFIDENCE IMPROVEMENT QUESTIONS (when confidence < 80%):
-   Focus on clarifying what was unclear in the image analysis:
-   - Location specifics: "Where exactly on the body is this wound located?"
-   - Medical history: "Do you have diabetes or circulation problems?"
-   - Wound bed characteristics: "What color is the wound bed (red, yellow, black)?"
-   - Wound edges: "Are the wound edges raised, flat, or undermined?"
+GENERATE MAXIMUM 5 QUESTIONS PER PAGE - Focus on HIGH and MEDIUM priority questions only
+
+A) HIGH PRIORITY QUESTIONS (Essential for accurate assessment):
+   - Medical history: "Do you have diabetes?"
+   - Wound origin: "How did this wound occur?"
    - Timeline: "How long have you had this wound?"
-   - Origin: "How did this wound occur?"
+   - Location specifics: "Where exactly on the body is this wound located?"
+   - Infection signs: "Do you see increased redness, warmth, or pus?"
 
-B) CARE PLAN OPTIMIZATION QUESTIONS (when confidence ≥ 80%):
-   Focus on treatment planning and symptom management:
-   - Symptoms: "Do you experience pain, numbness, or swelling around the wound?"
-   - Infection confirmation: "Is there increased warmth, red streaking, or foul odor?"
-   - Drainage details: "What type and amount of drainage do you see?"
-   - Current care: "What treatments have you tried so far?"
-   - Progress tracking: "Have you noticed any improvements or worsening?"
+B) MEDIUM PRIORITY QUESTIONS (Improve care plan quality):
+   - Current symptoms: "Do you experience pain or numbness around the wound?"
+   - Drainage: "What type and amount of drainage do you see?"
+   - Current treatments: "What treatments have you tried so far?"
+   - Progress: "Has the wound changed in size or appearance recently?"
+   - Mobility impact: "Is this wound affecting your ability to walk or move?"
 
-C) MEDICAL REFERRAL QUESTIONS (when referral indicated):
-   Focus on information doctors need:
-   - Wound duration: "Exactly how long have you had this wound?"
-   - Injury mechanism: "What caused this wound initially?"
-   - Previous treatments: "What medical treatments have you received?"
-   - Associated symptoms: "Any fever, increased pain, or other concerning symptoms?"
-   - Medical conditions: "Any diabetes, circulation issues, or immune problems?"
+C) LOW PRIORITY QUESTIONS (Skip unless critical):
+   - Wound bed color details
+   - Specific wound measurements
+   - Detailed drainage characteristics
+   - Minor symptom variations
 
 PHOTO SUGGESTIONS (when confidence < 70%):
 ${contextData.imageCount > 1 ? 
@@ -401,13 +399,15 @@ Then provide the JSON array format below.
 ` : 'You MUST respond with ONLY a valid JSON array. Do NOT include any other text, explanations, or formatting.'}
 
 CRITICAL QUESTION FORMATTING RULES:
-1. Each question must be a SINGLE, STANDALONE question
-2. Do NOT combine multiple questions into one
-3. Do NOT add advice, instructions, or commentary within questions
-4. Do NOT use "Please avoid..." or similar advisory language in questions
-5. Each question should only ask ONE thing
-6. Questions must end with a question mark
-7. Keep questions simple and direct
+1. MAXIMUM 5 QUESTIONS PER PAGE - This is a hard limit
+2. Each question must be a SINGLE, STANDALONE question
+3. Do NOT combine multiple questions into one
+4. Do NOT add advice, instructions, or commentary within questions
+5. Do NOT use "Please avoid..." or similar advisory language in questions
+6. Each question should only ask ONE thing
+7. Questions must end with a question mark
+8. Keep questions simple and direct
+9. PRIORITIZE HIGH-IMPACT QUESTIONS: Focus on diabetes history, wound origin, infection signs, timeline, and current treatments only
 
 ${isFollowUp ? `
 CRITICAL DUPLICATE PREVENTION:
@@ -565,10 +565,21 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
            cleanQuestion.toLowerCase().startsWith('could ') ||
            cleanQuestion.toLowerCase().startsWith('would '));
         
+        // Filter out test questions and non-medical questions
+        const isTestQuestion = 
+          cleanQuestion.toLowerCase().includes('hair') ||
+          cleanQuestion.toLowerCase().includes('color') ||
+          cleanQuestion.toLowerCase().includes('eye') ||
+          cleanQuestion.toLowerCase().includes('appearance') ||
+          cleanQuestion.toLowerCase().includes('test') ||
+          cleanQuestion.toLowerCase().includes('red') && cleanQuestion.toLowerCase().includes('hair');
+        
+        const isValidMedicalQuestion = isValidQuestion && !isTestQuestion;
+        
         return {
           ...q,
           id: q.id || `q${index + 1}`,
-          question: isValidQuestion ? cleanQuestion.trim() : `Is this wound causing you any pain or discomfort?`,
+          question: isValidMedicalQuestion ? cleanQuestion.trim() : `Is this wound causing you any pain or discomfort?`,
           answer: q.answer || '',
           category: q.category || 'symptoms',
           confidence: q.confidence || 0
@@ -592,7 +603,7 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
           // Check for semantic duplicates (similar meaning)
           const isDuplicate = previousQuestionTexts.some(prevQ => {
             const similarity = calculateQuestionSimilarity(prevQ, newQuestionLower);
-            if (similarity > 0.7) {
+            if (similarity > 0.6) { // Lowered threshold for better duplicate detection
               console.log(`Removing similar question: "${newQ.question}" (similarity: ${similarity})`);
               return true;
             }
@@ -604,6 +615,44 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
         
         console.log(`Filtered ${cleanedQuestions.length - filteredQuestions.length} duplicate questions`);
       }
+      
+      // Remove duplicates within the current set of questions
+      const uniqueQuestions = [];
+      const seenQuestions = new Set();
+      
+      for (const question of filteredQuestions) {
+        const questionLower = question.question.toLowerCase().trim();
+        let isDuplicate = false;
+        
+        // Check for exact matches
+        if (seenQuestions.has(questionLower)) {
+          console.log(`Removing internal duplicate: "${question.question}"`);
+          continue;
+        }
+        
+        // Check for semantic duplicates within current set
+        for (const existingQuestion of uniqueQuestions) {
+          const similarity = calculateQuestionSimilarity(existingQuestion.question, questionLower);
+          if (similarity > 0.6) {
+            console.log(`Removing internal similar question: "${question.question}" (similarity: ${similarity})`);
+            isDuplicate = true;
+            break;
+          }
+        }
+        
+        if (!isDuplicate) {
+          uniqueQuestions.push(question);
+          seenQuestions.add(questionLower);
+        }
+      }
+      
+      // ENFORCE MAXIMUM 5 QUESTIONS PER PAGE
+      const MAX_QUESTIONS_PER_PAGE = 5;
+      const finalQuestions = uniqueQuestions.slice(0, MAX_QUESTIONS_PER_PAGE);
+      
+      console.log(`Question generation summary: Generated ${cleanedQuestions.length} → Filtered ${filteredQuestions.length} → Unique ${uniqueQuestions.length} → Final ${finalQuestions.length} (max ${MAX_QUESTIONS_PER_PAGE})`);
+      
+      filteredQuestions = finalQuestions;
       
       // Log the question generation AI interaction
       if (sessionId) {

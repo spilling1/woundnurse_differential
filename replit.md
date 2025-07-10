@@ -561,6 +561,13 @@ Changelog:
   - **Robust Validation**: Fixed cases where AI correctly identified wound types but used slightly different terminology than database entries
   - **Comprehensive Matching**: System now handles exact matches, partial matches, and synonyms for all wound type classifications
   - **Database-Driven Flexibility**: All synonym matching occurs through PostgreSQL database storage, allowing easy updates without code changes
+- July 10, 2025. **QUESTION OPTIMIZATION SYSTEM**: Implemented comprehensive question generation optimization to address user feedback about too many questions with duplicates:
+  - **Maximum 5 Questions Per Page**: Enforced hard limit of 5 questions per assessment page to reduce user fatigue
+  - **Priority-Based Question Framework**: Restructured question strategy into HIGH priority (diabetes history, wound origin, infection signs, timeline, location) and MEDIUM priority (symptoms, drainage, treatments, progress, mobility) categories
+  - **Enhanced Duplicate Detection**: Improved similarity detection threshold from 0.7 to 0.6 and added internal duplicate removal within question sets
+  - **Test Question Filtering**: Removed test question "Why is your hair red?" from traumatic wound database instructions and added programmatic filtering for non-medical questions
+  - **Comprehensive Logging**: Added detailed question generation summary logging showing filtering progression (Generated → Filtered → Unique → Final counts)
+  - **Smart Question Validation**: Enhanced validation to filter out appearance-based, color-based, and test questions while preserving legitimate medical inquiries
 ```
 
 ## User Preferences
