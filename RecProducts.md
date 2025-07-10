@@ -1950,3 +1950,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-910
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 8:47:27 PM  
+**Wound Type:** Pressure Ulcer  
+**Audience:** patient  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+

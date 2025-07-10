@@ -991,3 +991,49 @@ Severe full-thickness tissue loss with visible bone (likely sacrum or coccyx). S
 
 ---
 
+
+---
+## Case: 2025-07-10-958
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 8:37:39 PM  
+**Wound Type:** Diabetic Foot Ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Deep, 'punched-out' ulcer with significant surrounding hyperkeratosis (callus). The wound bed contains what appears to be an exposed tendon. This is a severe, high-risk wound that likely penetrates to deep structures.
+
+### Classification Process:
+
+**Independent Classification:** Diabetic Foot Ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Diabetic Foot Ulcer with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-157
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 8:43:26 PM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Full-thickness skin loss on a bony prominence, consistent with a pressure ulcer. The wound bed contains both healthy granulation tissue and non-viable slough, indicating a chronic wound. Periwound erythema (redness) is present, raising concern for localized infection. Offloading pressure is critical.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 90% confidence
+
+---
+
