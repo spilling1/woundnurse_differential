@@ -1627,3 +1627,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-233
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 3:43:33 PM  
+**Wound Type:** Traumatic Wound  
+**Audience:** medical  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+

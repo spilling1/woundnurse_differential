@@ -209,3 +209,49 @@ Possible bite wound; surrounding area shows redness and swelling.
 
 ---
 
+
+---
+## Case: 2025-07-10-603
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 3:38:50 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Two distinct areas of abrasion are present. The surrounding skin appears intact but may be thin or fragile, possibly due to age. The wounds appear relatively recent.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-926
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 3:48:42 PM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+There are two distinct wound sites. The surrounding skin appears thin and fragile (dermatoporosis), which is common in older adults and predisposes to skin tears. The wounds have a glistening surface, suggesting recent cleaning or application of an ointment.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 95% confidence
+
+---
+
