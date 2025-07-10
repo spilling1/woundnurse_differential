@@ -945,3 +945,26 @@ The wound presents with a classic 'punched-out' appearance surrounded by a thick
 
 ---
 
+
+---
+## Case: 2025-07-10-992
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:28:42 PM  
+**Wound Type:** diabetic foot ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Deep ulcer with a well-defined, hyperkeratotic (calloused) rim. A small amount of white, fibrous material, possibly slough or exposed tendon, is visible within the wound bed. The surrounding skin appears dry.
+
+### Classification Process:
+
+**Independent Classification:** diabetic foot ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as diabetic foot ulcer with 95% confidence
+
+---
+

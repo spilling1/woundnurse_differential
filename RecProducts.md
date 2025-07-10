@@ -1905,3 +1905,34 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-645
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:31:09 PM  
+**Wound Type:** diabetic foot ulcer  
+**Audience:** medical  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+**1. General**  
+Product: Antimicrobial Packing Ribbon (PHMB or Iodoform)  
+Link: PHMB or Iodoform  
+Reason: Recommended for wound care  
+
+
+**2. Wound Dressing**  
+Product: Adhesive Foam Dressings  
+Link: https://www.amazon.com/s?k=bordered+foam+dressing+4x4  
+Reason: Recommended for wound care  
+
+
+**3. Wound Dressing**  
+Product: Bordered Foam Dressing  
+Link: https://www.amazon.com/s?k=bordered+foam+dressing  
+Reason: Recommended for wound care  
+
+
+---
+
