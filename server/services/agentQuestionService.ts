@@ -181,11 +181,7 @@ ${woundTypeInstructions}
     instructionsLower.includes('origin of the wound') ||
     instructionsLower.includes('exactly how and when did it happen');
   
-  // Special handling for traumatic wounds
-  const isTraumaticWound = 
-    imageAnalysis.woundType && 
-    (imageAnalysis.woundType.toLowerCase().includes('traumatic') || 
-     imageAnalysis.woundType.toLowerCase().includes('trauma'));
+  // Wound type detection is now handled by database-driven instructions
   
   const confidence = imageAnalysis.confidence || 0.5;
   
@@ -252,11 +248,8 @@ ${woundTypeInstructions}
   } else {
     // Initial questions - ALWAYS generate questions regardless of confidence
     console.log(`ALWAYS GENERATE QUESTIONS - minimum 2 questions + any required questions (confidence: ${confidence})`);
-    if (hasWoundTypeRequirements || isTraumaticWound) {
-      console.log(`WOUND TYPE REQUIREMENTS DETECTED - MUST ask origin questions regardless of confidence`);
-      if (isTraumaticWound) {
-        console.log(`TRAUMATIC WOUND DETECTED - Force generating origin questions`);
-      }
+    if (hasWoundTypeRequirements) {
+      console.log(`WOUND TYPE REQUIREMENTS DETECTED - MUST ask specific questions regardless of confidence`);
     }
     if (hasQuestionRequirements) {
       console.log(`Agent instructions require additional questions beyond minimum`);
@@ -656,84 +649,8 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
         }
       }
       
-      // ENFORCE MINIMUM QUESTION REQUIREMENTS
-      let finalQuestions = filteredQuestions;
-      
-      // Add traumatic wound fallback questions if needed
-      if (isTraumaticWound && !isFollowUp) {
-        const hasOriginQuestion = finalQuestions.some(q => 
-          q.question.toLowerCase().includes('caused') || 
-          q.question.toLowerCase().includes('origin') ||
-          q.question.toLowerCase().includes('how did') ||
-          q.question.toLowerCase().includes('what happened') ||
-          q.question.toLowerCase().includes('injury')
-        );
-        
-        if (!hasOriginQuestion) {
-          console.log('TRAUMATIC WOUND FALLBACK - Adding missing origin question');
-          finalQuestions.unshift({
-            id: 'trauma_origin_fallback',
-            question: 'What specifically caused this injury (e.g., animal bite, fall, cut, accident)?',
-            answer: '',
-            category: 'wound_assessment',
-            confidence: 0.9
-          });
-        }
-      }
-      
-      // ENFORCE MINIMUM 2 QUESTIONS REQUIREMENT
-      if (!isFollowUp && finalQuestions.length < 2) {
-        console.log(`MINIMUM QUESTIONS FALLBACK - Only ${finalQuestions.length} questions generated, adding fallback questions to reach minimum of 2`);
-        
-        const fallbackQuestions = [
-          {
-            id: 'fallback_pain',
-            question: 'Do you experience pain, numbness, or swelling around the wound?',
-            answer: '',
-            category: 'symptoms',
-            confidence: 0.8
-          },
-          {
-            id: 'fallback_infection',
-            question: 'Is there increased warmth, red streaking, or foul odor?',
-            answer: '',
-            category: 'symptoms',
-            confidence: 0.8
-          },
-          {
-            id: 'fallback_treatments',
-            question: 'What treatments have you tried so far?',
-            answer: '',
-            category: 'patient_info',
-            confidence: 0.8
-          },
-          {
-            id: 'fallback_medical_history',
-            question: 'Do you have diabetes or circulation problems?',
-            answer: '',
-            category: 'medical_history',
-            confidence: 0.8
-          }
-        ];
-        
-        // Add fallback questions until we have at least 2 total
-        for (let i = 0; i < fallbackQuestions.length && finalQuestions.length < 2; i++) {
-          const fallbackQ = fallbackQuestions[i];
-          
-          // Check if this question isn't already present
-          const isDuplicate = finalQuestions.some(existingQ => 
-            calculateQuestionSimilarity(existingQ.question.toLowerCase(), fallbackQ.question.toLowerCase()) > 0.7
-          );
-          
-          if (!isDuplicate) {
-            finalQuestions.push(fallbackQ);
-          }
-        }
-        
-        console.log(`MINIMUM QUESTIONS ENFORCED - Final question count: ${finalQuestions.length}`);
-      }
-      
-      return finalQuestions;
+      // All question requirements are now database-driven through AI instructions
+      return filteredQuestions;
     } catch (parseError: any) {
       console.error('Failed to parse AI questions response:', cleanedResponse);
       
@@ -762,54 +679,27 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
   } catch (error) {
     console.error('Error generating AI questions:', error);
     
-    // CRITICAL FALLBACK - Ensure questions are ALWAYS generated even if AI fails completely
-    console.log('AI QUESTION GENERATION FAILED - Using emergency fallback questions');
-    
-    const emergencyQuestions = [];
-    
-    // Add traumatic wound origin question if needed
-    if (isTraumaticWound && !isFollowUp) {
-      emergencyQuestions.push({
-        id: 'emergency_trauma_origin',
-        question: 'What specifically caused this injury (e.g., animal bite, fall, cut, accident)?',
-        answer: '',
-        category: 'wound_assessment',
-        confidence: 0.9
-      });
-    }
-    
-    // Add minimum fallback questions
-    const generalQuestions = [
-      {
-        id: 'emergency_pain',
-        question: 'Do you experience pain, numbness, or swelling around the wound?',
-        answer: '',
-        category: 'symptoms',
-        confidence: 0.8
-      },
-      {
-        id: 'emergency_infection',
-        question: 'Is there increased warmth, red streaking, or foul odor?',
-        answer: '',
-        category: 'symptoms',
-        confidence: 0.8
-      },
-      {
-        id: 'emergency_treatments',
-        question: 'What treatments have you tried so far?',
-        answer: '',
-        category: 'patient_info',
-        confidence: 0.8
+    // Log the error for analysis
+    if (sessionId) {
+      try {
+        await storage.createAiInteraction({
+          caseId: sessionId,
+          stepType: 'question_generation',
+          modelUsed: model || 'gpt-4o',
+          promptSent: 'AI question generation failed completely',
+          responseReceived: '',
+          parsedResult: null,
+          confidenceScore: Math.round(confidence * 100),
+          errorOccurred: true,
+          errorMessage: `Complete AI failure: ${error.message || error}`,
+        });
+      } catch (logError) {
+        console.error('Error logging complete AI failure:', logError);
       }
-    ];
-    
-    // Add enough questions to meet minimum requirement
-    for (let i = 0; i < generalQuestions.length && emergencyQuestions.length < 2; i++) {
-      emergencyQuestions.push(generalQuestions[i]);
     }
     
-    console.log(`EMERGENCY FALLBACK COMPLETE - Generated ${emergencyQuestions.length} questions`);
-    return emergencyQuestions;
+    // Return error instead of fallback questions
+    throw new Error('The image could not be processed, please try again.');
   }
 }
 

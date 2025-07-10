@@ -463,6 +463,12 @@ Changelog:
   - **Emergency Fallback System**: Multiple fallback mechanisms ensure questions are generated even if AI completely fails
   - **Database-Driven Requirements**: All wound-type specific "MUST ASK" requirements from database are enforced
   - **Triple Fallback Protection**: AI generation → minimum enforcement → emergency fallback ensures questions are never skipped
+- July 10, 2025. **COMPLETE DATABASE-DRIVEN ARCHITECTURE**: Removed ALL hardcoded logic per user requirements:
+  - **Minimum 2 Questions**: Moved from hardcoded logic to General Instructions in AI Configuration database
+  - **Traumatic Wound Detection**: Moved from hardcoded logic to wound_types table instructions with "MUST ASK - ORIGIN OF THE WOUND"
+  - **Emergency Fallback**: Replaced hardcoded emergency questions with proper error message "The image could not be processed, please try again"
+  - **Zero Hardcoded Requirements**: All question generation requirements now flow through database-stored AI instructions only
+  - **Pure Database Architecture**: System now relies entirely on AI Configuration and wound_types table for all requirements
 - July 10, 2025. **CRITICAL CARE PLAN GENERATION FIXES**: Fixed three major issues preventing proper care plan generation:
   - **Fixed OpenAI Token Limit**: Increased from 1000 to 4000 tokens allowing comprehensive care plans instead of truncated responses
   - **Fixed Product Link URLs**: Corrected database field mapping from `product.amazonUrl` to `product.amazon_search_url` with fallback URL generation
