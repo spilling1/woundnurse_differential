@@ -876,3 +876,72 @@ The wound presents as a deep, full-thickness ulcer with well-defined, 'punched-o
 
 ---
 
+
+---
+## Case: 2025-07-10-365
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:05:17 PM  
+**Wound Type:** diabetic foot ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Deep, cavitated wound with a well-defined, hyperkeratotic (calloused) border. The wound bed is primarily composed of red granulation tissue with some visible white/yellow slough. Surrounding skin appears dry and calloused.
+
+### Classification Process:
+
+**Independent Classification:** diabetic foot ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as diabetic foot ulcer with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-832
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:07:35 PM  
+**Wound Type:** Diabetic Foot Ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Deep ulcer with a well-defined border surrounded by significant hyperkeratosis (callus). The wound bed is primarily granulation tissue, with what appears to be an exposed tendon or slough. This presentation is typical for a neuropathic ulcer at a high-pressure point.
+
+### Classification Process:
+
+**Independent Classification:** Diabetic Foot Ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Diabetic Foot Ulcer with 95% confidence
+
+---
+
+
+---
+## Case: 2025-07-10-297
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:12:02 PM  
+**Wound Type:** diabetic foot ulcer  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound presents with a classic 'punched-out' appearance surrounded by a thick rim of hyperkeratosis (callus). The wound bed is mostly red granulation tissue, with a small amount of white, stringy tissue visible, which could be slough or exposed subcutaneous structures like a tendon. The surrounding skin on the toes appears mildly erythematous.
+
+### Classification Process:
+
+**Independent Classification:** diabetic foot ulcer (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as diabetic foot ulcer with 90% confidence
+
+---
+

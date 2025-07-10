@@ -81,13 +81,19 @@ export async function generateCarePlan(
       const enabledWoundTypes = await storage.getEnabledWoundTypes();
       const normalizedWoundType = classification.woundType?.toLowerCase().trim() || '';
       
+      console.log(`CarePlanGenerator: Checking wound type: "${classification.woundType}" (normalized: "${normalizedWoundType}")`);
+      console.log(`CarePlanGenerator: Available wound types: ${enabledWoundTypes.map(t => t.displayName).join(', ')}`);
+      
       let woundTypeSupported = false;
       
       // Check for exact matches, partial matches, and synonyms
       for (const type of enabledWoundTypes) {
+        console.log(`CarePlanGenerator: Checking type "${type.displayName}" (${type.name}) with synonyms:`, type.synonyms);
+        
         // Check display name and internal name
         if (type.displayName.toLowerCase() === normalizedWoundType ||
             type.name.toLowerCase() === normalizedWoundType) {
+          console.log(`CarePlanGenerator: ✓ Exact match found: ${type.displayName}`);
           woundTypeSupported = true;
           break;
         }
@@ -97,6 +103,7 @@ export async function generateCarePlan(
             normalizedWoundType.includes(type.name.toLowerCase()) ||
             type.displayName.toLowerCase().includes(normalizedWoundType) ||
             type.name.toLowerCase().includes(normalizedWoundType)) {
+          console.log(`CarePlanGenerator: ✓ Partial match found: ${type.displayName}`);
           woundTypeSupported = true;
           break;
         }
@@ -105,9 +112,11 @@ export async function generateCarePlan(
         if (type.synonyms && type.synonyms.length > 0) {
           for (const synonym of type.synonyms) {
             const normalizedSynonym = synonym.toLowerCase().trim();
+            console.log(`CarePlanGenerator: Checking synonym "${synonym}" (normalized: "${normalizedSynonym}") against "${normalizedWoundType}"`);
             if (normalizedSynonym === normalizedWoundType || 
                 normalizedWoundType.includes(normalizedSynonym) ||
                 normalizedSynonym.includes(normalizedWoundType)) {
+              console.log(`CarePlanGenerator: ✓ Synonym match found: "${synonym}" in type ${type.displayName}`);
               woundTypeSupported = true;
               break;
             }
@@ -119,7 +128,7 @@ export async function generateCarePlan(
       
       if (!woundTypeSupported) {
         const supportedTypesList = enabledWoundTypes.map(type => type.displayName).join(', ');
-        console.log(`CarePlanGenerator: Wound type "${classification.woundType}" not supported. Enabled types: ${supportedTypesList}`);
+        console.log(`CarePlanGenerator: ❌ Wound type "${classification.woundType}" not supported. Enabled types: ${supportedTypesList}`);
         
         // Refuse upfront for unsupported wound types
         return `**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.
@@ -132,7 +141,7 @@ export async function generateCarePlan(
 </div>`;
       }
       
-      console.log(`CarePlanGenerator: Wound type "${classification.woundType}" is supported`);
+      console.log(`CarePlanGenerator: ✓ Wound type "${classification.woundType}" is supported`);
     } catch (error) {
       console.error('CarePlanGenerator: Error checking wound type support:', error);
       // In case of error, allow the care plan to proceed

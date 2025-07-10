@@ -1877,3 +1877,31 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-10-503
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:09:38 PM  
+**Wound Type:** Diabetic Foot Ulcer  
+**Audience:** medical  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+
+
+---
+## Case: 2025-07-10-240
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:13:49 PM  
+**Wound Type:** diabetic foot ulcer  
+**Audience:** medical  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+
