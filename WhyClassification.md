@@ -1290,3 +1290,26 @@ Significant periwound erythema suggests a potential spreading infection (celluli
 
 ---
 
+
+---
+## Case: 2025-07-10-728
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 11:50:36 PM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound presents as a partial-thickness loss of dermis with a visible, pink-red, moist wound bed. Significant erythema (redness) is present in the periwound skin, suggesting inflammation or potential cellulitis.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 95% confidence
+
+---
+

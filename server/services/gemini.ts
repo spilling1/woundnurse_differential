@@ -109,7 +109,8 @@ export async function analyzeWoundImageWithGemini(imageBase64: string, model: st
     "infectionSigns": "array of observed signs (e.g., erythema, odor, increased warmth)",
     "location": "anatomical location",
     "additionalObservations": "any other relevant clinical observations",
-    "confidence": "confidence score from 0.0 to 1.0 representing diagnostic certainty"
+    "confidence": "confidence score from 0.0 to 1.0 representing diagnostic certainty",
+    "reasoning": "detailed explanation of visual indicators and clinical reasoning that led to this classification"
   }
 
   CONFIDENCE SCORING:
@@ -168,6 +169,7 @@ Analyze these ${images.length} wound images and provide a detailed assessment in
   "location": "anatomical location of primary wound",
   "additionalObservations": "any other relevant clinical observations, including notes about multiple wounds if present",
   "confidence": "confidence score from 0.0 to 1.0 representing diagnostic certainty",
+  "reasoning": "detailed explanation of visual indicators and clinical reasoning that led to this classification",
   "imageAnalysis": "detailed analysis of what each image shows and relationships between them"
 }
 

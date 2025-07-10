@@ -402,6 +402,16 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               </div>
             </div>
             
+            {/* AI Reasoning */}
+            {state.woundClassification?.reasoning && (
+              <div className="mt-3 p-3 bg-gray-50 rounded-lg border">
+                <div className="text-sm font-medium text-gray-700 mb-2">AI Analysis Reasoning:</div>
+                <div className="text-sm text-gray-600 leading-relaxed">
+                  {state.woundClassification.reasoning}
+                </div>
+              </div>
+            )}
+            
             {state.woundClassification?.alternativeTypes?.length > 0 && (
               <div className="mt-4">
                 <Label>Alternative Classifications:</Label>
