@@ -4,11 +4,14 @@ async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     try {
       const errorData = await res.json();
+      console.log('API Error Response:', errorData);
+      
       // If it's a structured error response, throw it as an object
-      if (errorData && errorData.code) {
+      if (errorData && (errorData.code || errorData.error)) {
         const error = new Error(errorData.message || `HTTP error! status: ${res.status}`);
         // Add additional properties from the structured error
         Object.assign(error, errorData);
+        console.log('Throwing structured error:', error);
         throw error;
       } else {
         // Fallback to text response
@@ -16,6 +19,7 @@ async function throwIfResNotOk(res: Response) {
         throw new Error(`${res.status}: ${text}`);
       }
     } catch (parseError) {
+      console.log('JSON parse error:', parseError);
       // If JSON parsing fails, fall back to text
       const text = await res.text().catch(() => res.statusText);
       throw new Error(`${res.status}: ${text}`);
