@@ -469,6 +469,13 @@ Changelog:
   - **Traumatic Wound Compliance**: System generates all 4+ required questions for traumatic wounds from wound_types table instructions only
   - **Pure Database Architecture**: System relies entirely on AI Configuration and wound_types table with no fallback hardcoded requirements
   - **Verified Database-Only Operation**: Confirmed through testing that AI extracts and asks ALL "MUST ASK" requirements from database instructions without any hardcoded logic
+- July 10, 2025. **80% CONFIDENCE WOUND TYPE VALIDATION**: Moved unsupported wound type validation to trigger only when confidence reaches 80%:
+  - **Removed Early Validation**: Eliminated immediate wound type checking after initial AI classification
+  - **Questions-First Approach**: System now allows questions to be asked regardless of initial wound type classification
+  - **80% Confidence Threshold**: Unsupported wound type notification only appears when assessment reaches 80% confidence level
+  - **Enhanced User Experience**: Users can now answer questions to improve confidence before seeing unsupported wound type errors
+  - **Care Plan Generator Integration**: Wound type validation integrated into care plan generation service at confidence threshold
+  - **Proper Flow Control**: System asks questions → builds confidence → validates wound type → generates care plan or shows error
 - July 10, 2025. **WOUND TYPE LOOKUP FIX**: Fixed critical issue where AI classification "traumatic wound" couldn't find database entry "traumatic_wound":
   - **Flexible Name Matching**: Enhanced getWoundTypeByName function to handle both "traumatic wound" and "traumatic_wound" formats
   - **Space/Underscore Conversion**: Automatic conversion between spaces and underscores for wound type name matching

@@ -124,18 +124,6 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
           currentStep: 'generating-plan' // Skip to plan generation to handle duplicate
         });
         // Don't call onNextStep() here since we're setting the step directly
-      } else if (data.unsupportedWoundType) {
-        // Handle unsupported wound type - show notification instead of questions
-        onStateChange({
-          unsupportedWoundType: {
-            woundType: data.woundType,
-            supportedTypes: data.supportedTypes,
-            message: data.message
-          },
-          woundClassification: { woundType: data.woundType },
-          currentStep: 'unsupported-wound-type'
-        });
-        // Don't call onNextStep() - stay on current step to show the notification
       } else {
         // Normal flow - proceed with questions
         onStateChange({
