@@ -488,6 +488,13 @@ Changelog:
   - **Processing Optimization**: Prevents unnecessary YOLO detection and AI classification when duplicate images are found
   - **User Experience**: Users get immediate feedback about duplicates without waiting for full analysis to complete
   - **Resource Efficiency**: Saves computational resources by avoiding redundant analysis of identical images
+- July 10, 2025. **DUPLICATE DETECTION TOGGLE SYSTEM**: Implemented toggleable duplicate image detection functionality:
+  - **Admin Settings Integration**: Added System Features tab in Settings page with duplicate detection toggle
+  - **Database-Driven Toggle**: Added duplicateDetectionEnabled field to agent_instructions table with default true
+  - **Conditional Detection**: Assessment workflow now checks toggle setting before performing duplicate detection
+  - **UI Status Indicators**: Toggle shows clear enabled/disabled status with visual indicators (Eye/EyeOff icons)
+  - **Backend Integration**: Complete API support for persisting and retrieving toggle state
+  - **User Request**: Duplicate detection disabled per user request - system now allows duplicate image uploads without detection
 - July 10, 2025. **CRITICAL DATA FLOW BUG FIX**: Fixed major issue where patient answers from multiple question rounds were lost during care plan generation:
   - **Root Cause**: `handleProceedToPlan` function was only preserving current round's questions instead of ALL accumulated answered questions across rounds
   - **Lost Critical Data**: System was ignoring first round answers including suicide ideation ("I might kill myself") and injury cause ("cat bite")
