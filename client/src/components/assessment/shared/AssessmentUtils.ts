@@ -182,7 +182,7 @@ export const assessmentHelpers = {
   // Get audience option configurations
   getAudienceOptions: () => [
     { value: 'family' as const, label: 'Family Caregiver', desc: 'Simple, step-by-step guidance' },
-    { value: 'patient' as const, label: 'Patient', desc: 'Self-care focused instructions' },
+    { value: 'patient' as const, label: 'Self-Care', desc: 'Self-care focused instructions' },
     { value: 'medical' as const, label: 'Medical Professional', desc: 'Clinical terminology and protocols' }
   ],
 
