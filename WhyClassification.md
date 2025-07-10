@@ -968,3 +968,26 @@ Deep ulcer with a well-defined, hyperkeratotic (calloused) rim. A small amount o
 
 ---
 
+
+---
+## Case: 2025-07-10-424
+**User:** sampilling@higharc.com  
+**Date:** 7/10/2025, 7:49:01 PM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 98%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Severe full-thickness tissue loss with visible bone (likely sacrum or coccyx). Significant slough is present on the wound bed. The periwound skin shows extensive erythema (redness) and inflammation. This is a critical wound requiring immediate, specialized medical care.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (98% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 98% confidence
+
+---
+

@@ -152,15 +152,14 @@ export async function generateCarePlan(
       const supportedTypesList = enabledWoundTypes.map(type => type.displayName).join(', ');
       console.log(`CarePlanGenerator: ❌ Wound type "${classification.woundType}" not supported at 80%+ confidence. Enabled types: ${supportedTypesList}`);
       
-      // Return unsupported wound type error at high confidence
-      return `**MEDICAL DISCLAIMER:** This is an AI-generated plan. Please consult a healthcare professional before following recommendations.
-
-<div style="background-color:#fee2e2; border:2px solid #dc2626; padding:20px; border-radius:8px; margin:16px 0; text-align:center;">
-<h2 style="color:#dc2626; margin:0 0 12px 0;">Unsupported Wound Type</h2>
-<p style="color:#dc2626; margin:0 0 12px 0;">This wound type (${classification.woundType}) is not supported by our analysis system.</p>
-<p style="color:#dc2626; margin:0 0 12px 0;">Our AI is configured to assess: ${supportedTypesList}</p>
-<p style="color:#dc2626; margin:0;">Please consult a healthcare professional for proper assessment and treatment. If you believe this is incorrect, please upload additional pictures from different angles.</p>
-</div>`;
+      // Throw specific error for unsupported wound type
+      const error = new Error(`Wound classification failed: INVALID_WOUND_TYPE: The detected wound type "${classification.woundType}" is not supported by this system. Our AI is configured to assess the following wound types: ${supportedTypesList}. Please ensure the image shows one of these supported wound types, or contact an administrator to add support for this wound type.`);
+      error.name = 'ANALYSIS_ERROR';
+      (error as any).code = 'ANALYSIS_ERROR';
+      (error as any).woundType = classification.woundType;
+      (error as any).confidence = Math.round((classification.confidence || 0) * 100);
+      (error as any).supportedTypes = supportedTypesList;
+      throw error;
     }
     
     // Continue with normal care plan generation for confidence >= 80%

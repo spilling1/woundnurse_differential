@@ -541,6 +541,14 @@ Changelog:
   - **Professional Styling**: Added bordered boxes, proper spacing, inline styles, and responsive design elements
   - **Visual Enhancement**: Restored emojis in headers, proper typography, and structured layout for better readability
   - **Consistent Formatting**: Ensured all care plans follow standardized HTML structure with proper semantic elements
+- July 10, 2025. **UNSUPPORTED WOUND TYPE ENHANCEMENT**: Created professional user experience for unsupported wound types instead of ugly error messages:
+  - **Dedicated Unsupported Wound Page**: Built comprehensive page (/unsupported-wound) with professional styling and helpful guidance
+  - **Intelligent Error Handling**: Modified care plan generator to throw specific ANALYSIS_ERROR for unsupported wound types with metadata
+  - **Automatic Redirection**: Enhanced CarePlanGeneration component to detect unsupported wound errors and redirect to dedicated page
+  - **User-Friendly Messaging**: Displays AI analysis results (wound type and confidence) with clear explanation of why it's unsupported
+  - **Helpful Guidance**: Provides action items (try different images, consult healthcare professional) and lists supported wound types
+  - **Auto-Redirect Timer**: 30-second countdown with manual navigation options for better user experience
+  - **Professional UI**: Color-coded sections, progress indicators, and clear call-to-action buttons for next steps
 ```
 
 ## User Preferences

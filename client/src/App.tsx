@@ -20,6 +20,7 @@ import ProfilePage from "@/pages/profile";
 import NotFound from "@/pages/not-found";
 import CaseAnalysis from "@/pages/case-analysis";
 import AdminAnalysisPage from "@/pages/AdminAnalysisPage";
+import UnsupportedWound from "@/pages/unsupported-wound";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -43,6 +44,7 @@ function Router() {
       <Route path="/admin/products" component={ProductManagement} />
       <Route path="/case-analysis/:caseId" component={CaseAnalysis} />
       <Route path="/admin/analysis/:caseId" component={AdminAnalysisPage} />
+      <Route path="/unsupported-wound" component={UnsupportedWound} />
       <Route component={NotFound} />
     </Switch>
   );

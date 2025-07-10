@@ -49,6 +49,27 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
       });
     },
     onError: (error: any) => {
+      // Check if this is an unsupported wound type error
+      if (error.message?.includes('ANALYSIS_ERROR') && error.message?.includes('INVALID_WOUND_TYPE')) {
+        // Extract wound type and confidence from error message
+        const woundTypeMatch = error.message.match(/The detected wound type "([^"]+)"/);
+        const confidenceMatch = error.message.match(/(\d+)%/);
+        
+        const woundType = woundTypeMatch ? woundTypeMatch[1] : 'Unknown';
+        const confidence = confidenceMatch ? confidenceMatch[1] : '85';
+        
+        // Redirect to unsupported wound page with parameters
+        const params = new URLSearchParams({
+          woundType,
+          confidence,
+          ...(state.finalCaseId && { caseId: state.finalCaseId })
+        });
+        
+        setLocation(`/unsupported-wound?${params.toString()}`);
+        return;
+      }
+      
+      // Handle other errors normally
       toast({
         title: "Plan Generation Failed",
         description: error.message,
