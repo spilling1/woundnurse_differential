@@ -2118,3 +2118,49 @@ The wound's location on the heel, a primary bony prominence, combined with its d
 
 ---
 
+
+---
+## Case: 2025-07-11-898
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:05:48 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a primary bony prominence, is a classic site for a pressure ulcer. The wound's depth and the presence of extensive eschar and slough that obscure the base make 'Unstageable Pressure Ulcer' the most fitting classification. This indicates full-thickness tissue loss where the true depth cannot be determined until the non-viable tissue is removed. Deep, crater-like wound with well-defined, erythematous borders. The wound bed is obscured by a large amount of black eschar (necrotic tissue) and yellow/white slough. There appears to be exposed deeper tissues, possibly tendon or bone, underneath the non-viable tissue. The periwound skin is dry and shows some evidence of dried blood.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 80% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-113
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:10:24 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 70%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, is the most common site for a pressure ulcer. The depth of the wound appears to extend into or through the subcutaneous tissue. The presence of significant slough and eschar obscures the full depth of the wound and visualization of the base, making 'Unstageable' the correct classification. If the base were fully visible and bone/tendon was exposed, it would be Stage 4. The combination of location and tissue types strongly supports a pressure-related etiology. Deep, crater-like wound with a well-defined border. The wound bed contains a mix of black eschar, yellow slough, and deep red/purple tissue. White, fibrous tissue visible in the wound bed is highly suspicious for exposed tendon or fascia. The surrounding skin is erythematous (red), dry, and scaly, with some dried blood superior to the wound.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (70% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 70% confidence
+
+---
+
