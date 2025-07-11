@@ -102,10 +102,11 @@ class DifferentialDiagnosisService {
   async refineDifferentialDiagnosis(
     originalClassification: any,
     questionAnswers: any[],
-    model: string = 'gemini-2.5-pro'
+    model: string = 'gemini-2.5-pro',
+    otherInformation?: string
   ): Promise<DiagnosisRefinement> {
     
-    const prompt = this.createRefinementPrompt(originalClassification, questionAnswers);
+    const prompt = this.createRefinementPrompt(originalClassification, questionAnswers, otherInformation);
     
     try {
       let response;
@@ -150,10 +151,13 @@ class DifferentialDiagnosisService {
   /**
    * Create refinement prompt for AI analysis
    */
-  private createRefinementPrompt(originalClassification: any, questionAnswers: any[]): string {
+  private createRefinementPrompt(originalClassification: any, questionAnswers: any[], otherInformation?: string): string {
     const answersText = questionAnswers.map(qa => 
       `Q: ${qa.question}\nA: ${qa.answer}`
     ).join('\n\n');
+    
+    const otherInfoText = otherInformation && otherInformation.trim() ? 
+      `\n\nADDITIONAL INFORMATION:\n${otherInformation.trim()}` : '';
     
     return `You are analyzing wound differential diagnosis refinement based on clinical answers.
 
@@ -161,14 +165,15 @@ ORIGINAL ASSESSMENT:
 ${JSON.stringify(originalClassification.differentialDiagnosis, null, 2)}
 
 PATIENT ANSWERS:
-${answersText}
+${answersText}${otherInfoText}
 
 CRITICAL INSTRUCTIONS:
 1. Analyze how each answer affects the probability of each differential diagnosis
-2. ELIMINATE possibilities that are ruled out by the answers
-3. INCREASE probability for diagnoses supported by the answers
-4. NORMALIZE final probabilities to add up to 100%
-5. Provide clear clinical reasoning for each change
+2. Consider any additional information provided (surgeries, radiation, health conditions, etc.)
+3. ELIMINATE possibilities that are ruled out by the answers or additional information
+4. INCREASE probability for diagnoses supported by the answers
+5. NORMALIZE final probabilities to add up to 100%
+6. Provide clear clinical reasoning for each change
 
 REQUIRED RESPONSE FORMAT (JSON):
 {

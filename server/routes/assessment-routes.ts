@@ -1181,7 +1181,7 @@ export function registerAssessmentRoutes(app: Express): void {
   // Differential Diagnosis Refinement API - Interactive Questions System
   app.post("/api/assessment/refine-differential-diagnosis", isAuthenticated, async (req, res) => {
     try {
-      const { originalClassification, questionAnswers, model } = req.body;
+      const { originalClassification, questionAnswers, otherInformation, model } = req.body;
       
       if (!originalClassification || !questionAnswers || !Array.isArray(questionAnswers)) {
         return res.status(400).json({
@@ -1191,12 +1191,16 @@ export function registerAssessmentRoutes(app: Express): void {
       }
       
       console.log('Refining differential diagnosis with', questionAnswers.length, 'answers');
+      if (otherInformation) {
+        console.log('Additional information provided:', otherInformation.length, 'characters');
+      }
       
       // Use the differential diagnosis service to refine the assessment
       const refinement = await differentialDiagnosisService.refineDifferentialDiagnosis(
         originalClassification,
         questionAnswers,
-        model || 'gemini-2.5-pro'
+        model || 'gemini-2.5-pro',
+        otherInformation
       );
       
       console.log('Differential diagnosis refinement complete:');

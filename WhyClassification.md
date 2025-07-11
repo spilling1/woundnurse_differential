@@ -2417,3 +2417,49 @@ The primary diagnosis is a venous ulcer based on its location on the lower leg (
 
 ---
 
+
+---
+## Case: 2025-07-11-580
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:29:09 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 60%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the lower leg is highly characteristic of a venous ulcer. The presence of slough and an irregular shape are also consistent with this diagnosis. However, the significant amount of black necrotic tissue (eschar) and pale surrounding skin are concerning for an arterial component, suggesting a possible mixed-etiology ulcer. The confidence is moderate because of these overlapping features. The wound has an oval shape with mixed tissue types in the bed, including black eschar, yellow slough, and red granulation tissue. The periwound skin appears erythematous (red), and the surrounding skin on the leg is dry and scaly (xerosis). A V.A.C. therapy measuring guide is placed next to the wound, indicating a length of approximately 6 cm.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (60% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 60% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-398
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:32:01 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The primary diagnosis of a Venous Ulcer is based on the location on the lower leg, the presence of significant periwound skin changes characteristic of chronic venous insufficiency (stasis dermatitis), and a moist wound bed with a mix of slough and granulation tissue. The presence of necrotic tissue and erythema suggests a high bacterial bioburden or potential infection superimposed on the chronic wound. The wound has well-defined, erythematous borders. The surrounding (periwound) skin appears very dry, scaly (xerosis), and fragile, which is consistent with chronic venous stasis dermatitis. A V.A.C. Therapy measurement tool is present, indicating that negative pressure wound therapy is being used or considered. There appears to be a mix of viable and non-viable tissue in the wound bed.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 75% confidence
+
+---
+

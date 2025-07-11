@@ -40,6 +40,7 @@ export default function DifferentialDiagnosisQuestions({
   );
   const [showPage2, setShowPage2] = useState(false);
   const [refinementResult, setRefinementResult] = useState<any>(null);
+  const [otherInformation, setOtherInformation] = useState('');
   const { toast } = useToast();
 
   // Update answer for a specific question
@@ -61,6 +62,7 @@ export default function DifferentialDiagnosisQuestions({
       const response = await apiRequest("POST", "/api/assessment/refine-differential-diagnosis", {
         originalClassification,
         questionAnswers: answeredQuestions,
+        otherInformation: otherInformation.trim(),
         model
       });
       
@@ -334,6 +336,35 @@ export default function DifferentialDiagnosisQuestions({
               )}
             </div>
           ))}
+
+          {/* Other Information Section */}
+          <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <div className="flex items-center mb-2">
+                  <span className="text-blue-700 font-medium mr-2">{questionAnswers.length + 1}.</span>
+                </div>
+                <Label htmlFor="other-information" className="text-sm font-medium text-blue-900">
+                  Any other pertinent information that may impact the diagnosis (e.g. Surgeries, Radiation, Lacerations, health conditions)?
+                </Label>
+              </div>
+            </div>
+            
+            <Textarea
+              id="other-information"
+              placeholder="Please provide any additional information that may impact the diagnosis..."
+              value={otherInformation}
+              onChange={(e) => setOtherInformation(e.target.value)}
+              className="min-h-[80px] resize-none"
+            />
+            
+            {otherInformation.trim() !== '' && (
+              <div className="mt-2 text-xs text-green-600 flex items-center">
+                <CheckCircle className="h-3 w-3 mr-1" />
+                Answer provided
+              </div>
+            )}
+          </div>
 
           {/* Instructions */}
           <Alert>
