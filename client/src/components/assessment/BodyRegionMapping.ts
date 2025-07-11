@@ -23,93 +23,93 @@ export const frontBodyRegions: BodyRegion[] = [
     id: '5',
     name: 'Stomach',
     description: 'Abdominal/stomach region',
-    coordinates: { x: 185, y: 400, width: 130, height: 90 },
+    coordinates: { x: 190, y: 330, width: 120, height: 80 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: '6L',
     name: 'Left Upper Leg (Front)',
     description: 'Left upper leg/thigh front',
-    coordinates: { x: 270, y: 490, width: 80, height: 140 },
+    coordinates: { x: 280, y: 430, width: 70, height: 120 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '6R',
     name: 'Right Upper Leg (Front)',
     description: 'Right upper leg/thigh front',
-    coordinates: { x: 150, y: 490, width: 80, height: 140 },
+    coordinates: { x: 150, y: 430, width: 70, height: 120 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '7L',
     name: 'Left Lower Leg (Front)',
     description: 'Left lower leg/shin front',
-    coordinates: { x: 270, y: 630, width: 80, height: 140 },
+    coordinates: { x: 280, y: 550, width: 70, height: 120 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '7R',
     name: 'Right Lower Leg (Front)',
     description: 'Right lower leg/shin front',
-    coordinates: { x: 150, y: 630, width: 80, height: 140 },
+    coordinates: { x: 150, y: 550, width: 70, height: 120 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '8L',
     name: 'Left Top/Side of Foot',
     description: 'Left top/side of foot',
-    coordinates: { x: 270, y: 770, width: 80, height: 50 },
+    coordinates: { x: 280, y: 670, width: 70, height: 60 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   {
     id: '8R',
     name: 'Right Top/Side of Foot',
     description: 'Right top/side of foot',
-    coordinates: { x: 150, y: 770, width: 80, height: 50 },
+    coordinates: { x: 150, y: 670, width: 70, height: 60 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   
-  // SECONDARY: Non-overlapping anatomical regions
+  // SECONDARY: Non-overlapping anatomical regions  
   {
     id: 'head_neck_front',
     name: 'Head/Neck (Front)',
     description: 'Head and neck area - front view',
-    coordinates: { x: 175, y: 50, width: 150, height: 140 },
+    coordinates: { x: 175, y: 15, width: 150, height: 115 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'chest',
     name: 'Chest',
     description: 'Chest area',
-    coordinates: { x: 150, y: 190, width: 200, height: 140 },
+    coordinates: { x: 150, y: 130, width: 200, height: 170 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: 'arms_front_left',
     name: 'Left Arm (Front)',
     description: 'Left arm - front view',
-    coordinates: { x: 350, y: 190, width: 100, height: 300 },
+    coordinates: { x: 350, y: 130, width: 100, height: 260 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'arms_front_right',
     name: 'Right Arm (Front)',
     description: 'Right arm - front view',
-    coordinates: { x: 50, y: 190, width: 100, height: 300 },
+    coordinates: { x: 50, y: 130, width: 100, height: 260 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'hand_palm_left',
     name: 'Left Palm',
     description: 'Left palm - front view',
-    coordinates: { x: 380, y: 490, width: 70, height: 85 },
+    coordinates: { x: 385, y: 390, width: 80, height: 85 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   },
   {
     id: 'hand_palm_right',
     name: 'Right Palm',
     description: 'Right palm - front view',
-    coordinates: { x: 50, y: 490, width: 70, height: 85 },
+    coordinates: { x: 25, y: 390, width: 80, height: 85 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   }
 ];
