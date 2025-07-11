@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { bodyRegions, getBodyRegionById, getBodyRegionsByImage, type BodyRegion } from './shared/BodyRegionMapping';
+import { 
+  getBodyRegionsByImage, 
+  getBodyRegionByCoordinates,
+  BodyRegion 
+} from './BodyRegionMapping';
 
 // Import the body diagram images
 import FrontBodyPath from '@assets/FrontBody_1752196192722.png';
@@ -16,7 +20,7 @@ interface BodyRegionSelectorProps {
 export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: BodyRegionSelectorProps) {
   const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
   const [hoveredRegion, setHoveredRegion] = useState<BodyRegion | null>(null);
-  const [showRegionNumbers, setShowRegionNumbers] = useState(true);
+  const [showRegionOutlines, setShowRegionOutlines] = useState(true);
 
   const handleImageClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -32,23 +36,9 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
         onRegionSelect(null);
       } else {
         // Select the new region
-        onRegionSelect({ id: region.id, name: region.displayName });
+        onRegionSelect({ id: region.id, name: region.name });
       }
     }
-  };
-
-  const getBodyRegionByCoordinates = (x: number, y: number, view: 'front' | 'back'): BodyRegion | undefined => {
-    const regions = getBodyRegionsByImage(view);
-    
-    return regions.find(region => {
-      const { coordinates } = region;
-      return (
-        x >= coordinates.x &&
-        x <= coordinates.x + coordinates.width &&
-        y >= coordinates.y &&
-        y <= coordinates.y + coordinates.height
-      );
-    });
   };
 
   const handleImageHover = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -66,52 +56,47 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
   };
 
   const renderRegionOverlays = () => {
+    if (!showRegionOutlines) return null;
+    
     const regions = getBodyRegionsByImage(currentView);
     
-    return regions.map(region => {
-      const isSelected = selectedRegion?.id === region.id;
-      const isHovered = hoveredRegion?.id === region.id;
-      
-      // Convert absolute coordinates to percentages for CSS positioning
-      const leftPercent = (region.coordinates.x / 645) * 100; // 645 is image width
-      const topPercent = (region.coordinates.y / 400) * 100; // 400 is image height
-      const widthPercent = (region.coordinates.width / 645) * 100;
-      const heightPercent = (region.coordinates.height / 400) * 100;
-      
-      // Extract the number from the region ID (e.g., "272" from "272")
-      const regionNumber = region.id.replace(/\D/g, '');
-      
-      return (
-        <div
-          key={region.id}
-          className={`absolute border-2 rounded-lg transition-all duration-200 pointer-events-none flex items-center justify-center ${
-            isSelected 
-              ? 'border-blue-500 bg-blue-200/40' 
-              : isHovered 
-                ? 'border-green-400 bg-green-200/30' 
-                : 'border-gray-400/20 bg-gray-100/10'
-          }`}
-          style={{
-            left: `${leftPercent}%`,
-            top: `${topPercent}%`,
-            width: `${widthPercent}%`,
-            height: `${heightPercent}%`,
-            minWidth: '20px',
-            minHeight: '20px',
-          }}
-        >
-          <span className={`text-xs font-bold select-none ${
-            isSelected 
-              ? 'text-blue-800' 
-              : isHovered 
-                ? 'text-green-800' 
-                : 'text-gray-600'
-          }`}>
-            {regionNumber}
-          </span>
-        </div>
-      );
-    });
+    return (
+      <div className="absolute inset-0 w-full h-full pointer-events-none">
+        {regions.map(region => {
+          const isSelected = selectedRegion?.id === region.id;
+          const isHovered = hoveredRegion?.id === region.id;
+          
+          return (
+            <div
+              key={region.id}
+              className={`absolute border-2 transition-all duration-200 ${
+                isSelected 
+                  ? 'bg-blue-500 bg-opacity-40 border-blue-600' 
+                  : isHovered 
+                    ? 'bg-green-500 bg-opacity-30 border-green-600' 
+                    : 'bg-gray-500 bg-opacity-10 border-gray-400'
+              }`}
+              style={{
+                left: `${(region.coordinates.x / 645) * 100}%`,
+                top: `${(region.coordinates.y / 400) * 100}%`,
+                width: `${(region.coordinates.width / 645) * 100}%`,
+                height: `${(region.coordinates.height / 400) * 100}%`,
+              }}
+            >
+              <div className={`w-full h-full flex items-center justify-center text-xs font-bold ${
+                isSelected 
+                  ? 'text-blue-900' 
+                  : isHovered 
+                    ? 'text-green-900' 
+                    : 'text-gray-600'
+              }`}>
+                {region.id}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
@@ -140,11 +125,11 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
             Back View
           </Button>
           <Button
-            variant={showRegionNumbers ? 'default' : 'outline'}
-            onClick={() => setShowRegionNumbers(!showRegionNumbers)}
+            variant={showRegionOutlines ? 'default' : 'outline'}
+            onClick={() => setShowRegionOutlines(!showRegionOutlines)}
             size="sm"
           >
-            Show Numbers
+            Show Outlines
           </Button>
         </div>
 
@@ -161,7 +146,7 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
               alt={`${currentView} body diagram`}
               className="w-full h-auto"
             />
-            {showRegionNumbers && renderRegionOverlays()}
+            {showRegionOutlines && renderRegionOverlays()}
           </div>
         </div>
 
@@ -190,7 +175,7 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
           
           {hoveredRegion && !selectedRegion && (
             <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-              <span className="font-medium text-green-900">Hover: {hoveredRegion.displayName}</span>
+              <span className="font-medium text-green-900">Hover: {hoveredRegion.name}</span>
               <Badge variant="outline" className="ml-2">
                 Click to select
               </Badge>
@@ -208,7 +193,7 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
         <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
           <h4 className="font-medium text-amber-900 mb-2">Instructions:</h4>
           <ul className="text-sm text-amber-800 space-y-1">
-            <li>• Click "Show Numbers" to display numbered clickable regions</li>
+            <li>• Click "Show Outlines" to display numbered clickable regions</li>
             <li>• Click on any numbered region to select the wound location</li>
             <li>• Switch between front and back views using the buttons above</li>
             <li>• The selected region will help our AI provide more accurate assessment</li>
