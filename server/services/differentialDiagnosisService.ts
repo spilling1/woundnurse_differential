@@ -106,7 +106,21 @@ class DifferentialDiagnosisService {
     otherInformation?: string
   ): Promise<DiagnosisRefinement> {
     
-    const prompt = this.createRefinementPrompt(originalClassification, questionAnswers, otherInformation);
+    // CRITICAL FIX: Include otherInformation as a structured question BEFORE creating the AI prompt
+    const questionsIncludingOtherInfo = [...questionAnswers];
+    if (otherInformation && otherInformation.trim()) {
+      questionsIncludingOtherInfo.push({
+        question: "Any other pertinent information that may impact the diagnosis (e.g. Surgeries, Radiation, Lacerations, health conditions)?",
+        answer: otherInformation.trim(),
+        category: "additional_information",
+        importance: "high"
+      });
+    }
+    
+    console.log('DifferentialDiagnosisService: Questions being sent to AI:', questionsIncludingOtherInfo.length);
+    console.log('DifferentialDiagnosisService: Other info included:', !!otherInformation);
+    
+    const prompt = this.createRefinementPrompt(originalClassification, questionsIncludingOtherInfo);
     
     try {
       let response;
@@ -130,17 +144,6 @@ class DifferentialDiagnosisService {
         }
       };
 
-      // Include otherInformation as a structured question if provided
-      const questionsIncludingOtherInfo = [...questionAnswers];
-      if (otherInformation && otherInformation.trim()) {
-        questionsIncludingOtherInfo.push({
-          question: "Any other pertinent information that may impact the diagnosis (e.g. Surgeries, Radiation, Lacerations, health conditions)?",
-          answer: otherInformation.trim(),
-          category: "additional_information",
-          importance: "high"
-        });
-      }
-
       return {
         originalDiagnosis: originalClassification,
         refinedDiagnosis: refinedDiagnosis,
@@ -155,20 +158,17 @@ class DifferentialDiagnosisService {
       console.error('DifferentialDiagnosisService: Error refining diagnosis:', error);
       
       // Fallback refinement based on simple logic
-      return this.createFallbackRefinement(originalClassification, questionAnswers, otherInformation);
+      return this.createFallbackRefinement(originalClassification, questionsIncludingOtherInfo);
     }
   }
 
   /**
    * Create refinement prompt for AI analysis
    */
-  private createRefinementPrompt(originalClassification: any, questionAnswers: any[], otherInformation?: string): string {
+  private createRefinementPrompt(originalClassification: any, questionAnswers: any[]): string {
     const answersText = questionAnswers.map(qa => 
       `Q: ${qa.question}\nA: ${qa.answer}`
     ).join('\n\n');
-    
-    const otherInfoText = otherInformation && otherInformation.trim() ? 
-      `\n\nADDITIONAL INFORMATION:\n${otherInformation.trim()}` : '';
     
     return `You are analyzing wound differential diagnosis refinement based on clinical answers.
 
@@ -176,15 +176,18 @@ ORIGINAL ASSESSMENT:
 ${JSON.stringify(originalClassification.differentialDiagnosis, null, 2)}
 
 PATIENT ANSWERS:
-${answersText}${otherInfoText}
+${answersText}
 
 CRITICAL INSTRUCTIONS:
 1. Analyze how each answer affects the probability of each differential diagnosis
-2. Consider any additional information provided (surgeries, radiation, health conditions, etc.)
-3. ELIMINATE possibilities that are ruled out by the answers or additional information
-4. INCREASE probability for diagnoses supported by the answers
-5. NORMALIZE final probabilities to add up to 100%
-6. Provide clear clinical reasoning for each change
+2. 🚨 MANDATORY: Consider any additional information provided (surgeries, radiation, health conditions, etc.) - this is CRITICAL medical history
+3. If additional information mentions recent surgery, this could create surgical wounds or complications
+4. If additional information mentions radiation, this could cause radiation-induced tissue damage
+5. If additional information mentions health conditions, consider how they impact wound healing
+6. ELIMINATE possibilities that are ruled out by the answers or additional information
+7. INCREASE probability for diagnoses supported by the answers
+8. NORMALIZE final probabilities to add up to 100%
+9. Provide clear clinical reasoning for each change, specifically mentioning how additional information impacts the diagnosis
 
 REQUIRED RESPONSE FORMAT (JSON):
 {
@@ -247,7 +250,7 @@ IMPORTANT:
   /**
    * Create fallback refinement when AI fails
    */
-  private createFallbackRefinement(originalClassification: any, questionAnswers: any[], otherInformation?: string): DiagnosisRefinement {
+  private createFallbackRefinement(originalClassification: any, questionAnswers: any[]): DiagnosisRefinement {
     const originalTypes = originalClassification.differentialDiagnosis?.possibleTypes || [];
     
     // Simple logic-based refinement
@@ -304,17 +307,6 @@ IMPORTANT:
       }
     };
 
-    // Include otherInformation as a structured question if provided
-    const questionsIncludingOtherInfo = [...questionAnswers];
-    if (otherInformation && otherInformation.trim()) {
-      questionsIncludingOtherInfo.push({
-        question: "Any other pertinent information that may impact the diagnosis (e.g. Surgeries, Radiation, Lacerations, health conditions)?",
-        answer: otherInformation.trim(),
-        category: "additional_information",
-        importance: "high"
-      });
-    }
-
     return {
       originalDiagnosis: originalClassification,
       refinedDiagnosis: refinedDiagnosis,
@@ -322,7 +314,7 @@ IMPORTANT:
       remainingPossibilities: remaining,
       confidence: remaining[0]?.confidence || 0.5,
       reasoning: 'Analysis based on patient answers with clinical logic-based refinement',
-      questionsAnalyzed: questionsIncludingOtherInfo
+      questionsAnalyzed: questionAnswers
     };
   }
 }
