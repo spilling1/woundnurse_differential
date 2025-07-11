@@ -2603,3 +2603,27 @@ The primary diagnosis is a Venous Ulcer based on its location on the lower leg a
 
 ---
 
+
+---
+## Case: 2025-07-11-479
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:58:20 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 65%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+**Body Region:** Left Lower Leg (Front)  
+
+### AI Reasoning:
+or treatment
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (65% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 65% confidence
+
+---
+
