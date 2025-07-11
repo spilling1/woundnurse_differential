@@ -1497,3 +1497,49 @@ The combination of small, deep puncture wounds, the specific location on the han
 
 ---
 
+
+---
+## Case: 2025-07-11-503
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 4:46:38 AM  
+**Wound Type:** Pressure Ulcer / Full-Thickness Wound  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound presents as a full-thickness ulcer with a crater-like appearance. The wound base is largely obscured by adherent yellow slough. There is a central area of red tissue, likely granulation tissue or muscle. The periwound skin is markedly dark and discolored, suggesting potential necrosis or severe tissue damage beyond the ulcer's immediate borders. The wound presents as a full-thickness ulcer with a crater-like appearance. The wound base is largely obscured by adherent yellow slough. There is a central area of red tissue, likely granulation tissue or muscle. The periwound skin is markedly dark and discolored, suggesting potential necrosis or severe tissue damage beyond the ulcer's immediate borders.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer / Full-Thickness Wound (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer / Full-Thickness Wound with 90% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-468
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 4:49:23 AM  
+**Wound Type:** Pressure Ulcer / Pressure Injury  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound is located on a bony prominence (the heel), a classic site for pressure injuries. The diagnosis of an 'Unstageable' pressure injury is based on the full-thickness tissue loss where the extent of the damage cannot be confirmed because the wound bed is covered by slough and/or eschar. This visual evidence aligns perfectly with the NPIAP/EPUAP staging system. The severity and tissue types are clearly visible. Full-thickness tissue loss. The wound base is obscured by eschar (black/brown necrotic tissue) and slough (yellow/tan devitalized tissue). Wound edges appear rolled (epibole). Surrounding skin is dry and flaky with some dried blood.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer / Pressure Injury (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer / Pressure Injury with 95% confidence
+
+---
+
