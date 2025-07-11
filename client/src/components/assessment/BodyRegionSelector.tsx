@@ -26,8 +26,8 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
   const handleImageClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     // Convert to absolute coordinates based on the image dimensions
-    const x = (event.clientX - rect.left) / rect.width * 645; // Image width
-    const y = (event.clientY - rect.top) / rect.height * 400; // Image height
+    const x = (event.clientX - rect.left) / rect.width * 500; // Image width
+    const y = (event.clientY - rect.top) / rect.height * 820; // Image height
     
     const region = getBodyRegionByCoordinates(x, y, currentView);
     
