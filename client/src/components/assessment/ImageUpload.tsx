@@ -111,33 +111,16 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
         totalImages: state.selectedImages.length
       });
       
-      try {
-        return await assessmentApi.initialAnalysis(
-          primaryImage,
-          state.audience,
-          model,
-          additionalImages
-        );
-      } catch (error: any) {
-        // Preserve error properties by re-throwing with preserved structure
-        console.log('Caught error in mutationFn:', error);
-        console.log('Error properties in mutationFn:', Object.keys(error));
-        
-        // Create a new error that preserves the structured data
-        const preservedError = new Error(error.message) as any;
-        preservedError.code = error.code;
-        preservedError.woundType = error.woundType;
-        preservedError.confidence = error.confidence;
-        preservedError.reasoning = error.reasoning;
-        preservedError.redirect = error.redirect;
-        preservedError.supportedTypes = error.supportedTypes;
-        preservedError.originalErrorData = error.originalErrorData || error;
-        
-        console.log('Re-throwing preserved error with code:', preservedError.code);
-        throw preservedError;
-      }
+      return await assessmentApi.initialAnalysis(
+        primaryImage,
+        state.audience,
+        model,
+        additionalImages
+      );
     },
     onSuccess: (data: any) => {
+      console.log('ImageUpload: Analysis successful:', data);
+      
       if (data.duplicateDetected) {
         // Handle duplicate detection at the beginning of the process
         onStateChange({
@@ -145,6 +128,23 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
           currentStep: 'generating-plan' // Skip to plan generation to handle duplicate
         });
         // Don't call onNextStep() here since we're setting the step directly
+      } else if (data.classification?.unsupportedWoundType) {
+        // Handle unsupported wound type - redirect to unsupported wound page
+        console.log('ImageUpload: Unsupported wound type detected, redirecting');
+        const params = new URLSearchParams({
+          woundType: data.classification.woundType || 'Unknown',
+          confidence: ((data.classification.confidence || 0.85) * 100).toString(),
+          reasoning: data.classification.reasoning || 'Visual analysis performed by AI',
+          message: `This wound appears to be a ${data.classification.woundType} which is not currently supported by the Wound Nurse.`
+        });
+        
+        // Add supported types if available
+        if (data.classification.supportedTypes && Array.isArray(data.classification.supportedTypes)) {
+          params.set('supportedTypes', data.classification.supportedTypes.join('|'));
+        }
+        
+        console.log('ImageUpload: Redirecting to unsupported wound page with params:', params.toString());
+        setLocation(`/unsupported-wound?${params.toString()}`);
       } else {
         // Normal flow - proceed with questions
         onStateChange({
@@ -157,57 +157,11 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
     },
     onError: (error: any) => {
       console.log('ImageUpload error:', error);
-      console.log('Error code:', error.code);
-      console.log('Error message:', error.message);
-      console.log('Error properties:', Object.keys(error));
-      console.log('Error originalErrorData:', error.originalErrorData);
       
-      // Check if this is an invalid wound type error
-      const errorData = error.originalErrorData || error;
-      const isInvalidWoundType = error.code === "INVALID_WOUND_TYPE" || 
-                                 errorData.code === "INVALID_WOUND_TYPE" ||
-                                 (error.message && error.message.includes('INVALID_WOUND_TYPE'));
-      
-      if (isInvalidWoundType) {
-        // Redirect to unsupported wound page with enhanced details
-        const params = new URLSearchParams({
-          woundType: error.woundType || errorData.woundType || 'Unknown',
-          confidence: (error.confidence || errorData.confidence || '85').toString(),
-          reasoning: error.reasoning || errorData.reasoning || 'Visual analysis performed by AI',
-          message: error.message || errorData.message || 'This wound type is not currently supported'
-        });
-        
-        // Add supported types if available
-        const supportedTypes = error.supportedTypes || errorData.supportedTypes;
-        if (supportedTypes && Array.isArray(supportedTypes)) {
-          params.set('supportedTypes', supportedTypes.join('|'));
-        }
-        
-        console.log('Redirecting to unsupported wound page with params:', params.toString());
-        setLocation(`/unsupported-wound?${params.toString()}`);
-        return;
-      }
-      
-      // Check if the error message contains wound type information
-      if (error.message && error.message.includes('INVALID_WOUND_TYPE')) {
-        // Parse the error message to extract wound type
-        const woundTypeMatch = error.message.match(/detected wound type "([^"]+)"/);
-        const woundType = woundTypeMatch ? woundTypeMatch[1] : 'Unknown';
-        
-        const params = new URLSearchParams({
-          woundType: woundType,
-          confidence: '90',
-          reasoning: 'Visual analysis performed by AI',
-          message: error.message
-        });
-        setLocation(`/unsupported-wound?${params.toString()}`);
-        return;
-      }
-      
-      // Handle other errors normally
+      // Handle generic errors with simple toast message
       toast({
         title: "Analysis Failed",
-        description: error.message,
+        description: error.message || "An error occurred during analysis. Please try again.",
         variant: "destructive",
       });
     },

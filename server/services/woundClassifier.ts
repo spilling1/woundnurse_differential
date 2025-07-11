@@ -148,10 +148,14 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       
       console.log(`WoundClassifier: Independent AI classification complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
       
-      // Step 2.5: Validate wound type against configured wound types
+      // Step 2.5: Check wound type support (but don't throw error - let frontend handle redirect)
       const validationResult = await validateWoundType(classification.woundType);
       if (!validationResult.isValid) {
-        console.log(`WoundClassifier: Invalid wound type detected: ${classification.woundType}`);
+        console.log(`WoundClassifier: Invalid wound type detected: ${classification.woundType} - flagging for frontend redirect`);
+        
+        // Add flags for frontend to handle unsupported wound types
+        classification.unsupportedWoundType = true;
+        classification.supportedTypes = validationResult.validTypes;
         
         // Log the invalid wound type attempt
         try {
@@ -168,12 +172,9 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         } catch (logError) {
           console.error('WoundClassifier: Error logging validation failure:', logError);
         }
-        
-        // Throw specific error for invalid wound types
-        throw new Error(`INVALID_WOUND_TYPE: The detected wound type "${classification.woundType}" is not supported by this system. Our AI is configured to assess the following wound types: ${validationResult.validTypes.join(', ')}. Please ensure the image shows one of these supported wound types, or contact an administrator to add support for this wound type.`);
+      } else {
+        console.log(`WoundClassifier: Wound type validation passed: ${classification.woundType}`);
       }
-      
-      console.log(`WoundClassifier: Wound type validation passed: ${classification.woundType}`);
       
       // Log the independent classification
       try {
