@@ -95,12 +95,26 @@ ${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionSta
       if (qa.answer && qa.answer.trim() !== '') {
         const question = qa.question.toLowerCase();
         
+        console.log(`PromptTemplates: Processing question: "${qa.question}"`);
+        console.log(`PromptTemplates: Question category: "${qa.category}"`);
+        console.log(`PromptTemplates: Answer: "${qa.answer}"`);
+        
+        // Special handling for "Other Information" or additional information questions
+        if (question.includes('other information') || question.includes('additional information') ||
+            question.includes('anything else') || question.includes('pertinent') ||
+            question.includes('surgeries') || question.includes('radiation') ||
+            question.includes('health conditions') || question.includes('lacerations') ||
+            qa.category === 'additional_information') {
+          categorizedQuestions.medicalReferral.push(qa);
+          console.log(`PromptTemplates: Categorized as MEDICAL REFERRAL (Other Information)`);
+        }
         // Category A: Confidence Improvement Questions
-        if (question.includes('diabetes') || question.includes('where') || 
+        else if (question.includes('diabetes') || question.includes('where') || 
             question.includes('location') || question.includes('how long') ||
             question.includes('wound bed') || question.includes('color') ||
             question.includes('how did') || question.includes('occur')) {
           categorizedQuestions.confidenceImprovement.push(qa);
+          console.log(`PromptTemplates: Categorized as CONFIDENCE IMPROVEMENT`);
         }
         // Category B: Care Plan Optimization Questions
         else if (question.includes('pain') || question.includes('drainage') ||
@@ -108,19 +122,28 @@ ${contextData?.nutritionStatus ? `- Nutrition status: ${contextData.nutritionSta
                  question.includes('numbness') || question.includes('swelling') ||
                  question.includes('improvement') || question.includes('tried')) {
           categorizedQuestions.carePlanOptimization.push(qa);
+          console.log(`PromptTemplates: Categorized as CARE PLAN OPTIMIZATION`);
         }
         // Category C: Medical Referral Questions
         else if (question.includes('fever') || question.includes('medical') ||
                  question.includes('doctor') || question.includes('symptoms') ||
                  question.includes('circulation') || question.includes('immune')) {
           categorizedQuestions.medicalReferral.push(qa);
+          console.log(`PromptTemplates: Categorized as MEDICAL REFERRAL`);
         }
         // Default to confidence improvement
         else {
           categorizedQuestions.confidenceImprovement.push(qa);
+          console.log(`PromptTemplates: Categorized as CONFIDENCE IMPROVEMENT (default)`);
         }
       }
     });
+
+    console.log(`PromptTemplates: Final categorization summary:`);
+    console.log(`PromptTemplates: - Confidence Improvement: ${categorizedQuestions.confidenceImprovement.length} questions`);
+    console.log(`PromptTemplates: - Care Plan Optimization: ${categorizedQuestions.carePlanOptimization.length} questions`);
+    console.log(`PromptTemplates: - Medical Referral: ${categorizedQuestions.medicalReferral.length} questions`);
+    console.log(`PromptTemplates: - Total questions processed: ${contextData.aiQuestions.length}`);
 
     baseInfo += `
 

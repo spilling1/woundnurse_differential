@@ -2555,3 +2555,51 @@ The location on the lower leg is classic for a venous ulcer. The wound bed has a
 
 ---
 
+
+---
+## Case: 2025-07-11-847
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:54:48 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 70%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+
+### AI Reasoning:
+The primary diagnosis of a venous ulcer is based on the location on the lower leg, the irregular wound shape, and the presence of a moist, mixed-tissue wound bed with slough. The surrounding skin changes, such as erythema and dryness, are often associated with chronic venous insufficiency (stasis dermatitis). While the classic location is the medial malleolus, venous ulcers can occur on other parts of the lower leg. The wound bed displays a combination of red granulation tissue, yellow slough, and dark, black eschar. The periwound skin is erythematous, and the distal skin appears very dry and scaly (xerosis). A V.A.C. Therapy measuring guide is present, suggesting ongoing advanced wound care.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (70% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 70% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-098
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:57:06 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 60%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+**Body Region:** Right Lower Leg (Back)  
+
+### AI Reasoning:
+The primary diagnosis is a Venous Ulcer based on its location on the lower leg and the moist, exudative appearance with significant slough. These are classic features of wounds caused by chronic venous insufficiency. However, the confidence is moderate because the location on the posterior calf is less common than the medial 'gaiter' area, and the wound also has features that overlap with other etiologies, such as the necrotic tissue and well-defined borders. The wound is a large, deep, oval-shaped ulcer with well-demarcated erythematous borders. The wound bed is heterogeneous, containing areas of red tissue, significant yellow slough, and patches of black necrotic eschar. The surrounding skin shows signs of xerosis (dryness and scaling). A V.A.C. Therapy measuring guide is adjacent to the wound.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (60% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 60% confidence
+
+---
+
