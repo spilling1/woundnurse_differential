@@ -150,7 +150,7 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
               alt={`${currentView} body diagram`}
               className="w-full h-auto"
             />
-            {showRegionOutlines && renderRegionOverlays()}
+            {renderRegionOverlays()}
           </div>
         </div>
 
