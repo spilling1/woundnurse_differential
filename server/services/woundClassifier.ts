@@ -209,7 +209,11 @@ CONFIDENCE SCORING:
         try {
           classification = await analyzeWoundImageWithGemini(imageBase64, model, instructions);
         } catch (geminiError: any) {
-          if (geminiError.message?.includes('quota') || geminiError.message?.includes('RESOURCE_EXHAUSTED')) {
+          if (geminiError.message?.includes('quota') || 
+              geminiError.message?.includes('RESOURCE_EXHAUSTED') || 
+              geminiError.message?.includes('overloaded') ||
+              geminiError.message?.includes('503') ||
+              geminiError.message?.includes('UNAVAILABLE')) {
             console.log('WoundClassifier: Gemini service temporarily unavailable, automatically switching to GPT-4o');
             classification = await analyzeWoundImage(imageBase64, 'gpt-4o', mimeType, instructions);
           } else {
