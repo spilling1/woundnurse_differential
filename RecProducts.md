@@ -2006,3 +2006,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-11-664
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:28:26 AM  
+**Wound Type:** unknown  
+**Audience:** family  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+

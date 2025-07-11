@@ -28,12 +28,15 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
       const modelToUse = state.model || 'gemini-2.5-pro';
       console.log('CarePlanGeneration: Using model =', modelToUse);
       
+      // Use refined diagnosis if available from differential diagnosis system
+      const classificationToUse = state.differentialRefinement?.refinement?.refinedDiagnosis || state.woundClassification;
+      
       return await assessmentApi.finalPlan(
         state.selectedImage,
         state.audience,
         modelToUse,
         state.answeredQuestions || [],
-        state.woundClassification,
+        classificationToUse,
         state.userFeedback,
         null, // existingCaseId
         false, // forceNew

@@ -1934,3 +1934,26 @@ The wound is located on the heel, a major bony prominence susceptible to pressur
 
 ---
 
+
+---
+## Case: 2025-07-11-473
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:23:23 AM  
+**Wound Type:** Unstageable Pressure Ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a primary bony prominence, combined with the extensive coverage of the wound bed by slough and eschar, makes 'Unstageable Pressure Ulcer' the most likely classification. An unstageable ulcer is a full-thickness wound where the base is obscured by non-viable tissue. The severity and tissue types are clear, but the precise etiology requires further patient history to be 100% certain. Deep, full-thickness wound with a significant amount of black eschar (necrotic tissue) and yellow slough covering the wound bed. The true depth cannot be determined due to this non-viable tissue. The wound edges are distinct and erythematous (red). Whitish, fibrous tissue, possibly exposed tendon or fascia, is visible. The surrounding skin is dry and scaly. There is evidence of dried blood superior to the wound margin. The overall presentation is indicative of a severe, complex wound with high probability of infection.
+
+### Classification Process:
+
+**Independent Classification:** Unstageable Pressure Ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Unstageable Pressure Ulcer with 80% confidence
+
+---
+

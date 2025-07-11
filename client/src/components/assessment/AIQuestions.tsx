@@ -460,6 +460,11 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                         differentialRefinement: refinement,
                         showPage2Analysis: true
                       });
+                      
+                      // If user wants to proceed to care plan generation
+                      if (refinement.proceedToCarePlan) {
+                        onNextStep();
+                      }
                     }}
                   />
                 )}

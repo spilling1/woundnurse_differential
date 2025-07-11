@@ -188,11 +188,17 @@ export default function DifferentialDiagnosisQuestions({
               Back to Questions
             </Button>
             <Button 
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => {
+                // Trigger the next step in the assessment flow
+                onRefinementComplete({
+                  ...refinementResult,
+                  proceedToCarePlan: true
+                });
+              }}
               className="flex items-center"
             >
               <TrendingUp className="h-4 w-4 mr-2" />
-              Continue Assessment
+              Generate Care Plan
             </Button>
           </div>
         </CardContent>

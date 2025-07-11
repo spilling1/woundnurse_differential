@@ -118,9 +118,20 @@ class DifferentialDiagnosisService {
       
       const refinedData = this.parseRefinementResponse(response);
       
+      // Create refined diagnosis with complete wound classification structure
+      const refinedDiagnosis = {
+        ...originalClassification,
+        woundType: refinedData.diagnosis.primaryDiagnosis,
+        confidence: refinedData.confidence,
+        differentialDiagnosis: {
+          ...originalClassification.differentialDiagnosis,
+          possibleTypes: this.normalizeProbabilities(refinedData.remaining)
+        }
+      };
+
       return {
         originalDiagnosis: originalClassification,
-        refinedDiagnosis: refinedData.diagnosis,
+        refinedDiagnosis: refinedDiagnosis,
         eliminatedPossibilities: refinedData.eliminated,
         remainingPossibilities: this.normalizeProbabilities(refinedData.remaining),
         confidence: refinedData.confidence,
@@ -266,13 +277,20 @@ IMPORTANT:
     eliminated = remaining.filter(type => type.confidence < threshold).map(type => type.woundType);
     remaining = remaining.filter(type => type.confidence >= threshold);
     
+    // Create refined diagnosis with complete wound classification structure
+    const refinedDiagnosis = {
+      ...originalClassification,
+      woundType: remaining[0]?.woundType || 'Uncertain',
+      confidence: remaining[0]?.confidence || 0.5,
+      differentialDiagnosis: {
+        ...originalClassification.differentialDiagnosis,
+        possibleTypes: remaining
+      }
+    };
+
     return {
       originalDiagnosis: originalClassification,
-      refinedDiagnosis: {
-        primaryDiagnosis: remaining[0]?.woundType || 'Uncertain',
-        confidence: remaining[0]?.confidence || 0.5,
-        reasoning: 'Refined based on clinical answers using fallback logic'
-      },
+      refinedDiagnosis: refinedDiagnosis,
       eliminatedPossibilities: eliminated,
       remainingPossibilities: remaining,
       confidence: remaining[0]?.confidence || 0.5,
