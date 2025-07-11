@@ -1980,3 +1980,26 @@ The diagnosis of Diabetic Foot Ulcer is made with high confidence due to the cla
 
 ---
 
+
+---
+## Case: 2025-07-11-370
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:35:35 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location over a bony prominence (sacrum/buttock), the likely context of an immobilized or bed-bound patient (inferred from the hospital gown and wound type), and the characteristic ulceration are all strong indicators of a pressure injury. The central ulcer appears to be at least Stage 2, but the extensive surrounding inflammation and erythema suggest a more severe process, possibly evolving Stage 3 or a component of Deep Tissue Injury. The presence of infection signs is high. The wound is located on what appears to be the sacral or buttock region of an elderly individual, identifiable by the wrinkled skin texture and the presence of a hospital gown. There is a large, well-demarcated area of erythema extending beyond the wound margins, which is highly suggestive of cellulitis or deep tissue inflammation. There are also small, dark necrotic spots within the periwound area.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 75% confidence
+
+---
+
