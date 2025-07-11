@@ -272,10 +272,10 @@ IMPORTANT:
     // Normalize probabilities
     remaining = this.normalizeProbabilities(remaining);
     
-    // Filter out very low probability diagnoses
-    const threshold = 0.1;
-    eliminated = remaining.filter(type => type.confidence < threshold).map(type => type.woundType);
-    remaining = remaining.filter(type => type.confidence >= threshold);
+    // Filter out very low probability diagnoses (15% or below)
+    const threshold = 0.15;
+    eliminated = remaining.filter(type => type.confidence <= threshold).map(type => type.woundType);
+    remaining = remaining.filter(type => type.confidence > threshold);
     
     // Create refined diagnosis with complete wound classification structure
     const refinedDiagnosis = {

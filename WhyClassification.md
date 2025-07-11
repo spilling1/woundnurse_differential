@@ -2003,3 +2003,26 @@ The location over a bony prominence (sacrum/buttock), the likely context of an i
 
 ---
 
+
+---
+## Case: 2025-07-11-937
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:41:19 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, is the primary indicator for a pressure ulcer. The depth of the wound and the presence of significant necrotic tissue and slough are characteristic of a severe pressure injury. Because the base of the wound is obscured by this non-viable tissue, it is classified as 'Unstageable' as the full depth cannot be accurately assessed. The presence of significant necrosis and periwound erythema strongly suggests a superimposed infection. A large, deep, full-thickness ulcer located on the heel. The wound bed is mostly obscured by a mix of black eschar (necrotic tissue) and yellowish, stringy slough. The wound edges are clearly defined and erythematous (red). The surrounding skin appears dry. There is what appears to be exposed subcutaneous tissue, possibly tendon or fascia.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 80% confidence
+
+---
+

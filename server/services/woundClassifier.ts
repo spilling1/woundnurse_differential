@@ -265,7 +265,7 @@ CONFIDENCE SCORING:
         }
         
         const secondaryConfidence = Math.max(0.15, (1 - primaryConfidence) * 0.5);
-        const tertiaryConfidence = Math.max(0.05, (1 - primaryConfidence) * 0.3);
+        const tertiaryConfidence = Math.max(0.15, (1 - primaryConfidence) * 0.3);
         
         // Create comprehensive differential diagnosis
         const possibleTypes = [
@@ -302,6 +302,21 @@ CONFIDENCE SCORING:
         console.log('WoundClassifier: Added comprehensive fallback differential diagnosis with', possibleTypes.length, 'possibilities');
       } else {
         console.log('WoundClassifier: Differential diagnosis already present with', classification.differentialDiagnosis.possibleTypes.length, 'possibilities');
+        
+        // Filter out possibilities with confidence 15% or below
+        const filteredPossibilities = classification.differentialDiagnosis.possibleTypes.filter(type => 
+          type.confidence > 0.15
+        );
+        
+        console.log(`WoundClassifier: Filtered out low-confidence possibilities, ${classification.differentialDiagnosis.possibleTypes.length - filteredPossibilities.length} removed`);
+        
+        // If we have at least 2 possibilities after filtering, use them
+        if (filteredPossibilities.length >= 2) {
+          classification.differentialDiagnosis.possibleTypes = filteredPossibilities;
+        } else {
+          // Keep at least 2 possibilities even if below 15%
+          classification.differentialDiagnosis.possibleTypes = classification.differentialDiagnosis.possibleTypes.slice(0, 2);
+        }
       }
       
       } catch (differentialError) {
