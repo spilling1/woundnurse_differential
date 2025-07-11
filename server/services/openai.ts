@@ -104,14 +104,16 @@ export async function analyzeWoundImage(imageBase64: string, model: string, mime
           - 0.5-0.6: Low confidence - poor image quality, atypical presentation, or multiple possibilities
           - 0.0-0.4: Very uncertain - insufficient visual information for reliable diagnosis
           
-          DIFFERENTIAL DIAGNOSIS REQUIREMENTS:
+          DIFFERENTIAL DIAGNOSIS REQUIREMENTS (MANDATORY):
           - ALWAYS include at least 2-3 possible wound types with their confidence percentages
           - Consider anatomical location, wound characteristics, and typical presentations
           - For foot/heel wounds, consider: pressure ulcer, diabetic ulcer, venous ulcer, arterial ulcer
           - For leg wounds, consider: venous ulcer, arterial ulcer, traumatic wound
           - For pressure points, consider: pressure ulcer, but also diabetic complications if on feet
           - Provide specific targeted questions that would help distinguish between the possibilities
-          - Questions should focus on medical history, mobility, diabetes status, circulation, etc.`
+          - Questions should focus on medical history, mobility, diabetes status, circulation, etc.
+          
+          CRITICAL: You MUST include the "differentialDiagnosis" object with at least 2 possible wound types, even if you are confident in the primary diagnosis. This is a medical requirement for proper differential diagnosis.`
         },
         {
           type: "image_url",

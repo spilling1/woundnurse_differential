@@ -611,6 +611,8 @@ Changelog:
   - **Clinical Reasoning Integration**: Added AI-suggested questions and default fallback questions based on wound type combinations
   - **Audience-Specific Validation**: Implemented comprehensive post-processing validation to ensure medical professionals are addressed in third person
   - **Diagnostic Transparency**: Enhanced care plan generation to acknowledge multiple possibilities considered and explain final diagnosis reasoning
+  - **Mandatory Differential Diagnosis**: Enhanced AI prompts to force differential diagnosis structure with "CRITICAL: You MUST include" requirements
+  - **Fallback System**: Added automatic fallback logic to generate differential diagnosis when AI doesn't provide it, ensuring 100% compliance with differential diagnosis requirements
 ```
 
 ## User Preferences

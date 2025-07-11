@@ -1658,3 +1658,49 @@ The wound's location in the gaiter area (medial lower leg), combined with signif
 
 ---
 
+
+---
+## Case: 2025-07-11-252
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:22:01 AM  
+**Wound Type:** Venous Leg Ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location of the ulcer in the 'gaiter area' (from mid-calf to ankle) combined with the prominent signs of chronic venous disease in the surrounding skin (discoloration, scaling, erythema) are highly characteristic of a venous leg ulcer. The presence of slough indicates a chronic, non-healing state. The confidence is not higher because the location over a bony prominence could also imply a pressure or arterial component. The wound is situated over the lateral malleolus. The surrounding skin of the lower leg and ankle exhibits significant erythema, scaling, and hyperpigmentation (hemosiderin staining), which are classic signs of chronic venous insufficiency (stasis dermatitis and lipodermatosclerosis). There are also patches of white, atrophic skin, suggestive of atrophie blanche. The wound bed contains a mix of red granulation tissue and yellow slough.
+
+### Classification Process:
+
+**Independent Classification:** Venous Leg Ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Leg Ulcer with 80% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-425
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:24:12 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on a major bony prominence (the heel), combined with the full-thickness tissue loss exposing underlying structures like tendon or fascia, are classic indicators of a Stage 4 pressure ulcer. The presence of extensive necrotic tissue and slough further supports this staging. The deep, cavitated nature of the wound is characteristic of severe pressure-related injury. This is a severe, full-thickness wound with a circular, 'punched-out' appearance. The wound bed contains a significant amount of dark eschar (necrotic tissue) and yellow slough. There is a prominent pale, fibrous structure visible, which is highly suggestive of exposed tendon or fascia. The wound edges are inflamed (erythematous) and there is evidence of dried blood on the surrounding skin. The severity and location strongly suggest a high risk for underlying bone infection (osteomyelitis).
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 80% confidence
+
+---
+
