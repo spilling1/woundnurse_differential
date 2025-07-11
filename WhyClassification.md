@@ -1405,3 +1405,26 @@ Significant periwound erythema (redness) is present, suggesting potential surrou
 
 ---
 
+
+---
+## Case: 2025-07-11-396
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 1:28:55 AM  
+**Wound Type:** Chronic Foot Ulcer with Myiasis  
+**Confidence:** 98%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound is deep and appears to be a full-thickness ulcer. The surrounding skin is hyperkeratotic (thickened and calloused) and fissured (cracked), which is common in chronic foot conditions like diabetic foot. The presence of live larvae (maggots) is a critical finding indicating myiasis, which requires immediate medical intervention. The wound is deep and appears to be a full-thickness ulcer. The surrounding skin is hyperkeratotic (thickened and calloused) and fissured (cracked), which is common in chronic foot conditions like diabetic foot. The presence of live larvae (maggots) is a critical finding indicating myiasis, which requires immediate medical intervention.
+
+### Classification Process:
+
+**Independent Classification:** Chronic Foot Ulcer with Myiasis (98% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Chronic Foot Ulcer with Myiasis with 98% confidence
+
+---
+
