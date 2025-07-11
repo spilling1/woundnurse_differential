@@ -2394,3 +2394,26 @@ The location on the lower leg is a classic site for venous ulcers. The wound bed
 
 ---
 
+
+---
+## Case: 2025-07-11-997
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:23:59 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 70%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The primary diagnosis is a venous ulcer based on its location on the lower leg (gaiter area), which is the most common site. The wound bed is characteristic of a chronic venous ulcer, presenting with a mix of red granulation tissue, yellow slough, and black necrotic eschar. The surrounding skin shows signs of chronic pathology (atrophy, dryness). The presence of a V.A.C. therapy ruler suggests it is a complex, non-healing wound, which is typical for this ulcer type. The wound is being measured with a V.A.C. therapy ruler, indicating potential or ongoing Negative Pressure Wound Therapy. The periwound skin is xerotic (dry/scaly) and atrophic. The wound edges appear slightly elevated/rolled, which warrants consideration of malignancy in a chronic wound.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (70% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 70% confidence
+
+---
+
