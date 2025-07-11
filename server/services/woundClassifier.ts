@@ -199,7 +199,9 @@ CONFIDENCE SCORING:
       
       // Add body region information if provided
       if (bodyRegion) {
-        const bodyRegionContext = `\n\nBODY REGION CONTEXT:\nThe wound is located on: ${bodyRegion.name}\nThis anatomical location may provide important context for:\n- Wound type classification (e.g., diabetic ulcers commonly on feet, pressure ulcers on bony prominences)\n- Risk factors and contributing factors\n- Healing considerations and treatment approach\n- Differential diagnosis considerations\n\nConsider this location information when analyzing the wound characteristics and making your assessment.`;
+        // Handle nested body region structure
+        const regionName = bodyRegion.name || bodyRegion.id?.name || bodyRegion.id?.id || 'Unknown location';
+        const bodyRegionContext = `\n\nBODY REGION CONTEXT:\nThe wound is located on: ${regionName}\nThis anatomical location may provide important context for:\n- Wound type classification (e.g., diabetic ulcers commonly on feet, pressure ulcers on bony prominences)\n- Risk factors and contributing factors\n- Healing considerations and treatment approach\n- Differential diagnosis considerations\n\nConsider this location information when analyzing the wound characteristics and making your assessment.`;
         instructions += bodyRegionContext;
         console.log('WoundClassifier: Added body region context to AI instructions:', bodyRegionContext);
       }
@@ -693,6 +695,7 @@ Provide your updated assessment in the same JSON format, considering both your v
           aiModel: model,
           aiResponse,
           detectionMethod: enhancedClassification.classificationMethod,
+          bodyRegion: bodyRegion,
           yoloData: yoloEnabled ? {
             enabled: true,
             detectionFound: detectionResult && detectionResult.detections && detectionResult.detections.length > 0,

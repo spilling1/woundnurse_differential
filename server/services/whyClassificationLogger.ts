@@ -11,6 +11,7 @@ interface ClassificationLogEntry {
   aiModel: string;
   reasoning: string;
   detectionMethod: string;
+  bodyRegion?: string;
   yoloInfluence?: {
     enabled: boolean;
     detectionFound: boolean;
@@ -145,6 +146,7 @@ export class WhyClassificationLogger {
     aiModel: string;
     aiResponse: string;
     detectionMethod: string;
+    bodyRegion?: any;
     yoloData?: {
       enabled: boolean;
       detectionFound: boolean;
@@ -182,6 +184,11 @@ export class WhyClassificationLogger {
         }
       }
 
+      // Extract body region information  
+      const bodyRegionName = data.bodyRegion ? 
+        (data.bodyRegion.name || data.bodyRegion.id?.name || data.bodyRegion.id?.id || 'Unknown location') : 
+        undefined;
+
       const logEntry: ClassificationLogEntry = {
         caseId: data.caseId,
         timestamp: new Date().toLocaleString(),
@@ -192,6 +199,7 @@ export class WhyClassificationLogger {
         aiModel: data.aiModel,
         reasoning,
         detectionMethod: data.detectionMethod,
+        bodyRegion: bodyRegionName,
         yoloInfluence,
         independentClassification: data.independentClassification ? {
           woundType: data.independentClassification.woundType,
@@ -221,6 +229,7 @@ export class WhyClassificationLogger {
 **Confidence:** ${entry.confidence}%  
 **AI Model:** ${entry.aiModel}  
 **Detection Method:** ${entry.detectionMethod}  
+${entry.bodyRegion ? `**Body Region:** ${entry.bodyRegion}  ` : ''}
 
 ### AI Reasoning:
 ${entry.reasoning}

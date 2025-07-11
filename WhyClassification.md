@@ -2532,3 +2532,26 @@ The presence of two irregularly shaped, partial-thickness wounds on the forearm 
 
 ---
 
+
+---
+## Case: 2025-07-11-610
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:49:36 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 60%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the lower leg is classic for a venous ulcer. The wound bed has a 'messy' appearance with slough and some granulation, which is also typical. However, the significant amount of black necrotic tissue (eschar) and the well-defined edges also raise suspicion for an arterial component or a different etiology, lowering the confidence for a purely venous ulcer. The wound is oval-shaped with well-defined but slightly irregular borders. A significant portion of the wound base is obscured by a mix of yellow slough and black, dry eschar (necrosis). The surrounding skin is erythematous (red), dry, and scaly (xerotic). A V.A.C. Therapy measuring guide is present, indicating a length of approximately 6-7 cm.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (60% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 60% confidence
+
+---
+
