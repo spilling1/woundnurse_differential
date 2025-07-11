@@ -1382,3 +1382,26 @@ The diagnosis is based on the characteristic appearance and location of the woun
 
 ---
 
+
+---
+## Case: 2025-07-11-475
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 1:00:39 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+Significant periwound erythema (redness) is present, suggesting potential surrounding cellulitis or deep tissue inflammation. The wound is located on a common pressure point. The patient appears to be in a medical or long-term care setting, based on the patterned gown. Significant periwound erythema (redness) is present, suggesting potential surrounding cellulitis or deep tissue inflammation. The wound is located on a common pressure point. The patient appears to be in a medical or long-term care setting, based on the patterned gown.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 90% confidence
+
+---
+
