@@ -141,22 +141,30 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
       console.log('Error code:', error.code);
       console.log('Error message:', error.message);
       console.log('Error properties:', Object.keys(error));
+      console.log('Error originalErrorData:', error.originalErrorData);
       
       // Check if this is an invalid wound type error
-      if (error.code === "INVALID_WOUND_TYPE") {
+      const errorData = error.originalErrorData || error;
+      const isInvalidWoundType = error.code === "INVALID_WOUND_TYPE" || 
+                                 errorData.code === "INVALID_WOUND_TYPE" ||
+                                 (error.message && error.message.includes('INVALID_WOUND_TYPE'));
+      
+      if (isInvalidWoundType) {
         // Redirect to unsupported wound page with enhanced details
         const params = new URLSearchParams({
-          woundType: error.woundType || 'Unknown',
-          confidence: error.confidence?.toString() || '85',
-          reasoning: error.reasoning || 'Visual analysis performed by AI',
-          message: error.message || 'This wound type is not currently supported'
+          woundType: error.woundType || errorData.woundType || 'Unknown',
+          confidence: (error.confidence || errorData.confidence || '85').toString(),
+          reasoning: error.reasoning || errorData.reasoning || 'Visual analysis performed by AI',
+          message: error.message || errorData.message || 'This wound type is not currently supported'
         });
         
         // Add supported types if available
-        if (error.supportedTypes && Array.isArray(error.supportedTypes)) {
-          params.set('supportedTypes', error.supportedTypes.join('|'));
+        const supportedTypes = error.supportedTypes || errorData.supportedTypes;
+        if (supportedTypes && Array.isArray(supportedTypes)) {
+          params.set('supportedTypes', supportedTypes.join('|'));
         }
         
+        console.log('Redirecting to unsupported wound page with params:', params.toString());
         setLocation(`/unsupported-wound?${params.toString()}`);
         return;
       }
