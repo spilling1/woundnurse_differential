@@ -81,7 +81,7 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'head_neck_front',
     name: 'Head/Neck (Front)',
     description: 'Head and neck area - front view',
-    coordinates: { x: 175, y: 20, width: 150, height: 90 },
+    coordinates: { x: 180, y: 20, width: 140, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
@@ -128,56 +128,56 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'lower_back',
     name: 'Lower Back',
     description: 'Lower back region',
-    coordinates: { x: 170, y: 240, width: 160, height: 90 },
+    coordinates: { x: 155, y: 240, width: 175, height: 90 },
     commonWoundTypes: ['pressure_injury', 'surgical_wound']
   },
   {
     id: '1',
     name: 'Buttox',
     description: 'Buttox/gluteal region',
-    coordinates: { x: 160, y: 340, width: 180, height: 100 },
+    coordinates: { x: 145, y: 340, width: 195, height: 100 },
     commonWoundTypes: ['pressure_injury', 'surgical_wound']
   },
   {
     id: '2L',
     name: 'Left Upper Leg (Back)',
     description: 'Left upper leg/thigh back',
-    coordinates: { x: 140, y: 450, width: 80, height: 140 },
+    coordinates: { x: 150, y: 450, width: 80, height: 140 },
     commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
     id: '2R',
     name: 'Right Upper Leg (Back)',
     description: 'Right upper leg/thigh back',
-    coordinates: { x: 280, y: 450, width: 80, height: 140 },
+    coordinates: { x: 230, y: 450, width: 80, height: 140 },
     commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
     id: '3L',
     name: 'Left Lower Leg (Back)',
     description: 'Left lower leg/calf back',
-    coordinates: { x: 140, y: 590, width: 80, height: 140 },
+    coordinates: { x: 150, y: 590, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '3R',
     name: 'Right Lower Leg (Back)',
     description: 'Right lower leg/calf back',
-    coordinates: { x: 280, y: 590, width: 80, height: 140 },
+    coordinates: { x: 230, y: 590, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '4L',
     name: 'Left Heel/Sole of Foot',
     description: 'Left heel/sole of foot',
-    coordinates: { x: 140, y: 730, width: 80, height: 65 },
+    coordinates: { x: 150, y: 730, width: 80, height: 75 },
     commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   },
   {
     id: '4R',
     name: 'Right Heel/Sole of Foot',
     description: 'Right heel/sole of foot',
-    coordinates: { x: 280, y: 730, width: 80, height: 65 },
+    coordinates: { x: 230, y: 730, width: 80, height: 75 },
     commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   },
   
@@ -193,28 +193,28 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'back',
     name: 'Back',
     description: 'Upper back area',
-    coordinates: { x: 170, y: 110, width: 160, height: 130 },
+    coordinates: { x: 145, y: 110, width: 200, height: 130 },
     commonWoundTypes: ['pressure_injury', 'surgical_wound']
   },
   {
     id: 'arms_back_left',
     name: 'Left Arm (Back)',
     description: 'Left arm - back view',
-    coordinates: { x: 20, y: 110, width: 100, height: 270 },
+    coordinates: { x: 50, y: 110, width: 100, height: 290 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'arms_back_right',
     name: 'Right Arm (Back)',
     description: 'Right arm - back view',
-    coordinates: { x: 380, y: 110, width: 100, height: 270 },
+    coordinates: { x: 345, y: 110, width: 100, height: 290 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'hand_back_left',
     name: 'Left Back of Hand',
     description: 'Left back of hand - back view',
-    coordinates: { x: 45, y: 400, width: 80, height: 90 },
+    coordinates: { x: 35, y: 400, width: 80, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   },
   {
