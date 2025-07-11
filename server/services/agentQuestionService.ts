@@ -250,6 +250,36 @@ ${woundTypeInstructions}
     instructionsLower.includes('origin of the wound') ||
     instructionsLower.includes('exactly how and when did it happen');
   
+  // Check if we have differential diagnosis information
+  const hasDifferentialDiagnosis = differentialDiagnosis && differentialDiagnosis.possibleTypes && differentialDiagnosis.possibleTypes.length > 1;
+  
+  // Generate default differential diagnosis questions if not provided by AI
+  let defaultDifferentialQuestions = [];
+  if (hasDifferentialDiagnosis && aiSuggestedQuestions.length === 0) {
+    const possibleTypes = differentialDiagnosis.possibleTypes.map(t => t.woundType.toLowerCase());
+    
+    // Add diabetes questions for diabetic/pressure ulcer differentiation
+    if (possibleTypes.some(t => t.includes('diabetic')) && possibleTypes.some(t => t.includes('pressure'))) {
+      defaultDifferentialQuestions.push("Does the patient have diabetes or a history of high blood sugar?");
+      defaultDifferentialQuestions.push("Is the patient able to feel sensation in the area around the wound?");
+      defaultDifferentialQuestions.push("How much time does the patient spend sitting or lying down each day?");
+    }
+    
+    // Add circulation questions for venous/arterial differentiation
+    if (possibleTypes.some(t => t.includes('venous')) && possibleTypes.some(t => t.includes('arterial'))) {
+      defaultDifferentialQuestions.push("Does the patient have swelling in their legs or ankles?");
+      defaultDifferentialQuestions.push("Are the patient's feet often cold or have poor circulation?");
+    }
+    
+    // Add general origin questions for traumatic wounds
+    if (possibleTypes.some(t => t.includes('traumatic'))) {
+      defaultDifferentialQuestions.push("How did this wound first occur?");
+      defaultDifferentialQuestions.push("Was there a specific injury or accident that caused this wound?");
+    }
+    
+    console.log('AgentQuestionService: Generated default differential questions:', defaultDifferentialQuestions);
+  }
+  
   // Wound type detection is now handled by database-driven instructions
   
   const confidence = imageAnalysis.confidence || 0.5;
@@ -293,6 +323,13 @@ ${woundTypeInstructions}
     }
   }
 
+  // Extract differential diagnosis information and questions from AI analysis
+  const differentialDiagnosis = imageAnalysis.differentialDiagnosis;
+  const aiSuggestedQuestions = differentialDiagnosis?.questionsToAsk || [];
+  
+  console.log('AgentQuestionService: Differential diagnosis info:', differentialDiagnosis);
+  console.log('AgentQuestionService: AI suggested questions:', aiSuggestedQuestions);
+
   const analysisPrompt = `
 You are an AI wound care specialist following specific agent instructions. ${isFollowUp ? 'This is a follow-up round of questions.' : 'This is the initial question generation.'}
 
@@ -301,6 +338,19 @@ ${instructions}
 
 WOUND ANALYSIS RESULTS:
 ${JSON.stringify(imageAnalysis, null, 2)}
+
+DIFFERENTIAL DIAGNOSIS INFORMATION:
+${differentialDiagnosis ? `The AI has identified multiple possible wound types:
+${differentialDiagnosis.possibleTypes.map(type => `- ${type.woundType}: ${Math.round(type.confidence * 100)}% confidence - ${type.reasoning}`).join('\n')}
+
+AI SUGGESTED QUESTIONS TO DIFFERENTIATE:
+${aiSuggestedQuestions.map(q => `- ${q}`).join('\n')}
+
+PRIORITY: Ask questions that help distinguish between these possibilities. Focus on:
+1. Medical history questions (diabetes, circulation, mobility)
+2. Symptom questions (pain, numbness, drainage)
+3. Wound origin questions (how it started, what caused it)
+4. Location-specific questions (pressure, activity level)` : 'No differential diagnosis information available.'}
 
 CONFIDENCE ASSESSMENT:
 Current confidence level: ${Math.round(confidence * 100)}%

@@ -68,7 +68,7 @@ export async function analyzeWoundImage(imageBase64: string, model: string, mime
           type: "text",
           text: `Analyze this wound image and provide a detailed assessment in JSON format with the following structure:
           {
-            "woundType": "type of wound (e.g., pressure ulcer, diabetic foot ulcer, surgical wound, etc.)",
+            "woundType": "primary wound type (e.g., pressure ulcer, diabetic foot ulcer, surgical wound, etc.)",
             "stage": "stage if applicable (e.g., Stage 1, Stage 2, etc.)",
             "size": "small, medium, or large",
             "woundBed": "condition of wound bed (e.g., granulating, necrotic, sloughy, epithelializing)",
@@ -76,15 +76,42 @@ export async function analyzeWoundImage(imageBase64: string, model: string, mime
             "infectionSigns": "array of observed signs (e.g., erythema, odor, increased warmth)",
             "location": "anatomical location",
             "additionalObservations": "any other relevant clinical observations",
-            "confidence": "confidence score from 0.0 to 1.0 representing diagnostic certainty",
-            "reasoning": "detailed explanation of visual indicators and clinical reasoning that led to this classification"
+            "confidence": "confidence score from 0.0 to 1.0 representing diagnostic certainty for primary diagnosis",
+            "reasoning": "detailed explanation of visual indicators and clinical reasoning that led to this classification",
+            "differentialDiagnosis": {
+              "possibleTypes": [
+                {
+                  "woundType": "primary diagnosis",
+                  "confidence": "0.0-1.0",
+                  "reasoning": "specific visual indicators supporting this diagnosis"
+                },
+                {
+                  "woundType": "secondary possibility",
+                  "confidence": "0.0-1.0", 
+                  "reasoning": "specific visual indicators supporting this diagnosis"
+                }
+              ],
+              "questionsToAsk": [
+                "targeted question to differentiate between possibilities",
+                "another specific question based on visual findings"
+              ]
+            }
           }
           
           CONFIDENCE SCORING:
           - 0.9-1.0: Highly confident - clear visual indicators, typical presentation
           - 0.7-0.8: Moderately confident - good visual clarity, some uncertainty in classification
           - 0.5-0.6: Low confidence - poor image quality, atypical presentation, or multiple possibilities
-          - 0.0-0.4: Very uncertain - insufficient visual information for reliable diagnosis`
+          - 0.0-0.4: Very uncertain - insufficient visual information for reliable diagnosis
+          
+          DIFFERENTIAL DIAGNOSIS REQUIREMENTS:
+          - ALWAYS include at least 2-3 possible wound types with their confidence percentages
+          - Consider anatomical location, wound characteristics, and typical presentations
+          - For foot/heel wounds, consider: pressure ulcer, diabetic ulcer, venous ulcer, arterial ulcer
+          - For leg wounds, consider: venous ulcer, arterial ulcer, traumatic wound
+          - For pressure points, consider: pressure ulcer, but also diabetic complications if on feet
+          - Provide specific targeted questions that would help distinguish between the possibilities
+          - Questions should focus on medical history, mobility, diabetes status, circulation, etc.`
         },
         {
           type: "image_url",

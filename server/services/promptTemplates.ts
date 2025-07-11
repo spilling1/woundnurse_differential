@@ -47,6 +47,16 @@ Current Wound Assessment:
 - Additional Observations: ${classification.additionalObservations}
 - **ASSESSMENT CONFIDENCE: ${Math.round((classification.confidence || 0) * 100)}%**
 
+${classification.differentialDiagnosis && classification.differentialDiagnosis.possibleTypes ? `
+**DIFFERENTIAL DIAGNOSIS CONSIDERED:**
+${classification.differentialDiagnosis.possibleTypes.map(type => 
+  `- ${type.woundType}: ${Math.round(type.confidence * 100)}% confidence - ${type.reasoning}`
+).join('\n')}
+
+**DIAGNOSTIC REASONING:**
+The care plan should acknowledge that multiple wound types were considered and explain why the final diagnosis was chosen based on the patient's responses and clinical indicators.
+` : ''}
+
 **CONFIDENCE-BASED INSTRUCTIONS FOR THIS ASSESSMENT:**
 ${Math.round((classification.confidence || 0) * 100)}% confidence means:
 ${(classification.confidence || 0) < 0.8 ? 

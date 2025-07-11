@@ -603,6 +603,14 @@ Changelog:
   - **Test Question Filtering**: Removed test question "Why is your hair red?" from traumatic wound database instructions and added programmatic filtering for non-medical questions
   - **Comprehensive Logging**: Added detailed question generation summary logging showing filtering progression (Generated → Filtered → Unique → Final counts)
   - **Smart Question Validation**: Enhanced validation to filter out appearance-based, color-based, and test questions while preserving legitimate medical inquiries
+- July 11, 2025. **DIFFERENTIAL DIAGNOSIS SYSTEM**: Implemented comprehensive differential diagnosis system addressing clinical diagnostic uncertainty:
+  - **Multiple Wound Type Analysis**: Enhanced AI classification to show confidence percentages for multiple possible wound types instead of binary high-confidence results
+  - **Confidence-Based Possibilities**: System now returns structured differential diagnosis with 2-3 possible wound types and their confidence levels
+  - **Targeted Question Generation**: AI generates specific questions to distinguish between possibilities (e.g., "Does patient have diabetes?" for diabetic vs pressure ulcer differentiation)
+  - **Enhanced UI Display**: Updated frontend to show differential diagnosis with confidence percentages and reasoning for each possibility
+  - **Clinical Reasoning Integration**: Added AI-suggested questions and default fallback questions based on wound type combinations
+  - **Audience-Specific Validation**: Implemented comprehensive post-processing validation to ensure medical professionals are addressed in third person
+  - **Diagnostic Transparency**: Enhanced care plan generation to acknowledge multiple possibilities considered and explain final diagnosis reasoning
 ```
 
 ## User Preferences

@@ -391,24 +391,49 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
       {state.woundClassification && (
         <Card>
           <CardHeader>
-            <CardTitle>Initial Classification</CardTitle>
+            <CardTitle>Differential Diagnosis</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="font-medium">{state.woundClassification.woundType}</div>
-                <Badge variant={state.woundClassification.confidence > 0.80 ? 'default' : 'secondary'}>
-                  {Math.round(state.woundClassification.confidence * 100)}% confidence
-                </Badge>
+            {/* Primary Diagnosis */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <div className="font-medium text-lg">{state.woundClassification.woundType}</div>
+                  <Badge variant={state.woundClassification.confidence > 0.80 ? 'default' : 'secondary'}>
+                    Primary: {Math.round(state.woundClassification.confidence * 100)}% confidence
+                  </Badge>
+                </div>
               </div>
+              
+              {/* AI Reasoning */}
+              {state.woundClassification?.reasoning && (
+                <div className="mt-3 p-3 bg-gray-50 rounded-lg border">
+                  <div className="text-sm font-medium text-gray-700 mb-2">AI Analysis Reasoning:</div>
+                  <div className="text-sm text-gray-600 leading-relaxed">
+                    {state.woundClassification.reasoning}
+                  </div>
+                </div>
+              )}
             </div>
-            
-            {/* AI Reasoning */}
-            {state.woundClassification?.reasoning && (
-              <div className="mt-3 p-3 bg-gray-50 rounded-lg border">
-                <div className="text-sm font-medium text-gray-700 mb-2">AI Analysis Reasoning:</div>
-                <div className="text-sm text-gray-600 leading-relaxed">
-                  {state.woundClassification.reasoning}
+
+            {/* Differential Diagnosis Section */}
+            {state.woundClassification?.differentialDiagnosis?.possibleTypes && (
+              <div className="mt-4">
+                <Label className="text-base font-medium">Differential Diagnosis:</Label>
+                <div className="mt-2 space-y-2">
+                  {state.woundClassification.differentialDiagnosis.possibleTypes.map((possibility, index) => (
+                    <div key={index} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-medium text-blue-900">{possibility.woundType}</span>
+                        <Badge variant="outline" className="text-blue-700 border-blue-300">
+                          {Math.round(possibility.confidence * 100)}% confidence
+                        </Badge>
+                      </div>
+                      <div className="text-sm text-blue-700">
+                        {possibility.reasoning}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
