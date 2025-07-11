@@ -391,18 +391,25 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
       {state.woundClassification && (
         <Card>
           <CardHeader>
-            <CardTitle>Differential Diagnosis</CardTitle>
+            <CardTitle className="text-xl font-bold">Most Probable Diagnoses</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Primary Diagnosis */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <div className="font-medium text-lg">{state.woundClassification.woundType}</div>
-                  <Badge variant={state.woundClassification.confidence > 0.80 ? 'default' : 'secondary'}>
-                    Primary: {Math.round(state.woundClassification.confidence * 100)}% confidence
+            {/* Primary Diagnosis with enhanced styling */}
+            <div className="mb-6">
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-lg font-bold text-blue-900">
+                    1. {state.woundClassification.woundType}
+                  </div>
+                  <Badge variant="default" className="bg-blue-600 text-white">
+                    {Math.round(state.woundClassification.confidence * 100)}% confidence
                   </Badge>
                 </div>
+                {state.woundClassification.stage && (
+                  <div className="text-sm text-blue-700 font-medium">
+                    ({state.woundClassification.stage})
+                  </div>
+                )}
               </div>
               
               {/* AI Reasoning */}
@@ -416,47 +423,55 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               )}
             </div>
 
-            {/* Differential Diagnosis Section */}
-            {state.woundClassification?.differentialDiagnosis?.possibleTypes && (
-              <div className="mt-4">
-                <Label className="text-base font-medium">Differential Diagnosis:</Label>
-                <div className="mt-2 space-y-2">
+            {/* Differential Diagnosis Section - Enhanced */}
+            {state.woundClassification?.differentialDiagnosis?.possibleTypes ? (
+              <div className="mt-6">
+                <h3 className="text-lg font-bold mb-4">Differential Diagnosis</h3>
+                <div className="space-y-3">
                   {state.woundClassification.differentialDiagnosis.possibleTypes.map((possibility, index) => (
-                    <div key={index} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-medium text-blue-900">{possibility.woundType}</span>
-                        <Badge variant="outline" className="text-blue-700 border-blue-300">
+                    <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="text-base font-semibold text-gray-900">
+                          {index + 1}. {possibility.woundType}
+                        </div>
+                        <Badge variant="outline" className="text-gray-700 border-gray-300">
                           {Math.round(possibility.confidence * 100)}% confidence
                         </Badge>
                       </div>
-                      <div className="text-sm text-blue-700">
+                      <div className="text-sm text-gray-600 leading-relaxed">
                         {possibility.reasoning}
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-            
-            {state.woundClassification?.alternativeTypes?.length > 0 && (
-              <div className="mt-4">
-                <Label>Alternative Classifications:</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                  {state.woundClassification.alternativeTypes.map((alt, index) => (
-                    <div
-                      key={index}
-                      className={`p-3 border rounded cursor-pointer transition-all ${
-                        state.selectedAlternative === alt.type 
-                          ? 'border-medical-blue bg-blue-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                      onClick={() => onStateChange({ selectedAlternative: alt.type })}
-                    >
-                      <div className="font-medium">{alt.type}</div>
-                      <div className="text-sm text-gray-600">{Math.round(alt.confidence * 100)}% confidence</div>
-                      <div className="text-xs text-gray-500 mt-1">{alt.reasoning}</div>
+                
+                {/* Targeted Questions to Differentiate */}
+                {state.woundClassification.differentialDiagnosis.questionsToAsk && 
+                 state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0 && (
+                  <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <h4 className="text-base font-semibold text-yellow-900 mb-3">
+                      Key Questions to Gain Extreme Confidence in Primary Diagnosis:
+                    </h4>
+                    <div className="space-y-2">
+                      {state.woundClassification.differentialDiagnosis.questionsToAsk.map((question, index) => (
+                        <div key={index} className="flex items-start">
+                          <span className="text-yellow-700 font-medium mr-2">{index + 1}.</span>
+                          <span className="text-sm text-yellow-800">{question}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Fallback when no differential diagnosis is provided */
+              <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <div className="text-orange-900 font-medium mb-2">
+                  Confidence in Each Diagnosis
+                </div>
+                <div className="text-sm text-orange-800">
+                  Based on visual assessment alone, it is difficult to assign precise confidence scores. 
+                  Additional clinical information would be needed to gain extreme confidence in the primary diagnosis.
                 </div>
               </div>
             )}
@@ -464,60 +479,76 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         </Card>
       )}
 
-      {/* Detection Transparency Card - TODO: Add settings toggle */}
-      {state.woundClassification && (
-        <DetectionTransparencyCard classification={state.woundClassification} />
-      )}
+      {/* Enhanced Detection Transparency */}
+      <DetectionTransparencyCard 
+        detectionData={state.woundClassification?.detectionMetadata}
+        aiClassification={state.woundClassification}
+      />
 
-      {state.aiQuestions.map((question) => (
-        <Card key={question.id}>
+      {/* Questions Section */}
+      {state.aiQuestions.length > 0 && (
+        <Card>
           <CardHeader>
-            <CardTitle className="text-base">{question.question}</CardTitle>
-            <Badge variant="outline">{question.category}</Badge>
+            <CardTitle>Follow-up Questions</CardTitle>
+            <p className="text-sm text-gray-600 mt-2">
+              These questions will help improve diagnostic accuracy and provide better care recommendations.
+            </p>
           </CardHeader>
           <CardContent>
-            <Textarea
-              value={question.answer}
-              onChange={(e) => updateAnswer(question.id, e.target.value)}
-              placeholder={question.answer ? "Edit the AI's answer if needed" : "Please provide your answer..."}
-              rows={3}
-            />
-            
-            {/* Image Upload for Photo-Related Questions */}
-            {(question.question.toLowerCase().includes('photo') || 
-              question.question.toLowerCase().includes('image') || 
-              question.question.toLowerCase().includes('picture')) && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <Label className="text-sm font-medium text-blue-800">
-                  <Upload className="h-4 w-4 inline mr-2" />
-                  Upload Additional Photo (Optional)
-                </Label>
-                <div className="mt-2">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  />
-                </div>
-                <p className="text-xs text-blue-600 mt-1">
-                  Upload a clearer photo, different angle, or close-up view to help with assessment
-                </p>
-              </div>
-            )}
-            
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center text-sm text-blue-600">
-                <ArrowRight className="h-4 w-4 mr-1" />
-                {getImprovementType(question.category)}: +{getConfidenceImprovement(question.category)}%
-              </div>
-              <div className="text-xs text-gray-500">
-                {getPriorityLevel(question.category)}
-              </div>
+            <div className="space-y-4">
+              {state.aiQuestions.map((question) => (
+                <Card key={question.id}>
+                  <CardHeader>
+                    <CardTitle className="text-base">{question.question}</CardTitle>
+                    <Badge variant="outline">{question.category}</Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <Textarea
+                      value={question.answer}
+                      onChange={(e) => updateAnswer(question.id, e.target.value)}
+                      placeholder={question.answer ? "Edit the AI's answer if needed" : "Please provide your answer..."}
+                      rows={3}
+                    />
+                    
+                    {/* Image Upload for Photo-Related Questions */}
+                    {(question.question.toLowerCase().includes('photo') || 
+                      question.question.toLowerCase().includes('image') || 
+                      question.question.toLowerCase().includes('picture')) && (
+                      <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <Label className="text-sm font-medium text-blue-800">
+                          <Upload className="h-4 w-4 inline mr-2" />
+                          Upload Additional Photo (Optional)
+                        </Label>
+                        <div className="mt-2">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                          />
+                        </div>
+                        <p className="text-xs text-blue-600 mt-1">
+                          Upload a clearer photo, different angle, or close-up view to help with assessment
+                        </p>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center text-sm text-blue-600">
+                        <ArrowRight className="h-4 w-4 mr-1" />
+                        {getImprovementType(question.category)}: +{getConfidenceImprovement(question.category)}%
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {getPriorityLevel(question.category)}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </CardContent>
         </Card>
-      ))}
+      )}
 
       {/* Additional Image Upload Section */}
       {state.woundClassification?.confidence && state.woundClassification.confidence < 0.9 && (

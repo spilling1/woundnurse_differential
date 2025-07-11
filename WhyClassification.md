@@ -1704,3 +1704,26 @@ The location on a major bony prominence (the heel), combined with the full-thick
 
 ---
 
+
+---
+## Case: 2025-07-11-591
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:36:03 AM  
+**Wound Type:** Unstageable Pressure Injury  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, combined with the deep, crater-like appearance and the presence of extensive slough and eschar are classic signs of a pressure injury. Because the base of the wound is obscured by this non-viable tissue, it cannot be accurately staged, hence the classification of 'Unstageable'. Deep, full-thickness wound with a significant amount of non-viable tissue (black eschar and yellow slough) obscuring the base of the wound. The wound edges are defined and erythematous (red). Some dried blood is visible at the superior margin. The depth appears significant, possibly exposing underlying structures like tendon or bone.
+
+### Classification Process:
+
+**Independent Classification:** Unstageable Pressure Injury (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Unstageable Pressure Injury with 80% confidence
+
+---
+
