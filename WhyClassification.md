@@ -2627,3 +2627,27 @@ or treatment
 
 ---
 
+
+---
+## Case: 2025-07-11-842
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 9:07:18 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 60%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+**Body Region:** Left Lower Leg (Front)  
+
+### AI Reasoning:
+The wound's location on the lower leg, irregular shape, and presence of slough are characteristic features of a venous ulcer. The surrounding skin changes, such as erythema and dryness, are also common with chronic venous insufficiency. However, the presence of significant black necrotic tissue (eschar) and the anterior location (as opposed to the more common medial gaiter area) introduce uncertainty, suggesting other contributing factors might be at play. The surrounding skin is dry, erythematous, and scaly (xerosis). A V.A.C. Therapy measuring guide is present, indicating current or planned Negative Pressure Wound Therapy. A horizontal scar is visible inferior to the wound, suggesting a history of prior injury or surgery.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (60% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 60% confidence
+
+---
+

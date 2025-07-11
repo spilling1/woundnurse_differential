@@ -374,7 +374,8 @@ export default function DifferentialDiagnosisQuestions({
             </Button>
             
             <div className="text-sm text-gray-600 flex items-center">
-              {questionAnswers.filter(qa => qa.answer.trim() !== '').length} / {questionAnswers.length} questions answered
+              {/* Include "Other Information" field in the count */}
+              {questionAnswers.filter(qa => qa.answer.trim() !== '').length + (otherInformation.trim() !== '' ? 1 : 0)} / {questionAnswers.length + 1} questions answered
             </div>
           </div>
         </div>

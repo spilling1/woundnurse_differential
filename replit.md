@@ -607,6 +607,12 @@ Changelog:
 - July 11, 2025. **ENHANCED CLINICAL REASONING**: Improved clinical reasoning text formatting with better spacing, background, and readability in a bordered container
 - July 11, 2025. **DIABETIC FOOT ULCER SPECIFIC QUESTIONS**: Updated follow-up questions to be more specific to diabetic foot ulcers, including footwear assessment and medical conditions beyond diabetes, based on wound type instructions from database
 - July 11, 2025. **OTHER INFORMATION SECTION**: Added comprehensive "Other Information" section to Page 2 follow-up questions with blue-themed styling, allowing users to provide additional relevant information (medications, allergies, living situation, concerns) not covered by specific clinical questions
+- July 11, 2025. **CRITICAL "OTHER INFORMATION" BUG FIX**: Fixed major bug where "Other Information" from differential diagnosis Page 2 was not being included in AI analysis:
+  - **Root Cause**: "Other Information" was being appended to questions array AFTER AI prompt creation instead of before
+  - **Solution**: Moved "Other Information" inclusion to occur BEFORE AI prompt generation in differential diagnosis service
+  - **UI Fix**: Updated question count display to include "Other Information" field in progress counter (now shows "1/4 questions answered" instead of "0/3")
+  - **Data Flow**: AI now properly receives and considers surgery history, radiation therapy, and other pertinent medical information during differential diagnosis refinement
+  - **Enhanced Logging**: Added comprehensive debugging to track question flow and "Other Information" inclusion
 - July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
   - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
   - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%
