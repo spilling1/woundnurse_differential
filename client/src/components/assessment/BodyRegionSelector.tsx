@@ -21,7 +21,7 @@ interface BodyRegionSelectorProps {
 export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: BodyRegionSelectorProps) {
   const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
   const [hoveredRegion, setHoveredRegion] = useState<BodyRegion | null>(null);
-  const [showRegionOutlines, setShowRegionOutlines] = useState(true);
+  const [showRegionOutlines, setShowRegionOutlines] = useState(false);
 
   const handleImageClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
