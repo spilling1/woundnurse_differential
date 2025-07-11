@@ -1336,3 +1336,26 @@ The classification is based on the classic presentation of a Stage 2 pressure ul
 
 ---
 
+
+---
+## Case: 2025-07-11-248
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 12:28:59 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The visual evidence strongly aligns with the definition of a Stage 2 pressure injury: partial-thickness loss of dermis. The wound is open, shallow, and lacks slough or eschar. The location is a common site for pressure-related injuries. The clear visibility of the wound bed and periwound skin allows for a high-confidence assessment. The wound presents as a shallow open ulcer with a red-pink, moist wound bed. The periwound skin exhibits significant erythema (redness), suggesting inflammation or potential early-stage infection. The defined, somewhat square edges might indicate pressure from a specific object or device. The patient appears to be in a care setting, as suggested by the hospital-style gown.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 90% confidence
+
+---
+

@@ -329,7 +329,10 @@ Provide your updated assessment in the same JSON format, considering both your v
         : [],
       location: classification.location || "Not specified",
       additionalObservations: classification.additionalObservations || "",
-      confidence: classification.confidence || 0.4  // Lower default to indicate uncertainty when AI doesn't provide confidence
+      confidence: classification.confidence || 0.4,  // Lower default to indicate uncertainty when AI doesn't provide confidence
+      // Preserve any flags that were set during validation
+      unsupportedWoundType: classification.unsupportedWoundType,
+      supportedTypes: classification.supportedTypes
     };
 
     // Step 4: Enhance classification with detection data (only if YOLO is enabled)
@@ -383,6 +386,8 @@ Provide your updated assessment in the same JSON format, considering both your v
       }
     }
 
+    console.log('WoundClassifier: Returning classification with keys:', Object.keys(enhancedClassification));
+    console.log('WoundClassifier: Classification unsupportedWoundType:', enhancedClassification.unsupportedWoundType);
     return enhancedClassification;
   } catch (error: any) {
     console.error('Wound classification error:', error);
@@ -424,7 +429,10 @@ function enhanceClassificationWithDetection(classification: any, detectionResult
       multipleWounds: detectionResult.detections?.length > 1 || false,
       detectionCount: detectionResult.detections?.length || 0,
       methodUsed: detectionResult.method_used || 'unknown'
-    }
+    },
+    // Preserve any flags that were set (like unsupportedWoundType)
+    unsupportedWoundType: classification.unsupportedWoundType,
+    supportedTypes: classification.supportedTypes
   };
 
   // If YOLO found wounds, use them regardless of AI classification
