@@ -128,7 +128,7 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'lower_back',
     name: 'Lower Back',
     description: 'Lower back region',
-    coordinates: { x: 155, y: 240, width: 175, height: 90 },
+    coordinates: { x: 155, y: 240, width: 175, height: 100 },
     commonWoundTypes: ['pressure_injury', 'surgical_wound']
   },
   {
@@ -142,42 +142,42 @@ export const backBodyRegions: BodyRegion[] = [
     id: '2L',
     name: 'Left Upper Leg (Back)',
     description: 'Left upper leg/thigh back',
-    coordinates: { x: 150, y: 450, width: 80, height: 140 },
+    coordinates: { x: 150, y: 440, width: 80, height: 140 },
     commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
     id: '2R',
     name: 'Right Upper Leg (Back)',
     description: 'Right upper leg/thigh back',
-    coordinates: { x: 230, y: 450, width: 80, height: 140 },
+    coordinates: { x: 240, y: 440, width: 80, height: 140 },
     commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
     id: '3L',
     name: 'Left Lower Leg (Back)',
     description: 'Left lower leg/calf back',
-    coordinates: { x: 150, y: 590, width: 80, height: 140 },
+    coordinates: { x: 150, y: 580, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '3R',
     name: 'Right Lower Leg (Back)',
     description: 'Right lower leg/calf back',
-    coordinates: { x: 230, y: 590, width: 80, height: 140 },
+    coordinates: { x: 240, y: 580, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '4L',
     name: 'Left Heel/Sole of Foot',
     description: 'Left heel/sole of foot',
-    coordinates: { x: 150, y: 730, width: 80, height: 75 },
+    coordinates: { x: 150, y: 720, width: 80, height: 85 },
     commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   },
   {
     id: '4R',
     name: 'Right Heel/Sole of Foot',
     description: 'Right heel/sole of foot',
-    coordinates: { x: 230, y: 730, width: 80, height: 75 },
+    coordinates: { x: 240, y: 720, width: 80, height: 85 },
     commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   },
   
@@ -214,7 +214,7 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'hand_back_left',
     name: 'Left Back of Hand',
     description: 'Left back of hand - back view',
-    coordinates: { x: 35, y: 400, width: 80, height: 90 },
+    coordinates: { x: 25, y: 400, width: 80, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   },
   {
