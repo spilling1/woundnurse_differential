@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ChevronRight, Loader2, CheckCircle, TrendingUp, X } from "lucide-react";
+import { ChevronRight, Loader2, CheckCircle, TrendingUp, X, MessageCircle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -102,6 +102,13 @@ export default function DifferentialDiagnosisQuestions({
   };
 
   if (showPage2 && refinementResult) {
+    const confidence = refinementResult.page2Analysis.confidence;
+    const primaryDiagnosis = refinementResult.page2Analysis.primaryDiagnosis.primaryDiagnosis;
+    const confidencePercent = Math.round(confidence * 100);
+    
+    // Check if we have high confidence (90-95%) for final diagnosis display
+    const isHighConfidence = confidence >= 0.90;
+    
     return (
       <Card className="mt-6">
         <CardHeader>
@@ -111,23 +118,46 @@ export default function DifferentialDiagnosisQuestions({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Primary Diagnosis */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-green-900 mb-3">Final Primary Diagnosis</h3>
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-lg font-bold text-green-900">
-                  {refinementResult.page2Analysis.primaryDiagnosis.primaryDiagnosis}
+          {/* Final Diagnosis Display for High Confidence */}
+          {isHighConfidence ? (
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-green-900 mb-4">Final Diagnosis</h3>
+              <div className="p-6 bg-green-50 border-2 border-green-300 rounded-lg">
+                <div className="text-center mb-4">
+                  <div className="text-2xl font-bold text-green-900 mb-2">
+                    {primaryDiagnosis}
+                  </div>
+                  <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-2">
+                    {confidencePercent}% Confidence
+                  </Badge>
                 </div>
-                <Badge variant="default" className="bg-green-600 text-white">
-                  {Math.round(refinementResult.page2Analysis.confidence * 100)}% confidence
-                </Badge>
+                <div className="mt-4">
+                  <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
+                  <p className="text-sm text-green-800">
+                    {refinementResult.page2Analysis.reasoning}
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-green-800 mt-2">
-                {refinementResult.page2Analysis.reasoning}
-              </p>
             </div>
-          </div>
+          ) : (
+            /* Standard Primary Diagnosis Display for Lower Confidence */
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-green-900 mb-3">Primary Diagnosis</h3>
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-lg font-bold text-green-900">
+                    {primaryDiagnosis}
+                  </div>
+                  <Badge variant="default" className="bg-green-600 text-white">
+                    {confidencePercent}% confidence
+                  </Badge>
+                </div>
+                <p className="text-sm text-green-800 mt-2">
+                  {refinementResult.page2Analysis.reasoning}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Eliminated Possibilities */}
           {refinementResult.page2Analysis.eliminated.length > 0 && (
@@ -144,8 +174,8 @@ export default function DifferentialDiagnosisQuestions({
             </div>
           )}
 
-          {/* Remaining Possibilities */}
-          {refinementResult.page2Analysis.remaining.length > 1 && (
+          {/* Only show remaining possibilities for lower confidence cases */}
+          {!isHighConfidence && refinementResult.page2Analysis.remaining.length > 1 && (
             <div className="mb-6">
               <h3 className="text-lg font-bold text-gray-900 mb-3">Remaining Possibilities</h3>
               <div className="space-y-3">
@@ -168,24 +198,15 @@ export default function DifferentialDiagnosisQuestions({
             </div>
           )}
 
-          {/* Analysis Summary */}
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="text-base font-semibold text-blue-900 mb-2">Analysis Summary</h4>
-            <p className="text-sm text-blue-800">
-              Based on your answers, the diagnostic confidence has been refined. The clinical reasoning
-              takes into account your specific responses to create a more accurate assessment.
-            </p>
-          </div>
-
           {/* Action Buttons */}
-          <div className="mt-6 flex gap-3">
+          <div className="mt-6 flex gap-3 justify-center">
             <Button 
               onClick={() => setShowPage2(false)}
               variant="outline"
               className="flex items-center"
             >
-              <ChevronRight className="h-4 w-4 mr-2 rotate-180" />
-              Back to Questions
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Answer Questions to Shape Care Plan
             </Button>
             <Button 
               onClick={() => {

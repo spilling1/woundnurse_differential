@@ -2072,3 +2072,26 @@ The location on the heel, a primary bony prominence, is highly indicative of a p
 
 ---
 
+
+---
+## Case: 2025-07-11-784
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:51:26 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 65%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The primary diagnosis is an Unstageable Pressure Injury. This is strongly suggested by the wound's location over a major bony prominence (the heel), which is a classic site for pressure-related tissue damage. The wound's base is completely obscured by slough and eschar, which is the defining characteristic of an unstageable pressure injury. The depth and presence of necrotic tissue indicate a severe, full-thickness injury. The wound is a deep, circular ulcer with well-defined, erythematous borders. The wound bed is obscured by a combination of black eschar (necrotic tissue) and yellow, stringy slough. There appears to be exposed deep tissue, possibly tendon, visible within the wound bed. The surrounding skin shows signs of dryness.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (65% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 65% confidence
+
+---
+
