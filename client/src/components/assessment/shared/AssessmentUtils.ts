@@ -20,8 +20,29 @@ export const assessmentApi = {
     formData.append('model', model);
     formData.append('analysisType', 'initial');
     
-    const response = await apiRequest('POST', '/api/assessment/initial-analysis', formData);
-    return await response.json();
+    try {
+      const response = await apiRequest('POST', '/api/assessment/initial-analysis', formData);
+      return await response.json();
+    } catch (error: any) {
+      // Preserve error properties if they exist
+      console.log('AssessmentUtils: Caught error:', error);
+      console.log('AssessmentUtils: Error properties:', Object.keys(error));
+      console.log('AssessmentUtils: Error code:', error.code);
+      console.log('AssessmentUtils: Error originalErrorData:', error.originalErrorData);
+      
+      // Create a new error with preserved properties
+      const preservedError = new Error(error.message || error.toString()) as any;
+      preservedError.code = error.code || (error.originalErrorData && error.originalErrorData.code);
+      preservedError.woundType = error.woundType || (error.originalErrorData && error.originalErrorData.woundType);
+      preservedError.confidence = error.confidence || (error.originalErrorData && error.originalErrorData.confidence);
+      preservedError.reasoning = error.reasoning || (error.originalErrorData && error.originalErrorData.reasoning);
+      preservedError.redirect = error.redirect || (error.originalErrorData && error.originalErrorData.redirect);
+      preservedError.supportedTypes = error.supportedTypes || (error.originalErrorData && error.originalErrorData.supportedTypes);
+      preservedError.originalErrorData = error.originalErrorData || error;
+      
+      console.log('AssessmentUtils: Re-throwing with preserved code:', preservedError.code);
+      throw preservedError;
+    }
   },
 
   // Step 2: Generate preliminary care plan
