@@ -41,6 +41,17 @@ export default function DifferentialDiagnosisQuestions({
   const [showPage2, setShowPage2] = useState(false);
   const [refinementResult, setRefinementResult] = useState<any>(null);
   const [otherInformation, setOtherInformation] = useState('');
+  
+  // State for follow-up questions on Page 2
+  const [followUpAnswers, setFollowUpAnswers] = useState({
+    treatments: '',
+    infection: '',
+    timeline: '',
+    conditions: '',
+    footwear: '',
+    additionalInfo: ''
+  });
+  
   const { toast } = useToast();
 
   // Update answer for a specific question
@@ -194,6 +205,8 @@ export default function DifferentialDiagnosisQuestions({
                   <Textarea
                     placeholder="Describe current treatments..."
                     className="min-h-[60px] resize-none"
+                    value={followUpAnswers.treatments}
+                    onChange={(e) => setFollowUpAnswers(prev => ({ ...prev, treatments: e.target.value }))}
                   />
                 </div>
                 
@@ -204,6 +217,8 @@ export default function DifferentialDiagnosisQuestions({
                   <Textarea
                     placeholder="Describe any signs of infection..."
                     className="min-h-[60px] resize-none"
+                    value={followUpAnswers.infection}
+                    onChange={(e) => setFollowUpAnswers(prev => ({ ...prev, infection: e.target.value }))}
                   />
                 </div>
                 
@@ -214,6 +229,8 @@ export default function DifferentialDiagnosisQuestions({
                   <Textarea
                     placeholder="Timeline of wound development..."
                     className="min-h-[60px] resize-none"
+                    value={followUpAnswers.timeline}
+                    onChange={(e) => setFollowUpAnswers(prev => ({ ...prev, timeline: e.target.value }))}
                   />
                 </div>
                 
@@ -224,6 +241,8 @@ export default function DifferentialDiagnosisQuestions({
                   <Textarea
                     placeholder="Other medical conditions beyond diabetes..."
                     className="min-h-[60px] resize-none"
+                    value={followUpAnswers.conditions}
+                    onChange={(e) => setFollowUpAnswers(prev => ({ ...prev, conditions: e.target.value }))}
                   />
                 </div>
                 
@@ -234,17 +253,21 @@ export default function DifferentialDiagnosisQuestions({
                   <Textarea
                     placeholder="Describe footwear and foot condition..."
                     className="min-h-[60px] resize-none"
+                    value={followUpAnswers.footwear}
+                    onChange={(e) => setFollowUpAnswers(prev => ({ ...prev, footwear: e.target.value }))}
                   />
                 </div>
                 
                 {/* Other Information Section */}
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="text-sm font-medium text-blue-900 mb-2">
-                    Any other pertinent information that may impact the diagnosis (e.g. Surgeries, Radiation, Lacerations, health conditions)?
+                    Please provide any additional information that may be relevant for the care plan (e.g. allergies, mobility, access to care, etc)
                   </div>
                   <Textarea
-                    placeholder="Please provide any additional information that may impact the diagnosis..."
+                    placeholder="Please provide any additional information that may be relevant for the care plan..."
                     className="min-h-[80px] resize-none"
+                    value={followUpAnswers.additionalInfo}
+                    onChange={(e) => setFollowUpAnswers(prev => ({ ...prev, additionalInfo: e.target.value }))}
                   />
                 </div>
               </div>
@@ -254,9 +277,73 @@ export default function DifferentialDiagnosisQuestions({
             <div className="mt-6 flex gap-3 justify-center">
               <Button 
                 onClick={() => {
-                  // Trigger the next step in the assessment flow
+                  // Create follow-up questions from the Page 2 answers
+                  const followUpQuestions = [];
+                  
+                  if (followUpAnswers.treatments.trim()) {
+                    followUpQuestions.push({
+                      question: "What treatments or dressings are currently being used on the wound?",
+                      answer: followUpAnswers.treatments.trim(),
+                      category: "care_plan_optimization",
+                      importance: "high"
+                    });
+                  }
+                  
+                  if (followUpAnswers.infection.trim()) {
+                    followUpQuestions.push({
+                      question: "Are there any signs of infection (increased redness, warmth, swelling, discharge)?",
+                      answer: followUpAnswers.infection.trim(),
+                      category: "care_plan_optimization",
+                      importance: "high"
+                    });
+                  }
+                  
+                  if (followUpAnswers.timeline.trim()) {
+                    followUpQuestions.push({
+                      question: "How long has this wound been present?",
+                      answer: followUpAnswers.timeline.trim(),
+                      category: "care_plan_optimization",
+                      importance: "medium"
+                    });
+                  }
+                  
+                  if (followUpAnswers.conditions.trim()) {
+                    followUpQuestions.push({
+                      question: "Beyond diabetes, what other medical conditions does the patient have (circulation issues, foot deformities, previous amputations)?",
+                      answer: followUpAnswers.conditions.trim(),
+                      category: "medical_referral",
+                      importance: "high"
+                    });
+                  }
+                  
+                  if (followUpAnswers.footwear.trim()) {
+                    followUpQuestions.push({
+                      question: "What shoes does the patient wear every day, and are there any foot deformities or calluses?",
+                      answer: followUpAnswers.footwear.trim(),
+                      category: "care_plan_optimization",
+                      importance: "medium"
+                    });
+                  }
+                  
+                  if (followUpAnswers.additionalInfo.trim()) {
+                    followUpQuestions.push({
+                      question: "Please provide any additional information that may be relevant for the care plan (e.g. allergies, mobility, access to care, etc)",
+                      answer: followUpAnswers.additionalInfo.trim(),
+                      category: "care_plan_optimization",
+                      importance: "high"
+                    });
+                  }
+                  
+                  // Combine with existing questions analyzed from differential diagnosis
+                  const allQuestions = [...(refinementResult.refinement?.questionsAnalyzed || []), ...followUpQuestions];
+                  
+                  // Trigger the next step in the assessment flow with enhanced questions
                   onRefinementComplete({
                     ...refinementResult,
+                    refinement: {
+                      ...refinementResult.refinement,
+                      questionsAnalyzed: allQuestions
+                    },
                     proceedToCarePlan: true
                   });
                 }}

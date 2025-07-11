@@ -613,6 +613,12 @@ Changelog:
   - **UI Fix**: Updated question count display to include "Other Information" field in progress counter (now shows "1/4 questions answered" instead of "0/3")
   - **Data Flow**: AI now properly receives and considers surgery history, radiation therapy, and other pertinent medical information during differential diagnosis refinement
   - **Enhanced Logging**: Added comprehensive debugging to track question flow and "Other Information" inclusion
+- July 11, 2025. **PAGE 2 FOLLOW-UP QUESTIONS FIX**: Fixed critical bug where Page 2 follow-up questions for care plan generation were not being captured and included in AI analysis:
+  - **Root Cause**: Page 2 follow-up questions were static UI elements without proper state management and data flow
+  - **Solution**: Added state management for all Page 2 follow-up questions (treatments, infection, timeline, conditions, footwear, additionalInfo)
+  - **Data Flow Enhancement**: Page 2 answers now properly converted to structured questions and appended to questionsAnalyzed array before care plan generation
+  - **Title Update**: Updated "Other Information" section title to "Please provide any additional information that may be relevant for the care plan (e.g. allergies, mobility, access to care, etc)"
+  - **AI Integration**: All Page 2 follow-up answers now properly reach AI analysis for comprehensive care plan generation including allergies, mobility, access to care considerations
 - July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
   - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
   - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%

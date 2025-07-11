@@ -2651,3 +2651,27 @@ The wound's location on the lower leg, irregular shape, and presence of slough a
 
 ---
 
+
+---
+## Case: 2025-07-11-248
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 9:15:29 AM  
+**Wound Type:** Surgical Wound  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+**Body Region:** Right Lower Leg (Back)  
+
+### AI Reasoning:
+The wound is a linear incision closed with interrupted sutures, which is characteristic of a surgical or repaired traumatic wound. The key features are the prominent signs of infection: extensive erythema (redness) spreading into the surrounding tissue, edema (swelling), moderate seropurulent exudate, and partial dehiscence, where the wound edges are separating. This constellation of findings is highly indicative of a surgical site infection. Linear wound closed with interrupted sutures. Significant surrounding inflammation and signs of partial dehiscence (gaping) are present, suggesting a surgical site infection.
+
+### Classification Process:
+
+**Independent Classification:** Surgical Wound (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Surgical Wound with 75% confidence
+
+---
+
