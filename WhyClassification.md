@@ -1428,3 +1428,26 @@ The wound is deep and appears to be a full-thickness ulcer. The surrounding skin
 
 ---
 
+
+---
+## Case: 2025-07-11-384
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 1:31:23 AM  
+**Wound Type:** Partial-thickness ulcer / Possible pressure ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound has well-defined, crater-like edges with a central, hard, dark scab that obscures the full depth of the wound bed. Mild redness (erythema) is present around the wound perimeter. The wound has well-defined, crater-like edges with a central, hard, dark scab that obscures the full depth of the wound bed. Mild redness (erythema) is present around the wound perimeter.
+
+### Classification Process:
+
+**Independent Classification:** Partial-thickness ulcer / Possible pressure ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Partial-thickness ulcer / Possible pressure ulcer with 80% confidence
+
+---
+

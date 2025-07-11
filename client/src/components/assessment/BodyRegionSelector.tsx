@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getBodyRegionByCoordinates, frontBodyRegions, backBodyRegions, type BodyRegion } from './BodyRegionMapping';
+import { bodyRegions, getBodyRegionById, getBodyRegionsByImage, type BodyRegion } from './shared/BodyRegionMapping';
 
 // Import the body diagram images
 import FrontBodyPath from '@assets/FrontBody_1752196192722.png';
@@ -19,8 +19,9 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
 
   const handleImageClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    // Convert to absolute coordinates based on the image dimensions
+    const x = (event.clientX - rect.left) / rect.width * 645; // Image width
+    const y = (event.clientY - rect.top) / rect.height * 400; // Image height
     
     const region = getBodyRegionByCoordinates(x, y, currentView);
     
@@ -30,15 +31,30 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
         onRegionSelect(null);
       } else {
         // Select the new region
-        onRegionSelect({ id: region.id, name: region.name });
+        onRegionSelect({ id: region.id, name: region.displayName });
       }
     }
   };
 
+  const getBodyRegionByCoordinates = (x: number, y: number, view: 'front' | 'back'): BodyRegion | undefined => {
+    const regions = getBodyRegionsByImage(view);
+    
+    return regions.find(region => {
+      const { coordinates } = region;
+      return (
+        x >= coordinates.x &&
+        x <= coordinates.x + coordinates.width &&
+        y >= coordinates.y &&
+        y <= coordinates.y + coordinates.height
+      );
+    });
+  };
+
   const handleImageHover = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    // Convert to absolute coordinates based on the image dimensions
+    const x = (event.clientX - rect.left) / rect.width * 645; // Image width
+    const y = (event.clientY - rect.top) / rect.height * 400; // Image height
     
     const region = getBodyRegionByCoordinates(x, y, currentView);
     setHoveredRegion(region || null);
@@ -49,11 +65,17 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
   };
 
   const renderRegionOverlays = () => {
-    const regions = currentView === 'front' ? frontBodyRegions : backBodyRegions;
+    const regions = getBodyRegionsByImage(currentView);
     
     return regions.map(region => {
       const isSelected = selectedRegion?.id === region.id;
       const isHovered = hoveredRegion?.id === region.id;
+      
+      // Convert absolute coordinates to percentages for CSS positioning
+      const leftPercent = (region.coordinates.x / 645) * 100; // 645 is image width
+      const topPercent = (region.coordinates.y / 400) * 100; // 400 is image height
+      const widthPercent = (region.coordinates.width / 645) * 100;
+      const heightPercent = (region.coordinates.height / 400) * 100;
       
       return (
         <div
@@ -63,13 +85,13 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
               ? 'border-blue-500 bg-blue-200/30' 
               : isHovered 
                 ? 'border-green-400 bg-green-200/20' 
-                : 'border-transparent'
+                : 'border-gray-300/10 hover:border-gray-400/20'
           }`}
           style={{
-            left: `${region.coordinates.x}%`,
-            top: `${region.coordinates.y}%`,
-            width: `${region.coordinates.width}%`,
-            height: `${region.coordinates.height}%`,
+            left: `${leftPercent}%`,
+            top: `${topPercent}%`,
+            width: `${widthPercent}%`,
+            height: `${heightPercent}%`,
           }}
         />
       );
@@ -145,7 +167,7 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
           
           {hoveredRegion && !selectedRegion && (
             <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-              <span className="font-medium text-green-900">Hover: {hoveredRegion.name}</span>
+              <span className="font-medium text-green-900">Hover: {hoveredRegion.displayName}</span>
               <Badge variant="outline" className="ml-2">
                 Click to select
               </Badge>
