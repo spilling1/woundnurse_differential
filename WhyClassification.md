@@ -2486,3 +2486,49 @@ The location on the lower leg is highly characteristic of a venous ulcer. Chroni
 
 ---
 
+
+---
+## Case: 2025-07-11-213
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:43:57 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 55%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the lower leg (gaiter area) is classic for venous ulcers. The wound bed shows a mix of slough and granulation tissue with moderate exudate, which is also typical. While the amount of necrosis is high, this can occur in severe or infected venous ulcers. The surrounding skin changes, though not classic hemosiderin staining, indicate chronic skin compromise common in venous insufficiency. The wound has well-defined, erythematous borders. The periwound skin appears dry, atrophic, and scaly (xerosis). A V.A.C. therapy measuring guide is present, suggesting ongoing or planned advanced wound care. The wound bed contains a mix of black eschar, yellow slough, and red granulation tissue, indicating a complex, chronic wound.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (55% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 55% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-331
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:46:42 AM  
+**Wound Type:** Traumatic Wound  
+**Confidence:** 85%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The presence of two irregularly shaped, partial-thickness wounds on the forearm and hand strongly suggests a traumatic origin, such as a fall or scrape. The locations are common for such injuries, and the appearance is not typical for pressure, venous, or arterial ulcers. The surrounding skin appears thin, making it more susceptible to skin tears. Two distinct wound sites are present on the same limb. The surrounding skin appears thin and atrophic, consistent with aged or sun-damaged skin, which is prone to skin tears. The wounds have an irregular shape, characteristic of abrasions or tears.
+
+### Classification Process:
+
+**Independent Classification:** Traumatic Wound (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Traumatic Wound with 85% confidence
+
+---
+

@@ -944,6 +944,14 @@ export function registerAssessmentRoutes(app: Express): void {
 
       // Log user's answers to questions
       if (questions.length > 0) {
+        console.log('Final plan: Processing', questions.length, 'questions');
+        console.log('Final plan: Questions received:', questions.map(q => ({
+          question: q.question?.substring(0, 50) + '...',
+          hasAnswer: !!q.answer,
+          answerLength: q.answer?.length || 0,
+          category: q.category
+        })));
+        
         try {
           const answeredQuestions = questions.filter((q: any) => q.answer && q.answer.trim() !== '');
           const questionSummary = answeredQuestions.map((q: any) => 
@@ -1207,6 +1215,12 @@ export function registerAssessmentRoutes(app: Express): void {
       console.log('- Eliminated possibilities:', refinement.eliminatedPossibilities);
       console.log('- Remaining possibilities:', refinement.remainingPossibilities.length);
       console.log('- Final confidence:', refinement.confidence);
+      console.log('- Questions analyzed:', refinement.questionsAnalyzed.length);
+      console.log('- Questions analyzed details:', refinement.questionsAnalyzed.map(q => ({
+        question: q.question?.substring(0, 50) + '...',
+        hasAnswer: !!q.answer,
+        answerLength: q.answer?.length || 0
+      })));
       
       res.json({
         success: true,
