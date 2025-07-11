@@ -569,6 +569,13 @@ Changelog:
   - **Smart Region Detection**: Hover and click interactions with visual feedback for selected body regions
   - **Common Wound Type Mapping**: Each body region includes common wound types for that location (e.g., diabetic ulcers on feet, pressure ulcers on bony prominences)
   - **Assessment Workflow Integration**: Body region selector appears above image upload in assessment flow for logical progression
+- July 11, 2025. **BODY DIAGRAM REDESIGN**: Completely redesigned body region selector with new anatomical diagrams per user specifications:
+  - **New Anatomical Images**: Replaced body diagrams with clean anatomical outline images showing numbered regions
+  - **Simplified Region System**: Updated to 8 numbered regions plus 6 additional unlabeled areas for comprehensive coverage
+  - **Numbered Regions**: 1-Buttox, 2-Upper Leg (Back), 3-Lower Leg (Back), 4-Heel/Sole of Foot, 5-Stomach, 6-Upper Leg (Front), 7-Lower Leg (Front), 8-Top/Side of Foot
+  - **Additional Areas**: Head/Neck (Front/Back), Chest, Back, Arms (Front/Back) for complete body coverage
+  - **Precise Coordinate Mapping**: Updated coordinate system to match red box layout shown in user's reference image
+  - **Enhanced User Experience**: Maintained hover effects, selection highlighting, and region information display with new layout
 - July 10, 2025. **QUESTION OPTIMIZATION SYSTEM**: Implemented comprehensive question generation optimization to address user feedback about too many questions with duplicates:
   - **Maximum 5 Questions Per Page**: Enforced hard limit of 5 questions per assessment page to reduce user fatigue
   - **Priority-Based Question Framework**: Restructured question strategy into HIGH priority (diabetes history, wound origin, infection signs, timeline, location) and MEDIUM priority (symptoms, drainage, treatments, progress, mobility) categories
