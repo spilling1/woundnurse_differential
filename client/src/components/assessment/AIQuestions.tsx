@@ -1,4 +1,4 @@
-import { CheckCircle, ArrowRight, RefreshCw, Camera, Upload, Info, X } from "lucide-react";
+import { CheckCircle, ArrowRight, RefreshCw, Camera, Upload, Info, X, TrendingUp } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,48 @@ import DifferentialDiagnosisQuestions from "./DifferentialDiagnosisQuestions";
 
 export default function AIQuestions({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
+  
+  // If showing Page 2 analysis, display differential diagnosis questions
+  if (state.showPage2Analysis) {
+    return (
+      <div className="space-y-6">
+        {/* Page 2 Header */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center text-green-800">
+              <CheckCircle className="h-5 w-5 mr-2" />
+              Page 2: Differential Diagnosis Analysis
+            </CardTitle>
+            <p className="text-sm text-green-700 mt-2">
+              Answer these clinical questions to refine the diagnosis and improve accuracy.
+            </p>
+          </CardHeader>
+        </Card>
+
+        {/* Differential Diagnosis Questions */}
+        {state.woundClassification?.differentialDiagnosis?.questionsToAsk && 
+         state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0 && (
+          <DifferentialDiagnosisQuestions 
+            questions={state.woundClassification.differentialDiagnosis.questionsToAsk}
+            originalClassification={state.woundClassification}
+            audience={state.audience}
+            model={state.model}
+            onRefinementComplete={(refinement) => {
+              // Update state with refined analysis
+              onStateChange({
+                differentialRefinement: refinement,
+              });
+              
+              // If user wants to proceed to care plan generation
+              if (refinement.proceedToCarePlan) {
+                onNextStep();
+              }
+            }}
+          />
+        )}
+      </div>
+    );
+  }
   
   // Handle additional image uploads
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -451,27 +493,22 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                   ))}
                 </div>
                 
-                {/* Interactive Differential Diagnosis Questions */}
+                {/* Button to go to Page 2 for differential diagnosis questions */}
                 {state.woundClassification.differentialDiagnosis.questionsToAsk && 
                  state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0 && (
-                  <DifferentialDiagnosisQuestions 
-                    questions={state.woundClassification.differentialDiagnosis.questionsToAsk}
-                    originalClassification={state.woundClassification}
-                    audience={state.audience}
-                    model={state.model}
-                    onRefinementComplete={(refinement) => {
-                      // Update state with Page 2 analysis
-                      onStateChange({
-                        differentialRefinement: refinement,
-                        showPage2Analysis: true
-                      });
-                      
-                      // If user wants to proceed to care plan generation
-                      if (refinement.proceedToCarePlan) {
-                        onNextStep();
-                      }
-                    }}
-                  />
+                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-semibold text-blue-900 mb-2">Ready for Differential Diagnosis Analysis</h4>
+                    <p className="text-sm text-blue-800 mb-3">
+                      Additional diagnostic questions are available to help refine the diagnosis and improve accuracy.
+                    </p>
+                    <Button 
+                      onClick={() => onStateChange({ showPage2Analysis: true })}
+                      className="flex items-center"
+                    >
+                      <TrendingUp className="h-4 w-4 mr-2" />
+                      Continue to Differential Diagnosis (Page 2)
+                    </Button>
+                  </div>
                 )}
               </div>
             ) : (
@@ -497,10 +534,8 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         />
       )}
 
-      {/* Questions Section - Only show if NOT showing Page 2 analysis AND no differential diagnosis questions */}
-      {state.aiQuestions.length > 0 && !state.showPage2Analysis && 
-       !(state.woundClassification?.differentialDiagnosis?.questionsToAsk && 
-         state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0) && (
+      {/* Questions Section - Only show if NOT showing Page 2 analysis */}
+      {state.aiQuestions.length > 0 && !state.showPage2Analysis && (
         <Card>
           <CardHeader>
             <CardTitle>Follow-up Questions</CardTitle>
