@@ -193,45 +193,70 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       
       console.log(`WoundClassifier: Independent AI classification complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
       
-      // Ensure differential diagnosis is present - add fallback if missing
-      if (!classification.differentialDiagnosis || !classification.differentialDiagnosis.possibleTypes || classification.differentialDiagnosis.possibleTypes.length === 0) {
-        console.log('WoundClassifier: No differential diagnosis returned, creating fallback...');
+      // ALWAYS ensure differential diagnosis is present - force creation if missing
+      console.log('WoundClassifier: Checking differential diagnosis structure:', classification.differentialDiagnosis);
+      const hasDifferentialDiagnosis = classification.differentialDiagnosis && 
+                                      classification.differentialDiagnosis.possibleTypes && 
+                                      classification.differentialDiagnosis.possibleTypes.length > 1;
+      
+      if (!hasDifferentialDiagnosis) {
+        console.log('WoundClassifier: No differential diagnosis returned, creating comprehensive fallback...');
         
-        // Create basic differential diagnosis based on wound type and location
+        // Create comprehensive differential diagnosis based on wound type and location
         const primaryType = classification.woundType;
         const location = classification.location?.toLowerCase() || '';
+        const primaryConfidence = classification.confidence || 0.7;
         
         let secondaryTypes = [];
+        let tertiary = null;
+        
         if (primaryType.toLowerCase().includes('pressure')) {
           if (location.includes('heel') || location.includes('foot')) {
             secondaryTypes = ['Diabetic Ulcer', 'Arterial Ulcer'];
+            tertiary = 'Neuropathic Ulcer';
           } else {
             secondaryTypes = ['Skin Breakdown', 'Traumatic Wound'];
+            tertiary = 'Venous Ulcer';
           }
         } else if (primaryType.toLowerCase().includes('diabetic')) {
           secondaryTypes = ['Pressure Ulcer', 'Arterial Ulcer'];
+          tertiary = 'Infectious Wound';
         } else if (primaryType.toLowerCase().includes('venous')) {
           secondaryTypes = ['Arterial Ulcer', 'Traumatic Wound'];
+          tertiary = 'Pressure Ulcer';
         } else {
           secondaryTypes = ['Pressure Ulcer', 'Venous Ulcer'];
+          tertiary = 'Traumatic Wound';
         }
         
-        const primaryConfidence = classification.confidence || 0.7;
-        const secondaryConfidence = Math.max(0.1, (1 - primaryConfidence) * 0.6);
+        const secondaryConfidence = Math.max(0.15, (1 - primaryConfidence) * 0.5);
+        const tertiaryConfidence = Math.max(0.05, (1 - primaryConfidence) * 0.3);
+        
+        // Create comprehensive differential diagnosis
+        const possibleTypes = [
+          {
+            woundType: primaryType,
+            confidence: primaryConfidence,
+            reasoning: `Primary diagnosis based on visual assessment showing characteristic features`
+          },
+          {
+            woundType: secondaryTypes[0],
+            confidence: secondaryConfidence,
+            reasoning: `Alternative possibility based on anatomical location and wound appearance`
+          }
+        ];
+        
+        // Add third possibility if confidence is not too high
+        if (primaryConfidence < 0.85 && tertiary) {
+          possibleTypes.push({
+            woundType: tertiary,
+            confidence: tertiaryConfidence,
+            reasoning: `Less likely but possible differential based on clinical presentation`
+          });
+        }
         
         classification.differentialDiagnosis = {
-          possibleTypes: [
-            {
-              woundType: primaryType,
-              confidence: primaryConfidence,
-              reasoning: `Primary diagnosis based on visual assessment`
-            },
-            {
-              woundType: secondaryTypes[0],
-              confidence: secondaryConfidence,
-              reasoning: `Alternative possibility based on location and appearance`
-            }
-          ],
+          possibleTypes: possibleTypes,
           questionsToAsk: [
             'Does the patient have diabetes or a history of high blood sugar?',
             'Is the patient able to move around normally or are they bedridden/wheelchair-bound?',
@@ -239,7 +264,9 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
           ]
         };
         
-        console.log('WoundClassifier: Added fallback differential diagnosis:', classification.differentialDiagnosis);
+        console.log('WoundClassifier: Added comprehensive fallback differential diagnosis with', possibleTypes.length, 'possibilities');
+      } else {
+        console.log('WoundClassifier: Differential diagnosis already present with', classification.differentialDiagnosis.possibleTypes.length, 'possibilities');
       }
       
       // Step 2.5: Check wound type support (but don't throw error - let frontend handle redirect)
