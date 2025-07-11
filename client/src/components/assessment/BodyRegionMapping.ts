@@ -109,14 +109,14 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'hand_palm_left',
     name: 'Left Palm',
     description: 'Left palm - front view',
-    coordinates: { x: 365, y: 340, width: 60, height: 80 },
+    coordinates: { x: 355, y: 380, width: 80, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   },
   {
     id: 'hand_palm_right',
     name: 'Right Palm',
     description: 'Right palm - front view',
-    coordinates: { x: 75, y: 340, width: 60, height: 80 },
+    coordinates: { x: 65, y: 380, width: 80, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   }
 ];
@@ -214,14 +214,14 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'hand_back_left',
     name: 'Left Back of Hand',
     description: 'Left back of hand - back view',
-    coordinates: { x: 75, y: 340, width: 60, height: 80 },
+    coordinates: { x: 65, y: 380, width: 80, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   },
   {
     id: 'hand_back_right',
     name: 'Right Back of Hand',
     description: 'Right back of hand - back view',
-    coordinates: { x: 365, y: 340, width: 60, height: 80 },
+    coordinates: { x: 355, y: 380, width: 80, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   }
 ];

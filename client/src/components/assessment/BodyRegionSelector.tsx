@@ -10,7 +10,7 @@ import {
 
 // Import the body diagram images
 // Use the new body diagram images
-const FrontBodyPath = '/body-front.png';
+const FrontBodyPath = '/FrontBody_1752200712809.png';
 const BackBodyPath = '/BackBody_1752200448378.png';
 
 interface BodyRegionSelectorProps {
