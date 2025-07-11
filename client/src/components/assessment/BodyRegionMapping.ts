@@ -81,7 +81,7 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'head_neck_front',
     name: 'Head/Neck (Front)',
     description: 'Head and neck area - front view',
-    coordinates: { x: 200, y: 15, width: 100, height: 95 },
+    coordinates: { x: 180, y: 15, width: 100, height: 95 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
