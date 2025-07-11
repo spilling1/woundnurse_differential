@@ -20,52 +20,59 @@ export interface BodyRegion {
 export const frontBodyRegions: BodyRegion[] = [
   // Numbered regions from the diagram
   {
+    id: 'torso',
+    name: 'Torso',
+    description: 'Torso/mid-body region',
+    coordinates: { x: 185, y: 240, width: 130, height: 90 },
+    commonWoundTypes: ['surgical_wound', 'traumatic_wound']
+  },
+  {
     id: '5',
     name: 'Stomach',
     description: 'Abdominal/stomach region',
-    coordinates: { x: 185, y: 365, width: 130, height: 75 },
+    coordinates: { x: 175, y: 340, width: 150, height: 75 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: '6L',
     name: 'Left Upper Leg (Front)',
     description: 'Left upper leg/thigh front',
-    coordinates: { x: 140, y: 440, width: 80, height: 140 },
+    coordinates: { x: 140, y: 425, width: 80, height: 140 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '6R',
     name: 'Right Upper Leg (Front)',
     description: 'Right upper leg/thigh front',
-    coordinates: { x: 280, y: 440, width: 80, height: 140 },
+    coordinates: { x: 280, y: 425, width: 80, height: 140 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '7L',
     name: 'Left Lower Leg (Front)',
     description: 'Left lower leg/shin front',
-    coordinates: { x: 140, y: 580, width: 80, height: 140 },
+    coordinates: { x: 140, y: 565, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '7R',
     name: 'Right Lower Leg (Front)',
     description: 'Right lower leg/shin front',
-    coordinates: { x: 280, y: 580, width: 80, height: 140 },
+    coordinates: { x: 280, y: 565, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '8L',
     name: 'Left Top/Side of Foot',
     description: 'Left top/side of foot',
-    coordinates: { x: 140, y: 720, width: 80, height: 80 },
+    coordinates: { x: 140, y: 705, width: 80, height: 80 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   {
     id: '8R',
     name: 'Right Top/Side of Foot',
     description: 'Right top/side of foot',
-    coordinates: { x: 280, y: 720, width: 80, height: 80 },
+    coordinates: { x: 280, y: 705, width: 80, height: 80 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   
@@ -88,14 +95,14 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'arms_front_left',
     name: 'Left Arm (Front)',
     description: 'Left arm - front view',
-    coordinates: { x: 35, y: 110, width: 140, height: 290 },
+    coordinates: { x: 325, y: 110, width: 140, height: 290 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'arms_front_right',
     name: 'Right Arm (Front)',
     description: 'Right arm - front view',
-    coordinates: { x: 325, y: 110, width: 140, height: 290 },
+    coordinates: { x: 35, y: 110, width: 140, height: 290 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   }
 ];
@@ -104,52 +111,59 @@ export const frontBodyRegions: BodyRegion[] = [
 export const backBodyRegions: BodyRegion[] = [
   // Numbered regions from the diagram
   {
+    id: 'lower_back',
+    name: 'Lower Back',
+    description: 'Lower back region',
+    coordinates: { x: 185, y: 240, width: 130, height: 90 },
+    commonWoundTypes: ['pressure_injury', 'surgical_wound']
+  },
+  {
     id: '1',
     name: 'Buttox',
     description: 'Buttox/gluteal region',
-    coordinates: { x: 185, y: 365, width: 130, height: 100 },
+    coordinates: { x: 175, y: 340, width: 150, height: 100 },
     commonWoundTypes: ['pressure_injury', 'surgical_wound']
   },
   {
     id: '2L',
     name: 'Left Upper Leg (Back)',
     description: 'Left upper leg/thigh back',
-    coordinates: { x: 140, y: 465, width: 80, height: 140 },
+    coordinates: { x: 140, y: 450, width: 80, height: 140 },
     commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
     id: '2R',
     name: 'Right Upper Leg (Back)',
     description: 'Right upper leg/thigh back',
-    coordinates: { x: 280, y: 465, width: 80, height: 140 },
+    coordinates: { x: 280, y: 450, width: 80, height: 140 },
     commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
     id: '3L',
     name: 'Left Lower Leg (Back)',
     description: 'Left lower leg/calf back',
-    coordinates: { x: 140, y: 605, width: 80, height: 140 },
+    coordinates: { x: 140, y: 590, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '3R',
     name: 'Right Lower Leg (Back)',
     description: 'Right lower leg/calf back',
-    coordinates: { x: 280, y: 605, width: 80, height: 140 },
+    coordinates: { x: 280, y: 590, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '4L',
     name: 'Left Heel/Sole of Foot',
     description: 'Left heel/sole of foot',
-    coordinates: { x: 140, y: 745, width: 80, height: 65 },
+    coordinates: { x: 140, y: 730, width: 80, height: 65 },
     commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   },
   {
     id: '4R',
     name: 'Right Heel/Sole of Foot',
     description: 'Right heel/sole of foot',
-    coordinates: { x: 280, y: 745, width: 80, height: 65 },
+    coordinates: { x: 280, y: 730, width: 80, height: 65 },
     commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   },
   
