@@ -1543,3 +1543,26 @@ The wound is located on a bony prominence (the heel), a classic site for pressur
 
 ---
 
+
+---
+## Case: 2025-07-11-910
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 4:58:28 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The confidence score is high due to the clear visual evidence. The location on the heel, a major bony prominence, is classic for a pressure ulcer. The wound demonstrates full-thickness tissue loss, and the base is obscured by slough and eschar, which defines it as Unstageable. However, the visible whitish, fibrous tissue is highly suggestive of exposed tendon, which would classify it as a Stage 4 pressure ulcer. The combination of these features makes the diagnosis highly certain. This is a critical wound requiring immediate medical intervention. This is a severe, full-thickness wound. The periwound skin appears erythematous (red) and there is evidence of dried blood around the wound margins. The depth of the wound and the exposure of underlying structures indicate significant tissue damage.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 95% confidence
+
+---
+

@@ -3,6 +3,58 @@ import { callGemini } from './gemini';
 import { storage } from '../storage';
 import { InsertAgentQuestion } from '@shared/schema';
 
+// Helper function to validate and correct question audience addressing
+function validateAndCorrectAudience(questions: any[], audience: string): any[] {
+  if (!questions || questions.length === 0) return questions;
+  
+  return questions.map(q => {
+    let correctedQuestion = q.question;
+    
+    if (audience === 'medical' || audience === 'family') {
+      // For medical professionals and family caregivers, use third person
+      // Replace common second-person patterns with third-person equivalents
+      correctedQuestion = correctedQuestion
+        .replace(/\bDo you have\b/gi, 'Does the patient have')
+        .replace(/\bHave you experienced\b/gi, 'Has the patient experienced')
+        .replace(/\bHave you noticed\b/gi, audience === 'medical' ? 'Have you observed' : 'Have you noticed')
+        .replace(/\bAre you experiencing\b/gi, 'Is the patient experiencing')
+        .replace(/\bIs this wound causing you\b/gi, 'Is this wound causing the patient')
+        .replace(/\bWhat treatments have you tried\b/gi, 
+          audience === 'medical' ? 'What treatments has the patient received' : 'What treatments have you tried for the patient')
+        .replace(/\byour wound\b/gi, "the patient's wound")
+        .replace(/\byour family member\b/gi, "the patient")
+        .replace(/\byour leg\b/gi, "the patient's leg")
+        .replace(/\byour foot\b/gi, "the patient's foot")
+        .replace(/\byour skin\b/gi, "the patient's skin")
+        .replace(/\byour diabetes\b/gi, "the patient's diabetes")
+        .replace(/\byour medical\b/gi, "the patient's medical")
+        .replace(/\byour mobility\b/gi, "the patient's mobility")
+        .replace(/\byour ability\b/gi, "the patient's ability");
+    } else if (audience === 'patient') {
+      // For patients, ensure second person is used
+      correctedQuestion = correctedQuestion
+        .replace(/\bDoes the patient have\b/gi, 'Do you have')
+        .replace(/\bHas the patient experienced\b/gi, 'Have you experienced')
+        .replace(/\bIs the patient experiencing\b/gi, 'Are you experiencing')
+        .replace(/\bIs this wound causing the patient\b/gi, 'Is this wound causing you')
+        .replace(/\bWhat treatments has the patient received\b/gi, 'What treatments have you tried')
+        .replace(/\bthe patient's wound\b/gi, "your wound")
+        .replace(/\bthe patient's leg\b/gi, "your leg")
+        .replace(/\bthe patient's foot\b/gi, "your foot")
+        .replace(/\bthe patient's skin\b/gi, "your skin")
+        .replace(/\bthe patient's diabetes\b/gi, "your diabetes")
+        .replace(/\bthe patient's medical\b/gi, "your medical")
+        .replace(/\bthe patient's mobility\b/gi, "your mobility")
+        .replace(/\bthe patient's ability\b/gi, "your ability");
+    }
+    
+    return {
+      ...q,
+      question: correctedQuestion
+    };
+  });
+}
+
 // Helper function to calculate similarity between two questions
 function calculateQuestionSimilarity(question1: string, question2: string): number {
   // Normalize questions by removing common words and focusing on key terms
@@ -483,6 +535,32 @@ CRITICAL QUESTION FORMATTING RULES:
 8. Keep questions simple and direct
 9. PRIORITIZE HIGH-IMPACT QUESTIONS: Focus on diabetes history, wound origin, infection signs, timeline, and current treatments only
 
+🚨 MANDATORY AUDIENCE ENFORCEMENT 🚨
+${audience === 'medical' ? `
+FOR MEDICAL PROFESSIONALS - USE THIRD PERSON ONLY:
+- NEVER use "you" or "your" when asking about the patient
+- ALWAYS use "the patient" or "patient" when referring to the person with the wound
+- ALWAYS use "you" when asking about the medical professional's observations
+- CORRECT: "Does the patient have diabetes?"
+- INCORRECT: "Do you have diabetes?"
+- CORRECT: "Have you observed any changes in the patient's wound?"
+- INCORRECT: "Have you noticed any changes in your wound?"
+` : audience === 'family' ? `
+FOR FAMILY CAREGIVERS - USE THIRD PERSON ONLY:
+- NEVER use "you" or "your" when asking about the patient
+- ALWAYS use "the patient" or "patient" when referring to the person with the wound
+- ALWAYS use "you" when asking about the caregiver's observations
+- CORRECT: "Does the patient have diabetes?"
+- INCORRECT: "Do you have diabetes?"
+- CORRECT: "Have you noticed any changes in the patient's wound?"
+- INCORRECT: "Have you noticed any changes in your wound?"
+` : `
+FOR PATIENTS - USE SECOND PERSON ONLY:
+- ALWAYS use "you" and "your" when asking about their condition
+- CORRECT: "Do you have diabetes?"
+- CORRECT: "Have you noticed any changes in your wound?"
+`}
+
 ${isFollowUp ? `
 CRITICAL DUPLICATE PREVENTION:
 The following questions have ALREADY been asked in previous rounds:
@@ -730,11 +808,14 @@ IMPORTANT: Your response must be valid JSON that can be parsed directly. ${isFol
         }
       }
       
+      // Validate and correct audience addressing before finalizing
+      const audienceValidatedQuestions = validateAndCorrectAudience(uniqueQuestions, audience);
+      
       // ENFORCE MAXIMUM 5 QUESTIONS PER PAGE
       const MAX_QUESTIONS_PER_PAGE = 5;
-      const finalQuestions = uniqueQuestions.slice(0, MAX_QUESTIONS_PER_PAGE);
+      const finalQuestions = audienceValidatedQuestions.slice(0, MAX_QUESTIONS_PER_PAGE);
       
-      console.log(`Question generation summary: Generated ${cleanedQuestions.length} → Filtered ${filteredQuestions.length} → Unique ${uniqueQuestions.length} → Final ${finalQuestions.length} (max ${MAX_QUESTIONS_PER_PAGE})`);
+      console.log(`Question generation summary: Generated ${cleanedQuestions.length} → Filtered ${filteredQuestions.length} → Unique ${uniqueQuestions.length} → Audience-validated ${audienceValidatedQuestions.length} → Final ${finalQuestions.length} (max ${MAX_QUESTIONS_PER_PAGE})`);
       
       filteredQuestions = finalQuestions;
       

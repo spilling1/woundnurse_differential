@@ -1992,3 +1992,17 @@ Reason: Recommended for wound care
 
 ---
 
+
+---
+## Case: 2025-07-11-632
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:03:43 AM  
+**Wound Type:** Pressure Ulcer  
+**Audience:** medical  
+**AI Model:** gemini-2.5-pro  
+
+### Product Recommendations:
+
+
+---
+
