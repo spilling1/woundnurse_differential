@@ -594,6 +594,10 @@ export function registerAssessmentRoutes(app: Express): void {
         detectionCount: classification.detectionMetadata?.detectionCount || 0
       });
 
+      // Log the response for debugging
+      console.log('API Response - Classification has unsupportedWoundType:', !!classification.unsupportedWoundType);
+      console.log('API Response - Classification object keys:', Object.keys(classification));
+
       res.json({
         classification,
         questions: questions || [],

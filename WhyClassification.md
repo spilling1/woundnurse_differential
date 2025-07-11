@@ -1313,3 +1313,26 @@ The wound presents as a partial-thickness loss of dermis with a visible, pink-re
 
 ---
 
+
+---
+## Case: 2025-07-11-634
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 12:20:01 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The classification is based on the classic presentation of a Stage 2 pressure ulcer. The location is a common pressure point (sacrum/buttock). The wound shows partial-thickness loss of the dermis, presenting as a shallow open ulcer with a red-pink wound bed. It does not appear to expose subcutaneous fat, muscle, or bone, ruling out deeper stages. The significant erythema is a key clinical sign. The confidence is high due to these clear indicators. The wound is a shallow crater with partial-thickness skin loss. The surrounding skin (periwound) shows significant erythema (redness), indicating inflammation. The wound bed is moist and predominantly red, suggesting granulation tissue, with some lighter patches that may be slough. The patient appears to be in a clinical setting based on the gown.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 90% confidence
+
+---
+

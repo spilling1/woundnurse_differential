@@ -120,6 +120,8 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
     },
     onSuccess: (data: any) => {
       console.log('ImageUpload: Analysis successful:', data);
+      console.log('ImageUpload: Classification object:', data.classification);
+      console.log('ImageUpload: Has unsupportedWoundType flag?', data.classification?.unsupportedWoundType);
       
       if (data.duplicateDetected) {
         // Handle duplicate detection at the beginning of the process
