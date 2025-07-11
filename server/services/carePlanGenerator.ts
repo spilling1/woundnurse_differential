@@ -116,10 +116,19 @@ export async function generateCarePlan(
           for (const synonym of type.synonyms) {
             const normalizedSynonym = synonym.toLowerCase().trim();
             console.log(`CarePlanGenerator: Checking synonym "${synonym}" (normalized: "${normalizedSynonym}") against "${normalizedWoundType}"`);
+            const detectedContainsSynonym = normalizedWoundType.includes(normalizedSynonym);
+            const synonymContainsDetected = normalizedSynonym.includes(normalizedWoundType);
+            
+            // For multi-word synonyms, also check if all words in the synonym are present in the detected type
+            const synonymWords = normalizedSynonym.split(' ').filter(word => word.length > 2);
+            const allWordsPresent = synonymWords.length > 0 && synonymWords.every(word => 
+              normalizedWoundType.includes(word)
+            );
+            
             if (normalizedSynonym === normalizedWoundType || 
-                normalizedWoundType.includes(normalizedSynonym) ||
-                normalizedSynonym.includes(normalizedWoundType)) {
-              console.log(`CarePlanGenerator: ✓ Synonym match found: "${synonym}" in type ${type.displayName}`);
+                detectedContainsSynonym || synonymContainsDetected || allWordsPresent) {
+              console.log(`CarePlanGenerator: ✓ Synonym match found: "${synonym}" in type ${type.displayName}`, 
+                { exact: normalizedSynonym === normalizedWoundType, detectedContainsSynonym, synonymContainsDetected, allWordsPresent });
               woundTypeSupported = true;
               break;
             }

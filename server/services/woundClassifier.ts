@@ -55,16 +55,44 @@ async function validateWoundType(detectedWoundType: string): Promise<{
       return { isValid: true, validTypes, closestMatch: partialMatch.displayName };
     }
     
-    // Check for database-stored synonyms (exact matches only to avoid false positives)
+    // Check for database-stored synonyms (both exact and partial matches)
     for (const woundType of enabledWoundTypes) {
       if (woundType.synonyms && woundType.synonyms.length > 0) {
         const synonyms = woundType.synonyms;
-        // Check for exact matches in synonyms only (no partial matching to avoid false positives)
-        if (synonyms.some(synonym => {
+        
+        // Check for exact matches first
+        const exactSynonymMatch = synonyms.some(synonym => {
           const normalizedSynonym = synonym.toLowerCase().trim();
           return normalizedDetected === normalizedSynonym;
-        })) {
+        });
+        
+        if (exactSynonymMatch) {
           console.log('ValidateWoundType: Exact synonym match found:', woundType.displayName);
+          return { isValid: true, validTypes, closestMatch: woundType.displayName };
+        }
+        
+        // Check if detected wound type contains any of the synonyms
+        const partialSynonymMatch = synonyms.some(synonym => {
+          const normalizedSynonym = synonym.toLowerCase().trim();
+          const detectedContainsSynonym = normalizedDetected.includes(normalizedSynonym);
+          const synonymContainsDetected = normalizedSynonym.includes(normalizedDetected);
+          
+          // For multi-word synonyms, also check if all words in the synonym are present in the detected type
+          const synonymWords = normalizedSynonym.split(' ').filter(word => word.length > 2); // Only check meaningful words
+          const allWordsPresent = synonymWords.length > 0 && synonymWords.every(word => 
+            normalizedDetected.includes(word)
+          );
+          
+          if (detectedContainsSynonym || synonymContainsDetected || allWordsPresent) {
+            console.log('ValidateWoundType: Partial synonym match found:', woundType.displayName, 
+              'synonym:', synonym, 'detected:', normalizedDetected, 
+              'reasons:', { detectedContainsSynonym, synonymContainsDetected, allWordsPresent });
+            return true;
+          }
+          return false;
+        });
+        
+        if (partialSynonymMatch) {
           return { isValid: true, validTypes, closestMatch: woundType.displayName };
         }
       }

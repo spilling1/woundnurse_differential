@@ -561,6 +561,12 @@ Changelog:
   - **Robust Validation**: Fixed cases where AI correctly identified wound types but used slightly different terminology than database entries
   - **Comprehensive Matching**: System now handles exact matches, partial matches, and synonyms for all wound type classifications
   - **Database-Driven Flexibility**: All synonym matching occurs through PostgreSQL database storage, allowing easy updates without code changes
+- July 11, 2025. **ENHANCED WOUND TYPE VALIDATION**: Fixed overly restrictive wound type validation logic to handle complex AI classifications:
+  - **Multi-Word Synonym Matching**: Enhanced validation to match "Cat Bite with Cellulitis" against "animal bite" synonyms by checking individual words
+  - **Expanded Traumatic Wound Synonyms**: Added specific bite types ("bite", "cat bite", "dog bite", "mammal bite", "spider bite", "insect bite") to database
+  - **Improved Partial Matching**: System now checks if all meaningful words from multi-word synonyms are present in detected wound type
+  - **Both Services Updated**: Enhanced matching logic implemented in both wound classifier and care plan generator for consistency
+  - **Comprehensive Coverage**: Animal bites, insect bites, and complex traumatic wounds now correctly validate as supported wound types
 - July 11, 2025. **BODY REGION SELECTION FEATURE**: Implemented comprehensive anatomical location selection for enhanced wound assessment:
   - **Interactive Body Diagrams**: Created clickable body diagrams with front/back views allowing users to select wound location
   - **Anatomical Mapping**: Built comprehensive body region mapping with 22 anatomical regions (head, chest, arms, legs, etc.) with coordinate-based selection
