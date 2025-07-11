@@ -331,9 +331,13 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
             audience={state.audience}
             model={state.model}
             onRefinementComplete={(refinement) => {
-              // Update state with refined analysis
+              // Update state with refined analysis and include differential diagnosis questions
+              const refinedQuestions = refinement.refinement?.questionsAnalyzed || [];
+              const allAnsweredQuestions = [...(state.answeredQuestions || []), ...refinedQuestions];
+              
               onStateChange({
                 differentialRefinement: refinement,
+                answeredQuestions: allAnsweredQuestions,
               });
               
               // If user wants to proceed to care plan generation

@@ -130,6 +130,17 @@ class DifferentialDiagnosisService {
         }
       };
 
+      // Include otherInformation as a structured question if provided
+      const questionsIncludingOtherInfo = [...questionAnswers];
+      if (otherInformation && otherInformation.trim()) {
+        questionsIncludingOtherInfo.push({
+          question: "Any other pertinent information that may impact the diagnosis (e.g. Surgeries, Radiation, Lacerations, health conditions)?",
+          answer: otherInformation.trim(),
+          category: "additional_information",
+          importance: "high"
+        });
+      }
+
       return {
         originalDiagnosis: originalClassification,
         refinedDiagnosis: refinedDiagnosis,
@@ -137,14 +148,14 @@ class DifferentialDiagnosisService {
         remainingPossibilities: this.normalizeProbabilities(refinedData.remaining),
         confidence: refinedData.confidence,
         reasoning: refinedData.reasoning,
-        questionsAnalyzed: questionAnswers
+        questionsAnalyzed: questionsIncludingOtherInfo
       };
       
     } catch (error) {
       console.error('DifferentialDiagnosisService: Error refining diagnosis:', error);
       
       // Fallback refinement based on simple logic
-      return this.createFallbackRefinement(originalClassification, questionAnswers);
+      return this.createFallbackRefinement(originalClassification, questionAnswers, otherInformation);
     }
   }
 
@@ -236,7 +247,7 @@ IMPORTANT:
   /**
    * Create fallback refinement when AI fails
    */
-  private createFallbackRefinement(originalClassification: any, questionAnswers: any[]): DiagnosisRefinement {
+  private createFallbackRefinement(originalClassification: any, questionAnswers: any[], otherInformation?: string): DiagnosisRefinement {
     const originalTypes = originalClassification.differentialDiagnosis?.possibleTypes || [];
     
     // Simple logic-based refinement
@@ -293,6 +304,17 @@ IMPORTANT:
       }
     };
 
+    // Include otherInformation as a structured question if provided
+    const questionsIncludingOtherInfo = [...questionAnswers];
+    if (otherInformation && otherInformation.trim()) {
+      questionsIncludingOtherInfo.push({
+        question: "Any other pertinent information that may impact the diagnosis (e.g. Surgeries, Radiation, Lacerations, health conditions)?",
+        answer: otherInformation.trim(),
+        category: "additional_information",
+        importance: "high"
+      });
+    }
+
     return {
       originalDiagnosis: originalClassification,
       refinedDiagnosis: refinedDiagnosis,
@@ -300,7 +322,7 @@ IMPORTANT:
       remainingPossibilities: remaining,
       confidence: remaining[0]?.confidence || 0.5,
       reasoning: 'Analysis based on patient answers with clinical logic-based refinement',
-      questionsAnalyzed: questionAnswers
+      questionsAnalyzed: questionsIncludingOtherInfo
     };
   }
 }
