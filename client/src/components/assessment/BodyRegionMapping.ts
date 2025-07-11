@@ -1,6 +1,6 @@
 /**
- * Body Region Mapping with precise coordinates matching the colored regions in the body diagrams
- * Coordinates are based on the actual colored areas visible in the images
+ * Body Region Mapping for the new numbered body diagrams
+ * Coordinates are based on the actual numbered regions visible in the images
  */
 
 export interface BodyRegion {
@@ -16,659 +16,131 @@ export interface BodyRegion {
   commonWoundTypes: string[];
 }
 
-// Front body regions with precise coordinate mappings based on the colored regions
+// Front body regions matching the numbered regions in the front view diagram
 export const frontBodyRegions: BodyRegion[] = [
-  // Head regions
   {
-    id: '272',
-    name: 'Front Top of Head',
-    description: 'Top of head area',
-    coordinates: { x: 305, y: 8, width: 35, height: 25 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '273',
-    name: 'Right Forehead',
-    description: 'Right side of forehead',
-    coordinates: { x: 280, y: 18, width: 25, height: 20 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '274',
-    name: 'Left Forehead',
-    description: 'Left side of forehead',
-    coordinates: { x: 340, y: 18, width: 25, height: 20 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '275',
-    name: 'Right Eye',
-    description: 'Right eye area',
-    coordinates: { x: 285, y: 35, width: 22, height: 18 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '276',
-    name: 'Left Eye',
-    description: 'Left eye area',
-    coordinates: { x: 338, y: 35, width: 22, height: 18 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '277',
-    name: 'Right Face',
-    description: 'Right side of face',
-    coordinates: { x: 275, y: 48, width: 30, height: 25 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '278',
-    name: 'Left Face',
-    description: 'Left side of face',
-    coordinates: { x: 340, y: 48, width: 30, height: 25 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '279',
-    name: 'Mouth',
-    description: 'Mouth area',
-    coordinates: { x: 305, y: 58, width: 25, height: 15 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '280',
-    name: 'Right Jaw',
-    description: 'Right jaw area',
-    coordinates: { x: 265, y: 68, width: 30, height: 20 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-  {
-    id: '281',
-    name: 'Left Jaw',
-    description: 'Left jaw area',
-    coordinates: { x: 350, y: 68, width: 30, height: 20 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
-  },
-
-  // Shoulders and upper torso
-  {
-    id: '282',
-    name: 'Front Right Shoulder',
-    description: 'Right shoulder area',
-    coordinates: { x: 245, y: 85, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '283',
-    name: 'Throat',
-    description: 'Throat area',
-    coordinates: { x: 310, y: 85, width: 25, height: 20 },
+    id: '5',
+    name: 'Abdomen',
+    description: 'Abdominal region',
+    coordinates: { x: 190, y: 385, width: 120, height: 60 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
-    id: '284',
-    name: 'Front Left Shoulder',
-    description: 'Left shoulder area',
-    coordinates: { x: 365, y: 85, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
+    id: '6L',
+    name: 'Left Upper Leg',
+    description: 'Left upper leg/thigh',
+    coordinates: { x: 140, y: 465, width: 80, height: 125 },
+    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
-    id: '285',
-    name: 'Front Right Shoulder Joint',
-    description: 'Right shoulder joint',
-    coordinates: { x: 240, y: 110, width: 30, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
+    id: '6R',
+    name: 'Right Upper Leg',
+    description: 'Right upper leg/thigh',
+    coordinates: { x: 280, y: 465, width: 80, height: 125 },
+    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
-    id: '286',
-    name: 'Right Chest',
-    description: 'Right chest area',
-    coordinates: { x: 275, y: 120, width: 30, height: 35 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
+    id: '7L',
+    name: 'Left Lower Leg',
+    description: 'Left lower leg/shin',
+    coordinates: { x: 140, y: 590, width: 80, height: 125 },
+    commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
-    id: '287',
-    name: 'Left Chest',
-    description: 'Left chest area',
-    coordinates: { x: 340, y: 120, width: 30, height: 35 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
+    id: '7R',
+    name: 'Right Lower Leg',
+    description: 'Right lower leg/shin',
+    coordinates: { x: 280, y: 590, width: 80, height: 125 },
+    commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
-    id: '288',
-    name: 'Front Left Shoulder Joint',
-    description: 'Left shoulder joint',
-    coordinates: { x: 375, y: 110, width: 30, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-
-  // Arms
-  {
-    id: '289',
-    name: 'Front Right Arm Over',
-    description: 'Right upper arm',
-    coordinates: { x: 235, y: 140, width: 30, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '290',
-    name: 'Front Left Arm Over',
-    description: 'Left upper arm',
-    coordinates: { x: 380, y: 140, width: 30, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '291',
-    name: 'Right Ribs',
-    description: 'Right rib area',
-    coordinates: { x: 275, y: 155, width: 30, height: 30 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '292',
-    name: 'Left Ribs',
-    description: 'Left rib area',
-    coordinates: { x: 340, y: 155, width: 30, height: 30 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '293',
-    name: 'Front Right Elbow',
-    description: 'Right elbow',
-    coordinates: { x: 230, y: 180, width: 25, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '297',
-    name: 'Front Left Elbow',
-    description: 'Left elbow',
-    coordinates: { x: 390, y: 180, width: 25, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-
-  // Abdomen
-  {
-    id: '294',
-    name: 'Right Upper Abdomen',
-    description: 'Right upper abdomen',
-    coordinates: { x: 275, y: 185, width: 30, height: 25 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
-  },
-  {
-    id: '295',
-    name: 'Center Upper Abdomen',
-    description: 'Center upper abdomen',
-    coordinates: { x: 305, y: 185, width: 35, height: 25 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
-  },
-  {
-    id: '296',
-    name: 'Left Upper Abdomen',
-    description: 'Left upper abdomen',
-    coordinates: { x: 340, y: 185, width: 30, height: 25 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
-  },
-  {
-    id: '298',
-    name: 'Front Right Arm Under',
-    description: 'Right lower arm',
-    coordinates: { x: 225, y: 210, width: 25, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '299',
-    name: 'Right Lower Abdomen',
-    description: 'Right lower abdomen',
-    coordinates: { x: 275, y: 210, width: 30, height: 25 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
-  },
-  {
-    id: '300',
-    name: 'Center Lower Abdomen',
-    description: 'Center lower abdomen',
-    coordinates: { x: 305, y: 210, width: 35, height: 25 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
-  },
-  {
-    id: '301',
-    name: 'Left Lower Abdomen',
-    description: 'Left lower abdomen',
-    coordinates: { x: 340, y: 210, width: 30, height: 25 },
-    commonWoundTypes: ['surgical_wound', 'pressure_ulcer']
-  },
-  {
-    id: '302',
-    name: 'Front Left Arm Under',
-    description: 'Left lower arm',
-    coordinates: { x: 395, y: 210, width: 25, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-
-  // Hips and pelvis
-  {
-    id: '303',
-    name: 'Front Right Wrist',
-    description: 'Right wrist',
-    coordinates: { x: 220, y: 250, width: 25, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '304',
-    name: 'Right Hip',
-    description: 'Right hip',
-    coordinates: { x: 275, y: 235, width: 30, height: 30 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '305',
-    name: 'Genitalia',
-    description: 'Genital area',
-    coordinates: { x: 305, y: 235, width: 35, height: 30 },
-    commonWoundTypes: ['surgical_wound', 'traumatic_wound']
-  },
-  {
-    id: '306',
-    name: 'Left Hip',
-    description: 'Left hip',
-    coordinates: { x: 340, y: 235, width: 30, height: 30 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '307',
-    name: 'Front Left Wrist',
-    description: 'Left wrist',
-    coordinates: { x: 400, y: 250, width: 25, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-
-  // Hands
-  {
-    id: '308',
-    name: 'Front Right Hand',
-    description: 'Right hand',
-    coordinates: { x: 210, y: 270, width: 35, height: 30 },
-    commonWoundTypes: ['diabetic_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '311',
-    name: 'Front Left Hand',
-    description: 'Left hand',
-    coordinates: { x: 400, y: 270, width: 35, height: 30 },
-    commonWoundTypes: ['diabetic_ulcer', 'traumatic_wound']
-  },
-
-  // Thighs
-  {
-    id: '309',
-    name: 'Right Upper Thigh',
-    description: 'Right upper thigh',
-    coordinates: { x: 275, y: 265, width: 30, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-  {
-    id: '310',
-    name: 'Left Upper Thigh',
-    description: 'Left upper thigh',
-    coordinates: { x: 340, y: 265, width: 30, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-  {
-    id: '312',
-    name: 'Right Lower Thigh',
-    description: 'Right lower thigh',
-    coordinates: { x: 275, y: 300, width: 30, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-  {
-    id: '313',
-    name: 'Left Lower Thigh',
-    description: 'Left lower thigh',
-    coordinates: { x: 340, y: 300, width: 30, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-
-  // Knees
-  {
-    id: '314',
-    name: 'Front Right Knee',
-    description: 'Right knee',
-    coordinates: { x: 275, y: 335, width: 30, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '315',
-    name: 'Front Left Knee',
-    description: 'Left knee',
-    coordinates: { x: 340, y: 335, width: 30, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-
-  // Lower legs
-  {
-    id: '316',
-    name: 'Right Leg',
-    description: 'Right lower leg',
-    coordinates: { x: 275, y: 360, width: 30, height: 50 },
-    commonWoundTypes: ['venous_ulcer', 'arterial_ulcer', 'diabetic_ulcer']
-  },
-  {
-    id: '317',
-    name: 'Left Leg',
-    description: 'Left lower leg',
-    coordinates: { x: 340, y: 360, width: 30, height: 50 },
-    commonWoundTypes: ['venous_ulcer', 'arterial_ulcer', 'diabetic_ulcer']
-  },
-
-  // Ankles
-  {
-    id: '318',
-    name: 'Front Right Ankle',
-    description: 'Right ankle',
-    coordinates: { x: 275, y: 410, width: 30, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'diabetic_ulcer']
-  },
-  {
-    id: '319',
-    name: 'Front Left Ankle',
-    description: 'Left ankle',
-    coordinates: { x: 340, y: 410, width: 30, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'diabetic_ulcer']
-  },
-
-  // Feet
-  {
-    id: '320',
-    name: 'Right Foot',
-    description: 'Right foot',
-    coordinates: { x: 275, y: 430, width: 30, height: 35 },
-    commonWoundTypes: ['diabetic_ulcer', 'pressure_ulcer']
-  },
-  {
-    id: '321',
+    id: '8L',
     name: 'Left Foot',
     description: 'Left foot',
-    coordinates: { x: 340, y: 430, width: 30, height: 35 },
-    commonWoundTypes: ['diabetic_ulcer', 'pressure_ulcer']
+    coordinates: { x: 140, y: 715, width: 80, height: 65 },
+    commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
+  },
+  {
+    id: '8R',
+    name: 'Right Foot',
+    description: 'Right foot',
+    coordinates: { x: 280, y: 715, width: 80, height: 65 },
+    commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   }
 ];
 
-// Back body regions with coordinate mappings
+// Back body regions matching the numbered regions in the back view diagram
 export const backBodyRegions: BodyRegion[] = [
   {
-    id: '235',
-    name: 'Back Top of Head',
-    description: 'Top back of head',
-    coordinates: { x: 305, y: 8, width: 35, height: 25 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
+    id: '1',
+    name: 'Lower Back',
+    description: 'Lower back/sacral region',
+    coordinates: { x: 190, y: 385, width: 120, height: 85 },
+    commonWoundTypes: ['pressure_injury', 'surgical_wound']
   },
   {
-    id: '236',
-    name: 'Left Back of Head',
-    description: 'Left back of head',
-    coordinates: { x: 280, y: 18, width: 25, height: 20 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
+    id: '2L',
+    name: 'Left Posterior Thigh',
+    description: 'Left posterior thigh',
+    coordinates: { x: 140, y: 470, width: 80, height: 125 },
+    commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
-    id: '237',
-    name: 'Right Back of Head',
-    description: 'Right back of head',
-    coordinates: { x: 340, y: 18, width: 25, height: 20 },
-    commonWoundTypes: ['traumatic_wound', 'surgical_wound']
+    id: '2R',
+    name: 'Right Posterior Thigh',
+    description: 'Right posterior thigh',
+    coordinates: { x: 280, y: 470, width: 80, height: 125 },
+    commonWoundTypes: ['pressure_injury', 'traumatic_wound']
   },
   {
-    id: '238',
-    name: 'Back Neck',
-    description: 'Back of neck',
-    coordinates: { x: 305, y: 45, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
+    id: '3L',
+    name: 'Left Posterior Calf',
+    description: 'Left posterior calf',
+    coordinates: { x: 140, y: 595, width: 80, height: 125 },
+    commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
-    id: '239',
-    name: 'Back Left Shoulder',
-    description: 'Left shoulder blade',
-    coordinates: { x: 270, y: 75, width: 35, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
+    id: '3R',
+    name: 'Right Posterior Calf',
+    description: 'Right posterior calf',
+    coordinates: { x: 280, y: 595, width: 80, height: 125 },
+    commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
-    id: '240',
-    name: 'Back Right Shoulder',
-    description: 'Right shoulder blade',
-    coordinates: { x: 340, y: 75, width: 35, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
+    id: '4L',
+    name: 'Left Heel',
+    description: 'Left heel',
+    coordinates: { x: 140, y: 720, width: 80, height: 65 },
+    commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   },
   {
-    id: '241',
-    name: 'Back Left Shoulder Joint',
-    description: 'Left shoulder joint',
-    coordinates: { x: 240, y: 95, width: 30, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '242',
-    name: 'Back Right Shoulder Joint',
-    description: 'Right shoulder joint',
-    coordinates: { x: 375, y: 95, width: 30, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '243',
-    name: 'Left Arm Over',
-    description: 'Left upper arm',
-    coordinates: { x: 235, y: 125, width: 30, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '244',
-    name: 'Upper Left Back',
-    description: 'Upper left back',
-    coordinates: { x: 270, y: 115, width: 35, height: 30 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '245',
-    name: 'Upper Right Back',
-    description: 'Upper right back',
-    coordinates: { x: 340, y: 115, width: 35, height: 30 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '246',
-    name: 'Right Arm Over',
-    description: 'Right upper arm',
-    coordinates: { x: 380, y: 125, width: 30, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '247',
-    name: 'Upper Middle Back',
-    description: 'Upper middle back',
-    coordinates: { x: 305, y: 145, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '248',
-    name: 'Lower Middle Back',
-    description: 'Lower middle back',
-    coordinates: { x: 305, y: 170, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '249',
-    name: 'Lower Left Back',
-    description: 'Lower left back',
-    coordinates: { x: 270, y: 170, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '250',
-    name: 'Lower Right Back',
-    description: 'Lower right back',
-    coordinates: { x: 340, y: 170, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '251',
-    name: 'Back Left Elbow',
-    description: 'Left elbow',
-    coordinates: { x: 230, y: 165, width: 25, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '252',
-    name: 'Back Right Elbow',
-    description: 'Right elbow',
-    coordinates: { x: 390, y: 165, width: 25, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '253',
-    name: 'Left Arm Under',
-    description: 'Left lower arm',
-    coordinates: { x: 225, y: 190, width: 25, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '254',
-    name: 'Buttock',
-    description: 'Buttock area',
-    coordinates: { x: 305, y: 195, width: 35, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'surgical_wound']
-  },
-  {
-    id: '255',
-    name: 'Right Arm Under',
-    description: 'Right lower arm',
-    coordinates: { x: 395, y: 190, width: 25, height: 40 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '256',
-    name: 'Back Left Wrist',
-    description: 'Left wrist',
-    coordinates: { x: 220, y: 230, width: 25, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '257',
-    name: 'Back Right Wrist',
-    description: 'Right wrist',
-    coordinates: { x: 400, y: 230, width: 25, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '258',
-    name: 'Back Left Hand',
-    description: 'Left hand',
-    coordinates: { x: 210, y: 250, width: 35, height: 30 },
-    commonWoundTypes: ['diabetic_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '259',
-    name: 'Back Left Upper Thigh',
-    description: 'Left upper thigh',
-    coordinates: { x: 270, y: 230, width: 35, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-  {
-    id: '260',
-    name: 'Back Right Upper Thigh',
-    description: 'Right upper thigh',
-    coordinates: { x: 340, y: 230, width: 35, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-  {
-    id: '261',
-    name: 'Back Right Hand',
-    description: 'Right hand',
-    coordinates: { x: 400, y: 250, width: 35, height: 30 },
-    commonWoundTypes: ['diabetic_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '262',
-    name: 'Back Left Lower Thigh',
-    description: 'Left lower thigh',
-    coordinates: { x: 270, y: 265, width: 35, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-  {
-    id: '263',
-    name: 'Back Right Lower Thigh',
-    description: 'Right lower thigh',
-    coordinates: { x: 340, y: 265, width: 35, height: 35 },
-    commonWoundTypes: ['pressure_ulcer', 'venous_ulcer']
-  },
-  {
-    id: '264',
-    name: 'Left Back Knee',
-    description: 'Left knee',
-    coordinates: { x: 270, y: 300, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '265',
-    name: 'Right Back Knee',
-    description: 'Right knee',
-    coordinates: { x: 340, y: 300, width: 35, height: 25 },
-    commonWoundTypes: ['pressure_ulcer', 'traumatic_wound']
-  },
-  {
-    id: '266',
-    name: 'Back Left Calf',
-    description: 'Left calf',
-    coordinates: { x: 270, y: 325, width: 35, height: 50 },
-    commonWoundTypes: ['venous_ulcer', 'arterial_ulcer', 'diabetic_ulcer']
-  },
-  {
-    id: '267',
-    name: 'Back Right Calf',
-    description: 'Right calf',
-    coordinates: { x: 340, y: 325, width: 35, height: 50 },
-    commonWoundTypes: ['venous_ulcer', 'arterial_ulcer', 'diabetic_ulcer']
-  },
-  {
-    id: '268',
-    name: 'Back Left Ankle',
-    description: 'Left ankle',
-    coordinates: { x: 270, y: 375, width: 35, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'diabetic_ulcer']
-  },
-  {
-    id: '269',
-    name: 'Back Right Ankle',
-    description: 'Right ankle',
-    coordinates: { x: 340, y: 375, width: 35, height: 20 },
-    commonWoundTypes: ['pressure_ulcer', 'diabetic_ulcer']
-  },
-  {
-    id: '270',
-    name: 'Back Left Foot',
-    description: 'Left foot',
-    coordinates: { x: 270, y: 395, width: 35, height: 35 },
-    commonWoundTypes: ['diabetic_ulcer', 'pressure_ulcer']
-  },
-  {
-    id: '271',
-    name: 'Back Right Foot',
-    description: 'Right foot',
-    coordinates: { x: 340, y: 395, width: 35, height: 35 },
-    commonWoundTypes: ['diabetic_ulcer', 'pressure_ulcer']
+    id: '4R',
+    name: 'Right Heel',
+    description: 'Right heel',
+    coordinates: { x: 280, y: 720, width: 80, height: 65 },
+    commonWoundTypes: ['pressure_injury', 'diabetic_ulcer']
   }
 ];
 
-// Helper function to get regions by image view
-export const getBodyRegionsByImage = (view: 'front' | 'back'): BodyRegion[] => {
+// Helper functions to get regions by view
+export function getBodyRegionsByImage(view: 'front' | 'back'): BodyRegion[] {
   return view === 'front' ? frontBodyRegions : backBodyRegions;
-};
+}
 
-// Helper function to find region by coordinates
-export const getBodyRegionByCoordinates = (x: number, y: number, view: 'front' | 'back'): BodyRegion | null => {
+export function getBodyRegionByCoordinates(x: number, y: number, view: 'front' | 'back'): BodyRegion | null {
   const regions = getBodyRegionsByImage(view);
-  
-  for (const region of regions) {
-    const { x: rx, y: ry, width, height } = region.coordinates;
-    if (x >= rx && x <= rx + width && y >= ry && y <= ry + height) {
-      return region;
-    }
-  }
-  
-  return null;
-};
+  return regions.find(region => {
+    const { coordinates } = region;
+    return (
+      x >= coordinates.x &&
+      x <= coordinates.x + coordinates.width &&
+      y >= coordinates.y &&
+      y <= coordinates.y + coordinates.height
+    );
+  }) || null;
+}
+
+export function getBodyRegionById(id: string, view: 'front' | 'back'): BodyRegion | null {
+  const regions = getBodyRegionsByImage(view);
+  return regions.find(region => region.id === id) || null;
+}

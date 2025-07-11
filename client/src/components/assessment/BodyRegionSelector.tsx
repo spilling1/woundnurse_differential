@@ -9,8 +9,9 @@ import {
 } from './BodyRegionMapping';
 
 // Import the body diagram images
-import FrontBodyPath from '@assets/FrontBody_1752196192722.png';
-import BackBodyPath from '@assets/BackBody_1752196189291.png';
+// Use the new body diagram images
+const FrontBodyPath = '/body-front.png';
+const BackBodyPath = '/body-back.png';
 
 interface BodyRegionSelectorProps {
   selectedRegion: { id: string; name: string } | null;
@@ -44,8 +45,8 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
   const handleImageHover = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     // Convert to absolute coordinates based on the image dimensions
-    const x = (event.clientX - rect.left) / rect.width * 645; // Image width
-    const y = (event.clientY - rect.top) / rect.height * 400; // Image height
+    const x = (event.clientX - rect.left) / rect.width * 500; // Image width
+    const y = (event.clientY - rect.top) / rect.height * 820; // Image height
     
     const region = getBodyRegionByCoordinates(x, y, currentView);
     setHoveredRegion(region || null);
@@ -77,10 +78,10 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
                     : 'bg-gray-500 bg-opacity-10 border-gray-400'
               }`}
               style={{
-                left: `${(region.coordinates.x / 645) * 100}%`,
-                top: `${(region.coordinates.y / 400) * 100}%`,
-                width: `${(region.coordinates.width / 645) * 100}%`,
-                height: `${(region.coordinates.height / 400) * 100}%`,
+                left: `${(region.coordinates.x / 500) * 100}%`,
+                top: `${(region.coordinates.y / 820) * 100}%`,
+                width: `${(region.coordinates.width / 500) * 100}%`,
+                height: `${(region.coordinates.height / 820) * 100}%`,
               }}
             >
               <div className={`w-full h-full flex items-center justify-center text-xs font-bold ${
