@@ -497,8 +497,10 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         />
       )}
 
-      {/* Questions Section - Only show if NOT showing Page 2 analysis */}
-      {state.aiQuestions.length > 0 && !state.showPage2Analysis && (
+      {/* Questions Section - Only show if NOT showing Page 2 analysis AND no differential diagnosis questions */}
+      {state.aiQuestions.length > 0 && !state.showPage2Analysis && 
+       !(state.woundClassification?.differentialDiagnosis?.questionsToAsk && 
+         state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0) && (
         <Card>
           <CardHeader>
             <CardTitle>Follow-up Questions</CardTitle>

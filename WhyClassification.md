@@ -2164,3 +2164,26 @@ The location on the heel, a major bony prominence, is the most common site for a
 
 ---
 
+
+---
+## Case: 2025-07-11-551
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:27:03 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, is a classic site for a pressure ulcer. The depth of the wound, indicating full-thickness tissue loss with exposure of underlying structures like tendon or bone, is characteristic of a Stage 4 pressure injury. The presence of slough and eschar obscuring parts of the wound bed also fits the criteria for an Unstageable pressure injury. The combination of these features strongly supports this diagnosis. This is a full-thickness wound with a deep, crater-like appearance. The wound bed contains a mix of black/purple necrotic eschar, yellow slough, and exposed white/pale tissue, which is likely tendon or bone. The wound edges are defined, and the immediate surrounding skin is erythematous (red). There is some dried blood on the skin superior to the wound.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 75% confidence
+
+---
+
