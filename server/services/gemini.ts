@@ -123,6 +123,8 @@ Please provide only the JSON response without any additional text or formatting.
 
   const response = await callGemini(model, prompt, imageBase64);
   
+  console.log('Gemini response preview:', response.substring(0, 500));
+  
   // Clean up the response to extract JSON
   let jsonStr = response.trim();
   if (jsonStr.startsWith('```json')) {
@@ -134,18 +136,23 @@ Please provide only the JSON response without any additional text or formatting.
   try {
     return JSON.parse(jsonStr);
   } catch (parseError) {
+    console.error('First JSON parse failed:', parseError.message);
+    console.error('Raw response (first 1000 chars):', response.substring(0, 1000));
+    
     // Try to extract JSON from text that might have explanatory content
-    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+    const jsonMatch = jsonStr.match(/\{[\s\S]*?\}/);
     if (jsonMatch) {
       try {
+        console.log('Attempting to parse extracted JSON:', jsonMatch[0].substring(0, 200));
         return JSON.parse(jsonMatch[0]);
       } catch (secondParseError) {
-        console.error('Failed to parse extracted JSON:', jsonMatch[0]);
+        console.error('Second JSON parse failed:', secondParseError.message);
+        console.error('Extracted JSON:', jsonMatch[0].substring(0, 500));
         throw new Error('Failed to parse wound assessment data from Gemini');
       }
     }
     
-    console.error('Failed to parse Gemini JSON response:', jsonStr);
+    console.error('No JSON found in response');
     throw new Error('Failed to parse wound assessment data from Gemini');
   }
 }
