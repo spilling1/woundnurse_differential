@@ -110,120 +110,135 @@ export default function DifferentialDiagnosisQuestions({
     const isHighConfidence = confidence >= 0.90;
     
     return (
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="flex items-center text-green-800">
-            <CheckCircle className="h-5 w-5 mr-2" />
-            Page 2: Refined Differential Diagnosis
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Final Diagnosis Display for High Confidence */}
-          {isHighConfidence ? (
-            <div className="mb-6">
-              <h3 className="text-xl font-bold text-green-900 mb-4">Final Diagnosis</h3>
-              <div className="p-6 bg-green-50 border-2 border-green-300 rounded-lg">
-                <div className="text-center mb-4">
-                  <div className="text-2xl font-bold text-green-900 mb-2">
-                    {primaryDiagnosis}
+      <div className="space-y-6">
+        {/* Clean Page 2 Header */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center text-green-800">
+              <CheckCircle className="h-5 w-5 mr-2" />
+              Page 2: Refined Differential Diagnosis
+            </CardTitle>
+            <p className="text-sm text-green-700 mt-2">
+              Based on your answers, here is the refined diagnostic assessment:
+            </p>
+          </CardHeader>
+        </Card>
+
+        {/* Clean Refined Diagnosis Display */}
+        <Card>
+          <CardContent className="pt-6">
+            {/* Final Diagnosis Display for High Confidence */}
+            {isHighConfidence ? (
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-green-900 mb-4">Final Diagnosis</h3>
+                <div className="p-6 bg-green-50 border-2 border-green-300 rounded-lg">
+                  <div className="text-center mb-4">
+                    <div className="text-2xl font-bold text-green-900 mb-2">
+                      {primaryDiagnosis}
+                    </div>
+                    <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-2">
+                      {confidencePercent}% Confidence
+                    </Badge>
                   </div>
-                  <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-2">
-                    {confidencePercent}% Confidence
-                  </Badge>
-                </div>
-                <div className="mt-4">
-                  <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
-                  <p className="text-sm text-green-800">
-                    {refinementResult.page2Analysis.reasoning}
-                  </p>
+                  <div className="mt-4">
+                    <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
+                    <p className="text-sm text-green-800">
+                      {refinementResult.page2Analysis.reasoning}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            /* Standard Primary Diagnosis Display for Lower Confidence */
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-green-900 mb-3">Primary Diagnosis</h3>
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-lg font-bold text-green-900">
-                    {primaryDiagnosis}
+            ) : (
+              /* Standard Primary Diagnosis Display for Lower Confidence */
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-green-900 mb-3">Refined Diagnosis</h3>
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-lg font-bold text-green-900">
+                      {primaryDiagnosis}
+                    </div>
+                    <Badge variant="default" className="bg-green-600 text-white">
+                      {confidencePercent}% confidence
+                    </Badge>
                   </div>
-                  <Badge variant="default" className="bg-green-600 text-white">
-                    {confidencePercent}% confidence
-                  </Badge>
+                  <div className="mt-4">
+                    <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
+                    <p className="text-sm text-green-800">
+                      {refinementResult.page2Analysis.reasoning}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-sm text-green-800 mt-2">
-                  {refinementResult.page2Analysis.reasoning}
+              </div>
+            )}
+
+            {/* Eliminated Possibilities */}
+            {refinementResult.page2Analysis.eliminated.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-red-900 mb-3">Eliminated Possibilities</h3>
+                <div className="space-y-2">
+                  {refinementResult.page2Analysis.eliminated.map((eliminated, index) => (
+                    <div key={index} className="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <X className="h-4 w-4 text-red-600 mr-2" />
+                      <span className="text-sm text-red-800 line-through">{eliminated}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Only show remaining possibilities for lower confidence cases */}
+            {!isHighConfidence && refinementResult.page2Analysis.remaining.length > 1 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-3">Remaining Possibilities</h3>
+                <div className="space-y-3">
+                  {refinementResult.page2Analysis.remaining.map((possibility, index) => (
+                    <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="text-base font-semibold text-gray-900">
+                          {index + 1}. {possibility.woundType}
+                        </div>
+                        <Badge variant="outline" className="text-gray-700 border-gray-300">
+                          {Math.round(possibility.confidence * 100)}% confidence
+                        </Badge>
+                      </div>
+                      <div className="text-sm text-gray-600 leading-relaxed">
+                        {possibility.reasoning}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Follow-up Questions Section */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-blue-900 mb-3">Follow-up Questions to Shape Care Plan</h3>
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  Based on the refined diagnosis, you may now answer additional questions to optimize your care plan recommendations.
                 </p>
               </div>
             </div>
-          )}
 
-          {/* Eliminated Possibilities */}
-          {refinementResult.page2Analysis.eliminated.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-red-900 mb-3">Eliminated Possibilities</h3>
-              <div className="space-y-2">
-                {refinementResult.page2Analysis.eliminated.map((eliminated, index) => (
-                  <div key={index} className="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <X className="h-4 w-4 text-red-600 mr-2" />
-                    <span className="text-sm text-red-800 line-through">{eliminated}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Action Buttons */}
+            <div className="mt-6 flex gap-3 justify-center">
+              <Button 
+                onClick={() => {
+                  // Trigger the next step in the assessment flow
+                  onRefinementComplete({
+                    ...refinementResult,
+                    proceedToCarePlan: true
+                  });
+                }}
+                className="flex items-center"
+              >
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Generate Care Plan
+              </Button>
             </div>
-          )}
-
-          {/* Only show remaining possibilities for lower confidence cases */}
-          {!isHighConfidence && refinementResult.page2Analysis.remaining.length > 1 && (
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Remaining Possibilities</h3>
-              <div className="space-y-3">
-                {refinementResult.page2Analysis.remaining.map((possibility, index) => (
-                  <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="text-base font-semibold text-gray-900">
-                        {index + 1}. {possibility.woundType}
-                      </div>
-                      <Badge variant="outline" className="text-gray-700 border-gray-300">
-                        {Math.round(possibility.confidence * 100)}% confidence
-                      </Badge>
-                    </div>
-                    <div className="text-sm text-gray-600 leading-relaxed">
-                      {possibility.reasoning}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="mt-6 flex gap-3 justify-center">
-            <Button 
-              onClick={() => setShowPage2(false)}
-              variant="outline"
-              className="flex items-center"
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Answer Questions to Shape Care Plan
-            </Button>
-            <Button 
-              onClick={() => {
-                // Trigger the next step in the assessment flow
-                onRefinementComplete({
-                  ...refinementResult,
-                  proceedToCarePlan: true
-                });
-              }}
-              className="flex items-center"
-            >
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Generate Care Plan
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 

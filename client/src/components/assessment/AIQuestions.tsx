@@ -389,7 +389,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         </CardHeader>
       </Card>
 
-      {state.woundClassification && (
+      {state.woundClassification && !state.showPage2Analysis && (
         <Card>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Most Probable Diagnoses</CardTitle>
@@ -490,15 +490,15 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         </Card>
       )}
 
-      {/* Enhanced Detection Transparency */}
-      {state.woundClassification && (
+      {/* Enhanced Detection Transparency - Only show on Page 1 */}
+      {state.woundClassification && !state.showPage2Analysis && (
         <DetectionTransparencyCard 
           classification={state.woundClassification}
         />
       )}
 
-      {/* Questions Section */}
-      {state.aiQuestions.length > 0 && (
+      {/* Questions Section - Only show if NOT showing Page 2 analysis */}
+      {state.aiQuestions.length > 0 && !state.showPage2Analysis && (
         <Card>
           <CardHeader>
             <CardTitle>Follow-up Questions</CardTitle>
