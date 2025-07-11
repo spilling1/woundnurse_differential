@@ -561,6 +561,14 @@ Changelog:
   - **Robust Validation**: Fixed cases where AI correctly identified wound types but used slightly different terminology than database entries
   - **Comprehensive Matching**: System now handles exact matches, partial matches, and synonyms for all wound type classifications
   - **Database-Driven Flexibility**: All synonym matching occurs through PostgreSQL database storage, allowing easy updates without code changes
+- July 11, 2025. **BODY REGION SELECTION FEATURE**: Implemented comprehensive anatomical location selection for enhanced wound assessment:
+  - **Interactive Body Diagrams**: Created clickable body diagrams with front/back views allowing users to select wound location
+  - **Anatomical Mapping**: Built comprehensive body region mapping with 22 anatomical regions (head, chest, arms, legs, etc.) with coordinate-based selection
+  - **AI Context Enhancement**: Body region information now passed to AI classification system to improve diagnostic accuracy
+  - **Database Integration**: Added bodyRegion field to wound_assessments table to store anatomical location data
+  - **Smart Region Detection**: Hover and click interactions with visual feedback for selected body regions
+  - **Common Wound Type Mapping**: Each body region includes common wound types for that location (e.g., diabetic ulcers on feet, pressure ulcers on bony prominences)
+  - **Assessment Workflow Integration**: Body region selector appears above image upload in assessment flow for logical progression
 - July 10, 2025. **QUESTION OPTIMIZATION SYSTEM**: Implemented comprehensive question generation optimization to address user feedback about too many questions with duplicates:
   - **Maximum 5 Questions Per Page**: Enforced hard limit of 5 questions per assessment page to reduce user fatigue
   - **Priority-Based Question Framework**: Restructured question strategy into HIGH priority (diabetes history, wound origin, infection signs, timeline, location) and MEDIUM priority (symptoms, drainage, treatments, progress, mobility) categories

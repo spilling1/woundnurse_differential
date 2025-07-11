@@ -3,7 +3,7 @@ import type { AIGeneratedQuestion, WoundClassification, AudienceType, ModelType 
 
 export const assessmentApi = {
   // Step 1: Initial image analysis
-  initialAnalysis: async (primaryImage: File, audience: AudienceType, model: ModelType, additionalImages?: File[]) => {
+  initialAnalysis: async (primaryImage: File, audience: AudienceType, model: ModelType, additionalImages?: File[], bodyRegion?: { id: string; name: string }) => {
     const formData = new FormData();
     
     // Add primary image first
@@ -19,6 +19,11 @@ export const assessmentApi = {
     formData.append('audience', audience);
     formData.append('model', model);
     formData.append('analysisType', 'initial');
+    
+    // Add body region information if provided
+    if (bodyRegion) {
+      formData.append('bodyRegion', JSON.stringify(bodyRegion));
+    }
     
     const response = await apiRequest('POST', '/api/assessment/initial-analysis', formData);
     return await response.json();

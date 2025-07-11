@@ -44,6 +44,10 @@ export interface AssessmentFlowState {
   questionRound: number;
   answeredQuestions: AIGeneratedQuestion[];
   duplicateInfo?: any;
+  bodyRegion?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface StepProps {

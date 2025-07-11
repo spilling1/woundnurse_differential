@@ -78,7 +78,7 @@ async function validateWoundType(detectedWoundType: string): Promise<{
   }
 }
 
-export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg', sessionId?: string, userInfo?: { userId: string; email: string }): Promise<any> {
+export async function classifyWound(imageBase64: string, model: string, mimeType: string = 'image/jpeg', sessionId?: string, userInfo?: { userId: string; email: string }, bodyRegion?: { id: string; name: string }): Promise<any> {
   try {
     // Step 1: TEMPORARILY DISABLED CNN due to poor accuracy (hand classified as diabetic ulcer)
     // TODO: Retrain CNN models with better data quality and validation
@@ -127,8 +127,13 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       
       // Get agent instructions from database (WITHOUT YOLO context)
       const agentInstructions = await storage.getActiveAgentInstructions();
-      const instructions = agentInstructions ? 
+      let instructions = agentInstructions ? 
         `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
+      
+      // Add body region information if provided
+      if (bodyRegion) {
+        instructions += `\n\nBODY REGION CONTEXT:\nThe wound is located on: ${bodyRegion.name}\nThis anatomical location may provide important context for:\n- Wound type classification (e.g., diabetic ulcers commonly on feet, pressure ulcers on bony prominences)\n- Risk factors and contributing factors\n- Healing considerations and treatment approach\n- Differential diagnosis considerations\n\nConsider this location information when analyzing the wound characteristics and making your assessment.`;
+      }
       
       // Independent AI classification first
       if (model.startsWith('gemini-')) {

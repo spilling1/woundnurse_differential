@@ -199,6 +199,7 @@ export function registerAssessmentRoutes(app: Express): void {
         imageData: imageBase64,
         imageMimeType: req.file.mimetype,
         imageSize: req.file.size,
+        bodyRegion: parsedBodyRegion,
         classification,
         detectionData: classification.detection || classification.detectionMetadata || null,
         carePlan,
@@ -450,13 +451,24 @@ export function registerAssessmentRoutes(app: Express): void {
         });
       }
 
-      const { audience, model } = req.body;
+      const { audience, model, bodyRegion } = req.body;
       
       if (!audience || !model) {
         return res.status(400).json({
           code: "MISSING_PARAMS",
           message: "Audience and model are required"
         });
+      }
+
+      // Parse body region if provided
+      let parsedBodyRegion = null;
+      if (bodyRegion) {
+        try {
+          parsedBodyRegion = typeof bodyRegion === 'string' ? JSON.parse(bodyRegion) : bodyRegion;
+        } catch (error) {
+          console.error('Error parsing body region:', error);
+          // Continue without body region if parsing fails
+        }
       }
 
       // Validate all images
@@ -508,7 +520,7 @@ export function registerAssessmentRoutes(app: Express): void {
           email: req.customUser.email
         } : undefined;
         
-        classification = await classifyWound(imageBase64, model, primaryImage.mimetype, caseId, userInfo);
+        classification = await classifyWound(imageBase64, model, primaryImage.mimetype, caseId, userInfo, parsedBodyRegion);
       } else {
         // Multiple image analysis - use enhanced AI functions
         const images = files.map(file => ({
@@ -527,7 +539,7 @@ export function registerAssessmentRoutes(app: Express): void {
           email: req.customUser.email
         } : undefined;
         
-        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType, caseId, userInfo);
+        const singleImageClassification = await classifyWound(primaryImage.base64, model, primaryImage.mimeType, caseId, userInfo, parsedBodyRegion);
         
         if (model.includes('gemini')) {
           // Use Gemini multiple image analysis

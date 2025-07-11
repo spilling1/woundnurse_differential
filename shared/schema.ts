@@ -106,6 +106,9 @@ export const woundAssessments = pgTable("wound_assessments", {
   imageMimeType: text("image_mime_type").notNull(), // 'image/jpeg' | 'image/png'
   imageSize: integer("image_size").notNull(), // File size in bytes
   
+  // Body region information
+  bodyRegion: jsonb("body_region"), // { id: string, name: string } for anatomical location
+  
   // Questionnaire answers
   woundOrigin: text("wound_origin"),
   medicalHistory: text("medical_history"),
@@ -349,6 +352,10 @@ export type WoundType = typeof woundTypes.$inferSelect;
 export const uploadRequestSchema = z.object({
   audience: z.enum(['family', 'patient', 'medical']),
   model: z.enum(['gpt-4o', 'gpt-3.5', 'gpt-3.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro']),
+  bodyRegion: z.object({
+    id: z.string(),
+    name: z.string()
+  }).optional(),
   woundOrigin: z.string().optional(),
   medicalHistory: z.string().optional(),
   woundChanges: z.string().optional(),

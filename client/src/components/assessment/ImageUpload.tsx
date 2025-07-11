@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
 import type { WoundClassification } from "@/../../shared/schema";
+import BodyRegionSelector from "./BodyRegionSelector";
 
 
 export default function ImageUpload({ state, onStateChange, onNextStep }: StepProps) {
@@ -108,14 +109,16 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
         model: model,
         primaryImage: primaryImage.name,
         additionalImages: additionalImages.length,
-        totalImages: state.selectedImages.length
+        totalImages: state.selectedImages.length,
+        bodyRegion: state.bodyRegion
       });
       
       return await assessmentApi.initialAnalysis(
         primaryImage,
         state.audience,
         model,
-        additionalImages
+        additionalImages,
+        state.bodyRegion
       );
     },
     onSuccess: (data: any) => {
@@ -218,8 +221,20 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
     initialAnalysisMutation.mutate();
   };
 
+  const handleBodyRegionSelect = (regionId: string, regionName: string) => {
+    onStateChange({
+      bodyRegion: regionId ? { id: regionId, name: regionName } : undefined
+    });
+  };
+
   return (
     <div className="space-y-6">
+      {/* Body Region Selection */}
+      <BodyRegionSelector
+        selectedRegion={state.bodyRegion?.id || null}
+        onRegionSelect={handleBodyRegionSelect}
+      />
+
       <Card>
         <CardHeader>
           <CardTitle>Step 2: Upload Wound Images</CardTitle>
