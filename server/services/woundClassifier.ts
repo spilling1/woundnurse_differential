@@ -156,6 +156,7 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         // Add flags for frontend to handle unsupported wound types
         classification.unsupportedWoundType = true;
         classification.supportedTypes = validationResult.validTypes;
+        classification.reasoning = classification.additionalObservations || 'AI visual analysis and pattern recognition';
         
         // Log the invalid wound type attempt
         try {

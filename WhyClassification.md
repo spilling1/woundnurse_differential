@@ -1359,3 +1359,26 @@ The visual evidence strongly aligns with the definition of a Stage 2 pressure in
 
 ---
 
+
+---
+## Case: 2025-07-11-833
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 12:42:10 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 85%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The diagnosis is based on the characteristic appearance and location of the wound. The anatomical site, likely the sacrum or buttock, is a common area for pressure injuries. The wound exhibits features of a Stage 2 pressure injury, specifically a partial-thickness loss of the dermis creating a shallow, open ulcer with a red-pink, moist wound bed. There is no visible subcutaneous fat, slough, or necrotic tissue, ruling out Stage 3 or 4. The significant erythema in the surrounding tissue indicates a strong inflammatory response and a potential for localized infection. The wound presents as a shallow open ulcer with partial-thickness loss of the dermis. The periwound skin is significantly inflamed. The wound bed is moist and glistening, without visible slough or eschar.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 85% confidence
+
+---
+

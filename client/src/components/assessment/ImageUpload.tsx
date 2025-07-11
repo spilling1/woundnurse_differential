@@ -136,7 +136,7 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
         const params = new URLSearchParams({
           woundType: data.classification.woundType || 'Unknown',
           confidence: ((data.classification.confidence || 0.85) * 100).toString(),
-          reasoning: data.classification.reasoning || 'Visual analysis performed by AI',
+          reasoning: data.classification.reasoning || data.classification.additionalObservations || 'Visual analysis performed by AI',
           message: `This wound appears to be a ${data.classification.woundType} which is not currently supported by the Wound Nurse.`
         });
         
