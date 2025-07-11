@@ -591,6 +591,8 @@ Provide your updated assessment in the same JSON format, considering both your v
       location: classification.location || "Not specified",
       additionalObservations: classification.additionalObservations || "",
       confidence: classification.confidence || 0.4,  // Lower default to indicate uncertainty when AI doesn't provide confidence
+      // CRITICAL: Preserve differential diagnosis data that was created by AI
+      differentialDiagnosis: classification.differentialDiagnosis,
       // Preserve any flags that were set during validation
       unsupportedWoundType: classification.unsupportedWoundType,
       supportedTypes: classification.supportedTypes

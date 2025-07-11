@@ -1842,3 +1842,26 @@ The wound is located on a major bony prominence (the heel), a classic location f
 
 ---
 
+
+---
+## Case: 2025-07-11-387
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:59:20 AM  
+**Wound Type:** Unstageable Pressure Ulcer  
+**Confidence:** 85%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location on a major bony prominence (the heel) is a classic site for a pressure injury. The deep, crater-like appearance combined with the presence of significant slough and eschar that obscures the true depth of the wound makes 'Unstageable Pressure Ulcer' the most likely classification. The visible deep tissues, likely tendon, suggest that if the wound were debrided, it would be classified as a Stage 4 pressure ulcer. The overall presentation is highly indicative of severe, prolonged pressure. Deep, full-thickness wound with what appears to be exposed tendon or bone. The wound base is largely obscured by black eschar (necrotic tissue) and yellow slough. The wound edges are clearly defined, and the periwound skin shows some redness (erythema) and signs of recent bleeding.
+
+### Classification Process:
+
+**Independent Classification:** Unstageable Pressure Ulcer (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Unstageable Pressure Ulcer with 85% confidence
+
+---
+
