@@ -111,12 +111,31 @@ export default function ImageUpload({ state, onStateChange, onNextStep }: StepPr
         totalImages: state.selectedImages.length
       });
       
-      return await assessmentApi.initialAnalysis(
-        primaryImage,
-        state.audience,
-        model,
-        additionalImages
-      );
+      try {
+        return await assessmentApi.initialAnalysis(
+          primaryImage,
+          state.audience,
+          model,
+          additionalImages
+        );
+      } catch (error: any) {
+        // Preserve error properties by re-throwing with preserved structure
+        console.log('Caught error in mutationFn:', error);
+        console.log('Error properties in mutationFn:', Object.keys(error));
+        
+        // Create a new error that preserves the structured data
+        const preservedError = new Error(error.message) as any;
+        preservedError.code = error.code;
+        preservedError.woundType = error.woundType;
+        preservedError.confidence = error.confidence;
+        preservedError.reasoning = error.reasoning;
+        preservedError.redirect = error.redirect;
+        preservedError.supportedTypes = error.supportedTypes;
+        preservedError.originalErrorData = error.originalErrorData || error;
+        
+        console.log('Re-throwing preserved error with code:', preservedError.code);
+        throw preservedError;
+      }
     },
     onSuccess: (data: any) => {
       if (data.duplicateDetected) {
