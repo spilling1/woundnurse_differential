@@ -595,6 +595,7 @@ Changelog:
   - **Question Generation Enhancement**: Updated question service with audience-specific templates and examples for medical, family, and patient communications
   - **Wound Type Instructions**: Updated all wound type instructions to include audience-specific clarifying questions (separate sections for medical/family vs patient)
   - **Database-Driven Communication**: All audience-specific language rules stored in database configuration for consistent application across all AI interactions
+- July 11, 2025. **CLEAN PAGE 1 INTERFACE**: Removed "Upload Additional Images" section from Page 1 when differential diagnosis questions are available, ensuring Page 1 only shows follow-up questions and Page 2 navigation button
 - July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
   - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
   - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%

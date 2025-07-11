@@ -599,8 +599,10 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         </Card>
       )}
 
-      {/* Additional Image Upload Section */}
-      {state.woundClassification?.confidence && state.woundClassification.confidence < 0.9 && (
+      {/* Additional Image Upload Section - Only show if no differential diagnosis questions available */}
+      {state.woundClassification?.confidence && state.woundClassification.confidence < 0.9 && 
+       !(state.woundClassification?.differentialDiagnosis?.questionsToAsk && 
+         state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0) && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">

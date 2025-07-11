@@ -2210,3 +2210,26 @@ The wound is located on the heel, a primary bony prominence, which is the most s
 
 ---
 
+
+---
+## Case: 2025-07-11-434
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:33:52 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 70%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel is a classic site for a pressure ulcer due to it being a major bony prominence. The appearance of a deep ulcer containing both eschar and slough is characteristic of an Unstageable pressure injury (where the base is obscured, but the underlying damage is likely Stage 3 or Stage 4). The depth of the wound further supports significant tissue loss from sustained pressure. Deep, crater-like ulcer with well-defined borders. The wound bed is obscured by a combination of black eschar (necrotic tissue) and yellow/tan slough. A whitish, fibrous structure, possibly an exposed tendon or fascia, is visible. The periwound skin is erythematous (red) and appears dry.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (70% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 70% confidence
+
+---
+
