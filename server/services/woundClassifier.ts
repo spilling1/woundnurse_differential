@@ -140,6 +140,16 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
     if (!usedCNN) {
       console.log('WoundClassifier: Starting independent AI classification...');
       
+      // Log body region information if provided
+      if (bodyRegion) {
+        console.log('WoundClassifier: Body region information received:', {
+          id: bodyRegion.id,
+          name: bodyRegion.name
+        });
+      } else {
+        console.log('WoundClassifier: No body region information provided');
+      }
+      
       // Initialize classification to prevent undefined errors
       classification = {
         woundType: "Unspecified",
@@ -160,7 +170,9 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       
       // Add body region information if provided
       if (bodyRegion) {
-        instructions += `\n\nBODY REGION CONTEXT:\nThe wound is located on: ${bodyRegion.name}\nThis anatomical location may provide important context for:\n- Wound type classification (e.g., diabetic ulcers commonly on feet, pressure ulcers on bony prominences)\n- Risk factors and contributing factors\n- Healing considerations and treatment approach\n- Differential diagnosis considerations\n\nConsider this location information when analyzing the wound characteristics and making your assessment.`;
+        const bodyRegionContext = `\n\nBODY REGION CONTEXT:\nThe wound is located on: ${bodyRegion.name}\nThis anatomical location may provide important context for:\n- Wound type classification (e.g., diabetic ulcers commonly on feet, pressure ulcers on bony prominences)\n- Risk factors and contributing factors\n- Healing considerations and treatment approach\n- Differential diagnosis considerations\n\nConsider this location information when analyzing the wound characteristics and making your assessment.`;
+        instructions += bodyRegionContext;
+        console.log('WoundClassifier: Added body region context to AI instructions:', bodyRegionContext);
       }
       
       // Independent AI classification first

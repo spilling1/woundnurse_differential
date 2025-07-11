@@ -114,7 +114,17 @@ export async function analyzeAssessmentForQuestions(
     
     return [];
   }
-  const { imageAnalysis, audience, model, previousQuestions, round, instructions: providedInstructions } = contextData;
+  const { imageAnalysis, audience, model, previousQuestions, round, instructions: providedInstructions, bodyRegion } = contextData;
+  
+  // Log body region information if provided
+  if (bodyRegion) {
+    console.log('AgentQuestionService: Body region information received:', {
+      id: bodyRegion.id,
+      name: bodyRegion.name
+    });
+  } else {
+    console.log('AgentQuestionService: No body region information provided');
+  }
   
   // Get agent instructions to check for custom questions that should always be asked
   const agentInstructions = await storage.getActiveAgentInstructions();
@@ -158,6 +168,13 @@ ${woundTypeInstructions}
   } else {
     // Add wound type instructions to provided instructions
     instructions = `${instructions}${woundTypeInstructions}`;
+  }
+  
+  // Add body region information if provided
+  if (bodyRegion) {
+    const bodyRegionContext = `\n\nBODY REGION CONTEXT:\nThe wound is located on: ${bodyRegion.name}\nThis anatomical location may provide important context for:\n- Wound type classification (e.g., diabetic ulcers commonly on feet, pressure ulcers on bony prominences)\n- Risk factors and contributing factors\n- Healing considerations and treatment approach\n- Differential diagnosis considerations\n- Specific questions related to anatomical location\n\nConsider this location information when generating appropriate questions.`;
+    instructions += bodyRegionContext;
+    console.log('AgentQuestionService: Added body region context to AI instructions:', bodyRegionContext);
   }
   
   // Check if agent instructions contain question requirements

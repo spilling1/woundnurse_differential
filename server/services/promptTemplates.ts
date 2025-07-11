@@ -57,6 +57,7 @@ ${(classification.confidence || 0) < 0.8 ?
 }
 
 Patient Context:
+${contextData?.bodyRegion ? `- Body Region: ${contextData.bodyRegion.name} (ID: ${contextData.bodyRegion.id})` : ''}
 ${contextData?.woundOrigin ? `- How/when wound occurred: ${contextData.woundOrigin}` : ''}
 ${contextData?.medicalHistory ? `- Medical history: ${contextData.medicalHistory}` : ''}
 ${contextData?.woundChanges ? `- Recent changes noted: ${contextData.woundChanges}` : ''}

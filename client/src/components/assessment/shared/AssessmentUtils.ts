@@ -60,7 +60,8 @@ export const assessmentApi = {
     classification: WoundClassification | null,
     userFeedback: string,
     existingCaseId?: string | null,
-    forceNew?: boolean
+    forceNew?: boolean,
+    bodyRegion?: { id: string; name: string }
   ) => {
     const formData = new FormData();
     if (image) {
@@ -77,6 +78,9 @@ export const assessmentApi = {
     }
     if (forceNew) {
       formData.append('forceNew', 'true');
+    }
+    if (bodyRegion) {
+      formData.append('bodyRegion', JSON.stringify(bodyRegion));
     }
 
     const response = await fetch('/api/assessment/final-plan', {
@@ -119,7 +123,8 @@ export const assessmentApi = {
     model: ModelType,
     previousQuestions: AIGeneratedQuestion[],
     classification: WoundClassification | null,
-    round: number
+    round: number,
+    bodyRegion?: { id: string; name: string }
   ) => {
     const formData = new FormData();
     if (image) {
@@ -130,6 +135,9 @@ export const assessmentApi = {
     formData.append('previousQuestions', JSON.stringify(previousQuestions));
     formData.append('classification', JSON.stringify(classification));
     formData.append('round', round.toString());
+    if (bodyRegion) {
+      formData.append('bodyRegion', JSON.stringify(bodyRegion));
+    }
 
     const response = await fetch('/api/assessment/follow-up-questions', {
       method: 'POST',

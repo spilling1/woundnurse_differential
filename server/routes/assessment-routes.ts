@@ -595,7 +595,8 @@ export function registerAssessmentRoutes(app: Express): void {
           imageAnalysis: classification,
           audience,
           model,
-          imageCount: files.length
+          imageCount: files.length,
+          bodyRegion: parsedBodyRegion
         }
       );
 
@@ -663,10 +664,23 @@ export function registerAssessmentRoutes(app: Express): void {
   // Step 1.5: Generate follow-up questions based on previous answers
   app.post("/api/assessment/follow-up-questions", upload.single('image'), async (req, res) => {
     try {
-      const { audience, model, previousQuestions, classification, round } = req.body;
+      const { audience, model, previousQuestions, classification, round, bodyRegion } = req.body;
       
       const parsedQuestions = JSON.parse(previousQuestions || '[]');
       const parsedClassification = JSON.parse(classification || '{}');
+      
+      // Parse body region if provided
+      let parsedBodyRegion = null;
+      if (bodyRegion) {
+        try {
+          parsedBodyRegion = typeof bodyRegion === 'string' ? JSON.parse(bodyRegion) : bodyRegion;
+          console.log('Follow-up questions: Body region received:', parsedBodyRegion);
+        } catch (error) {
+          console.error('Error parsing body region in follow-up questions:', error);
+        }
+      } else {
+        console.log('Follow-up questions: No body region provided');
+      }
       
       // Get agent instructions to determine if more questions are needed
       const agentInstructions = await storage.getActiveAgentInstructions();
@@ -699,7 +713,8 @@ export function registerAssessmentRoutes(app: Express): void {
         classification: parsedClassification,
         round: parseInt(round),
         audience,
-        model
+        model,
+        bodyRegion: parsedBodyRegion
       };
       
       // Calculate revised confidence based on answers provided
@@ -851,7 +866,7 @@ export function registerAssessmentRoutes(app: Express): void {
       console.log('Final plan request body keys:', Object.keys(req.body));
       console.log('Final plan model field:', req.body.model);
       
-      const { audience, userFeedback } = req.body;
+      const { audience, userFeedback, bodyRegion } = req.body;
       let { model } = req.body;
       
       // Fallback to default model if undefined/null/empty
@@ -861,6 +876,19 @@ export function registerAssessmentRoutes(app: Express): void {
       }
       const questions = JSON.parse(req.body.questions || '[]');
       const classification = JSON.parse(req.body.classification || '{}');
+      
+      // Parse body region if provided
+      let parsedBodyRegion = null;
+      if (bodyRegion) {
+        try {
+          parsedBodyRegion = typeof bodyRegion === 'string' ? JSON.parse(bodyRegion) : bodyRegion;
+          console.log('Final plan: Body region received:', parsedBodyRegion);
+        } catch (error) {
+          console.error('Error parsing body region in final plan:', error);
+        }
+      } else {
+        console.log('Final plan: No body region provided');
+      }
       
       // Check if this is a follow-up to an existing case
       const { existingCaseId, forceNew } = req.body;
@@ -886,6 +914,12 @@ export function registerAssessmentRoutes(app: Express): void {
       if (questions.length > 0) {
         contextData.aiQuestions = questions.filter((q: any) => q.answer && q.answer.trim() !== '');
         console.log(`Including ${contextData.aiQuestions.length} answered questions in contextData for AI processing`);
+      }
+      
+      // Add body region information to context data if provided
+      if (parsedBodyRegion) {
+        contextData.bodyRegion = parsedBodyRegion;
+        console.log('Final plan: Added body region to contextData:', parsedBodyRegion);
       }
 
       // Log user's answers to questions

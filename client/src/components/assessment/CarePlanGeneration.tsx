@@ -34,7 +34,10 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
         modelToUse,
         state.answeredQuestions || [],
         state.woundClassification,
-        state.userFeedback
+        state.userFeedback,
+        null, // existingCaseId
+        false, // forceNew
+        state.bodyRegion
       );
     },
     onSuccess: (data: any) => {
@@ -126,7 +129,9 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
         state.aiQuestions || [],
         classificationToUse,
         state.userFeedback || '',
-        state.duplicateInfo?.existingCase?.caseId // Pass existing case ID
+        state.duplicateInfo?.existingCase?.caseId, // Pass existing case ID
+        false, // forceNew
+        state.bodyRegion
       );
       
       setGeneratedPlan(followUpResponse);
@@ -167,7 +172,8 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
         classificationToUse,
         state.userFeedback || '',
         null, // No existing case ID - force new case
-        true  // forceNew flag
+        true, // forceNew flag
+        state.bodyRegion
       );
       
       setGeneratedPlan(newCaseResponse);

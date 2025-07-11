@@ -200,7 +200,8 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         state.model,
         state.aiQuestions,
         state.woundClassification,
-        newRound
+        newRound,
+        state.bodyRegion
       );
     },
     onSuccess: (data) => {
