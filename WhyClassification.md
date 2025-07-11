@@ -2095,3 +2095,26 @@ The primary diagnosis is an Unstageable Pressure Injury. This is strongly sugges
 
 ---
 
+
+---
+## Case: 2025-07-11-225
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:00:04 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 85%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location on the heel, a primary bony prominence, combined with its deep, crater-like appearance and the presence of extensive slough and eschar, are hallmark signs of a pressure injury. Because the full depth and true base of the wound cannot be visualized due to the necrotic tissue, it is classified as 'Unstageable'. The severity suggests it would likely be a full-thickness Stage 3 or Stage 4 injury if debrided. Deep, crater-like wound with a significant amount of non-viable tissue. The wound base is completely obscured by a mix of yellow slough and dark, black eschar. There appears to be exposed deep tissue, possibly tendon, visible within the wound bed. The wound edges are defined, with some redness. The surrounding skin appears dry and fragile.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 85% confidence
+
+---
+

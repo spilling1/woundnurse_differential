@@ -403,7 +403,10 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                     1. {state.woundClassification.woundType}
                   </div>
                   <Badge variant="default" className="bg-blue-600 text-white">
-                    {Math.round(state.woundClassification.confidence * 100)}% confidence
+                    {/* Use the normalized confidence from differential diagnosis if available */}
+                    {state.woundClassification?.differentialDiagnosis?.possibleTypes?.[0]?.confidence 
+                      ? Math.round(state.woundClassification.differentialDiagnosis.possibleTypes[0].confidence * 100)
+                      : Math.round(state.woundClassification.confidence * 100)}% confidence
                   </Badge>
                 </div>
                 {state.woundClassification.stage && (
@@ -424,16 +427,18 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
               )}
             </div>
 
-            {/* Differential Diagnosis Section - Enhanced */}
+            {/* Differential Diagnosis Section - Only show secondary possibilities */}
             {state.woundClassification?.differentialDiagnosis?.possibleTypes ? (
               <div className="mt-6">
                 <h3 className="text-lg font-bold mb-4">Differential Diagnosis</h3>
                 <div className="space-y-3">
-                  {state.woundClassification.differentialDiagnosis.possibleTypes.map((possibility, index) => (
+                  {state.woundClassification.differentialDiagnosis.possibleTypes
+                    .filter((possibility, index) => index > 0) // Skip the first (primary) diagnosis
+                    .map((possibility, index) => (
                     <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <div className="text-base font-semibold text-gray-900">
-                          {index + 1}. {possibility.woundType}
+                          {index + 2}. {possibility.woundType}
                         </div>
                         <Badge variant="outline" className="text-gray-700 border-gray-300">
                           {Math.round(possibility.confidence * 100)}% confidence
