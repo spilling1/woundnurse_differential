@@ -1957,3 +1957,26 @@ The location on the heel, a primary bony prominence, combined with the extensive
 
 ---
 
+
+---
+## Case: 2025-07-11-453
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:31:29 AM  
+**Wound Type:** Diabetic Foot Ulcer (Neuropathic Ulcer)  
+**Confidence:** 95%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The diagnosis of Diabetic Foot Ulcer is made with high confidence due to the classic clinical presentation. The key indicators are: 1) Location: Plantar surface over metatarsal heads, which are high-pressure points. 2) Appearance: Deep, 'punched-out' ulcers with well-defined, calloused borders (hyperkeratosis). 3) Bilateral nature: The presence of similar ulcers on both feet strongly suggests an underlying systemic disease process like diabetes mellitus causing peripheral neuropathy, rather than a single traumatic event. The wounds are bilateral and symmetrical, located on major pressure-bearing areas of the feet. They exhibit a classic 'punched-out' appearance with significant surrounding callus, which is highly characteristic of neuropathic ulcers resulting from repetitive pressure on an insensate foot.
+
+### Classification Process:
+
+**Independent Classification:** Diabetic Foot Ulcer (Neuropathic Ulcer) (95% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Diabetic Foot Ulcer (Neuropathic Ulcer) with 95% confidence
+
+---
+

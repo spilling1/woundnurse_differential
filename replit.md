@@ -595,6 +595,12 @@ Changelog:
   - **Question Generation Enhancement**: Updated question service with audience-specific templates and examples for medical, family, and patient communications
   - **Wound Type Instructions**: Updated all wound type instructions to include audience-specific clarifying questions (separate sections for medical/family vs patient)
   - **Database-Driven Communication**: All audience-specific language rules stored in database configuration for consistent application across all AI interactions
+- July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
+  - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
+  - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%
+  - **Evidence-Based Diagnostic Criteria**: Integrated anatomical location, wound bed characteristics, exudate patterns, and surrounding tissue analysis
+  - **Confidence Scoring Enhancement**: Implemented detailed confidence scoring guidelines (85-95% high, 70-84% moderate, 50-69% lower) with clinical reasoning requirements
+  - **Comprehensive Diagnostic Analysis**: System now leverages full wound care knowledge base to improve diagnostic accuracy beyond basic visual assessment
 - July 11, 2025. **BODY REGION SELECTION FEATURE**: Implemented comprehensive anatomical location selection for enhanced wound assessment:
   - **Interactive Body Diagrams**: Created clickable body diagrams with front/back views allowing users to select wound location
   - **Anatomical Mapping**: Built comprehensive body region mapping with 22 anatomical regions (head, chest, arms, legs, etc.) with coordinate-based selection

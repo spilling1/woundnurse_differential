@@ -163,10 +163,39 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         confidence: 0.4
       };
       
-      // Get agent instructions from database (WITHOUT YOLO context)
+      // Get comprehensive agent instructions from database (WITHOUT YOLO context)
       const agentInstructions = await storage.getActiveAgentInstructions();
+      
+      // Get wound-specific instructions from database
+      const woundTypes = await storage.getEnabledWoundTypes();
+      const woundSpecificInstructions = woundTypes.map(wt => 
+        `${wt.displayName}: ${wt.instructions || 'Standard assessment guidelines'}`
+      ).join('\n\n');
+      
       let instructions = agentInstructions ? 
-        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}` : '';
+        `${agentInstructions.systemPrompts}\n\n${agentInstructions.carePlanStructure}\n\n${agentInstructions.specificWoundCare}\n\n${agentInstructions.questionsGuidelines || ''}\n\nWOUND TYPE SPECIFIC INSTRUCTIONS:\n${woundSpecificInstructions}` : '';
+      
+      // Add enhanced differential diagnosis instructions
+      instructions += `\n\nDIFFERENTIAL DIAGNOSIS REQUIREMENTS:
+You MUST provide a comprehensive differential diagnosis with:
+1. Primary diagnosis with confidence percentage
+2. At least 2-3 alternative possibilities with confidence percentages
+3. All confidence percentages MUST add up to 100%
+4. Detailed clinical reasoning for each possibility
+5. Specific anatomical and visual features supporting each diagnosis
+
+ENHANCED DIAGNOSTIC CRITERIA:
+- Use anatomical location to guide differential diagnosis
+- Consider wound bed characteristics, exudate patterns, and surrounding tissue
+- Integrate comprehensive wound care knowledge from specific wound care instructions
+- Apply evidence-based diagnostic criteria for each wound type
+- Factor in common presentation patterns and risk factors
+
+CONFIDENCE SCORING:
+- High confidence (85-95%): Clear diagnostic indicators with minimal ambiguity
+- Moderate confidence (70-84%): Strong indicators but some differential possibilities
+- Lower confidence (50-69%): Multiple viable possibilities requiring clinical correlation
+- All probabilities in differential diagnosis must sum to 100%`;
       
       // Add body region information if provided
       if (bodyRegion) {
