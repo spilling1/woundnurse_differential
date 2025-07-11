@@ -602,6 +602,7 @@ Changelog:
 - July 11, 2025. **CLEAN TWO-PAGE WORKFLOW**: Removed follow-up questions and additional context from Page 1, keeping only diagnosis card and Page 2 navigation button
 - July 11, 2025. **ENHANCED PAGE 2 STRUCTURE**: Removed duplicate header card, added clear "Final Diagnosis - [Type] - [%] probability" format, and included follow-up questions section with 4 key care plan questions
 - July 11, 2025. **REACT HOOKS ERROR FIX**: Fixed "Rendered fewer hooks than expected" error by moving all hooks to top of component before any conditional returns
+- July 11, 2025. **FINAL DIAGNOSIS DISPLAY FIX**: Fixed critical bug where final diagnosis was showing "Final Diagnosis - - 95% probability" by correctly accessing primaryDiagnosis.woundType property from API response
 - July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
   - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
   - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%

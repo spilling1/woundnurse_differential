@@ -103,7 +103,9 @@ export default function DifferentialDiagnosisQuestions({
 
   if (showPage2 && refinementResult) {
     const confidence = refinementResult.page2Analysis.confidence;
-    const primaryDiagnosis = refinementResult.page2Analysis.primaryDiagnosis.primaryDiagnosis;
+    const primaryDiagnosis = refinementResult.page2Analysis.primaryDiagnosis?.woundType || 
+                           refinementResult.page2Analysis.remaining?.[0]?.woundType || 
+                           'Unknown';
     const confidencePercent = Math.round(confidence * 100);
     
     // Check if we have high confidence (90-95%) for final diagnosis display
