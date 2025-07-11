@@ -1045,6 +1045,14 @@ export function registerAssessmentRoutes(app: Express): void {
         // Note: Duplicate image detection now happens at upload time, not here
       }
       
+      // Determine case name based on whether this is a refined diagnosis
+      let caseName = null;
+      const hasRefinedDiagnosis = contextData && contextData.aiQuestions && contextData.aiQuestions.length > 0;
+      
+      if (hasRefinedDiagnosis) {
+        caseName = "Final Assessment";
+      }
+
       // Create wound assessment record
       const assessment = await storage.createWoundAssessment({
         caseId,
@@ -1058,7 +1066,8 @@ export function registerAssessmentRoutes(app: Express): void {
         contextData: JSON.stringify(contextData),
         carePlan,
         versionNumber,
-        isFollowUp
+        isFollowUp,
+        caseName
       });
 
       res.json({
