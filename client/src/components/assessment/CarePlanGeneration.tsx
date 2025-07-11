@@ -31,11 +31,18 @@ export default function CarePlanGeneration({ state, onStateChange, onNextStep }:
       // Use refined diagnosis if available from differential diagnosis system
       const classificationToUse = state.differentialRefinement?.refinement?.refinedDiagnosis || state.woundClassification;
       
+      // CRITICAL FIX: Use questionsAnalyzed from differential diagnosis refinement if available
+      // This includes the "Other Information" that was added during Page 2 analysis
+      const questionsToUse = state.differentialRefinement?.refinement?.questionsAnalyzed || state.answeredQuestions || [];
+      
+      console.log('CarePlanGeneration: Using questions from differential diagnosis refinement:', questionsToUse.length);
+      console.log('CarePlanGeneration: Questions include:', questionsToUse.map(q => ({ question: q.question?.substring(0, 50), hasAnswer: !!q.answer })));
+      
       return await assessmentApi.finalPlan(
         state.selectedImage,
         state.audience,
         modelToUse,
-        state.answeredQuestions || [],
+        questionsToUse,
         classificationToUse,
         state.userFeedback,
         null, // existingCaseId
