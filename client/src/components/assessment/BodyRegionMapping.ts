@@ -37,42 +37,42 @@ export const frontBodyRegions: BodyRegion[] = [
     id: '6L',
     name: 'Left Upper Leg (Front)',
     description: 'Left upper leg/thigh front',
-    coordinates: { x: 140, y: 425, width: 80, height: 140 },
+    coordinates: { x: 280, y: 425, width: 80, height: 140 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '6R',
     name: 'Right Upper Leg (Front)',
     description: 'Right upper leg/thigh front',
-    coordinates: { x: 280, y: 425, width: 80, height: 140 },
+    coordinates: { x: 140, y: 425, width: 80, height: 140 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '7L',
     name: 'Left Lower Leg (Front)',
     description: 'Left lower leg/shin front',
-    coordinates: { x: 140, y: 565, width: 80, height: 140 },
+    coordinates: { x: 280, y: 565, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '7R',
     name: 'Right Lower Leg (Front)',
     description: 'Right lower leg/shin front',
-    coordinates: { x: 280, y: 565, width: 80, height: 140 },
+    coordinates: { x: 140, y: 565, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '8L',
     name: 'Left Top/Side of Foot',
     description: 'Left top/side of foot',
-    coordinates: { x: 140, y: 705, width: 80, height: 80 },
+    coordinates: { x: 280, y: 705, width: 80, height: 80 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   {
     id: '8R',
     name: 'Right Top/Side of Foot',
     description: 'Right top/side of foot',
-    coordinates: { x: 280, y: 705, width: 80, height: 80 },
+    coordinates: { x: 140, y: 705, width: 80, height: 80 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   
