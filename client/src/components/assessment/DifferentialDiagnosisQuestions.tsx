@@ -124,7 +124,7 @@ export default function DifferentialDiagnosisQuestions({
                 <div className="p-6 bg-green-50 border-2 border-green-300 rounded-lg">
                   <div className="text-center mb-4">
                     <div className="text-2xl font-bold text-green-900 mb-2">
-                      Final Diagnosis - {primaryDiagnosis} - {confidencePercent}% probability
+                      {primaryDiagnosis}
                     </div>
                     <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-2">
                       {confidencePercent}% Confidence
@@ -132,9 +132,9 @@ export default function DifferentialDiagnosisQuestions({
                   </div>
                   <div className="mt-4">
                     <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
-                    <p className="text-sm text-green-800">
+                    <div className="text-sm text-green-800 leading-relaxed bg-white p-3 rounded border border-green-200">
                       {refinementResult.page2Analysis.reasoning}
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ export default function DifferentialDiagnosisQuestions({
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="text-lg font-bold text-green-900">
-                      Primary Diagnosis - {primaryDiagnosis} - {confidencePercent}% probability
+                      {primaryDiagnosis}
                     </div>
                     <Badge variant="default" className="bg-green-600 text-white">
                       {confidencePercent}% confidence
@@ -153,9 +153,9 @@ export default function DifferentialDiagnosisQuestions({
                   </div>
                   <div className="mt-4">
                     <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
-                    <p className="text-sm text-green-800">
+                    <div className="text-sm text-green-800 leading-relaxed bg-white p-3 rounded border border-green-200">
                       {refinementResult.page2Analysis.reasoning}
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -238,10 +238,20 @@ export default function DifferentialDiagnosisQuestions({
                 
                 <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
                   <div className="text-sm font-medium text-gray-900 mb-2">
-                    What is the patient's medical history (diabetes, circulation issues, mobility)?
+                    Beyond diabetes, what other medical conditions does the patient have (circulation issues, foot deformities, previous amputations)?
                   </div>
                   <Textarea
-                    placeholder="Relevant medical history..."
+                    placeholder="Other medical conditions beyond diabetes..."
+                    className="min-h-[60px] resize-none"
+                  />
+                </div>
+                
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="text-sm font-medium text-gray-900 mb-2">
+                    What shoes does the patient wear every day, and are there any foot deformities or calluses?
+                  </div>
+                  <Textarea
+                    placeholder="Describe footwear and foot condition..."
                     className="min-h-[60px] resize-none"
                   />
                 </div>

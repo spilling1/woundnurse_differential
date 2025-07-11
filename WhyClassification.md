@@ -2348,3 +2348,26 @@ The location on the heel, a major bony prominence, is highly characteristic of a
 
 ---
 
+
+---
+## Case: 2025-07-11-873
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:03:19 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, is highly indicative of a pressure ulcer. The depth of the wound and the presence of significant necrotic tissue (slough and eschar) are characteristic features of a severe pressure injury. Because the base of the wound is obscured by this necrotic tissue, it is classified as Unstageable. Deep, crater-like wound with a well-defined border. The wound bed contains a significant amount of black eschar (necrotic tissue) and yellow slough, obscuring the full depth. Whitish, fibrous tissue, possibly tendon, is visible. The surrounding skin appears dry and flaky, with some erythema (redness) at the wound margin.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 75% confidence
+
+---
+

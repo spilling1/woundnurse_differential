@@ -603,6 +603,9 @@ Changelog:
 - July 11, 2025. **ENHANCED PAGE 2 STRUCTURE**: Removed duplicate header card, added clear "Final Diagnosis - [Type] - [%] probability" format, and included follow-up questions section with 4 key care plan questions
 - July 11, 2025. **REACT HOOKS ERROR FIX**: Fixed "Rendered fewer hooks than expected" error by moving all hooks to top of component before any conditional returns
 - July 11, 2025. **FINAL DIAGNOSIS DISPLAY FIX**: Fixed critical bug where final diagnosis was showing "Final Diagnosis - - 95% probability" by correctly accessing primaryDiagnosis.woundType property from API response
+- July 11, 2025. **IMPROVED DIAGNOSIS FORMATTING**: Removed redundant "Final Diagnosis -" and "probability" text from diagnosis display, now shows clean diagnosis name with confidence badge only
+- July 11, 2025. **ENHANCED CLINICAL REASONING**: Improved clinical reasoning text formatting with better spacing, background, and readability in a bordered container
+- July 11, 2025. **DIABETIC FOOT ULCER SPECIFIC QUESTIONS**: Updated follow-up questions to be more specific to diabetic foot ulcers, including footwear assessment and medical conditions beyond diabetes, based on wound type instructions from database
 - July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
   - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
   - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%
