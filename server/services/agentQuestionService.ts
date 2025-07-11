@@ -229,6 +229,13 @@ ${woundTypeInstructions}
     console.log('AgentQuestionService: Added body region context to AI instructions:', bodyRegionContext);
   }
   
+  // Extract differential diagnosis information and questions from AI analysis
+  const differentialDiagnosis = imageAnalysis.differentialDiagnosis;
+  const aiSuggestedQuestions = differentialDiagnosis?.questionsToAsk || [];
+  
+  console.log('AgentQuestionService: Differential diagnosis info:', differentialDiagnosis);
+  console.log('AgentQuestionService: AI suggested questions:', aiSuggestedQuestions);
+  
   // Check if agent instructions contain question requirements
   const instructionsLower = instructions.toLowerCase();
   const hasQuestionRequirements = 
@@ -323,12 +330,7 @@ ${woundTypeInstructions}
     }
   }
 
-  // Extract differential diagnosis information and questions from AI analysis
-  const differentialDiagnosis = imageAnalysis.differentialDiagnosis;
-  const aiSuggestedQuestions = differentialDiagnosis?.questionsToAsk || [];
-  
-  console.log('AgentQuestionService: Differential diagnosis info:', differentialDiagnosis);
-  console.log('AgentQuestionService: AI suggested questions:', aiSuggestedQuestions);
+
 
   const analysisPrompt = `
 You are an AI wound care specialist following specific agent instructions. ${isFollowUp ? 'This is a follow-up round of questions.' : 'This is the initial question generation.'}

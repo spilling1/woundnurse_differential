@@ -1566,3 +1566,95 @@ The confidence score is high due to the clear visual evidence. The location on t
 
 ---
 
+
+---
+## Case: 2025-07-11-410
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:17:30 AM  
+**Wound Type:** Pressure Ulcer / Injury  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, is a classic site for pressure-related injury. The wound is deep, crater-like, and a significant portion of the wound bed is obscured by slough and eschar, making it unstageable by definition. The presence of these non-viable tissues, along with the depth, strongly suggests a severe pressure ulcer (that would likely be Stage 3 or 4 if the base were visible). Deep, full-thickness wound with a circular shape and well-defined edges. The surrounding skin appears dry, flaky, and macerated in some areas. There are signs of dried blood on the superior aspect of the wound.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer / Injury (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer / Injury with 80% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-766
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:18:02 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on a major bony prominence (heel), combined with the deep, crater-like appearance and full-thickness tissue loss exposing underlying structures, is a classic presentation of a Stage 4 pressure ulcer. The extensive necrotic eschar and slough also classify it as 'Unstageable' because the true depth cannot be fully visualized until debridement. The combination of these features makes pressure injury the most probable diagnosis. The wound has well-defined, rolled edges (epibole). The surrounding skin appears dry and flaky. There are signs of dried blood around the wound perimeter. The depth of the wound is significant, making it a severe injury.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 90% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-911
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:19:36 AM  
+**Wound Type:** Venous Stasis Ulcer  
+**Confidence:** 85%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The combination of location in the 'gaiter area' of the lower leg, significant edema, and signs of hemosiderin staining are classic clinical indicators for a venous stasis ulcer resulting from chronic venous insufficiency. The red, granular wound bed is consistent with a healing attempt, but the presence of slough and significant inflammation suggests a stalled or complicated healing process. The wound is located on a lower limb with significant edema (swelling) and erythema (redness) in the periwound skin. There is evidence of hemosiderin staining (brownish discoloration) further down the leg, and the skin on the heel appears dry. The wound bed is primarily red and granular, but has patches of yellow slough. The surrounding inflammation is significant and may indicate associated cellulitis.
+
+### Classification Process:
+
+**Independent Classification:** Venous Stasis Ulcer (85% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Stasis Ulcer with 85% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-033
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:20:12 AM  
+**Wound Type:** Venous Leg Ulcer with Cellulitis  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location in the gaiter area (medial lower leg), combined with significant surrounding edema, are classic signs of a venous leg ulcer resulting from chronic venous insufficiency. The ulcer bed shows granulation tissue, typical for this wound type. The prominent, widespread redness (erythema) and swelling strongly indicate a superimposed bacterial infection (cellulitis), which is a common and serious complication. Significant edema of the lower leg and ankle. The widespread, intense erythema is highly suggestive of cellulitis, a serious skin infection requiring urgent medical evaluation.
+
+### Classification Process:
+
+**Independent Classification:** Venous Leg Ulcer with Cellulitis (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Leg Ulcer with Cellulitis with 90% confidence
+
+---
+
