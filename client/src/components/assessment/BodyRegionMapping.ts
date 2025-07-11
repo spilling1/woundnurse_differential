@@ -81,28 +81,28 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'head_neck_front',
     name: 'Head/Neck (Front)',
     description: 'Head and neck area - front view',
-    coordinates: { x: 180, y: 15, width: 100, height: 95 },
+    coordinates: { x: 175, y: 15, width: 110, height: 115 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'chest',
     name: 'Chest',
     description: 'Chest area',
-    coordinates: { x: 150, y: 110, width: 190, height: 100 },
+    coordinates: { x: 150, y: 130, width: 190, height: 80 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: 'arms_front_left',
     name: 'Left Arm (Front)',
     description: 'Left arm - front view',
-    coordinates: { x: 340, y: 110, width: 100, height: 280 },
+    coordinates: { x: 340, y: 130, width: 100, height: 260 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'arms_front_right',
     name: 'Right Arm (Front)',
     description: 'Right arm - front view',
-    coordinates: { x: 50, y: 110, width: 100, height: 280 },
+    coordinates: { x: 50, y: 130, width: 100, height: 260 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
