@@ -193,7 +193,7 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'back',
     name: 'Back',
     description: 'Upper back area',
-    coordinates: { x: 145, y: 110, width: 200, height: 130 },
+    coordinates: { x: 145, y: 110, width: 185, height: 130 },
     commonWoundTypes: ['pressure_injury', 'surgical_wound']
   },
   {
@@ -207,7 +207,7 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'arms_back_right',
     name: 'Right Arm (Back)',
     description: 'Right arm - back view',
-    coordinates: { x: 345, y: 110, width: 100, height: 290 },
+    coordinates: { x: 330, y: 110, width: 100, height: 290 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
