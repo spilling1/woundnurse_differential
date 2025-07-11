@@ -65,18 +65,20 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
           const isSelected = selectedRegion?.id === region.id;
           const isHovered = hoveredRegion?.id === region.id;
           
-          // Show selected region even when outlines are hidden
-          if (!showRegionOutlines && !isSelected) return null;
+          // When outlines are hidden, only show selected or hovered regions
+          if (!showRegionOutlines && !isSelected && !isHovered) return null;
           
           return (
             <div
               key={region.id}
-              className={`absolute border-2 transition-all duration-200 ${
+              className={`absolute transition-all duration-200 ${
                 isSelected 
-                  ? 'bg-blue-500 bg-opacity-40 border-blue-600' 
+                  ? 'bg-blue-500 bg-opacity-40 border-2 border-blue-600' 
                   : isHovered 
-                    ? 'bg-green-500 bg-opacity-30 border-green-600' 
-                    : 'bg-gray-500 bg-opacity-10 border-gray-400'
+                    ? 'bg-green-500 bg-opacity-30 border-2 border-green-600' 
+                    : showRegionOutlines 
+                      ? 'bg-gray-500 bg-opacity-10 border-2 border-gray-400'
+                      : 'border-0'
               }`}
               style={{
                 left: `${(region.coordinates.x / 500) * 100}%`,
