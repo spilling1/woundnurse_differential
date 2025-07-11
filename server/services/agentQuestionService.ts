@@ -277,6 +277,35 @@ REASSESSMENT TRIGGERS:
 
 TARGET AUDIENCE: ${audience}
 
+CRITICAL AUDIENCE-SPECIFIC COMMUNICATION RULES:
+${audience === 'medical' ? `
+🩺 MEDICAL PROFESSIONAL AUDIENCE:
+- Address the medical professional as a healthcare provider caring for a patient
+- Use THIRD PERSON when asking about the patient (e.g., "Has the patient experienced fever?" NOT "Have you experienced fever?")
+- Use professional medical terminology
+- Ask about patient history, symptoms, and treatments in third person
+- Example: "Does the patient have a history of diabetes?"
+- Example: "Has the patient experienced any systemic signs of infection?"
+- Example: "What treatments has the patient received for this wound?"
+` : audience === 'family' ? `
+👨‍👩‍👧‍👦 FAMILY CAREGIVER AUDIENCE:
+- Address them as caregivers helping a patient/family member
+- Use THIRD PERSON when asking about the patient (e.g., "Has your family member shown signs of infection?" NOT "Have you shown signs of infection?")
+- Use clear, non-technical language
+- Ask about the patient's condition from caregiver's perspective
+- Example: "Does the patient have diabetes or other medical conditions?"
+- Example: "Has the patient mentioned any pain or discomfort?"
+- Example: "Have you noticed any changes in the patient's wound?"
+` : `
+🧑‍🦽 PATIENT AUDIENCE:
+- Address the patient directly in SECOND PERSON
+- Use "you" and "your" when asking about their condition
+- Use clear, empathetic language
+- Example: "Do you have diabetes or other medical conditions?"
+- Example: "Have you experienced any pain or discomfort?"
+- Example: "Have you noticed any changes in your wound?"
+`}
+
 CRITICAL WOUND TYPE REQUIREMENTS:
 ${hasWoundTypeRequirements ? `
 🚨 MANDATORY WOUND TYPE REQUIREMENTS DETECTED 🚨
@@ -312,18 +341,46 @@ QUESTION STRATEGY FRAMEWORK:
 GENERATE MAXIMUM 5 QUESTIONS PER PAGE - Focus on HIGH and MEDIUM priority questions only
 
 A) HIGH PRIORITY QUESTIONS (Essential for accurate assessment):
+${audience === 'medical' ? `
+   - Medical history: "Does the patient have diabetes?"
+   - Wound origin: "How did the patient's wound occur?"
+   - Timeline: "How long has the patient had this wound?"
+   - Location specifics: "Where exactly on the patient's body is this wound located?"
+   - Infection signs: "Do you observe increased redness, warmth, or pus around the patient's wound?"
+` : audience === 'family' ? `
+   - Medical history: "Does the patient have diabetes?"
+   - Wound origin: "How did the patient's wound occur?"
+   - Timeline: "How long has the patient had this wound?"
+   - Location specifics: "Where exactly on the patient's body is this wound located?"
+   - Infection signs: "Have you noticed increased redness, warmth, or pus around the patient's wound?"
+` : `
    - Medical history: "Do you have diabetes?"
    - Wound origin: "How did this wound occur?"
    - Timeline: "How long have you had this wound?"
-   - Location specifics: "Where exactly on the body is this wound located?"
-   - Infection signs: "Do you see increased redness, warmth, or pus?"
+   - Location specifics: "Where exactly on your body is this wound located?"
+   - Infection signs: "Do you see increased redness, warmth, or pus around your wound?"
+`}
 
 B) MEDIUM PRIORITY QUESTIONS (Improve care plan quality):
+${audience === 'medical' ? `
+   - Current symptoms: "Does the patient experience pain or numbness around the wound?"
+   - Drainage: "What type and amount of drainage do you observe from the patient's wound?"
+   - Current treatments: "What treatments has the patient received so far?"
+   - Progress: "Has the patient's wound changed in size or appearance recently?"
+   - Mobility impact: "Is this wound affecting the patient's ability to walk or move?"
+` : audience === 'family' ? `
+   - Current symptoms: "Has the patient mentioned pain or numbness around the wound?"
+   - Drainage: "What type and amount of drainage have you noticed from the patient's wound?"
+   - Current treatments: "What treatments have you tried for the patient so far?"
+   - Progress: "Has the patient's wound changed in size or appearance recently?"
+   - Mobility impact: "Is this wound affecting the patient's ability to walk or move?"
+` : `
    - Current symptoms: "Do you experience pain or numbness around the wound?"
-   - Drainage: "What type and amount of drainage do you see?"
+   - Drainage: "What type and amount of drainage do you see from your wound?"
    - Current treatments: "What treatments have you tried so far?"
-   - Progress: "Has the wound changed in size or appearance recently?"
+   - Progress: "Has your wound changed in size or appearance recently?"
    - Mobility impact: "Is this wound affecting your ability to walk or move?"
+`}
 
 C) LOW PRIORITY QUESTIONS (Skip unless critical):
    - Wound bed color details
@@ -448,9 +505,19 @@ REQUIRED JSON FORMAT:
 VALID CATEGORIES: location, patient_info, symptoms, medical_history, wound_assessment, photo_request, other
 
 EXAMPLE OF CORRECT QUESTIONS:
+${audience === 'medical' ? `
+✓ "Does the patient have diabetes?"
+✓ "Have you observed any changes in redness or swelling around the patient's wound?"
+✓ "What treatments has the patient received so far?"
+` : audience === 'family' ? `
+✓ "Does the patient have diabetes?"
+✓ "Have you noticed any changes in redness or swelling around the patient's wound?"
+✓ "What treatments have you tried for the patient so far?"
+` : `
 ✓ "Do you have diabetes?"
-✓ "Have you noticed any changes in redness or swelling?"
+✓ "Have you noticed any changes in redness or swelling around your wound?"
 ✓ "What treatments have you tried so far?"
+`}
 
 EXAMPLE OF INCORRECT QUESTIONS:
 ✗ "Please avoid using urine or other non-medical substances on the wound. Have you noticed any changes in the redness or swelling?"

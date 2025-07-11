@@ -575,6 +575,12 @@ Changelog:
   - **Comprehensive Logging**: Added detailed logging at every step showing body region ID and name for complete data flow transparency
   - **Service Integration**: Updated wound classifier, care plan generator, and question generation services to utilize anatomical location context
   - **Database Storage**: Body region information properly stored in wound assessments table and passed through all assessment versions
+- July 11, 2025. **AUDIENCE-SPECIFIC COMMUNICATION SYSTEM**: Implemented comprehensive audience-specific communication for medical professionals and caregivers:
+  - **Third-Person Addressing**: Medical professionals and family caregivers now properly addressed in third person about the patient ("Has the patient experienced fever?" instead of "Have you experienced fever?")
+  - **AI Instructions Update**: Enhanced system prompts with explicit audience-specific communication rules and examples
+  - **Question Generation Enhancement**: Updated question service with audience-specific templates and examples for medical, family, and patient communications
+  - **Wound Type Instructions**: Updated all wound type instructions to include audience-specific clarifying questions (separate sections for medical/family vs patient)
+  - **Database-Driven Communication**: All audience-specific language rules stored in database configuration for consistent application across all AI interactions
 - July 11, 2025. **BODY REGION SELECTION FEATURE**: Implemented comprehensive anatomical location selection for enhanced wound assessment:
   - **Interactive Body Diagrams**: Created clickable body diagrams with front/back views allowing users to select wound location
   - **Anatomical Mapping**: Built comprehensive body region mapping with 22 anatomical regions (head, chest, arms, legs, etc.) with coordinate-based selection
