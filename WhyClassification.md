@@ -2026,3 +2026,49 @@ The location on the heel, a major bony prominence, is the primary indicator for 
 
 ---
 
+
+---
+## Case: 2025-07-11-257
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:45:02 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 70%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location on the heel, a major bony prominence, is highly characteristic of a pressure injury. The deep, crater-like appearance with full-thickness tissue loss is also typical. Because the base of the wound is covered by slough and eschar, its true depth cannot be determined, making it an 'Unstageable' pressure injury by definition. The presence of these non-viable tissues and surrounding redness also indicates a high likelihood of infection. Deep, crater-like wound with a well-defined, erythematous (red) border. The wound base is obscured by a combination of black, hard tissue (eschar) and yellow, stringy tissue (slough). Some pale, whitish tissue, possibly tendon, is visible. The surrounding skin is dry and flaky, with some dried blood superior to the wound.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (70% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 70% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-723
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:47:20 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 70%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a primary bony prominence, is highly indicative of a pressure injury. The depth and extensive tissue necrosis are characteristic of a severe ulcer. Because the base of the wound is covered by slough and eschar, its true depth cannot be determined, making 'Unstageable' the correct classification. The presence of significant non-viable tissue and periwound erythema also suggests a high likelihood of infection. A large, circular, full-thickness wound located on the heel. The wound bed is obscured by a significant amount of dark, black eschar and yellowish, stringy slough. There appears to be exposed whitish tissue, possibly tendon or fascia. The wound edges are clearly defined, and the immediate periwound skin is erythematous (red). Dried blood is visible superior to the wound crater.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (70% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 70% confidence
+
+---
+
