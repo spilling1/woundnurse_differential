@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Target, Brain, Zap } from "lucide-react";
+import { Eye, Target, Brain, Zap, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 interface DetectionTransparencyCardProps {
   classification: {
@@ -30,6 +31,8 @@ interface DetectionTransparencyCardProps {
 }
 
 export default function DetectionTransparencyCard({ classification }: DetectionTransparencyCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
   const hasDetectionData = classification.detection || classification.detectionMetadata;
   const detectionFound = classification.detection?.confidence > 0;
   const aiConfidence = classification.confidence || 0;
@@ -65,14 +68,25 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
   
   return (
     <Card className="mb-6 bg-blue-50 border-blue-200">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-blue-900">
-          <Eye className="h-5 w-5" />
-          Detection Process Transparency
+      <CardHeader 
+        className="cursor-pointer hover:bg-blue-100 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <CardTitle className="flex items-center justify-between text-blue-900">
+          <div className="flex items-center gap-2">
+            <Eye className="h-5 w-5" />
+            Detection Process Transparency
+          </div>
+          {isExpanded ? (
+            <ChevronUp className="h-4 w-4" />
+          ) : (
+            <ChevronDown className="h-4 w-4" />
+          )}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      {isExpanded && (
+        <CardContent>
+          <div className="space-y-4">
           {/* YOLO Detection Step */}
           <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
             <div className="flex items-center gap-3">
@@ -185,7 +199,8 @@ export default function DetectionTransparencyCard({ classification }: DetectionT
             </div>
           )}
         </div>
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 }

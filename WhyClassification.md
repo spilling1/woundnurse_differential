@@ -2233,3 +2233,49 @@ The location on the heel is a classic site for a pressure ulcer due to it being 
 
 ---
 
+
+---
+## Case: 2025-07-11-408
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:37:30 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location on the heel, a major bony prominence, is a classic presentation for a pressure ulcer. The presence of extensive slough and eschar covering the base makes it Unstageable, as the full depth of tissue loss cannot be determined. The depth and necrotic nature are indicative of significant, prolonged pressure. Deep, full-thickness tissue loss with a large amount of black eschar and yellow slough obscuring the wound base. What appears to be tendon or fascia may be visible. The wound edges are defined, and the periwound skin shows erythema (redness).
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 90% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-027
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:38:10 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on a primary bony prominence (heel) is the strongest indicator for a pressure injury. The deep, crater-like appearance with a bed obscured by slough and eschar is the classic presentation of an Unstageable Pressure Injury. This type of wound develops from sustained pressure and/or shear, common in individuals with limited mobility. A deep, circular wound located on the heel, a bony prominence. The wound edges are defined and inflamed. The wound bed is covered by a mix of non-viable tissue, making it impossible to assess the full depth visually. The surrounding skin is red and shows signs of pressure.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 75% confidence
+
+---
+
