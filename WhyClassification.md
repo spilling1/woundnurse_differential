@@ -1727,3 +1727,26 @@ The location on the heel, a major bony prominence, combined with the deep, crate
 
 ---
 
+
+---
+## Case: 2025-07-11-647
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 5:40:17 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location on the heel, a major bony prominence, combined with its deep, crater-like appearance, is highly characteristic of a severe pressure ulcer. The presence of extensive necrotic tissue and slough obscures the base, making it 'Unstageable,' but the visible depth suggests it would likely be a Stage 4 ulcer if the base were visible. The differential diagnosis, particularly with a diabetic foot ulcer, is very high due to the similar presentation and location. Deep, full-thickness wound with a circular shape and well-defined, erythematous edges. The wound bed is mostly obscured by a mix of black eschar (necrotic tissue) and yellow/white slough. There appears to be exposed deeper tissue, possibly tendon. The surrounding skin is dry and flaky, with some dried blood superior to the wound.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 75% confidence
+
+---
+

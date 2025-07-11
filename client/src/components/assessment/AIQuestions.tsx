@@ -480,10 +480,11 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
       )}
 
       {/* Enhanced Detection Transparency */}
-      <DetectionTransparencyCard 
-        detectionData={state.woundClassification?.detectionMetadata}
-        aiClassification={state.woundClassification}
-      />
+      {state.woundClassification && (
+        <DetectionTransparencyCard 
+          classification={state.woundClassification}
+        />
+      )}
 
       {/* Questions Section */}
       {state.aiQuestions.length > 0 && (
