@@ -116,7 +116,19 @@ export function registerAssessmentRoutes(app: Express): void {
       const userId = (req as any).customUser.id;
 
       // Validate request body
-      const { audience, model, ...contextData } = uploadRequestSchema.parse(req.body);
+      const { audience, model, bodyRegion, ...contextData } = uploadRequestSchema.parse(req.body);
+      
+      // Parse body region if provided
+      let parsedBodyRegion = null;
+      if (bodyRegion) {
+        try {
+          parsedBodyRegion = typeof bodyRegion === 'string' ? JSON.parse(bodyRegion) : bodyRegion;
+          console.log('Upload Route: Body region parsed successfully:', parsedBodyRegion);
+        } catch (error) {
+          console.error('Upload Route: Error parsing body region:', error);
+          // Continue without body region if parsing fails
+        }
+      }
       
       // Validate image
       const imageBase64 = await validateImage(req.file);
@@ -144,8 +156,14 @@ export function registerAssessmentRoutes(app: Express): void {
       // Analyze if agent needs to ask questions before generating care plan
       const sessionId = caseId; // Use case ID as session ID for question tracking
       
+      // Get user info for logging
+      const userInfo = {
+        userId: userId,
+        email: (req as any).customUser.email
+      };
+      
       // Classify wound using AI with sessionId for proper logging
-      const classification = await classifyWound(imageBase64, model, req.file.mimetype, sessionId);
+      const classification = await classifyWound(imageBase64, model, req.file.mimetype, sessionId, userInfo, parsedBodyRegion);
       const questionAnalysis = await analyzeAssessmentForQuestions(
         sessionId,
         {
@@ -154,7 +172,8 @@ export function registerAssessmentRoutes(app: Express): void {
           model,
           previousQuestions: [],
           round: 1,
-          instructions: null
+          instructions: null,
+          bodyRegion: parsedBodyRegion
         }
       );
       
@@ -168,7 +187,7 @@ export function registerAssessmentRoutes(app: Express): void {
       const carePlan = await generateCarePlan(
         audience, 
         classificationWithSessionId, 
-        contextData, 
+        { ...contextData, bodyRegion: parsedBodyRegion }, // Include body region in context
         model,
         undefined, // imageData not needed for non-vision models here
         undefined, // imageMimeType
