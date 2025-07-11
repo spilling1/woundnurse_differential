@@ -432,19 +432,19 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
       </Card>
 
       {state.woundClassification && !state.showPage2Analysis && (
-        <Card>
+        <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-200 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">Most Probable Diagnoses</CardTitle>
+            <CardTitle className="text-xl font-bold text-green-800">Most Probable Diagnoses</CardTitle>
           </CardHeader>
           <CardContent>
             {/* Primary Diagnosis with enhanced styling */}
             <div className="mb-6">
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="p-4 bg-gradient-to-r from-blue-100 to-green-100 border-2 border-blue-300 rounded-lg shadow-md">
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-lg font-bold text-blue-900">
                     1. {state.woundClassification.woundType}
                   </div>
-                  <Badge variant="default" className="bg-blue-600 text-white">
+                  <Badge variant="default" className="bg-blue-600 text-white shadow-sm">
                     {/* Use the normalized confidence from differential diagnosis if available */}
                     {state.woundClassification?.differentialDiagnosis?.possibleTypes?.[0]?.confidence 
                       ? Math.round(state.woundClassification.differentialDiagnosis.possibleTypes[0].confidence * 100)

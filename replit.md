@@ -598,6 +598,7 @@ Changelog:
 - July 11, 2025. **CLEAN PAGE 1 INTERFACE**: Removed "Upload Additional Images" section from Page 1 when differential diagnosis questions are available, ensuring Page 1 only shows follow-up questions and Page 2 navigation button
 - July 11, 2025. **COLLAPSIBLE DETECTION TRANSPARENCY**: Made Detection Process Transparency section collapsible by default on Page 1 to reduce visual clutter while keeping technical details accessible
 - July 11, 2025. **SIMPLIFIED PAGE 2 NAVIGATION**: Removed blue information card about differential diagnosis analysis, keeping only the centered button to navigate to Page 2 for cleaner interface
+- July 11, 2025. **ENHANCED DIAGNOSIS CARD STYLING**: Made the "Most Probable Diagnoses" card stand out with green-blue gradient background, stronger borders, and shadow effects to draw attention to key diagnostic information
 - July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
   - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
   - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%
