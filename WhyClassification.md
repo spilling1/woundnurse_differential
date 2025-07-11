@@ -2371,3 +2371,26 @@ The location on the heel, a major bony prominence, is highly indicative of a pre
 
 ---
 
+
+---
+## Case: 2025-07-11-696
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:17:33 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 60%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the lower leg is a classic site for venous ulcers. The wound bed has features often seen in chronic venous ulcers, including slough and granulation tissue. However, the confidence is moderate because the significant amount of black necrotic tissue (eschar) is also a strong indicator of arterial insufficiency, suggesting a possible mixed-etiology (venous and arterial) ulcer or a primary arterial ulcer. Large oval ulcer with a mixed wound bed containing significant black necrotic eschar, yellow slough, and some red granulation tissue. The periwound skin is erythematous. A ruler indicates a length of approximately 5.5 cm. The surrounding skin on the limb appears dry and scaly.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (60% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 60% confidence
+
+---
+

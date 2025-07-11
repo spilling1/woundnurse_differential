@@ -606,6 +606,7 @@ Changelog:
 - July 11, 2025. **IMPROVED DIAGNOSIS FORMATTING**: Removed redundant "Final Diagnosis -" and "probability" text from diagnosis display, now shows clean diagnosis name with confidence badge only
 - July 11, 2025. **ENHANCED CLINICAL REASONING**: Improved clinical reasoning text formatting with better spacing, background, and readability in a bordered container
 - July 11, 2025. **DIABETIC FOOT ULCER SPECIFIC QUESTIONS**: Updated follow-up questions to be more specific to diabetic foot ulcers, including footwear assessment and medical conditions beyond diabetes, based on wound type instructions from database
+- July 11, 2025. **OTHER INFORMATION SECTION**: Added comprehensive "Other Information" section to Page 2 follow-up questions with blue-themed styling, allowing users to provide additional relevant information (medications, allergies, living situation, concerns) not covered by specific clinical questions
 - July 11, 2025. **ENHANCED AI INSTRUCTION INTEGRATION**: Significantly improved diagnostic probability calculations by leveraging comprehensive AI instructions:
   - **Wound-Specific Knowledge Integration**: AI classification now incorporates wound-specific instructions from database for each wound type
   - **Enhanced Differential Diagnosis Requirements**: Added comprehensive differential diagnosis criteria requiring 2-3 possibilities with confidence percentages totaling 100%
