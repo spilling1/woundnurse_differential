@@ -2279,3 +2279,26 @@ The location on a primary bony prominence (heel) is the strongest indicator for 
 
 ---
 
+
+---
+## Case: 2025-07-11-123
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:42:16 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 65%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, is the primary indicator for a pressure-related etiology. The wound is deep, but the base is covered by more than 50% slough and eschar, making it impossible to determine the true depth and tissue involvement. Therefore, it is classified as an 'Unstageable' pressure injury. The presence of significant non-viable tissue and surrounding erythema strongly suggests a high bioburden and likely localized infection. Deep, crater-like wound with well-defined, erythematous borders. The wound base is largely obscured by a mix of black eschar and yellow/white slough. There appears to be exposed deep tissue, possibly tendon or fascia. The surrounding skin is dry and scaly.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (65% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 65% confidence
+
+---
+

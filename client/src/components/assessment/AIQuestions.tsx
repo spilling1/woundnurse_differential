@@ -496,14 +496,10 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                 {/* Button to go to Page 2 for differential diagnosis questions */}
                 {state.woundClassification.differentialDiagnosis.questionsToAsk && 
                  state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0 && (
-                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h4 className="font-semibold text-blue-900 mb-2">Ready for Differential Diagnosis Analysis</h4>
-                    <p className="text-sm text-blue-800 mb-3">
-                      Additional diagnostic questions are available to help refine the diagnosis and improve accuracy.
-                    </p>
+                  <div className="mt-4 text-center">
                     <Button 
                       onClick={() => onStateChange({ showPage2Analysis: true })}
-                      className="flex items-center"
+                      className="flex items-center mx-auto"
                     >
                       <TrendingUp className="h-4 w-4 mr-2" />
                       Continue to Differential Diagnosis (Page 2)
