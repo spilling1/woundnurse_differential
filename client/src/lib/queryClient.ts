@@ -8,10 +8,15 @@ async function throwIfResNotOk(res: Response) {
       
       // If it's a structured error response, throw it as an object
       if (errorData && (errorData.code || errorData.error)) {
-        const error = new Error(errorData.message || `HTTP error! status: ${res.status}`);
+        const error = new Error(errorData.message || `HTTP error! status: ${res.status}`) as any;
         // Add additional properties from the structured error
-        Object.assign(error, errorData);
-        console.log('Throwing structured error:', error);
+        error.code = errorData.code;
+        error.woundType = errorData.woundType;
+        error.confidence = errorData.confidence;
+        error.reasoning = errorData.reasoning;
+        error.redirect = errorData.redirect;
+        error.supportedTypes = errorData.supportedTypes;
+        console.log('Throwing structured error with code:', error.code, 'woundType:', error.woundType);
         throw error;
       } else {
         // Fallback to text response
