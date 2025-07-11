@@ -95,15 +95,29 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'arms_front_left',
     name: 'Left Arm (Front)',
     description: 'Left arm - front view',
-    coordinates: { x: 325, y: 110, width: 140, height: 290 },
+    coordinates: { x: 325, y: 110, width: 140, height: 230 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'arms_front_right',
     name: 'Right Arm (Front)',
     description: 'Right arm - front view',
-    coordinates: { x: 35, y: 110, width: 140, height: 290 },
+    coordinates: { x: 35, y: 110, width: 140, height: 230 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
+  },
+  {
+    id: 'hand_palm_left',
+    name: 'Left Palm',
+    description: 'Left palm - front view',
+    coordinates: { x: 365, y: 340, width: 60, height: 80 },
+    commonWoundTypes: ['traumatic_wound', 'burns']
+  },
+  {
+    id: 'hand_palm_right',
+    name: 'Right Palm',
+    description: 'Right palm - front view',
+    coordinates: { x: 75, y: 340, width: 60, height: 80 },
+    commonWoundTypes: ['traumatic_wound', 'burns']
   }
 ];
 
@@ -186,15 +200,29 @@ export const backBodyRegions: BodyRegion[] = [
     id: 'arms_back_left',
     name: 'Left Arm (Back)',
     description: 'Left arm - back view',
-    coordinates: { x: 35, y: 110, width: 140, height: 290 },
+    coordinates: { x: 35, y: 110, width: 140, height: 230 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'arms_back_right',
     name: 'Right Arm (Back)',
     description: 'Right arm - back view',
-    coordinates: { x: 325, y: 110, width: 140, height: 290 },
+    coordinates: { x: 325, y: 110, width: 140, height: 230 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
+  },
+  {
+    id: 'hand_back_left',
+    name: 'Left Back of Hand',
+    description: 'Left back of hand - back view',
+    coordinates: { x: 75, y: 340, width: 60, height: 80 },
+    commonWoundTypes: ['traumatic_wound', 'burns']
+  },
+  {
+    id: 'hand_back_right',
+    name: 'Right Back of Hand',
+    description: 'Right back of hand - back view',
+    coordinates: { x: 365, y: 340, width: 60, height: 80 },
+    commonWoundTypes: ['traumatic_wound', 'burns']
   }
 ];
 
