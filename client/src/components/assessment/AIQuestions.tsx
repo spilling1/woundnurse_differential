@@ -531,70 +531,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         />
       )}
 
-      {/* Questions Section - Only show if NOT showing Page 2 analysis */}
-      {state.aiQuestions.length > 0 && !state.showPage2Analysis && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Follow-up Questions</CardTitle>
-            <p className="text-sm text-gray-600 mt-2">
-              These questions will help improve diagnostic accuracy and provide better care recommendations.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {state.aiQuestions.map((question) => (
-                <Card key={question.id}>
-                  <CardHeader>
-                    <CardTitle className="text-base">{question.question}</CardTitle>
-                    <Badge variant="outline">{question.category}</Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <Textarea
-                      value={question.answer}
-                      onChange={(e) => updateAnswer(question.id, e.target.value)}
-                      placeholder={question.answer ? "Edit the AI's answer if needed" : "Please provide your answer..."}
-                      rows={3}
-                    />
-                    
-                    {/* Image Upload for Photo-Related Questions */}
-                    {(question.question.toLowerCase().includes('photo') || 
-                      question.question.toLowerCase().includes('image') || 
-                      question.question.toLowerCase().includes('picture')) && (
-                      <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <Label className="text-sm font-medium text-blue-800">
-                          <Upload className="h-4 w-4 inline mr-2" />
-                          Upload Additional Photo (Optional)
-                        </Label>
-                        <div className="mt-2">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                          />
-                        </div>
-                        <p className="text-xs text-blue-600 mt-1">
-                          Upload a clearer photo, different angle, or close-up view to help with assessment
-                        </p>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center text-sm text-blue-600">
-                        <ArrowRight className="h-4 w-4 mr-1" />
-                        {getImprovementType(question.category)}: +{getConfidenceImprovement(question.category)}%
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {getPriorityLevel(question.category)}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
 
       {/* Additional Image Upload Section - Only show if no differential diagnosis questions available */}
       {state.woundClassification?.confidence && state.woundClassification.confidence < 0.9 && 
@@ -658,58 +595,7 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
         </Card>
       )}
 
-      <Card>
-        <CardContent className="pt-6">
-          <Label>Additional Context (Optional)</Label>
-          <Textarea
-            value={state.userFeedback}
-            onChange={(e) => onStateChange({ userFeedback: e.target.value })}
-            placeholder="Provide any additional information about the wound or patient that might help..."
-            rows={3}
-            className="mt-2"
-          />
-          
-          {state.aiQuestions.length > 0 ? (
-            <div className="space-y-2 mt-4">
-              {state.questionRound < 3 ? (
-                <Button 
-                  onClick={handleFollowUpQuestions}
-                  disabled={followUpMutation.isPending}
-                  className="w-full bg-yellow-600 hover:bg-yellow-700 disabled:opacity-75"
-                >
-                  {followUpMutation.isPending ? (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      Processing Answers...
-                    </>
-                  ) : (
-                    <>
-                      Submit Answers to Improve Assessment
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              ) : (
-                <Button 
-                  onClick={handleProceedToPlan}
-                  className="w-full bg-medical-blue hover:bg-medical-blue/90"
-                >
-                  Generate Care Plan with Current Information
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          ) : (
-            <Button 
-              onClick={handleProceedToPlan}
-              className="w-full bg-medical-blue hover:bg-medical-blue/90 mt-4"
-            >
-              Generate Final Care Plan
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          )}
-        </CardContent>
-      </Card>
+
     </div>
   );
 } 

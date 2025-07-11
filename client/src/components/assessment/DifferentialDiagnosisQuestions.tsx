@@ -111,18 +111,6 @@ export default function DifferentialDiagnosisQuestions({
     
     return (
       <div className="space-y-6">
-        {/* Clean Page 2 Header */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-green-800">
-              <CheckCircle className="h-5 w-5 mr-2" />
-              Page 2: Refined Differential Diagnosis
-            </CardTitle>
-            <p className="text-sm text-green-700 mt-2">
-              Based on your answers, here is the refined diagnostic assessment:
-            </p>
-          </CardHeader>
-        </Card>
 
         {/* Clean Refined Diagnosis Display */}
         <Card>
@@ -134,7 +122,7 @@ export default function DifferentialDiagnosisQuestions({
                 <div className="p-6 bg-green-50 border-2 border-green-300 rounded-lg">
                   <div className="text-center mb-4">
                     <div className="text-2xl font-bold text-green-900 mb-2">
-                      {primaryDiagnosis}
+                      Final Diagnosis - {primaryDiagnosis} - {confidencePercent}% probability
                     </div>
                     <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-2">
                       {confidencePercent}% Confidence
@@ -155,7 +143,7 @@ export default function DifferentialDiagnosisQuestions({
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="text-lg font-bold text-green-900">
-                      {primaryDiagnosis}
+                      Primary Diagnosis - {primaryDiagnosis} - {confidencePercent}% probability
                     </div>
                     <Badge variant="default" className="bg-green-600 text-white">
                       {confidencePercent}% confidence
@@ -213,10 +201,48 @@ export default function DifferentialDiagnosisQuestions({
             {/* Follow-up Questions Section */}
             <div className="mb-6">
               <h3 className="text-lg font-bold text-blue-900 mb-3">Follow-up Questions to Shape Care Plan</h3>
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  Based on the refined diagnosis, you may now answer additional questions to optimize your care plan recommendations.
-                </p>
+              
+              {/* Generate follow-up questions based on refined diagnosis */}
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="text-sm font-medium text-gray-900 mb-2">
+                    What treatments or dressings are currently being used on the wound?
+                  </div>
+                  <Textarea
+                    placeholder="Describe current treatments..."
+                    className="min-h-[60px] resize-none"
+                  />
+                </div>
+                
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="text-sm font-medium text-gray-900 mb-2">
+                    Are there any signs of infection (increased redness, warmth, swelling, discharge)?
+                  </div>
+                  <Textarea
+                    placeholder="Describe any signs of infection..."
+                    className="min-h-[60px] resize-none"
+                  />
+                </div>
+                
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="text-sm font-medium text-gray-900 mb-2">
+                    How long has this wound been present?
+                  </div>
+                  <Textarea
+                    placeholder="Timeline of wound development..."
+                    className="min-h-[60px] resize-none"
+                  />
+                </div>
+                
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="text-sm font-medium text-gray-900 mb-2">
+                    What is the patient's medical history (diabetes, circulation issues, mobility)?
+                  </div>
+                  <Textarea
+                    placeholder="Relevant medical history..."
+                    className="min-h-[60px] resize-none"
+                  />
+                </div>
               </div>
             </div>
 

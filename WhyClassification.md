@@ -2325,3 +2325,26 @@ The location on the heel, a primary bony prominence, combined with the deep, cra
 
 ---
 
+
+---
+## Case: 2025-07-11-841
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:51:52 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a major bony prominence, is highly characteristic of a pressure injury. The deep, crater-like appearance combined with extensive necrotic eschar and slough obscuring the wound base are hallmark features of an unstageable pressure injury. This develops due to prolonged, unrelieved pressure cutting off blood supply to the tissue. The wound is a deep, circular ulcer with a significant amount of necrotic tissue (eschar) and yellow slough covering the base, making it unstageable. The wound edges are defined and appear slightly inflamed. There is evidence of exposed subcutaneous tissue, possibly including tendon, visible through the slough. The surrounding skin is dry with some erythema at the immediate wound margin.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 75% confidence
+
+---
+
