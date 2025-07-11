@@ -193,16 +193,19 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       
       console.log(`WoundClassifier: Independent AI classification complete: ${classification.woundType} (${(classification.confidence * 100).toFixed(1)}% confidence)`);
       
-      // ALWAYS ensure differential diagnosis is present - force creation regardless of AI response
-      console.log('WoundClassifier: Checking differential diagnosis structure:', classification.differentialDiagnosis);
-      const hasDifferentialDiagnosis = classification.differentialDiagnosis && 
-                                      classification.differentialDiagnosis.possibleTypes && 
-                                      classification.differentialDiagnosis.possibleTypes.length > 1;
+      console.log('WoundClassifier: BEFORE differential diagnosis check - about to check structure');
       
-      console.log('WoundClassifier: Has differential diagnosis?', hasDifferentialDiagnosis);
-      
-      // FORCE differential diagnosis creation for all assessments to ensure multiple possibilities are shown
-      if (!hasDifferentialDiagnosis) {
+      try {
+        // ALWAYS ensure differential diagnosis is present - force creation regardless of AI response
+        console.log('WoundClassifier: Checking differential diagnosis structure:', classification.differentialDiagnosis);
+        const hasDifferentialDiagnosis = classification.differentialDiagnosis && 
+                                        classification.differentialDiagnosis.possibleTypes && 
+                                        classification.differentialDiagnosis.possibleTypes.length > 1;
+        
+        console.log('WoundClassifier: Has differential diagnosis?', hasDifferentialDiagnosis);
+        
+        // FORCE differential diagnosis creation for all assessments to ensure multiple possibilities are shown
+        if (!hasDifferentialDiagnosis) {
         console.log('WoundClassifier: No differential diagnosis returned, creating comprehensive fallback...');
         
         // Create comprehensive differential diagnosis based on wound type and location
@@ -270,6 +273,31 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         console.log('WoundClassifier: Added comprehensive fallback differential diagnosis with', possibleTypes.length, 'possibilities');
       } else {
         console.log('WoundClassifier: Differential diagnosis already present with', classification.differentialDiagnosis.possibleTypes.length, 'possibilities');
+      }
+      
+      } catch (differentialError) {
+        console.error('WoundClassifier: Error in differential diagnosis creation:', differentialError);
+        // Force create minimal differential diagnosis even if there's an error
+        classification.differentialDiagnosis = {
+          possibleTypes: [
+            {
+              woundType: classification.woundType,
+              confidence: classification.confidence || 0.7,
+              reasoning: 'Primary diagnosis based on visual assessment'
+            },
+            {
+              woundType: 'Alternative diagnosis requires additional clinical information',
+              confidence: 0.3,
+              reasoning: 'Multiple possibilities exist - clinical assessment needed'
+            }
+          ],
+          questionsToAsk: [
+            'What medical history does the patient have?',
+            'How did this wound begin?',
+            'What treatments have been tried?'
+          ]
+        };
+        console.log('WoundClassifier: Created minimal differential diagnosis due to error');
       }
       
       // Step 2.5: Check wound type support (but don't throw error - let frontend handle redirect)
