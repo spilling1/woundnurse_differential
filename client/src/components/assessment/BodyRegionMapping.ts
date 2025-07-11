@@ -23,14 +23,14 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'torso',
     name: 'Torso',
     description: 'Torso/mid-body region',
-    coordinates: { x: 170, y: 240, width: 160, height: 90 },
+    coordinates: { x: 120, y: 240, width: 260, height: 90 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: '5',
     name: 'Stomach',
     description: 'Abdominal/stomach region',
-    coordinates: { x: 160, y: 340, width: 180, height: 75 },
+    coordinates: { x: 155, y: 340, width: 190, height: 75 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
@@ -81,42 +81,42 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'head_neck_front',
     name: 'Head/Neck (Front)',
     description: 'Head and neck area - front view',
-    coordinates: { x: 190, y: 10, width: 120, height: 100 },
+    coordinates: { x: 175, y: 20, width: 150, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'chest',
     name: 'Chest',
     description: 'Chest area',
-    coordinates: { x: 170, y: 110, width: 160, height: 120 },
+    coordinates: { x: 120, y: 110, width: 260, height: 100 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: 'arms_front_left',
     name: 'Left Arm (Front)',
     description: 'Left arm - front view',
-    coordinates: { x: 340, y: 110, width: 100, height: 305 },
+    coordinates: { x: 380, y: 110, width: 100, height: 270 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'arms_front_right',
     name: 'Right Arm (Front)',
     description: 'Right arm - front view',
-    coordinates: { x: 20, y: 110, width: 100, height: 305 },
+    coordinates: { x: 20, y: 110, width: 100, height: 270 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: 'hand_palm_left',
     name: 'Left Palm',
     description: 'Left palm - front view',
-    coordinates: { x: 385, y: 380, width: 80, height: 90 },
+    coordinates: { x: 385, y: 380, width: 80, height: 75 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   },
   {
     id: 'hand_palm_right',
     name: 'Right Palm',
     description: 'Right palm - front view',
-    coordinates: { x: 35, y: 380, width: 80, height: 90 },
+    coordinates: { x: 35, y: 380, width: 80, height: 75 },
     commonWoundTypes: ['traumatic_wound', 'burns']
   }
 ];
