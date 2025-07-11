@@ -58,11 +58,13 @@ export default function DifferentialDiagnosisQuestions({
         throw new Error('Please answer at least one question to refine the diagnosis');
       }
 
-      return await apiRequest("/api/assessment/refine-differential-diagnosis", "POST", {
+      const response = await apiRequest("POST", "/api/assessment/refine-differential-diagnosis", {
         originalClassification,
         questionAnswers: answeredQuestions,
         model
       });
+      
+      return await response.json();
     },
     onSuccess: (data) => {
       setRefinementResult(data);

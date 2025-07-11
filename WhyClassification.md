@@ -1888,3 +1888,49 @@ The wound's location on the heel, a major bony prominence, combined with its dee
 
 ---
 
+
+---
+## Case: 2025-07-11-411
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:18:26 AM  
+**Wound Type:** Unstageable Pressure Ulcer  
+**Confidence:** 90%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location on the heel, a primary bony prominence, combined with the presence of full-thickness tissue loss covered by slough and eschar, are hallmark characteristics of an Unstageable Pressure Ulcer. The visible depth with what appears to be exposed tendon strongly suggests the injury is at least Stage 4 severity, but it cannot be officially staged until the necrotic tissue is debrided and the wound base is visible. The wound is a deep, circular crater on a bony prominence. The periwound skin appears dry, flaky, and has some hemorrhagic crusting superior to the wound margin. The wound edges are distinct and slightly raised.
+
+### Classification Process:
+
+**Independent Classification:** Unstageable Pressure Ulcer (90% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Unstageable Pressure Ulcer with 90% confidence
+
+---
+
+
+---
+## Case: 2025-07-11-149
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:19:32 AM  
+**Wound Type:** Pressure Ulcer  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound is located on the heel, a major bony prominence susceptible to pressure. The deep, crater-like appearance with extensive necrotic tissue (eschar) and slough obscuring the full depth of the wound base is characteristic of an Unstageable Pressure Ulcer. If the base were visible after debridement, it would likely be classified as Stage 4 due to the exposure of deep tissues like tendon. Deep, full-thickness wound with a circular shape and well-defined, slightly rolled edges (epibole). The wound bed is mostly obscured by black eschar (necrotic tissue) and yellow slough. White, fibrous tissue, likely tendon or fascia, is visible at the base of the wound. The periwound skin is dry, scaly, and shows some evidence of dried blood.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Ulcer (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Ulcer with 75% confidence
+
+---
+
