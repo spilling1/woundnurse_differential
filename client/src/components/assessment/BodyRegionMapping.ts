@@ -58,7 +58,7 @@ export const frontBodyRegions: BodyRegion[] = [
     id: '7R',
     name: 'Right Lower Leg (Front)',
     description: 'Right lower leg/shin front',
-    coordinates: { x: 150, y: 575, width: 80, height: 140 },
+    coordinates: { x: 170, y: 575, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
@@ -72,7 +72,7 @@ export const frontBodyRegions: BodyRegion[] = [
     id: '8R',
     name: 'Right Top/Side of Foot',
     description: 'Right top/side of foot',
-    coordinates: { x: 150, y: 715, width: 80, height: 80 },
+    coordinates: { x: 170, y: 715, width: 80, height: 80 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   
@@ -81,7 +81,7 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'head_neck_front',
     name: 'Head/Neck (Front)',
     description: 'Head and neck area - front view',
-    coordinates: { x: 180, y: 20, width: 140, height: 90 },
+    coordinates: { x: 190, y: 20, width: 120, height: 90 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
