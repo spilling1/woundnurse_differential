@@ -30,14 +30,14 @@ export const frontBodyRegions: BodyRegion[] = [
     id: 'chest',
     name: 'Chest',
     description: 'Chest area',
-    coordinates: { x: 150, y: 130, width: 190, height: 80 },
+    coordinates: { x: 170, y: 130, width: 150, height: 80 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: 'torso',
     name: 'Torso',
     description: 'Torso/mid-body region',
-    coordinates: { x: 150, y: 210, width: 190, height: 90 },
+    coordinates: { x: 170, y: 210, width: 150, height: 90 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
@@ -74,7 +74,7 @@ export const frontBodyRegions: BodyRegion[] = [
     id: '5',
     name: 'Stomach',
     description: 'Abdominal/stomach region',
-    coordinates: { x: 150, y: 300, width: 190, height: 115 },
+    coordinates: { x: 170, y: 300, width: 150, height: 115 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
@@ -88,7 +88,7 @@ export const frontBodyRegions: BodyRegion[] = [
     id: '6R',
     name: 'Right Upper Leg (Front)',
     description: 'Right upper leg/thigh front',
-    coordinates: { x: 150, y: 415, width: 80, height: 160 },
+    coordinates: { x: 170, y: 415, width: 80, height: 160 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
@@ -233,15 +233,21 @@ export function getBodyRegionsByImage(view: 'front' | 'back'): BodyRegion[] {
 
 export function getBodyRegionByCoordinates(x: number, y: number, view: 'front' | 'back'): BodyRegion | null {
   const regions = getBodyRegionsByImage(view);
-  return regions.find(region => {
+  
+  // Search in reverse order to prioritize numbered regions (they come last in array)
+  for (let i = regions.length - 1; i >= 0; i--) {
+    const region = regions[i];
     const { coordinates } = region;
-    return (
+    if (
       x >= coordinates.x &&
       x <= coordinates.x + coordinates.width &&
       y >= coordinates.y &&
       y <= coordinates.y + coordinates.height
-    );
-  }) || null;
+    ) {
+      return region;
+    }
+  }
+  return null;
 }
 
 export function getBodyRegionById(id: string, view: 'front' | 'back'): BodyRegion | null {
