@@ -11,7 +11,7 @@ import {
 // Import the body diagram images
 // Use the new body diagram images
 const FrontBodyPath = '/FrontBody_1752200712809.png';
-const BackBodyPath = '/BackBody_1752200448378.png';
+const BackBodyPath = '/BackBody_1752201156074.png';
 
 interface BodyRegionSelectorProps {
   selectedRegion: { id: string; name: string } | null;
