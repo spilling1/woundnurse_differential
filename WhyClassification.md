@@ -2463,3 +2463,26 @@ The primary diagnosis of a Venous Ulcer is based on the location on the lower le
 
 ---
 
+
+---
+## Case: 2025-07-11-172
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 8:39:13 AM  
+**Wound Type:** Venous Ulcer  
+**Confidence:** 55%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the lower leg is highly characteristic of a venous ulcer. Chronic venous ulcers frequently develop a wound bed with a mix of granulation tissue, slough, and sometimes eschar, especially if management has been suboptimal or infection is present. The surrounding erythema and presence of necrotic tissue are strong indicators of bacterial colonization or infection, which is common in this wound type. While the location is the strongest indicator for venous etiology, other features create uncertainty. The wound presents with a significant amount of non-viable tissue, including both yellow slough and black eschar. The wound edges are defined, and the periwound skin is erythematous and appears dry/scaly. A ruler indicates a length of approximately 6.5 cm. The combination of tissue types suggests a chronic, complex wound.
+
+### Classification Process:
+
+**Independent Classification:** Venous Ulcer (55% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Venous Ulcer with 55% confidence
+
+---
+
