@@ -57,8 +57,6 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
   };
 
   const renderRegionOverlays = () => {
-    if (!showRegionOutlines) return null;
-    
     const regions = getBodyRegionsByImage(currentView);
     
     return (
@@ -66,6 +64,9 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
         {regions.map(region => {
           const isSelected = selectedRegion?.id === region.id;
           const isHovered = hoveredRegion?.id === region.id;
+          
+          // Show selected region even when outlines are hidden
+          if (!showRegionOutlines && !isSelected) return null;
           
           return (
             <div
@@ -91,7 +92,7 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
                     ? 'text-green-900' 
                     : 'text-gray-600'
               }`}>
-                {region.id}
+                {showRegionOutlines ? region.id : ''}
               </div>
             </div>
           );
