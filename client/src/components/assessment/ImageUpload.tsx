@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
 import type { WoundClassification } from "@/../../shared/schema";
-import BodyRegionSelector from "./BodyRegionSelector";
+import BodyRegionSelector from "./BodyRegionSelectorSVG";
 
 
 export default function ImageUpload({ state, onStateChange, onNextStep }: StepProps) {

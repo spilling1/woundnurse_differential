@@ -16,6 +16,7 @@ interface BodyRegionSelectorProps {
 export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: BodyRegionSelectorProps) {
   const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
   const [hoveredRegion, setHoveredRegion] = useState<BodyRegion | null>(null);
+  const [showRegionNumbers, setShowRegionNumbers] = useState(true);
 
   const handleImageClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -77,23 +78,38 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
       const widthPercent = (region.coordinates.width / 645) * 100;
       const heightPercent = (region.coordinates.height / 400) * 100;
       
+      // Extract the number from the region ID (e.g., "272" from "272")
+      const regionNumber = region.id.replace(/\D/g, '');
+      
       return (
         <div
           key={region.id}
-          className={`absolute border-2 rounded-lg transition-all duration-200 pointer-events-none ${
+          className={`absolute border-2 rounded-lg transition-all duration-200 pointer-events-none flex items-center justify-center ${
             isSelected 
-              ? 'border-blue-500 bg-blue-200/30' 
+              ? 'border-blue-500 bg-blue-200/40' 
               : isHovered 
-                ? 'border-green-400 bg-green-200/20' 
-                : 'border-gray-300/10 hover:border-gray-400/20'
+                ? 'border-green-400 bg-green-200/30' 
+                : 'border-gray-400/20 bg-gray-100/10'
           }`}
           style={{
             left: `${leftPercent}%`,
             top: `${topPercent}%`,
             width: `${widthPercent}%`,
             height: `${heightPercent}%`,
+            minWidth: '20px',
+            minHeight: '20px',
           }}
-        />
+        >
+          <span className={`text-xs font-bold select-none ${
+            isSelected 
+              ? 'text-blue-800' 
+              : isHovered 
+                ? 'text-green-800' 
+                : 'text-gray-600'
+          }`}>
+            {regionNumber}
+          </span>
+        </div>
       );
     });
   };
@@ -123,6 +139,13 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
           >
             Back View
           </Button>
+          <Button
+            variant={showRegionNumbers ? 'default' : 'outline'}
+            onClick={() => setShowRegionNumbers(!showRegionNumbers)}
+            size="sm"
+          >
+            Show Numbers
+          </Button>
         </div>
 
         {/* Body diagram container */}
@@ -138,7 +161,7 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
               alt={`${currentView} body diagram`}
               className="w-full h-auto"
             />
-            {renderRegionOverlays()}
+            {showRegionNumbers && renderRegionOverlays()}
           </div>
         </div>
 
@@ -185,7 +208,8 @@ export default function BodyRegionSelector({ selectedRegion, onRegionSelect }: B
         <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
           <h4 className="font-medium text-amber-900 mb-2">Instructions:</h4>
           <ul className="text-sm text-amber-800 space-y-1">
-            <li>• Click on the body diagram to select the wound location</li>
+            <li>• Click "Show Numbers" to display numbered clickable regions</li>
+            <li>• Click on any numbered region to select the wound location</li>
             <li>• Switch between front and back views using the buttons above</li>
             <li>• The selected region will help our AI provide more accurate assessment</li>
             <li>• You can change your selection at any time</li>
