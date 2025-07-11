@@ -119,49 +119,28 @@ export default function DifferentialDiagnosisQuestions({
         {/* Clean Refined Diagnosis Display */}
         <Card>
           <CardContent className="pt-6">
-            {/* Final Diagnosis Display for High Confidence */}
-            {isHighConfidence ? (
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-green-900 mb-4">Final Diagnosis</h3>
-                <div className="p-6 bg-green-50 border-2 border-green-300 rounded-lg">
-                  <div className="text-center mb-4">
-                    <div className="text-2xl font-bold text-green-900 mb-2">
-                      {primaryDiagnosis}
-                    </div>
-                    <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-2">
-                      {confidencePercent}% Confidence
-                    </Badge>
+            {/* Simple Unified Diagnosis Display */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-green-900 mb-3">Refined Diagnosis</h3>
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-lg font-bold text-green-900">
+                    {primaryDiagnosis}
                   </div>
-                  <div className="mt-4">
-                    <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
-                    <div className="text-sm text-green-800 leading-relaxed bg-white p-3 rounded border border-green-200">
-                      {refinementResult.page2Analysis.reasoning}
-                    </div>
+                  <Badge variant="default" className="bg-green-600 text-white">
+                    {confidencePercent}% confidence
+                  </Badge>
+                </div>
+                <div className="mt-4">
+                  <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
+                  <div className="text-sm text-green-800 leading-relaxed bg-white p-3 rounded border border-green-200">
+                    {typeof refinementResult.page2Analysis.reasoning === 'string' ? 
+                      refinementResult.page2Analysis.reasoning : 
+                      'Analysis based on patient answers with clinical logic-based refinement'}
                   </div>
                 </div>
               </div>
-            ) : (
-              /* Standard Primary Diagnosis Display for Lower Confidence */
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-green-900 mb-3">Refined Diagnosis</h3>
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="text-lg font-bold text-green-900">
-                      {primaryDiagnosis}
-                    </div>
-                    <Badge variant="default" className="bg-green-600 text-white">
-                      {confidencePercent}% confidence
-                    </Badge>
-                  </div>
-                  <div className="mt-4">
-                    <h4 className="font-semibold text-green-900 mb-2">Clinical Reasoning:</h4>
-                    <div className="text-sm text-green-800 leading-relaxed bg-white p-3 rounded border border-green-200">
-                      {refinementResult.page2Analysis.reasoning}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            </div>
 
             {/* Eliminated Possibilities */}
             {refinementResult.page2Analysis.eliminated.length > 0 && (
