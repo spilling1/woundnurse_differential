@@ -2302,3 +2302,26 @@ The location on the heel, a major bony prominence, is the primary indicator for 
 
 ---
 
+
+---
+## Case: 2025-07-11-544
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 7:46:26 AM  
+**Wound Type:** Pressure Injury  
+**Confidence:** 75%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The location on the heel, a primary bony prominence, combined with the deep, crater-like appearance, strongly suggests a pressure injury. The wound base is obscured by more than 50% slough and eschar, making it an Unstageable pressure injury by definition. If the non-viable tissue were to be debrided and bone or tendon were exposed, it would be re-staged as Stage 4. Deep, crater-like ulcer with a well-defined border. The wound bed is mostly obscured by a mix of black eschar (necrotic tissue) and yellow/white slough. There is visible exposure of deeper tissues, possibly tendon, within the wound bed. The wound edges are inflamed (erythematous), and the surrounding skin appears dry and fragile. There are specks of dried blood on the skin superior to the wound.
+
+### Classification Process:
+
+**Independent Classification:** Pressure Injury (75% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Pressure Injury with 75% confidence
+
+---
+

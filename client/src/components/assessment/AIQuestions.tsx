@@ -17,48 +17,7 @@ import DifferentialDiagnosisQuestions from "./DifferentialDiagnosisQuestions";
 export default function AIQuestions({ state, onStateChange, onNextStep }: StepProps) {
   const { toast } = useToast();
   
-  // If showing Page 2 analysis, display differential diagnosis questions
-  if (state.showPage2Analysis) {
-    return (
-      <div className="space-y-6">
-        {/* Page 2 Header */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-green-800">
-              <CheckCircle className="h-5 w-5 mr-2" />
-              Page 2: Differential Diagnosis Analysis
-            </CardTitle>
-            <p className="text-sm text-green-700 mt-2">
-              Answer these clinical questions to refine the diagnosis and improve accuracy.
-            </p>
-          </CardHeader>
-        </Card>
-
-        {/* Differential Diagnosis Questions */}
-        {state.woundClassification?.differentialDiagnosis?.questionsToAsk && 
-         state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0 && (
-          <DifferentialDiagnosisQuestions 
-            questions={state.woundClassification.differentialDiagnosis.questionsToAsk}
-            originalClassification={state.woundClassification}
-            audience={state.audience}
-            model={state.model}
-            onRefinementComplete={(refinement) => {
-              // Update state with refined analysis
-              onStateChange({
-                differentialRefinement: refinement,
-              });
-              
-              // If user wants to proceed to care plan generation
-              if (refinement.proceedToCarePlan) {
-                onNextStep();
-              }
-            }}
-          />
-        )}
-      </div>
-    );
-  }
-  
+  // All hooks must be called before any conditional returns
   // Handle additional image uploads
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -345,6 +304,48 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
     });
     onNextStep();
   };
+
+  // If showing Page 2 analysis, display differential diagnosis questions
+  if (state.showPage2Analysis) {
+    return (
+      <div className="space-y-6">
+        {/* Page 2 Header */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center text-green-800">
+              <CheckCircle className="h-5 w-5 mr-2" />
+              Page 2: Differential Diagnosis Analysis
+            </CardTitle>
+            <p className="text-sm text-green-700 mt-2">
+              Answer these clinical questions to refine the diagnosis and improve accuracy.
+            </p>
+          </CardHeader>
+        </Card>
+
+        {/* Differential Diagnosis Questions */}
+        {state.woundClassification?.differentialDiagnosis?.questionsToAsk && 
+         state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0 && (
+          <DifferentialDiagnosisQuestions 
+            questions={state.woundClassification.differentialDiagnosis.questionsToAsk}
+            originalClassification={state.woundClassification}
+            audience={state.audience}
+            model={state.model}
+            onRefinementComplete={(refinement) => {
+              // Update state with refined analysis
+              onStateChange({
+                differentialRefinement: refinement,
+              });
+              
+              // If user wants to proceed to care plan generation
+              if (refinement.proceedToCarePlan) {
+                onNextStep();
+              }
+            }}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
