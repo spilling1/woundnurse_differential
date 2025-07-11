@@ -48,6 +48,8 @@ export interface AssessmentFlowState {
     id: string;
     name: string;
   };
+  differentialRefinement?: any;
+  showPage2Analysis?: boolean;
 }
 
 export interface StepProps {

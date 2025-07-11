@@ -1,0 +1,281 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChevronRight, Loader2, CheckCircle, TrendingUp, X } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+
+interface DifferentialDiagnosisQuestionsProps {
+  questions: string[];
+  originalClassification: any;
+  audience: string;
+  model: string;
+  onRefinementComplete: (refinement: any) => void;
+}
+
+interface QuestionAnswer {
+  question: string;
+  answer: string;
+  importance: 'critical' | 'high' | 'medium';
+}
+
+export default function DifferentialDiagnosisQuestions({
+  questions,
+  originalClassification,
+  audience,
+  model,
+  onRefinementComplete
+}: DifferentialDiagnosisQuestionsProps) {
+  const [questionAnswers, setQuestionAnswers] = useState<QuestionAnswer[]>(
+    questions.map((q, index) => ({
+      question: q,
+      answer: '',
+      importance: index < 2 ? 'critical' : index < 4 ? 'high' : 'medium'
+    }))
+  );
+  const [showPage2, setShowPage2] = useState(false);
+  const [refinementResult, setRefinementResult] = useState<any>(null);
+  const { toast } = useToast();
+
+  // Update answer for a specific question
+  const updateAnswer = (index: number, answer: string) => {
+    setQuestionAnswers(prev => 
+      prev.map((qa, i) => i === index ? { ...qa, answer } : qa)
+    );
+  };
+
+  // Mutation for refining differential diagnosis
+  const refineMutation = useMutation({
+    mutationFn: async () => {
+      const answeredQuestions = questionAnswers.filter(qa => qa.answer.trim() !== '');
+      
+      if (answeredQuestions.length === 0) {
+        throw new Error('Please answer at least one question to refine the diagnosis');
+      }
+
+      return await apiRequest("/api/assessment/refine-differential-diagnosis", "POST", {
+        originalClassification,
+        questionAnswers: answeredQuestions,
+        model
+      });
+    },
+    onSuccess: (data) => {
+      setRefinementResult(data);
+      setShowPage2(true);
+      onRefinementComplete(data);
+      
+      toast({
+        title: "Analysis Complete",
+        description: `Refined diagnosis with ${data.page2Analysis.confidence * 100}% confidence`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Analysis Error",
+        description: error.message || "Failed to refine differential diagnosis",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleRefineAnalysis = () => {
+    refineMutation.mutate();
+  };
+
+  // Get importance badge styling
+  const getImportanceBadge = (importance: string) => {
+    switch (importance) {
+      case 'critical':
+        return <Badge variant="destructive" className="text-xs">Critical</Badge>;
+      case 'high':
+        return <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">High</Badge>;
+      default:
+        return <Badge variant="outline" className="text-xs">Medium</Badge>;
+    }
+  };
+
+  if (showPage2 && refinementResult) {
+    return (
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="flex items-center text-green-800">
+            <CheckCircle className="h-5 w-5 mr-2" />
+            Page 2: Refined Differential Diagnosis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Primary Diagnosis */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-green-900 mb-3">Final Primary Diagnosis</h3>
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-lg font-bold text-green-900">
+                  {refinementResult.page2Analysis.primaryDiagnosis.primaryDiagnosis}
+                </div>
+                <Badge variant="default" className="bg-green-600 text-white">
+                  {Math.round(refinementResult.page2Analysis.confidence * 100)}% confidence
+                </Badge>
+              </div>
+              <p className="text-sm text-green-800 mt-2">
+                {refinementResult.page2Analysis.reasoning}
+              </p>
+            </div>
+          </div>
+
+          {/* Eliminated Possibilities */}
+          {refinementResult.page2Analysis.eliminated.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-red-900 mb-3">Eliminated Possibilities</h3>
+              <div className="space-y-2">
+                {refinementResult.page2Analysis.eliminated.map((eliminated, index) => (
+                  <div key={index} className="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <X className="h-4 w-4 text-red-600 mr-2" />
+                    <span className="text-sm text-red-800 line-through">{eliminated}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Remaining Possibilities */}
+          {refinementResult.page2Analysis.remaining.length > 1 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-3">Remaining Possibilities</h3>
+              <div className="space-y-3">
+                {refinementResult.page2Analysis.remaining.map((possibility, index) => (
+                  <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-base font-semibold text-gray-900">
+                        {index + 1}. {possibility.woundType}
+                      </div>
+                      <Badge variant="outline" className="text-gray-700 border-gray-300">
+                        {Math.round(possibility.confidence * 100)}% confidence
+                      </Badge>
+                    </div>
+                    <div className="text-sm text-gray-600 leading-relaxed">
+                      {possibility.reasoning}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Analysis Summary */}
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 className="text-base font-semibold text-blue-900 mb-2">Analysis Summary</h4>
+            <p className="text-sm text-blue-800">
+              Based on your answers, the diagnostic confidence has been refined. The clinical reasoning
+              takes into account your specific responses to create a more accurate assessment.
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-6 flex gap-3">
+            <Button 
+              onClick={() => setShowPage2(false)}
+              variant="outline"
+              className="flex items-center"
+            >
+              <ChevronRight className="h-4 w-4 mr-2 rotate-180" />
+              Back to Questions
+            </Button>
+            <Button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center"
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Continue Assessment
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle className="text-brown-900">
+          Key Questions to Gain Extreme Confidence in Primary Diagnosis
+        </CardTitle>
+        <p className="text-sm text-brown-700">
+          Answer these questions in order of clinical importance to refine the differential diagnosis.
+          Your answers will help eliminate possibilities and improve diagnostic accuracy.
+        </p>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          {questionAnswers.map((qa, index) => (
+            <div key={index} className="border border-gray-200 rounded-lg p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center mb-2">
+                    <span className="text-brown-700 font-medium mr-2">{index + 1}.</span>
+                    {getImportanceBadge(qa.importance)}
+                  </div>
+                  <Label htmlFor={`question-${index}`} className="text-sm font-medium text-gray-900">
+                    {qa.question}
+                  </Label>
+                </div>
+              </div>
+              
+              <Textarea
+                id={`question-${index}`}
+                placeholder={`Your answer for question ${index + 1}...`}
+                value={qa.answer}
+                onChange={(e) => updateAnswer(index, e.target.value)}
+                className="min-h-[80px] resize-none"
+              />
+              
+              {qa.answer.trim() !== '' && (
+                <div className="mt-2 text-xs text-green-600 flex items-center">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Answer provided
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Instructions */}
+          <Alert>
+            <AlertDescription>
+              <strong>Instructions:</strong> Answer the questions in order of importance (Critical → High → Medium). 
+              You can analyze with partial answers, but more complete responses will provide better diagnostic refinement.
+            </AlertDescription>
+          </Alert>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            <Button 
+              onClick={handleRefineAnalysis}
+              disabled={refineMutation.isPending || questionAnswers.every(qa => qa.answer.trim() === '')}
+              className="flex items-center"
+            >
+              {refineMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Refine Analysis (Page 2)
+                </>
+              )}
+            </Button>
+            
+            <div className="text-sm text-gray-600 flex items-center">
+              {questionAnswers.filter(qa => qa.answer.trim() !== '').length} / {questionAnswers.length} questions answered
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

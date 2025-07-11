@@ -1865,3 +1865,26 @@ The wound's location on a major bony prominence (the heel) is a classic site for
 
 ---
 
+
+---
+## Case: 2025-07-11-255
+**User:** sampilling@higharc.com  
+**Date:** 7/11/2025, 6:03:06 AM  
+**Wound Type:** Unstageable Pressure Ulcer  
+**Confidence:** 80%  
+**AI Model:** gemini-2.5-pro  
+**Detection Method:** AI Vision  
+
+### AI Reasoning:
+The wound's location on the heel, a major bony prominence, combined with its deep, crater-like appearance and the presence of extensive necrotic tissue (eschar) and slough, are highly indicative of a severe pressure ulcer. It is classified as 'Unstageable' because the base of the wound is obscured by non-viable tissue, making it impossible to determine the true depth and involvement of underlying structures. If debrided, this would likely be a Stage 4 pressure ulcer. The visible white tissue is concerning for exposed tendon. Deep, crater-like ulcer with defined, inflamed, and potentially rolled edges (epibole). A significant amount of non-viable tissue (eschar and slough) is present, obscuring the full depth of the wound. A white, fibrous structure, possibly tendon, is visible. The periwound skin appears dry and macerated in some areas.
+
+### Classification Process:
+
+**Independent Classification:** Unstageable Pressure Ulcer (80% confidence)  
+
+**YOLO Status:** Disabled  
+
+**Final Decision:** AI classified as Unstageable Pressure Ulcer with 80% confidence
+
+---
+

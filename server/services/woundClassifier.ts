@@ -348,10 +348,13 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
       }
     }
     
-    // Step 2.8: ALWAYS ensure differential diagnosis is present - MOVED OUTSIDE CNN BLOCK
+    // Step 2.8: ALWAYS ensure differential diagnosis is present with normalized probabilities
     console.log('WoundClassifier: BEFORE differential diagnosis check - about to check structure');
     
     try {
+      // Import differential diagnosis service for probability normalization
+      const { differentialDiagnosisService } = await import('./differentialDiagnosisService');
+      
       // ALWAYS ensure differential diagnosis is present - force creation regardless of AI response
       console.log('WoundClassifier: Checking differential diagnosis structure:', classification.differentialDiagnosis);
       const hasDifferentialDiagnosis = classification.differentialDiagnosis && 
@@ -395,7 +398,7 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         const tertiaryConfidence = Math.max(0.1, (1 - primaryConfidence) * 0.3);
         
         // Create comprehensive differential diagnosis
-        const possibleTypes = [
+        let possibleTypes = [
           {
             woundType: primaryType,
             confidence: primaryConfidence,
@@ -417,6 +420,9 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
           });
         }
         
+        // NORMALIZE PROBABILITIES TO ADD UP TO 100%
+        possibleTypes = differentialDiagnosisService.normalizeProbabilities(possibleTypes);
+        
         classification.differentialDiagnosis = {
           possibleTypes: possibleTypes,
           questionsToAsk: [
@@ -428,7 +434,13 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         
         console.log('WoundClassifier: Added comprehensive fallback differential diagnosis with', possibleTypes.length, 'possibilities');
       } else {
-        console.log('WoundClassifier: Differential diagnosis already present with', classification.differentialDiagnosis.possibleTypes.length, 'possibilities');
+        // NORMALIZE EXISTING DIFFERENTIAL DIAGNOSIS PROBABILITIES
+        if (classification.differentialDiagnosis.possibleTypes) {
+          classification.differentialDiagnosis.possibleTypes = differentialDiagnosisService.normalizeProbabilities(
+            classification.differentialDiagnosis.possibleTypes
+          );
+        }
+        console.log('WoundClassifier: Differential diagnosis already present with', classification.differentialDiagnosis.possibleTypes.length, 'possibilities - normalized probabilities');
       }
       
     } catch (differentialError) {
@@ -438,7 +450,7 @@ export async function classifyWound(imageBase64: string, model: string, mimeType
         possibleTypes: [
           {
             woundType: classification.woundType,
-            confidence: classification.confidence || 0.7,
+            confidence: 0.7,
             reasoning: 'Primary diagnosis based on visual assessment'
           },
           {

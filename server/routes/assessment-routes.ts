@@ -13,6 +13,7 @@ import { callOpenAI } from "../services/openai";
 import { callGemini } from "../services/gemini";
 import { cnnWoundClassifier } from "../services/cnnWoundClassifier";
 import { whyClassificationLogger } from "../services/whyClassificationLogger";
+import { differentialDiagnosisService } from "../services/differentialDiagnosisService";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -1165,6 +1166,53 @@ export function registerAssessmentRoutes(app: Express): void {
     } catch (error) {
       console.error('Error fetching AI interactions:', error);
       res.status(500).json({ error: 'Failed to fetch AI interactions' });
+    }
+  });
+
+  // Differential Diagnosis Refinement API - Interactive Questions System
+  app.post("/api/assessment/refine-differential-diagnosis", isAuthenticated, async (req, res) => {
+    try {
+      const { originalClassification, questionAnswers, model } = req.body;
+      
+      if (!originalClassification || !questionAnswers || !Array.isArray(questionAnswers)) {
+        return res.status(400).json({
+          code: "MISSING_DATA",
+          message: "Original classification and question answers are required"
+        });
+      }
+      
+      console.log('Refining differential diagnosis with', questionAnswers.length, 'answers');
+      
+      // Use the differential diagnosis service to refine the assessment
+      const refinement = await differentialDiagnosisService.refineDifferentialDiagnosis(
+        originalClassification,
+        questionAnswers,
+        model || 'gemini-2.5-pro'
+      );
+      
+      console.log('Differential diagnosis refinement complete:');
+      console.log('- Eliminated possibilities:', refinement.eliminatedPossibilities);
+      console.log('- Remaining possibilities:', refinement.remainingPossibilities.length);
+      console.log('- Final confidence:', refinement.confidence);
+      
+      res.json({
+        success: true,
+        refinement: refinement,
+        page2Analysis: {
+          eliminated: refinement.eliminatedPossibilities,
+          remaining: refinement.remainingPossibilities,
+          primaryDiagnosis: refinement.refinedDiagnosis,
+          confidence: refinement.confidence,
+          reasoning: refinement.reasoning
+        }
+      });
+      
+    } catch (error: any) {
+      console.error('Differential diagnosis refinement error:', error);
+      res.status(500).json({
+        code: "DIFFERENTIAL_REFINEMENT_ERROR",
+        message: error.message || "Failed to refine differential diagnosis"
+      });
     }
   });
 

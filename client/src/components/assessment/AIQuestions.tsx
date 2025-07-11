@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { StepProps } from "./shared/AssessmentTypes";
 import { assessmentApi, assessmentHelpers } from "./shared/AssessmentUtils";
 import DetectionTransparencyCard from "./DetectionTransparencyCard";
+import DifferentialDiagnosisQuestions from "./DifferentialDiagnosisQuestions";
 
 
 
@@ -445,22 +446,22 @@ export default function AIQuestions({ state, onStateChange, onNextStep }: StepPr
                   ))}
                 </div>
                 
-                {/* Targeted Questions to Differentiate */}
+                {/* Interactive Differential Diagnosis Questions */}
                 {state.woundClassification.differentialDiagnosis.questionsToAsk && 
                  state.woundClassification.differentialDiagnosis.questionsToAsk.length > 0 && (
-                  <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <h4 className="text-base font-semibold text-yellow-900 mb-3">
-                      Key Questions to Gain Extreme Confidence in Primary Diagnosis:
-                    </h4>
-                    <div className="space-y-2">
-                      {state.woundClassification.differentialDiagnosis.questionsToAsk.map((question, index) => (
-                        <div key={index} className="flex items-start">
-                          <span className="text-yellow-700 font-medium mr-2">{index + 1}.</span>
-                          <span className="text-sm text-yellow-800">{question}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <DifferentialDiagnosisQuestions 
+                    questions={state.woundClassification.differentialDiagnosis.questionsToAsk}
+                    originalClassification={state.woundClassification}
+                    audience={state.audience}
+                    model={state.model}
+                    onRefinementComplete={(refinement) => {
+                      // Update state with Page 2 analysis
+                      onStateChange({
+                        differentialRefinement: refinement,
+                        showPage2Analysis: true
+                      });
+                    }}
+                  />
                 )}
               </div>
             ) : (
