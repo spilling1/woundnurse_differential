@@ -23,49 +23,49 @@ export const frontBodyRegions: BodyRegion[] = [
     id: '5',
     name: 'Stomach',
     description: 'Abdominal/stomach region',
-    coordinates: { x: 190, y: 330, width: 120, height: 80 },
+    coordinates: { x: 150, y: 300, width: 190, height: 115 },
     commonWoundTypes: ['surgical_wound', 'traumatic_wound']
   },
   {
     id: '6L',
     name: 'Left Upper Leg (Front)',
     description: 'Left upper leg/thigh front',
-    coordinates: { x: 280, y: 430, width: 70, height: 120 },
+    coordinates: { x: 250, y: 415, width: 80, height: 160 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '6R',
     name: 'Right Upper Leg (Front)',
     description: 'Right upper leg/thigh front',
-    coordinates: { x: 150, y: 430, width: 70, height: 120 },
+    coordinates: { x: 150, y: 415, width: 80, height: 160 },
     commonWoundTypes: ['traumatic_wound', 'surgical_wound']
   },
   {
     id: '7L',
     name: 'Left Lower Leg (Front)',
     description: 'Left lower leg/shin front',
-    coordinates: { x: 280, y: 550, width: 70, height: 120 },
+    coordinates: { x: 250, y: 575, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '7R',
     name: 'Right Lower Leg (Front)',
     description: 'Right lower leg/shin front',
-    coordinates: { x: 150, y: 550, width: 70, height: 120 },
+    coordinates: { x: 170, y: 575, width: 80, height: 140 },
     commonWoundTypes: ['venous_ulcer', 'traumatic_wound']
   },
   {
     id: '8L',
     name: 'Left Top/Side of Foot',
     description: 'Left top/side of foot',
-    coordinates: { x: 280, y: 670, width: 70, height: 60 },
+    coordinates: { x: 250, y: 715, width: 80, height: 80 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   {
     id: '8R',
     name: 'Right Top/Side of Foot',
     description: 'Right top/side of foot',
-    coordinates: { x: 150, y: 670, width: 70, height: 60 },
+    coordinates: { x: 170, y: 715, width: 80, height: 80 },
     commonWoundTypes: ['diabetic_ulcer', 'pressure_injury']
   },
   
